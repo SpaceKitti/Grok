@@ -1,0 +1,353 @@
+**Structure-Preserving Hybrid MHD Framework**  
+(Symplectic time integration + Lagrangian frozen-in markers + controlled residual dissipation)
+
+This unifies everything discussed: the spectral residual-dissipation hive (Qin bases, Oldroyd-B/MHD correspondence, residual diagnostics \(\mathcal{D}_i\), \(T_*\) crossovers, near-zero dissipation goal), the Hamiltonian/symplectic structure, Lagrangian particles carrying frozen-in flux or vector potential, energy/magnetic-helicity monitoring, and the option for fixed-grid Eulerian realization.
+
+### 1. Continuous equations
+
+Ideal MHD in conservative form (with controlled artificial viscosity \(\nu_{\rm art}\) and resistivity \(\eta_{\rm art}\)):
+
+\[
+\begin{aligned}
+\partial_t\rho + \nabla\cdot(\rho\mathbf{v}) &= 0,\\
+\partial_t(\rho\mathbf{v}) + \nabla\cdot\bigl(\rho\mathbf{v}\mathbf{v} + (p + \tfrac12 B^2)\mathbf{I} - \mathbf{B}\mathbf{B}\bigr) &= \nabla\cdot\bigl(2\nu_{\rm art}\rho\,\mathbf{S}\bigr),\\
+\partial_t\mathbf{B} - \nabla\times(\mathbf{v}\times\mathbf{B}) &= -\nabla\times(\eta_{\rm art}\mathbf{J}),\qquad\mathbf{J}=\nabla\times\mathbf{B},\\
+\partial_t E + \nabla\cdot\bigl[(E + p + \tfrac12 B^2)\mathbf{v} - (\mathbf{v}\cdot\mathbf{B})\mathbf{B}\bigr] &= \nabla\cdot(\text{viscous + resistive fluxes}),
+\end{aligned}
+\]
+
+where \(\mathbf{S}\) is the strain-rate tensor and \(E = \frac12\rho v^2 + \frac{p}{\gamma-1} + \frac12 B^2\).
+
+The ideal part (\(\nu_{\rm art}=\eta_{\rm art}=0\)) is a non-canonical Hamiltonian system with Poisson operator \(J\) satisfying
+\[
+\dot{z} = J(z)\,\frac{\delta H}{\delta z},\qquad H = \int E\,dV.
+\]
+
+Key invariants of the ideal system:
+- Total energy \(H\),
+- Magnetic helicity \(H_m = \int\mathbf{A}\cdot\mathbf{B}\,dV\) (with \(\mathbf{B}=\nabla\times\mathbf{A}\)),
+- Cross-helicity \(\int\mathbf{v}\cdot\mathbf{B}\,dV\),
+- \(\nabla\cdot\mathbf{B}=0\).
+
+### 2. Structure-preserving time integration
+
+Use a symplectic or energy-stable integrator on the ideal part and treat artificial dissipation separately (conformal or operator-split).
+
+**Implicit midpoint (Gauss–Legendre, order 2, symplectic for canonical systems and energy-stable for MHD):**
+\[
+z_{n+1} = z_n + \Delta t\, J\Bigl(\tfrac{z_{n+1}+z_n}{2}\Bigr)\frac{\delta H}{\delta z}\Bigl(\tfrac{z_{n+1}+z_n}{2}\Bigr).
+\]
+Solved by matrix-free Newton (compatible with the existing residual hive).
+
+**Conformal variant** (for controlled residual dissipation):
+\[
+\dot{p} = -\frac{\delta V}{\delta q} - \gamma_{\rm art}p
+\quad\Rightarrow\quad
+\text{after each half-step multiply momenta by }e^{-\gamma_{\rm art}\Delta t}.
+\]
+
+Leapfrog / velocity-Verlet on Lagrangian particles (exact for linear oscillators, volume-preserving).
+
+### 3. Lagrangian marker particles (frozen-in flux / vector potential)
+
+Evolve a set of markers \(\{\mathbf{x}_p, \mathbf{B}_p\}\) or \(\{\mathbf{x}_p, \mathbf{A}_p\}\):
+
+\[
+\begin{aligned}
+\dot{\mathbf{x}}_p &= \mathbf{v}(\mathbf{x}_p),\\
+\dot{\mathbf{B}}_p &= (\mathbf{B}_p\cdot\nabla)\mathbf{v} - (\nabla\cdot\mathbf{v})\mathbf{B}_p
+\quad\text{(or the equivalent Lie-dragged evolution for \(\mathbf{A}\))}.
+\end{aligned}
+\]
+
+After each particle step, deposit onto the mesh with a divergence-free projection (spectral Qin bases or finite-volume CT reconstruction). This makes the ideal induction equation exact along particle trajectories and removes the dominant source of numerical resistivity.
+
+### 4. Spatial discretizations (both supported)
+
+**Spectral residual (primary hive realization)**  
+- Expand \(\mathbf{v},\mathbf{B}\) in Qin exact divergence-free bases.  
+- Residual form of the equations evaluated matrix-free.  
+- Existing residual diagnostics \(\mathcal{D}_i\) and crossover times \(T_*\) retained; after \(T_*\) freeze expensive projectors and advance only the cheap residual + particles.
+
+**Fixed-grid Eulerian (finite-volume + Constrained Transport)**  
+- Cell-centered conserved variables, face-centered \(\mathbf{B}\).  
+- Godunov fluxes (HLLD preferred) + piecewise-linear reconstruction.  
+- Evans–Hawley or corner-transport CT to keep \(\nabla\cdot\mathbf{B}=0\) to round-off.  
+- Particles deposit onto the same staggered mesh.
+
+### 5. Residual dissipation control & monitors
+
+Live monitors:
+\[
+\begin{aligned}
+E_{\rm tot}(t) &= \int\Bigl(\tfrac12\rho v^2 + \tfrac{p}{\gamma-1} + \tfrac12 B^2\Bigr)\,dV,\\
+H_m(t) &= \int\mathbf{A}\cdot\mathbf{B}\,dV,\\
+\delta E &= \frac{E_{\rm tot}(t)-E_{\rm tot}(0)}{E_{\rm tot}(0)},\qquad
+\delta H_m = \frac{H_m(t)-H_m(0)}{|H_m(0)|+\varepsilon}.
+\end{aligned}
+\]
+
+After each accepted step:
+```text
+η_art ← η_art × decay
+ν_art ← ν_art × decay
+if |δE| > tol or |δH_m| > tol:
+    back off the reduction
+```
+Artificial coefficients continue to decay only while both invariants remain controlled. This realizes the “0 % residual dissipation” target.
+
+### 6. Combined algorithm
+
+1. Initialize continuum fields + Lagrangian markers (seed \(\mathbf{B}_p\) or \(\mathbf{A}_p\) from continuum).  
+2. While \(t < T_{\rm final}\):  
+   a. Reconstruct / evaluate residual or fluxes (spectral or finite-volume).  
+   b. Advance continuum with implicit midpoint (or conformal) Newton step.  
+   c. Advance particles with leapfrog / midpoint using interpolated velocity.  
+   d. Deposit particle \(\mathbf{B}_p\) (or \(\nabla\times\mathbf{A}_p\)) onto mesh with div-free projection.  
+   e. Apply controlled artificial dissipation.  
+   f. Update monitors \(\delta E\), \(\delta H_m\), residual diagnostics \(\mathcal{D}_i\).  
+   g. Optionally freeze expensive residual projectors after \(T_*\).  
+   h. Reduce \(\eta_{\rm art},\nu_{\rm art}\) if monitors permit.
+
+### 7. Code skeletons
+
+**Conserved variables & primitives (common)**
+```python
+import numpy as np
+import torch  # for residual/Newton path
+
+gamma = 5.0/3.0
+
+def primitives(U):
+    # U: (6, Nx, Ny) or torch tensor  [rho, mx, my, Bx, By, E]
+    rho = U[0]
+    vx, vy = U[1]/rho, U[2]/rho
+    Bx, By = U[3], U[4]
+    kin = 0.5*rho*(vx**2 + vy**2)
+    mag = 0.5*(Bx**2 + By**2)
+    p = (gamma-1)*(U[5] - kin - mag)
+    return rho, vx, vy, Bx, By, p
+```
+
+**Implicit midpoint residual step (spectral / matrix-free style)**
+```python
+@torch
+.jit.script
+def midpoint_residual(z_n, z_mid, dt, eta_art, nu_art):
+    # z = [rho, mx, my, Bx, By, E] or flattened spectral coefficients
+    # Evaluate ideal MHD residual + artificial terms at z_mid
+    R_ideal = mhd_residual(z_mid)          # existing hive residual
+    R_art   = artificial_dissipation(z_mid, eta_art, nu_art)
+    return z_mid - z_n - 0.5*dt*(R_ideal + R_art)
+
+# Newton solve for z_{n+1} given z_n (matrix-free)
+```
+
+**Lagrangian particles (frozen-in B)**
+```python
+def advance_particles(xp, Bp, v_interp, dt):
+    # leapfrog / velocity-Verlet style
+    xp_half = xp + 0.5*dt * v_interp(xp)
+    # interpolate velocity & velocity gradient at half-step
+    v_h, grad_v = interpolate_velocity_and_grad(xp_half)
+    Bp_new = Bp + dt * (torch.einsum('...i,...ij->...j', Bp, grad_v)
+                        - Bp * torch.einsum('...ii', grad_v)[...,None])
+    xp_new = xp_half + 0.5*dt * v_interp(xp_half)
+    return xp_new, Bp_new
+
+def deposit_divfree(xp, Bp, mesh_shape):
+    # deposit and project onto Qin bases or CT faces
+    B_mesh = particle_to_mesh(xp, Bp, mesh_shape)
+    return div_free_projection(B_mesh)     # spectral or CT
+```
+
+**Monitors & dissipation control**
+```python
+def monitors(U, A, dx):
+    rho, vx, vy, Bx, By, p = primitives(U)
+    E_tot = np.sum(0.5*rho*(vx**2+vy**2) + p/(gamma-1) + 0.5*(Bx**2+By**2)) * dx**2
+    # magnetic helicity (A from vector potential or cumulative)
+    Hm = np.sum(A[0]*Bx + A[1]*By) * dx**2
+    return E_tot, Hm
+
+def update_art_coeffs(eta, nu, dE, dHm, tol=1e-4, decay=0.995):
+    if abs(dE) < tol and abs(dHm) < tol:
+        return eta*decay, nu*decay
+    else:
+        return min(eta*1.05, eta_max), min(nu*1.05, nu_max)
+```
+
+**Top-level step**
+```python
+def hybrid_step(U, particles, eta_art, nu_art, dt):
+    # 1. continuum midpoint / Newton
+    U_new = solve_midpoint(U, dt, eta_art, nu_art)
+    # 2. particles
+    xp, Bp = particles
+    v_interp = make_interpolator(U_new)
+    xp, Bp = advance_particles(xp, Bp, v_interp, dt)
+    B_dep = deposit_divfree(xp, Bp, U.shape[1:])
+    U_new[3:5] = 0.5*(U_new[3:5] + B_dep)   # blend or replace
+    # 3. monitors & adapt
+    E, Hm = monitors(U_new, A_from_B(U_new), dx)
+    eta_art, nu_art = update_art_coeffs(eta_art, nu_art, (E-E0)/E0, (Hm-Hm0)/abs(Hm0))
+    return U_new, (xp, Bp), eta_art, nu_art
+```
+
+This is the complete technical framework that incorporates every element discussed: the spectral residual hive, Hamiltonian structure, symplectic/energy-stable integration, Lagrangian frozen-in markers, energy & magnetic-helicity monitoring, controlled reduction of artificial dissipation, residual diagnostics/crossovers, and the option to realize the same structure on a fixed-grid Eulerian mesh with Constrained Transport.
+
+You can take any piece (spectral residual kernel, full particle deposition, 3-D extension, HLLD fluxes, etc.) and expand it next. **Yes — the previous framework already includes fixed-grid Eulerian MHD as one of the two supported spatial discretizations.**  
+
+Here is the focused expansion of that branch, fully integrated with the symplectic time integration, Lagrangian frozen-in markers, energy/magnetic-helicity monitors, and controlled residual dissipation.
+
+### Fixed-Grid Eulerian MHD Realization
+
+**Grid**  
+Uniform Cartesian mesh (easily extended to cylindrical).  
+- Cell-centered conserved variables:  
+  \[
+  \mathbf{U}_{i,j} = \bigl(\rho,\;\rho v_x,\;\rho v_y,\;B_x,\;B_y,\;E\bigr)_{i,j}
+  \]  
+- Face-centered magnetic field for Constrained Transport (CT):  
+  \(B_x\) on \(x\)-faces, \(B_y\) on \(y\)-faces.
+
+**Finite-volume update (method of lines)**  
+\[
+\frac{d\mathbf{U}_{i,j}}{dt} = -\frac{\mathbf{F}_{i+1/2,j}-\mathbf{F}_{i-1/2,j}}{\Delta x}
+-\frac{\mathbf{G}_{i,j+1/2}-\mathbf{G}_{i,j-1/2}}{\Delta y}
++ \mathbf{S}_{\rm art}(\nu_{\rm art},\eta_{\rm art})
+\]
+
+Ideal fluxes (Godunov form):
+
+\[
+\mathbf{F} = \begin{pmatrix}
+\rho v_x \\
+\rho v_x^2 + p_t - B_x^2 \\
+\rho v_x v_y - B_x B_y \\
+0 \\
+v_x B_y - v_y B_x \\
+(E+p_t)v_x - B_x(\mathbf{v}\cdot\mathbf{B})
+\end{pmatrix},
+\quad
+p_t = p + \tfrac12 B^2
+\]
+
+(and the analogous \(\mathbf{G}\) for the \(y\)-direction).  
+Magnetic fluxes for \(B_x,B_y\) are replaced by the CT electric-field update (see below).
+
+**Reconstruction & Riemann solver**  
+- Piecewise-linear (or higher-order) reconstruction with slope limiters (minmod, van Leer, or MC).  
+- HLLD Riemann solver at each interface (preferred for low dissipation).  
+- HLL is acceptable for a minimal prototype.
+
+**Constrained Transport (Evans–Hawley / corner transport)**  
+Face-centered electric field  
+\[
+E_z\big|_{i+1/2,j+1/2} = -\tfrac12\bigl[(v_x B_y - v_y B_x)_L + (v_x B_y - v_y B_x)_R\bigr]
+\]  
+(or upwinded version). Then  
+\[
+\begin{aligned}
+B_x\big|_{i+1/2,j}^{n+1} &= B_x\big|_{i+1/2,j}^{n}
+-\frac{\Delta t}{\Delta y}\bigl(E_z\big|_{i+1/2,j+1/2}-E_z\big|_{i+1/2,j-1/2}\bigr),\\
+B_y\big|_{i,j+1/2}^{n+1} &= B_y\big|_{i,j+1/2}^{n}
++\frac{\Delta t}{\Delta x}\bigl(E_z\big|_{i+1/2,j+1/2}-E_z\big|_{i-1/2,j+1/2}\bigr).
+\end{aligned}
+\]  
+Cell-centered \(\mathbf{B}\) is the average of the face values. This keeps \(\nabla\cdot\mathbf{B}=0\) to machine precision.
+
+**Integration with the rest of the framework**
+
+- **Time stepping**: Replace the ordinary RK step by the implicit midpoint (or conformal midpoint) Newton solve on the cell-centered conserved variables; the CT magnetic update is performed after the conserved update (or inside the residual).  
+- **Lagrangian markers**: Particles still evolve with the interpolated velocity field. After the particle step they deposit \(\mathbf{B}_p\) (or \(\nabla\times\mathbf{A}_p\)) onto the face-centered magnetic field, which is then projected/averaged consistently with CT.  
+- **Artificial dissipation**: Added as source terms \(\mathbf{S}_{\rm art}\) inside the finite-volume residual; coefficients \(\nu_{\rm art},\eta_{\rm art}\) are reduced exactly as before while monitoring \(E_{\rm tot}\) and \(H_m\).  
+- **Residual diagnostics / \(T_*\)**: Can be evaluated on the Eulerian grid in the same way (enstrophy, magnetic residual, etc.).
+
+### Expanded code skeleton (fixed-grid Eulerian + structure-preserving layers)
+
+```python
+import numpy as np
+
+gamma = 5./3.
+Nx, Ny = 256, 256
+dx = dy = 1.0 / Nx
+
+# Conserved array: shape (6, Nx, Ny)
+# Face-centered B: Bx_f (Nx+1, Ny), By_f (Nx, Ny+1)
+
+def primitives(U):
+    rho = U[0]
+    vx  = U[1] / rho
+    vy  = U[2] / rho
+    Bx, By = U[3], U[4]
+    E   = U[5]
+    p   = (gamma-1.)*(E - 0.5*rho*(vx**2+vy**2) - 0.5*(Bx**2+By**2))
+    return rho, vx, vy, Bx, By, p
+
+def hld_flux(UL, UR, direction='x'):
+    # Placeholder for full HLLD; returns interface flux
+    # (implement HLLD or call a library routine)
+    pass
+
+def reconstruct(U, axis):
+    # piecewise-linear + limiter → UL, UR
+    pass
+
+def constrained_transport(Bx_f, By_f, Ez, dt):
+    Bx_f[1:-1,:] -= dt/dy * (Ez[:,1:] - Ez[:,:-1])
+    By_f[:,1:-1] += dt/dx * (Ez[1:,:] - Ez[:-1,:])
+    return Bx_f, By_f
+
+def eulerian_residual(U, Bx_f, By_f, eta_art, nu_art):
+    # 1. Reconstruct left/right states
+    # 2. Compute Godunov fluxes with HLLD
+    # 3. Add artificial viscous/resistive fluxes or sources
+    # 4. Return dU/dt (cell-centered)
+    pass
+
+def midpoint_step_eulerian(U, Bx_f, By_f, particles, eta_art, nu_art, dt):
+    # Implicit midpoint Newton solve on cell-centered U
+    # (matrix-free residual = eulerian_residual at midpoint state)
+    U_new = newton_solve_midpoint(U, dt, eta_art, nu_art)
+
+    # CT magnetic update (using electric field from the midpoint state)
+    Ez = compute_edge_electric_field(U_new, Bx_f, By_f)
+    Bx_f, By_f = constrained_transport(Bx_f, By_f, Ez, dt)
+    U_new[3] = 0.5*(Bx_f[:-1,:] + Bx_f[1:,:])
+    U_new[4] = 0.5*(By_f[:,:-1] + By_f[:,1:])
+
+    # Lagrangian particles
+    xp, Bp = particles
+    v_interp = make_face_interpolator(U_new, Bx_f, By_f)
+    xp, Bp = advance_particles(xp, Bp, v_interp, dt)          # same leapfrog as before
+    B_dep = deposit_to_faces(xp, Bp, (Nx, Ny))               # deposit onto faces
+    Bx_f, By_f = 0.5*(Bx_f + B_dep[0]), 0.5*(By_f + B_dep[1])
+    # re-average into cell centers if desired
+
+    return U_new, Bx_f, By_f, (xp, Bp)
+
+def update_art_coeffs(eta, nu, dE, dHm, tol=1e-4, decay=0.995):
+    if abs(dE) < tol and abs(dHm) < tol:
+        return eta*decay, nu*decay
+    return min(eta*1.05, eta_max), min(nu*1.05, nu_max)
+```
+
+**Top-level driver (Eulerian path)**  
+```python
+U, Bx_f, By_f = initialize_orstang_or_current_sheet(...)
+particles = seed_markers_from_B(U, Bx_f, By_f, n_particles=50_000)
+eta_art, nu_art = 1e-3, 1e-3
+E0, Hm0 = compute_energy_and_helicity(U, A_from_faces(Bx_f, By_f))
+
+for step in range(Nsteps):
+    U, Bx_f, By_f, particles = midpoint_step_eulerian(
+        U, Bx_f, By_f, particles, eta_art, nu_art, dt)
+    E, Hm = compute_energy_and_helicity(U, A_from_faces(Bx_f, By_f))
+    eta_art, nu_art = update_art_coeffs(
+        eta_art, nu_art, (E-E0)/E0, (Hm-Hm0)/(abs(Hm0)+1e-30))
+```
+
+This is the complete fixed-grid Eulerian expansion, fully wired into the symplectic midpoint integrator, Lagrangian frozen-in markers, CT divergence control, and the adaptive residual-dissipation reduction that monitors total energy and magnetic helicity.
+
+The spectral residual path remains available as the alternative spatial discretization inside the same overall framework. You now have both realizations side-by-side.

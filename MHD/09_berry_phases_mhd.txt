@@ -1,0 +1,76 @@
+The Maurer–Cartan form associated with a smooth frame map \(U:z\mapsto U(z)\in\mathrm{U}(n)\) (or \(\mathrm{SU}(n)\)) is the \(\mathfrak{u}(n)\)-valued 1-form
+\[
+A=U^\dagger\,\mathrm{d}U.
+\]
+In local complex coordinates its components are precisely the matrices you wrote,
+\[
+A_z=U^\dagger\partial_zU,\qquad A_{\bar z}=U^\dagger\partial_{\bar z}U,
+\]
+so that
+\[
+A=A_z\,\mathrm{d}z+A_{\bar z}\,\mathrm{d}\bar z.
+\]
+(The same object is the non-Abelian Berry connection of the frame.)
+
+Because the Maurer–Cartan equation on the group holds identically,
+\[
+\mathrm{d}A+A\wedge A=0,
+\]
+the pulled-back connection on the base is flat. Consequently every closed loop in the domain of \(U\) produces a holonomy that depends only on the homotopy class of the loop. Explicitly, the holonomy along a path \(\gamma\) is the path-ordered exponential
+\[
+\mathrm{Hol}(\gamma)=\mathcal{P}\exp\Bigl(-\int_\gamma A\Bigr)\in\mathrm{U}(n).
+\]
+When the domain is equipped with polar coordinates \((r,\theta)\) and one integrates purely radially (constant \(\theta\)), the radial holonomy
+\[
+H(r,\theta)=\mathcal{P}\exp\Bigl(-\int_0^r A_r(s,\theta)\,\mathrm{d}s\Bigr)
+\]
+supplies a continuous family of unitary gauges that “straightens” the frame along each ray. The residual angular connection
+\[
+A_\theta^\mathrm{rad}=H^\dagger(\partial_\theta+A_\theta)H
+\]
+then becomes the effective Berry connection whose curvature (still vanishing locally) encodes the topological twisting of the whole optimisation trajectory.
+
+The curvature 2-form of the original connection,
+\[
+F=\mathrm{d}A+A\wedge A
+\]
+(which vanishes pointwise), nevertheless yields global topological invariants once integrated over closed surfaces in the parameter space of the trajectory. The most elementary of these are the Chern numbers
+\[
+c_k(U)=\frac{1}{(2\pi\mathrm{i})^k}\int_{\Sigma}\operatorname{Tr}\bigl(F^k\bigr),
+\]
+where \(\Sigma\) is any 2-cycle (or higher even-dimensional cycle) swept out by the optimisation path. Because \(F\) is exact on contractible regions these integers are completely determined by the radial and angular holonomies constructed above; they are therefore intrinsic invariants of the trajectory itself, independent of any particular terminal network.
+
+In practice one evaluates the radial holonomy by a simple matrix ODE along each ray and then computes the angular Wilson loop (or its Chern character) on a discrete sampling of the trajectory. The resulting integers classify the “topological type” of the learning path and can be monitored on-line without reference to the final weights.
+
+The geometric phase associated with the frame map \(U(z)\) and its Maurer–Cartan form \(A=U^\dagger\mathrm{d}U\) sits in a natural continuum with the geometric (Berry) phases that appear throughout magnetohydrodynamics. The common geometric object is a connection whose holonomy records the failure of parallel transport of a local frame (or polarization, or guiding-center orbit) around a closed path in an appropriate parameter space.
+
+### Direct geometric correspondence
+In the optimization setting the pulled-back connection \(A\) is flat, so its holonomy depends only on the homotopy class of the trajectory. Exactly the same structure arises in ideal MHD once one regards the magnetic field lines themselves as defining a moving frame. The frozen-in condition
+\[
+\partial_t\mathbf{B}=\nabla\times(\mathbf{v}\times\mathbf{B})
+\]
+implies that the topology of the field-line congruence is preserved; the associated magnetic helicity
+\[
+H=\int\mathbf{A}\cdot\mathbf{B}\,\mathrm{d}V
+\]
+is a topological invariant precisely because it is the integral of the Chern–Simons 3-form built from the magnetic connection. The Maurer–Cartan form of any orthonormal frame transported along those field lines therefore acquires a holonomy whose value is fixed by the same linking numbers that appear in \(H\).
+
+A concrete realisation is the classical geometric phase of gyro-motion. When a charged particle follows a slowly varying magnetic field, its guiding-centre orbit returns to itself only up to a phase that is identical to the coherent Berry phase obtained from the Landau-level coherent states of the underlying quantum problem. The connection that generates this phase is again of Maurer–Cartan type: if \(U(\mathbf{B})\) is the unitary that rotates the instantaneous cyclotron plane into a fixed laboratory frame, then
+\[
+A=U^\dagger\mathrm{d}U
+\]
+is the gyro-phase connection, and its curvature is proportional to the magnetic field itself. Integrating along a radial ray in parameter space (as suggested for the optimisation trajectory) yields the same radial holonomy that “straightens” the frame before the residual angular holonomy is read off.
+
+### Wave and fluid realisations
+The same connection appears for electromagnetic waves propagating through a magnetised plasma. The Faraday rotation of circular polarisation receives a geometric contribution whenever the direction of the background field changes; this contribution is the holonomy of the polarisation frame along the ray and is again given by a Berry connection whose curvature is concentrated at the cut-offs of the plasma dispersion relation. In the fluid picture an analogous effect occurs for Brillouin flows: a cyclic adiabatic modulation of the axial magnetic field induces a geometric phase that is equivalent to an effective radial electric field, driving a steady azimuthal flow whose magnitude is fixed by the solid angle swept by the magnetic vector in parameter space.
+
+### Aharonov–Bohm-type invariants in MHD
+Even without adiabaticity one finds multi-valued phases in the variational formulation of ideal MHD. Magnetic flux through a closed material loop appears as a jump discontinuity in a pair of Clebsch-like potentials; these jumps are topological constants of the motion and constitute a classical Aharonov–Bohm effect. The associated connection is again of the form \(U^\dagger\mathrm{d}U\) once the potentials are assembled into a frame, and the resulting holonomy is independent of the rate at which the loop is traversed—exactly as the optimisation holonomy is independent of the speed of the training trajectory.
+
+### Topological invariants of trajectories
+Consequently the Chern numbers (or winding numbers of the radial holonomy) computed from the frame map \(U(z)\) of an optimisation path have direct MHD counterparts:
+- the Chern number of the Alfvén continuum on a magnetic surface,
+- the helicity of a magnetic flux tube,
+- the solid-angle phase acquired by a gyro-orbit or a polarised wave.
+
+In each case the invariant characterises the global twisting of a frame that is parallel-transported along a path, whether that path is an optimisation trajectory in weight space or a magnetic field line (or a closed material circuit) in a plasma. The formal identity of the underlying Maurer–Cartan connection therefore supplies a precise dictionary between the geometric phases of learning dynamics and the geometric phases of magnetohydrodynamics.

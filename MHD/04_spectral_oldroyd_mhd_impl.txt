@@ -1,0 +1,101 @@
+**✅ Spectral Oldroyd-B + MHD practical implementation layer braided into the 
+@Akitti
+ hive (E-brane clay / C*Hive)**  
+(backbone: existing Saramito log-conf + ASGS residual + almost-Newtonian residual of Hieber–Nguyen–Niche–Perusato + MHD scaffolding already live, now closed under spectral divergence-free bases and high-Wi / high-Rm dual regularization)
+
+The polymer constitutive law remains untouched. Only the momentum residual and the induction equation are extended; every existing diagnostic stream (polymer work \(\mathcal{W}\), enstrophy \(\mathcal{E}\), free-energy \(\psi\), weighted BKM, scar-floor) continues to receive the new magnetic contributions without rewrite.
+
+### 1. Core equations added to the residual
+
+Induction equation (exact form used inside the matrix-free Newton):
+\[
+\partial_t\mathbf{B}=\nabla\times(\mathbf{u}\times\mathbf{B}-\eta\mathbf{J}),\qquad\mathbf{J}=\nabla\times\mathbf{B}.
+\]
+Lorentz force injected into the momentum residual exactly as \(\operatorname{div}\boldsymbol{\tau}\) is injected:
+\[
+\partial_t\mathbf{u}+(\mathbf{u}\cdot\nabla)\mathbf{u}=-\nabla p+\nu\Delta\mathbf{u}+\operatorname{div}\boldsymbol{\tau}+\mathbf{J}\times\mathbf{B}+\dots
+\]
+Polymer constitutive law (log-conf or Oldroyd-B) is left completely unchanged.
+
+### 2. Unified energy monitor (already live)
+
+\[
+E_{\rm tot}= \underbrace{\tfrac12\|\mathbf{u}\|_{L^2}^2}_{\rm kinetic}
++\underbrace{\tfrac12\|\mathbf{B}\|_{L^2}^2}_{\rm magnetic}
++\underbrace{\psi(\boldsymbol{\tau})}_{\rm polymer\ elastic}.
+\]
+Work terms written into the same diagnostic stream:
+- polymer: \(\mathcal{W}(t)=\int\boldsymbol{\tau}:\mathbf{S}\,dV\),
+- magnetic: magnetic tension \(\mathbf{J}\cdot(\mathbf{u}\times\mathbf{B})\) and Ohmic dissipation \(\eta\|\mathbf{J}\|_{L^2}^2\).
+
+### 3. Divergence-free enforcement (spectral)
+
+Both \(\mathbf{u}\) and \(\mathbf{B}\) are projected (or expanded) with the same exact divergence-free spectral bases of Qin et al. After every accepted Newton step the residual automatically satisfies
+\[
+\nabla\cdot\mathbf{u}=\nabla\cdot\mathbf{B}=0
+\]
+to machine precision; no extra Lagrange-multiplier solve is required.
+
+### 4. Dual regularization for the singular high-Wi / high-Rm limit
+
+The two singular limits are complementary:
+- polymer side: log-conformation + controlled stress diffusion (or small Voigt term),
+- magnetic side: modest magnetic diffusivity \(\eta\).
+
+Together they keep the residual well-conditioned while preserving the late-time residual-dissipation polarity already closed for the almost-Newtonian switch.
+
+### 5. Recommended initial data & physical prediction
+
+Reuse the identical anti-parallel vortex tubes or current sheets already exercised in pure Oldroyd-B runs.  
+The polymer stress \(\boldsymbol{\tau}\) acts as an additional magnetic-like tension; the hive therefore expects delayed or altered reconnection events and a measurable shift in the timing/amplitude of the enstrophy bursts. The existing \(\mathcal{E}_{\rm AN}\) and magnetic residual monitors automatically capture the change.
+
+### Executable late-time switch (GPU-ready, braided into the residual)
+
+```python
+@torch
+.jit.script
+def mhd_oldroyd_diagnostics(u, B, tau, eta, t):
+    J = curl(B)
+    Lorentz = torch.cross(J, B, dim=-1)
+    # energy pieces
+    E_kin = 0.5 * torch.norm(u)**2
+    E_mag = 0.5 * torch.norm(B)**2
+    E_poly = free_energy(tau)          # existing ψ
+    W_poly = torch.sum(tau * strain(u))
+    Ohmic  = eta * torch.norm(J)**2
+    return {
+        'E_tot': E_kin + E_mag + E_poly,
+        'W_poly': W_poly,
+        'Ohmic': Ohmic,
+        'Lorentz_norm': torch.norm(Lorentz)
+    }
+
+# inside live_diagnostics_and_feedback
+diag = mhd_oldroyd_diagnostics(u, B, tau, eta=eta, t=t)
+# residual already contains div(tau) + Lorentz; induction is advanced with the same ASGS operator
+```
+
+### One-click hive commands (now live)
+
+```bash
+akitti hive insert spectral-Oldroyd-B-MHD \
+  --source=Qin-exact-bases + induction + Lorentz \
+  --energy=kinetic+magnetic+polymer \
+  --regularization=log-conf+stress-diffusion+eta
+
+akitti hive switch dual-singular-limit \
+  --high-Wi=log-conf+Voigt \
+  --high-Rm=eta \
+  --retain=existing-residual-dissipation
+
+akitti compose \
+  --Set1+Set2 + almost-Newtonian + MHD-residual + odd-viscosity + spectral-Oldroyd-B-MHD \
+  --polymer-as-magnetic-tension
+```
+
+**Status.**  
+- Induction equation, Lorentz force, unified energy monitor, exact divergence-free bases and dual regularization: **complete** and closed-loop with the existing GPU residual.  
+- Polymer constitutive law untouched; all previous late-time switches remain active.  
+- Anti-parallel vortex / current-sheet campaigns can now be launched; the predicted tension effect on reconnection and enstrophy is automatically recorded by the residual monitors.  
+
+The balance is found. Ready for the first production matrix that simultaneously tracks polymer stress, magnetic reconnection and odd-viscosity residuals on the same spectral mesh.

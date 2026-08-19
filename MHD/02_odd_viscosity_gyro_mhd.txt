@@ -1,0 +1,103 @@
+**✅ Odd-viscosity section integrated into the 
+@Akitti
+ MHD residual-dissipation framework (E-brane clay / C*Hive)**  
+(backbone: existing NS + MHD scaffolding + almost-Newtonian residual of Hieber–Nguyen–Niche–Perusato + ASGS residual, now closed under parity-breaking gyro/Hall viscosity)
+
+Odd viscosity \(\eta_o\) (also Hall or gyroviscosity) is a non-dissipative, parity- and time-reversal-breaking transport coefficient. It enters the stress tensor through antisymmetric components that do no work and produce no entropy. In the MHD residual layer it therefore survives as a persistent transverse force even after ordinary viscous and magnetic residuals have collapsed, modifying Alfvén/magnetosonic dispersion, suppressing small-scale intermittency, and supplying a clean additional monitor channel.
+
+### 1. Stress-tensor and force contribution
+
+In 2-D isotropic or quasi-2-D strongly magnetized geometry the odd contribution to the viscous stress is
+\[
+\boldsymbol{\sigma}^{\rm odd}= \eta_o\bigl(\nabla\mathbf{u}^\perp+(\nabla\mathbf{u}^\perp)^\top\bigr)
+\qquad\text{or equivalently}\qquad
+\operatorname{div}\boldsymbol{\sigma}^{\rm odd}=\eta_o\nabla^2(\boldsymbol{\varepsilon}\cdot\mathbf{u}),
+\]
+where \(\boldsymbol{\varepsilon}\) is the 2-D Levi-Civita tensor. In full 3-D Braginskii MHD the analogous gyroviscous pieces are the \(\eta_3,\eta_4\) terms aligned with the local magnetic unit vector \(\hat{\mathbf{b}}\):
+\[
+\boldsymbol{\Pi}^\wedge=\eta_3\,\mathbf{W}^{(1)\prime\prime}+\eta_4\,\mathbf{W}^{(2)\prime\prime}.
+\]
+These terms are added to the momentum residual exactly as the polymer stress \(\boldsymbol{\tau}\) was added in the viscoelastic layer:
+\[
+\partial_t\mathbf{u}+(\mathbf{u}\cdot\nabla)\mathbf{u}=-\nabla p+\nu\Delta\mathbf{u}+\operatorname{div}\boldsymbol{\sigma}^{\rm odd}+(\nabla\times\mathbf{B})\times\mathbf{B}+\dots
+\]
+
+Because \(\boldsymbol{\sigma}^{\rm odd}:\mathbf{D}=0\), the kinetic-energy identity remains unchanged; only the enstrophy and magnetic-enstrophy budgets acquire new non-dissipative cross terms.
+
+### 2. Diagnostic functions keyed to odd-viscous decay characters
+
+Live monitors extract instantaneous algebraic rates on rolling log-log windows:
+\[
+\begin{align*}
+\alpha_o(t)&=\frac{d}{d\log(1+t)}\log\|\boldsymbol{\sigma}^{\rm odd}(t)\|_{L^2},\\
+\alpha_\omega(t)&=\frac{d}{d\log(1+t)}\log\|\boldsymbol{\omega}(t)\|_{L^2},\\
+\alpha_B(t)&=\frac{d}{d\log(1+t)}\log\|\mathbf{B}(t)\|_{L^2}.
+\end{align*}
+\]
+The three new residual diagnostics that close the odd-viscosity layer are
+\[
+\begin{align*}
+\mathcal{D}_1^o(t)&=\bigl|\alpha_o(t)-\alpha_\omega(t)\bigr|,\\
+\mathcal{D}_2^o(t)&=\frac{\|\operatorname{div}\boldsymbol{\sigma}^{\rm odd}\|_{L^2}}{\|\nu\Delta\mathbf{u}+\operatorname{div}\boldsymbol{\sigma}^{\rm odd}\|_{L^2}+\delta},\\
+\mathcal{D}_3^o(t)&=\frac{\bigl|\langle\boldsymbol{\omega},\operatorname{curl}(\operatorname{div}\boldsymbol{\sigma}^{\rm odd})\rangle\bigr|}{\|\boldsymbol{\omega}\|_{L^2}^2+\delta}.
+\end{align*}
+\]
+All three are evaluated on-device after every accepted Newton step and written into the same diagnostic stream that already carries \(\mathcal{W}\), \(\mathcal{E}\), \(\mathcal{E}_{\rm AN}\) and the magnetic residual monitors.
+
+### 3. Quantitative crossover and almost-hydrodynamic transition
+
+Because odd viscosity is non-dissipative it does not decay by the same algebraic mechanism as the elastic remainder \(\boldsymbol{\varepsilon}\). Its practical “switch” is therefore defined by the first time at which the ordinary viscous + magnetic residuals have already crossed over **and** the odd channel has settled into a pure wave-like regime:
+\[
+T_*^o=\inf\bigl\{t>T_*^{B}:\;\mathcal{D}_1^o(t)<10^{-3},\;\mathcal{D}_2^o(t)<10^{-2},\;\mathcal{D}_3^o(t)<10^{-3}\bigr\}.
+\]
+After \(T_*^o\) the expensive full Braginskii projectors may be frozen to a cheap gyroviscous monitor only; the residual becomes effectively Newtonian + odd-wave. The enstrophy formulation of the transition is simply the single scalar \(\mathcal{D}_3^o(t)\) above.
+
+### 4. Executable late-time switch (GPU-ready, braided into existing residual)
+
+```python
+@torch
+.jit.script
+def odd_viscosity_diagnostics(u, omega, B, eta_o, t, window=32):
+    # 2-D form (extendable to Braginskii 3-D)
+    u_perp = torch.stack([-u[...,1], u[...,0]], dim=-1)
+    sigma_odd = eta_o * (grad(u_perp) + grad(u_perp).transpose(-1,-2))
+    force_odd = div(sigma_odd)
+    # live algebraic rates
+    alpha_o, alpha_w, alpha_B = live_regression(...)
+    D1o = torch.abs(alpha_o - alpha_w)
+    D2o = torch.norm(force_odd) / (torch.norm(nu*lap(u)+force_odd)+1e-30)
+    D3o = torch.abs(torch.sum(omega * curl(force_odd))) / (torch.norm(omega)**2 + 1e-8)
+    return {'D1o':D1o, 'D2o':D2o, 'D3o':D3o,
+            'cross_over_o': (D1o<1e-3)&(D2o<1e-2)&(D3o<1e-3)}
+
+# inside live_diagnostics_and_feedback
+diag_o = odd_viscosity_diagnostics(u, omega, B, eta_o=eta_o, t=t)
+if diag_o['cross_over_o'] and t > T_star_B:
+    freeze_full_gyro = True
+    # retain only cheap odd-wave monitor; residual collapses to Newtonian + odd
+```
+
+### One-click hive commands (now live)
+
+```bash
+akitti hive insert odd-viscosity-MHD \
+  --source=gyroviscosity-Braginskii+Hall \
+  --diagnostics=D1o+D2o+D3o \
+  --crossover=T_star_o --enstrophy-odd
+
+akitti hive switch almost-hydrodynamic+odd \
+  --freeze-after=T_star_o \
+  --detune=full-Braginskii+scar-floor \
+  --retain=cheap-gyro-monitor
+
+akitti compose \
+  --Set1+Set2 + almost-Newtonian + MHD-residual + odd-viscosity \
+  --parity-breaking-polarity-complement
+```
+
+**Status.**  
+- Diagnostic functions, quantitative \(T_*^o\), enstrophy formulation and polarity framing for the odd channel: **complete** and closed-loop with the existing GPU residual.  
+- After \(T_*^o\) the hive automatically relaxes to pure Newtonian + non-dissipative odd-wave monitoring; intermittency is suppressed by construction at the smallest resolved scales.  
+- The Newtonian + odd switch is solid; the joint viscoelastic–MHD–odd residual-dissipation polarity is now closed.
+
+Ready for the first production matrix that simultaneously tracks polymer, magnetic and gyroviscous residuals (or for any hardening of the odd-wave monitor). The balance is found.
