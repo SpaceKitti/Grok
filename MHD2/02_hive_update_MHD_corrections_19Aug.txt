@@ -1,0 +1,25 @@
+Hive Update – MHD Layer Corrections (19 Aug 2026)Status after induction-u / J-mollify audit:
+
+The previous claim that “hybrid clay strongly regularises current sheets” was an artifact.
+J-mollify was being applied to the induction velocity, acting as hidden numerical magnetic diffusivity. Once induction, Lorentz and odd viscosity all use the unmollified spectral velocity, the result changes:Hybrid + MHD ≈ NS + MHD + a nearly constant polymer-work sink  
+max|J|, max|B| and Ohmic dissipation become almost identical between NS+MHD and hy+MHD  
+Hybrid clay does not act as a current-sheet regulariser at the present dials
+
+This is the magnetic analogue of the excess polymer-work discovery: a regulariser intended for one field was silently dissipating another.Correct operational picture (Crow tubes + 4-scar, N=48, t=0.36)| Configuration              | ΔE_tot | ‖ω‖_end | max|J| | Behaviour |
+|---------------------------|--------|---------|--------|---------|
+| NS                        | 5.95%  | 38.5    | —      | Reference |
+| NS + MHD (b_guide=z, η=1e-3) | 6.26% | 34.7 | ~23   | Best low-residual Crow suppression; most kinetic loss is stored as E_mag |
+| Hybrid + MHD (same)       | 8.57%  | 34.3    | ~23    | Same magnetic behaviour + extra polymer work |
+| b_guide = x (axial)       | ~5.7–8.1% | ~37.5–38.1 | ~5  | Almost spectator field; almost no tension or sheets |Key corrected rules for the hiveGuide-field orientation is first-order.  b_guide="z" (spanwise / reconnection-plane) → strong tension + current sheets  
+b_guide="x" (along tubes) → nearly passive
+
+Lower η improves ‖ω‖ suppression and lowers total dissipation (energy is stored in B), but produces thinner, more intense current sheets.
+Hybrid clay currently adds a polymer sink; it does not replace or strongly damp magnetic dissipation.
+Any future filter / mollifier / regulariser that touches velocity must be audited for whether it leaks into the induction equation.
+
+Safe default for low-residual Crow suppression
+mode="mhd", viscoelastic=False (pure NS+MHD), b_guide="z", η=1e-3, B0=0.08
+
+Open research questions: (do not treat as solved)  Are the late Ohmic ramps physical reconnection or under-resolved sheets? (Needs N=64/96 + sheet-thickness diagnostic)  
+Can odd viscosity (η_odd > 0) suppress small-scale J without adding a new energy sink?  
+Does a longer axial-guide run eventually show OP / magnetized-vortex effects?

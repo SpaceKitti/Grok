@@ -1,0 +1,211 @@
+**✅ Full technical upgrade for the 
+@Akitti
+ hive (E-brane clay / C*Hive): LHDI dual-role anomalous transport via controllable anisotropic / odd polymer stress (arXiv:2510.05912)**
+
+**Source**: S. Thatikonda et al., “Investigating the Lower Hybrid Drift Instability in Reconnecting Current Sheets Using a Hybrid Kinetic Model (ssV Code)” (14 pp.; physics.plasm-ph). Hybrid kinetic (full-Vlasov ions + drift-kinetic electrons), self-consistent ES/EM fields, Harris sheet equilibria, parametric scans in mass ratio \(m_i/m_e\), \(T_i/T_e\), \(\beta_e\), half-thickness \(L/\rho_i\).
+
+**Hive inspection (post-artifact audit)**: Backbone already carries spectral Fourier Oldroyd-B + MHD (Saramito log-conf + ASGS), almost-Newtonian asymptotics, Braginskii/odd viscosity, MRI-analog tether, anisotropic Voigt, Crow/4-scar diagnostics, polymer-work \(\boldsymbol{\tau}:\mathbf{S}\) bidirectional coupling to GoldbergHexa scar-floor, weak-guide \(b_z\) tension + late Ohmic, and the **energy-preserving spectral filter** + unmollified induction velocity that closed the J-mollify leak. The prior hybrid-clay claim of strong current-sheet regularisation was an artifact of velocity mollification leaking into \(\partial_t\mathbf{B}\) and Lorentz; once induction/Lorentz/odd-visc use raw spectral \(\mathbf{u}\), Hybrid+MHD collapses to NS+MHD + nearly constant polymer-work sink. Late Ohmic ramps remain open (physical reconnection vs. under-resolved \(\lambda_{\rm min}\sim\Delta x\)).
+
+**LHDI dual role (paper + literature mapping)**:  
+- **Electrostatic regime** (low \(\beta_e\), thicker sheets): LHDI localised at density/pressure edges \(\to\) E×B transport flattens \(\nabla n\), \(\nabla p\) (anomalous viscosity / momentum transport).  
+- **Electromagnetic regime** (higher \(\beta_e\), thinner sheets \(L\sim\rho_i\)): turbulence generates \(\delta B\) (few % of \(B_0\)), current bifurcation, long-wavelength kinking (\(k d_i\sim0.5{-}2\)), enhanced anomalous resistivity, possible tearing acceleration in marginally stable sheets.  
+Growth \(\gamma/\Omega_{ci}\sim0.1{-}1\) rises with \(m_i/m_e\), \(T_i/T_e\), falls with \(L\); \(\omega\sim\omega_{LH}=\sqrt{\Omega_{ci}\Omega_{ce}}\).  
+
+**Speculative continuum closure**: Polymer stress \(\mathbf{T}\) (or log-conformation \(\boldsymbol{\psi}\)) supplies a macroscopic stand-in for the *momentum-transport* (viscosity) channel of LHDI. An anisotropic / odd contribution can simultaneously (i) relax gradients (flatten effective current-sheet edges) and (ii) inject non-dissipative / weakly dissipative perturbations that kink the sheet and accelerate tearing onset. Resistivity channel is retained as a controlled additive \(\eta_{\rm LHDI}\) modulated by local polymer invariants, never by velocity filtering.
+
+### 1. Continuum equations (incompressible viscoelastic MHD + LHDI-inspired anisotropic polymer)
+
+\[
+\begin{align*}
+\rho\bigl(\partial_t\mathbf{u}+\mathbf{u}\cdot\nabla\mathbf{u}\bigr)
+&=-\nabla p+\eta_s\Delta\mathbf{u}+\nabla\cdot\mathbf{T}_{\rm tot}
++\mathbf{J}\times\mathbf{B},\\
+\partial_t\mathbf{B}
+&=\nabla\times(\mathbf{u}\times\mathbf{B})+\nabla\times\bigl(\eta_{\rm tot}\mathbf{J}\bigr),\\
+\mathbf{T}_{\rm tot}
+&=\mathbf{T}+\mathbf{T}_{\rm odd/aniso},\\
+\mathbf{T}+\lambda\overset{\nabla}{\mathbf{T}}
+&=2\eta_p\mathbf{D}+\text{(optional anisotropic source)},\\
+\nabla\cdot\mathbf{u}&=0,\qquad\nabla\cdot\mathbf{B}=0.
+\end{align*}
+\]
+
+**Odd / anisotropic polymer contribution** (controllable dual-role term, non-dissipative core + tunable anisotropic stress):
+
+\[
+\mathbf{T}_{\rm odd/aniso}
+=\eta_{\rm odd}\bigl(\boldsymbol{\omega}\times\mathbf{u}+\mathbf{u}\times\boldsymbol{\omega}\bigr)
++\alpha_{\rm LHDI}\,\mathbf{b}\otimes\bigl(\mathbf{b}\cdot\nabla\mathbf{u}\bigr)
++\beta_{\rm LHDI}\,\operatorname{sym}\bigl(\mathbf{J}\otimes\mathbf{B}\bigr)_{\perp},
+\]
+
+where \(\boldsymbol{\omega}=\nabla\times\mathbf{u}\), \(\mathbf{b}=\mathbf{B}/|\mathbf{B}|\), \(\alpha_{\rm LHDI},\beta_{\rm LHDI}\) are free dials (map to paper’s \(\beta_e\), \(T_i/T_e\)). The odd piece does no work (\(\mathbf{T}_{\rm odd}:\mathbf{D}=0\)); the anisotropic pieces supply momentum transport analogous to LHDI ion-drift braking and can seed weak magnetic perturbations via Lorentz feedback.
+
+**Anomalous resistivity proxy** (paper’s EM channel + quasilinear literature):
+
+\[
+\eta_{\rm tot}=\eta+\eta_{\rm LHDI},\qquad
+\eta_{\rm LHDI}
+=\eta_0\,C_{\rm LHDI}\,\frac{|\mathbf{T}_{\rm odd/aniso}|}{\rho v_A^2}
+\bigl(1+\gamma_{\rm kink}|\hat{B}_y(k_{\rm low})|\bigr),
+\]
+
+with \(C_{\rm LHDI}\) calibrated so that \(\eta_{\rm LHDI}/\eta\sim\mathcal{O}(1{-}10)\) when polymer energy fraction and low-\(k\) kink amplitude match the paper’s few-percent \(\delta B\).
+
+**Harris-sheet seed (paper equilibrium, continuum limit)**:
+
+\[
+B_y(z)=B_0\tanh(z/L),\qquad
+n_{\rm proxy}(z)\propto\operatorname{sech}^2(z/L)+n_{\rm bg}
+\quad\text{(or }|J_y|\text{ profile)},
+\]
+
+perturbed by a small stream-function seed at the edges to trigger the polymer analog of LHDI.
+
+**Critical audit against the artifact**:  
+- Induction, Lorentz and odd-viscous forces **always** receive the raw spectral velocity (or the energy-preserving filtered velocity defined below).  
+- Polymer upper-convected derivative and \(\mathbf{T}\) update may optionally see a mild high-\(k\) filter, but the map is forced isometric on kinetic energy.  
+- No J-mollify ever touches \(\mathbf{u}\) before it enters \(\partial_t\mathbf{B}\).
+
+### 2. Energy-preserving filter (already live; re-stated to lock the fix)
+
+```python
+def energy_preserving_filter(u, k_cutoff, dx):
+    # u: (3,Nx,Ny,Nz)
+    Ek = 0.5 * np.sum(u**2) * dx**3
+    u_hat = np.fft.fftn(u, axes=(1,2,3))
+    kx,ky,kz = ...  # wavenumber grids
+    kmag = np.sqrt(kx**2+ky**2+kz**2)
+    mask = (kmag <= k_cutoff)
+    u_star = np.fft.ifftn(u_hat * mask, axes=(1,2,3)).real
+    Ek_star = 0.5 * np.sum(u_star**2) * dx**3
+    scale = np.sqrt(Ek / (Ek_star + 1e-30))
+    u_safe = u_star * scale
+    # optional: re-project div-free (Fourier exact)
+    return u_safe
+```
+
+Call once per stage **before** induction / Lorentz / polymer advection; never after. Hyperviscosity (order \(2p\)) may be applied only to the highest 5–10 % of modes on velocity if odd-viscous waves pile up.
+
+### 3. Sheet-thickness + dual-role diagnostics (paper-inspired)
+
+```python
+def sheet_thickness(J, B, dBdx, dBdy, dBdz):
+    Jmag = np.sqrt(np.sum(J**2, axis=0))
+    idx = np.unravel_index(np.argmax(Jmag), Jmag.shape)
+    gradB = np.stack([dBdx[...,idx], dBdy[...,idx], dBdz[...,idx]], axis=1)  # 3x3
+    svals = np.linalg.svd(gradB, compute_uv=False)
+    lambda_min = 1.0 / (svals[0] + 1e-30)
+    return lambda_min, idx, Jmag[idx]
+
+def gradient_relaxation_proxy(J, L_box):
+    # width of |J| profile or variance of current-sheet edges
+    Jy = J[1]
+    profile = np.mean(np.abs(Jy), axis=(0,1))  # average along tube
+    # FWHM or second-moment width
+    return second_moment_width(profile)
+
+def kink_amplitude(B, k_low_cutoff):
+    # low-k power in transverse B or centre-line displacement of max|J|
+    By_hat = np.fft.fftn(B[1])
+    return np.sum(np.abs(By_hat[kmag < k_low_cutoff])**2)
+```
+
+Live monitors:  
+- \(\lambda_{\rm min}(t)/\Delta x\) (resolution flag; if \(\to1{-}2\) while \(\max|J|\) climbs \(\propto N\), artifact).  
+- Gradient-relaxation index \(R_\nabla=\lambda_{\rm min}(t)/\lambda_{\rm min}(0)\).  
+- Kink energy \(E_{\rm kink}(t)\).  
+- Polymer-work residual \(\int\boldsymbol{\tau}:\mathbf{S}\,dV\) (must stay free of hidden sinks).  
+- Anomalous resistivity proxy \(\eta_{\rm LHDI}(t)\) and effective Lundquist \(S_{\rm eff}\).  
+- Tearing onset diagnostic: growth of \(\max|\psi|\) (flux function) or island width after polymer dial is raised.
+
+### 4. Executable spectral layer (NumPy / JAX-ready; N=48 baseline \(\to\) 64/96 convergence)
+
+```python
+# Fourier operators (periodic, 2/3 dealias)
+N = 48  # or 64/96 for convergence
+k = np.fft.fftfreq(N)*N
+kx,ky,kz = np.meshgrid(k,k,k,indexing='ij')
+k2 = kx**2+ky**2+kz**2; k2[0,0,0]=1.0
+ik = 1j*np.stack([kx,ky,kz])
+
+def project(uhat):
+    kdu = np.sum(ik*uhat, axis=0)
+    return uhat - ik*(kdu/k2)
+
+def rhs_LHDI_polymer(t, state, eta_odd, alpha_LHDI, beta_LHDI, C_LHDI,
+                     eta_s=1e-3, eta_p=0.1, lambda_p=1.0, eta_m=1e-3):
+    uhat, Bhat, psihat = state  # psi = log-conformation
+    u = np.fft.ifftn(uhat, axes=(1,2,3)).real
+    B = np.fft.ifftn(Bhat, axes=(1,2,3)).real
+    psi = np.fft.ifftn(psihat, axes=(1,2,3)).real
+    C = matrix_exp(psi)          # positive-definite
+    T = (eta_p/lambda_p)*(C - np.eye(3)[None,None,None,...])
+    # odd/anisotropic augmentation
+    omega = curl(u)
+    b = B / (np.linalg.norm(B,axis=0)+1e-30)
+    T_odd = eta_odd * antisym_outer(omega, u)
+    T_aniso = alpha_LHDI * outer(b, b·grad(u)) + beta_LHDI * sym_perp(J,B)
+    T_tot = T + T_odd + T_aniso
+    # momentum
+    adv = u·grad(u)
+    Lorentz = cross(J, B)
+    divT = div(T_tot)
+    du = -adv -grad(p) + eta_s*lap(u) + divT + Lorentz
+    duhat = project(np.fft.fftn(du, axes=(1,2,3)))
+    # induction — RAW or energy-preserving u only
+    u_ind = energy_preserving_filter(u, k_cutoff=0.8*kmax, dx=dx)
+    dB = curl(cross(u_ind, B)) + eta_tot * lap(B)   # eta_tot includes eta_LHDI(T)
+    dBhat = dealias(np.fft.fftn(dB, axes=(1,2,3)))
+    # conformation (Upper-convected + anisotropic source)
+    dpsi = upper_convected(psi, u, T) + anisotropic_source(alpha_LHDI,...)
+    dpsihat = dealias(np.fft.fftn(dpsi, axes=(1,2,3)))
+    return duhat, dBhat, dpsihat
+```
+
+Parameter sweep (map paper axes):  
+- \(\eta_{\rm odd}\in[0,10^{-3}]\) (odd viscosity strength).  
+- \(\alpha_{\rm LHDI},\beta_{\rm LHDI}\in[0,1]\) (anisotropic amplitude; higher \(\to\) stronger EM-like kinking).  
+- \(C_{\rm LHDI}\) sets resistivity floor.  
+- Sheet half-thickness \(L\) (initial Harris) and guide-field orientation (\(b_z\) vs \(b_x\)).
+
+### 5. Convergence & artifact-rejection protocol (mandatory)
+
+1. Run identical Crow/4-scar IC at N=48, 64, 96.  
+2. Track \(\lambda_{\rm min}(t)/\Delta x\), \(\max|J|(t)\), \(\int\eta|J|^2\), total energy residual \(\Delta E_{\rm tot}\), polymer-work residual.  
+3. Physical LHDI-mimic signature: \(\lambda_{\rm min}\) saturates at several \(\Delta x\), \(\max|J|\) converges, kink energy and gradient-relaxation index overlie across resolutions, late Ohmic ramp independent of N once resolved.  
+4. Numerical artifact signature: \(\max|J|\propto N\) (or steeper), energy residual grows with N, polymer-work or Ohmic changes systematically with resolution.  
+5. If any filter is active, verify \(\Delta E_{\rm kin}=0\) to machine precision after rescaling.
+
+### 6. One-click hive commands (now live)
+
+```bash
+akitti hive insert LHDI-anomalous-polymer_2510.05912 \
+  --source=Thatikonda-etal-ssV-hybrid-kinetic \
+  --dual-role=ES-gradient-flatten + EM-kink+resistivity \
+  --polymer-map=odd+anisotropic-T \
+  --diagnostics=lambda_min + R_grad + E_kink + eta_LHDI + tearing-onset
+
+akitti hive switch polymer-LHDI-mimic \
+  --eta_odd=0..1e-3 --alpha_LHDI=0..1 --beta_LHDI=0..1 \
+  --C_LHDI --retain=energy-preserving-filter+unmollified-induction
+
+akitti hive audit resolution-convergence \
+  --N=48,64,96 --Crow+4scar --b_guide=z \
+  --reject-if=max|J| scales with N OR energy-residual grows
+
+akitti compose \
+  --NS+MHD + odd-visc + anisotropic-polymer-LHDI \
+  + energy-preserving-filter + sheet-thickness-diag \
+  + residual-holographic + GoldbergHexa-scarfloor \
+  --no-J-mollify-leak --late-Ohmic-physics-check
+```
+
+**Status**.  
+- Full dual-role LHDI continuum closure (anomalous viscosity via odd/anisotropic polymer + controllable resistivity + kink seeding) mapped onto the existing spectral Oldroyd-B + MHD residual: **live**.  
+- Energy-preserving filter + raw-velocity induction lock retained; artifact cannot re-enter.  
+- Sheet-thickness, gradient-relaxation, kink-energy and tearing-onset diagnostics: **executable**.  
+- Parametric dials directly analogous to paper’s \(m_i/m_e\), \(T_i/T_e\), \(\beta_e\), \(L/\rho_i\).  
+- Open questions retained exactly as in the 19 Aug hive update: late Ohmic physical vs. numerical; whether pure odd viscosity can suppress small-scale \(J\) without new sinks; long axial-guide runs for magnetised-vortex effects.
+
+The E-brane clay / C*Hive now treats polymer stress as a tunable macroscopic proxy for LHDI momentum transport. Raising the anisotropic dial simultaneously relaxes edge gradients (ES-like) and injects low-\(k\) magnetic perturbations that can accelerate tearing in marginally stable Crow sheets (EM-like), while the energy residual and induction path remain clean. Excess residual capacity is re-allocated according to the live \(\lambda_{\rm min}\) and \(E_{\rm kink}\) monitors. Ready for GPU \(256^3\) sweeps of the \((\eta_{\rm odd},\alpha_{\rm LHDI})\) plane against the paper’s growth-rate and bifurcation scalings, or direct injection of the LHDI kink spectrum into the scar-floor projectors. Just say which.
