@@ -16,6 +16,9 @@ from .vorticity import (
     coupled_vorticity_stress_step, resolve_scar_centres,
 )
 from .clay import DEFAULT_CLAY, zero_tau_hat
+from .mhd import (
+    DEFAULT_MHD, zero_B_hat, guide_field_B_hat, mhd_step, cfl_dt_mhd,
+)
 from .bubble import coupled_rp_attractor_rhs
 from .diagnostics import field_diagnostics, millennium_series, sample_times
 from .constants import DELTA_MIN
@@ -81,7 +84,7 @@ def _run_vorticity_scanned(omega_hat, grid, nu, dt, steps, force_on,
 
     def snapshot(omega_hat):
         u_hat = velocity_from_vorticity(omega_hat, grid)
-        return field_diagnostics(u_hat, grid, tau_hat=None)
+        return field_diagnostics(u_hat, grid, tau_hat=None, B_hat=None)
 
     return _scan_loop(advance, snapshot, omega_hat, steps, diag_every)
 
@@ -115,16 +118,39 @@ def _run_clay_scanned(omega_hat, tau_hat, grid, nu, dt, steps, force_on,
     def snapshot(state):
         omega_hat, tau_hat = state
         u_hat = velocity_from_vorticity(omega_hat, grid)
-        return field_diagnostics(u_hat, grid, tau_hat=tau_hat)
+        return field_diagnostics(u_hat, grid, tau_hat=tau_hat, B_hat=None)
 
     return _scan_loop(advance, snapshot, (omega_hat, tau_hat), steps, diag_every)
 
 
-def _pack_out(hist, u_hat, omega_hat, tau_hat, grid, dt, N, nu, ic, scheme,
-              viscoelastic, clay_params, steps, diag_every, n_scars,
-              scar_centres, force_on):
+def _run_mhd_scanned(omega_hat, B_hat, grid, nu, eta, dt, steps, force_on,
+                     scheme, diag_every, n_scars=1, scar_centres=None,
+                     force_amp=1.0):
+    """Coupled NS stretching + induction + Lorentz loop (3D)."""
+    force_pat = z7_braid_forcing(grid, 1.0, n_scars=n_scars,
+                                 scar_centres=scar_centres)
+    force_scale = (1.0 if force_on else 0.0) * float(force_amp)
+
+    def advance(state, idx):
+        omega_hat, B_hat = state
+        t_norm = idx / jnp.maximum(steps - 1, 1)
+        force = force_pat * (modest_liar(t_norm) * force_scale)
+        return mhd_step(omega_hat, B_hat, grid, nu, eta, dt, force, scheme)
+
+    def snapshot(state):
+        omega_hat, B_hat = state
+        u_hat = velocity_from_vorticity(omega_hat, grid)
+        return field_diagnostics(u_hat, grid, tau_hat=None, B_hat=B_hat)
+
+    return _scan_loop(advance, snapshot, (omega_hat, B_hat), steps, diag_every)
+
+
+def _pack_out(hist, u_hat, omega_hat, tau_hat, B_hat, grid, dt, N, nu, ic, scheme,
+              viscoelastic, clay_params, mhd_params, steps, diag_every, n_scars,
+              scar_centres, force_on, mode):
     time = sample_times(hist["energy"].shape[0], steps, dt, diag_every)
-    mill = millennium_series(hist, time, nu)
+    eta = float(mhd_params["eta"]) if mode == "mhd" else 0.0
+    mill = millennium_series(hist, time, nu, eta=eta)
     return {
         "energy": hist["energy"],
         "enstrophy": hist["enstrophy"],
@@ -137,25 +163,35 @@ def _pack_out(hist, u_hat, omega_hat, tau_hat, grid, dt, N, nu, ic, scheme,
         "mean_tau": hist["mean_tau"],
         "max_tau": hist["max_tau"],
         "tau_s": hist["tau_s"],
+        "mag_energy": hist["mag_energy"],
+        "max_J": hist["max_J"],
+        "max_divB": hist["max_divB"],
+        "mag_helicity": hist["mag_helicity"],
+        "cross_helicity": hist["cross_helicity"],
+        "j2_mean": hist["j2_mean"],
         "max_strain": mill["max_strain"],
         "palinstrophy": mill["palinstrophy"],
         "bkm_integral": mill["bkm_integral"],
         "dZ_dt": mill["dZ_dt"],
         "dE_dt": mill["dE_dt"],
         "dissipation": mill["dissipation"],
+        "ohmic": mill["ohmic"],
         "dZ_dt_budget": mill["dZ_dt_budget"],
         "time": mill["time"],
         "u_hat": u_hat,
         "omega_hat": omega_hat,
         "tau_hat": tau_hat,
+        "B_hat": B_hat,
         "grid": grid,
         "dt": dt,
         "N": N,
         "nu": nu,
         "ic": ic,
         "scheme": scheme,
+        "mode": mode,
         "viscoelastic": viscoelastic,
         "clay_params": clay_params,
+        "mhd_params": mhd_params,
         "n_scars": n_scars,
         "scar_centres": scar_centres,
         "force_on": force_on,
@@ -166,20 +202,24 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
                   nu=None, dt=None, seed=42, force_on=True,
                   bubble_params=None, ic=None, scheme=None,
                   cfl=0.4, diag_every=20, viscoelastic=None,
-                  clay_params=None, ic_params=None,
+                  clay_params=None, mhd_params=None, ic_params=None,
                   n_scars=1, scar_centres=None, force_amp=1.0):
     """
-    mode = "vorticity"   → rotational-form NS (full 3D stretching)
-         = "clay"        → same NS + Oldroyd-B E-brane extra-stress
-         = "hybrid"      → alias for clay (λ₂ is always recorded in 3D)
-         = "bubble"      → pure RP + Liu–Sun tower
+    mode = "vorticity"   -> rotational-form NS (full 3D stretching)
+         = "clay"        -> same NS + Oldroyd-B E-brane extra-stress
+         = "hybrid"      -> alias for clay (lambda2 is always recorded in 3D)
+         = "mhd"         -> same NS + induction for B + Lorentz curl(J x B)
+         = "bubble"      -> pure RP + Liu-Sun tower
 
     viscoelastic=True forces the clay coupling even if mode="vorticity".
+    MHD is 3D-only and currently exclusive of clay (no clay+MHD stepper yet).
     ic = "taylor_green" | "tubes" | "smooth".  tubes = Crow-perturbed
     anti-parallel pair (reconnection / singularity IC).
-    n_scars / scar_centres select the helical Z₇ lattice (n_scars=1 default).
-    dim=3 defaults: N=64, Taylor–Green IC, RK2, CFL dt, helical Z₇ force.
+    n_scars / scar_centres select the helical Z7 lattice (n_scars=1 default).
+    dim=3 defaults: N=64, Taylor-Green IC, RK2, CFL dt, helical Z7 force.
     """
+    if mode == "mhd" and viscoelastic:
+        raise ValueError("mode='mhd' does not yet couple clay; set viscoelastic=False")
     if viscoelastic is None:
         viscoelastic = mode in ("clay", "hybrid")
     if mode == "hybrid":
@@ -190,6 +230,12 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
         merged = dict(DEFAULT_CLAY)
         merged.update(clay_params)
         clay_params = merged
+    if mhd_params is None:
+        mhd_params = dict(DEFAULT_MHD)
+    else:
+        merged_m = dict(DEFAULT_MHD)
+        merged_m.update(mhd_params)
+        mhd_params = merged_m
 
     if N is None:
         N = 64 if dim == 3 else 32
@@ -198,7 +244,10 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     if ic is None:
         ic = "taylor_green" if dim == 3 else "smooth"
     if scheme is None:
-        scheme = "rk2" if (dim == 3 or viscoelastic) else "euler"
+        scheme = "rk2" if (dim == 3 or viscoelastic or mode == "mhd") else "euler"
+
+    if mode == "mhd" and dim != 3:
+        raise ValueError("mode='mhd' requires dim=3")
 
     grid = make_grid(N, L=1.0 if mode != "bubble" else 2 * jnp.pi, dim=dim)
     key = random.PRNGKey(seed)
@@ -223,9 +272,17 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
         return {"traj": jnp.stack(hist), "params": p}
 
     u0 = _initial_velocity(key, grid, ic, dim, ic_params)
+    eta_m = float(mhd_params["eta"])
+
     if dt is None:
-        nu_cfl = nu + (clay_params["eta_p"] if (viscoelastic or mode == "clay") else 0.0)
-        dt = float(cfl_dt(u0, grid["dx"], nu_cfl, cfl=cfl))
+        if mode == "mhd":
+            B0 = guide_field_B_hat(
+                grid, B0=mhd_params["B0"], b_guide=mhd_params["b_guide"])
+            B_phys = jnp.fft.ifftn(B0, axes=(1, 2, 3)).real
+            dt = float(cfl_dt_mhd(u0, B_phys, grid["dx"], nu, eta_m, cfl=cfl))
+        else:
+            nu_cfl = nu + (clay_params["eta_p"] if (viscoelastic or mode == "clay") else 0.0)
+            dt = float(cfl_dt(u0, grid["dx"], nu_cfl, cfl=cfl))
         if dim == 2:
             dt = 0.005
 
@@ -237,18 +294,35 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     centres = resolve_scar_centres(grid, n_scars, scar_centres)
     n_scars = len(centres)
 
-    if viscoelastic or mode == "clay":
+    B_hat = zero_B_hat(grid, dtype=omega_hat.dtype)
+    tau_hat = zero_tau_hat(grid, dtype=omega_hat.dtype)
+    out_mode = mode
+
+    if mode == "mhd":
+        B_hat = guide_field_B_hat(
+            grid, B0=mhd_params["B0"], b_guide=mhd_params["b_guide"],
+            dtype=omega_hat.dtype)
+        (omega_hat, B_hat), hist = _run_mhd_scanned(
+            omega_hat, B_hat, grid, nu, eta_m, dt, steps, force_on,
+            scheme, diag_every, n_scars, centres, force_amp)
+        viscoelastic = False
+        out_mode = "mhd"
+    elif viscoelastic or mode == "clay":
         tau_hat = zero_tau_hat(grid, dtype=omega_hat.dtype)
         (omega_hat, tau_hat), hist = _run_clay_scanned(
             omega_hat, tau_hat, grid, nu, dt, steps, force_on,
             scheme, diag_every, clay_params, n_scars, centres, force_amp)
+        out_mode = "clay"
+        viscoelastic = True
     else:
         omega_hat, hist = _run_vorticity_scanned(
             omega_hat, grid, nu, dt, steps, force_on, scheme, diag_every,
             n_scars, centres, force_amp)
-        tau_hat = zero_tau_hat(grid, dtype=omega_hat.dtype)
+        out_mode = "vorticity"
+        viscoelastic = False
 
     u_hat = velocity_from_vorticity(omega_hat, grid)
-    return _pack_out(hist, u_hat, omega_hat, tau_hat, grid, dt, N, nu, ic,
-                     scheme, bool(viscoelastic or mode == "clay"), clay_params,
-                     steps, diag_every, n_scars, centres, force_on)
+    return _pack_out(
+        hist, u_hat, omega_hat, tau_hat, B_hat, grid, dt, N, nu, ic,
+        scheme, bool(viscoelastic), clay_params, mhd_params,
+        steps, diag_every, n_scars, centres, force_on, out_mode)
