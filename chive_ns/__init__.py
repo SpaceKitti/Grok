@@ -19,9 +19,13 @@ from .clay import (
     nonlinear_trilinear, gum_damping, oldroyd_b_step, oldroyd_b_rhs,
     stress_vorticity_force, zero_tau_hat, DEFAULT_CLAY,
 )
+from .mhd import (
+    DEFAULT_MHD, zero_B_hat, guide_field_B_hat, lorentz_vorticity_force,
+    induction_rhs, mhd_rhs, mhd_step, cfl_dt_mhd,
+)
 from .bubble import rayleigh_plesset, attractor_tower, coupled_rp_attractor_rhs
 from .diagnostics import (
     lambda2_criterion, lambda2_criterion_3d, field_diagnostics, stress_diagnostics,
-    millennium_series, max_strain_rate, strain_tensor,
+    magnetic_diagnostics, millennium_series, max_strain_rate, strain_tensor,
 )
 from .driver import run_framework

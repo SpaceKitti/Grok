@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chive_ns"
+version = "0.1.0"
+description = "JAX spectral Navier–Stokes + Oldroyd-B clay + incompressible MHD"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Akitti / SpaceKitti"}]
+dependencies = [
+    "jax",
+    "jaxlib",
+    "numpy",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+cpu = ["jax[cpu]"]
+
+[tool.setuptools.packages.find]
+include = ["chive_ns*"]
+exclude = ["examples*", "MHD*", "MHD2*", "dissipation*"]
