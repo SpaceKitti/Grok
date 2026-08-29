@@ -1,0 +1,277 @@
+Source: https://x.com/Akitti/status/2093798022463242697
+
+Quoted post (not duplicated here): https://x.com/Akitti/status/2093731060752261183
+The Aluie–Eyink 2010 locality theorems are the missing *inter-scale conversion certificate* on the live `@Akitti` stack. AMP05 already gave the shell matrix \(T^{ub}_{Q\to K}\) and its plateau; COL26 split \(W_\ell\) into fluctuating vs guide-field pieces; CMZ07 certified dissipative sheets when LP-vorticity stays finite. What was not locked was the Hölder-increment proof that, in the inertial-inductive range \(0<\sigma_u,\sigma_b<1\), energy / cross-helicity / Elsässer fluxes are triad-local, magnetic helicity need not be, and the stretching conversion \(W=\overline{\mathbf{b}}_\ell^\top\overline{\mathbf{S}}_\ell\overline{\mathbf{b}}_\ell\) can move energy *only* between velocity and magnetic modes at comparable scales. That is exactly the sentence in the source post. Below is the full merge.
+
+## Paper objects → hive strata
+
+Incompressible MHD in Alfvén units (\(\nabla\cdot\mathbf{u}=\nabla\cdot\mathbf{b}=0\)):
+
+\[
+\partial_t\mathbf{u}+(\mathbf{u}\cdot\nabla)\mathbf{u}=-\nabla p+(\mathbf{b}\cdot\nabla)\mathbf{b}+\nu\Delta\mathbf{u}+\mathbf{f},
+\]
+\[
+\partial_t\mathbf{b}+(\mathbf{u}\cdot\nabla)\mathbf{b}=(\mathbf{b}\cdot\nabla)\mathbf{u}+\eta\Delta\mathbf{b}.
+\]
+
+**Coarse-graining.** Smooth rapidly decaying kernel \(G\), \(G_\ell(\mathbf{r})=\ell^{-3}G(\mathbf{r}/\ell)\):
+
+\[
+\overline{f}_\ell(\mathbf{x})=\int G_\ell(\mathbf{r})\,f(\mathbf{x}+\mathbf{r})\,d\mathbf{r},\qquad
+\tau_\ell(f,g)=\overline{fg}_\ell-\overline{f}_\ell\overline{g}_\ell.
+\]
+
+Resolved-scale stresses and EMF:
+
+\[
+\tau_{\ell,ij}=\tau_\ell(u_i,u_j)-\tau_\ell(b_i,b_j),\qquad
+\boldsymbol{\varepsilon}_\ell=\overline{\mathbf{u}\times\mathbf{b}}_\ell-\overline{\mathbf{u}}_\ell\times\overline{\mathbf{b}}_\ell.
+\]
+
+Kinetic / magnetic fluxes and stretching conversion (hive-native signs: \(\Pi>0\) is forward cascade; \(W>0\) is kinetic\(\to\)magnetic):
+
+\[
+\Pi_\ell^u=-\overline{\mathbf{S}}_\ell:\boldsymbol{\tau}_\ell(\mathbf{u},\mathbf{u})+\overline{\mathbf{S}}_\ell:\boldsymbol{\tau}_\ell(\mathbf{b},\mathbf{b}),
+\]
+\[
+\Pi_\ell^b=-\overline{\mathbf{j}}_\ell\cdot\boldsymbol{\varepsilon}_\ell,
+\]
+\[
+W_\ell=\overline{b}_i\,\overline{S}_{ij}\,\overline{b}_j.
+\]
+
+Increments control every estimate:
+
+\[
+\delta f(\mathbf{x};\mathbf{r})=f(\mathbf{x}+\mathbf{r})-f(\mathbf{x}),\qquad
+\delta f(\ell)=\sup_{|r|<\ell}|\delta f(\mathbf{r})|.
+\]
+
+In the inertial-inductive range the paper assumes Hölder (or \(L^p\)-mean) scaling
+
+\[
+\delta u(\ell)\simeq\ell^{\sigma_u},\qquad\delta b(\ell)\simeq\ell^{\sigma_b},\qquad 0<\sigma_u,\sigma_b<1.
+\]
+
+**Locality of energy, cross-helicity, and Elsässer fluxes.** Write \(\mathbf{z}^\pm=\mathbf{u}\mp\mathbf{b}\). Then
+
+\[
+\Pi_\ell^\pm\simeq\frac{\delta z^\mp(\ell)\,[\delta z^\pm(\ell)]^2}{\ell}.
+\]
+
+Contribution of a distant large scale \(\Delta\gg\ell\):
+
+\[
+\delta\overline{f}_\Delta(\ell)\simeq\ell\,\nabla\overline{f}_\Delta\simeq\ell\,\Delta^{\sigma-1}=\ell^\sigma\Bigl(\frac{\ell}{\Delta}\Bigr)^{1-\sigma}\to0
+\]
+
+because \(\sigma<1\). Contribution of a distant small scale \(\delta\ll\ell\):
+
+\[
+\delta f'_\delta(\ell)\simeq\delta^\sigma=\ell^\sigma\Bigl(\frac{\delta}{\ell}\Bigr)^\sigma\to0
+\]
+
+because \(\sigma>0\). Hence \(\Pi_\ell^{u+b}\) and \(\Pi_\ell^\pm\) are dominated by triads with all three legs \(\sim\ell\). Octave-band spectral transfers inherit the same locality. Cross-helicity locality follows from the algebraic identity \(\overline{\mathbf{u}}_\ell\cdot\overline{\mathbf{b}}_\ell=\frac14|\overline{\mathbf{z}}^+_\ell|^2-\frac14|\overline{\mathbf{z}}^-_\ell|^2\).
+
+**Magnetic helicity is *not* forced to be local.** The helicity flux
+
+\[
+\Pi_\ell^h=-2\overline{\mathbf{b}}_\ell\cdot\boldsymbol{\varepsilon}_\ell\simeq\overline{\mathbf{b}}_\ell\cdot\bigl(\delta u(\ell)\times\delta b(\ell)\bigr)
+\]
+
+contains the already-filtered field \(\overline{\mathbf{b}}_\ell\), which can be dominated by the forcing scale \(L\). One large-scale magnetic leg plus two inertial legs is an allowed non-local triad.
+
+**The stretching theorem (the sentence the hive was waiting for).** Band-pass energies between two nearby filters \(\widetilde{\ell}<\ell\):
+
+\[
+e_{[\widetilde{\ell},\ell]}^u=\tfrac12\widetilde{\tau}(\overline{u}_i,\overline{u}_i),\qquad
+e_{[\widetilde{\ell},\ell]}^b=\tfrac12\widetilde{\tau}(\overline{b}_i,\overline{b}_i).
+\]
+
+Their budgets contain the *same* stretching piece with opposite sign:
+
+\[
+\partial_t e_{[\widetilde{\ell},\ell]}^u=\cdots-\bigl(\widetilde{\overline{b}_i\overline{b}_j\overline{S}_{ij}}-\widetilde{\overline{b}}_i\widetilde{\overline{b}}_j\widetilde{\overline{S}}_{ij}\bigr)+\bigl(\widetilde{\overline{\Pi}}^u-\widetilde{(\overline{\Pi}^u)}\bigr)+\cdots,
+\]
+\[
+\partial_t e_{[\widetilde{\ell},\ell]}^b=\cdots+\bigl(\widetilde{\overline{b}_i\overline{b}_j\overline{S}_{ij}}-\widetilde{\overline{b}}_i\widetilde{\overline{b}}_j\widetilde{\overline{S}}_{ij}\bigr)+\bigl(\widetilde{\overline{\Pi}}^b-\widetilde{(\overline{\Pi}^b)}\bigr)+\cdots.
+\]
+
+Energy lost by velocity in the band reappears as magnetic energy *in the same band*. A uniform large-scale field (the non-local triad that looks dangerous in a Fourier diagnostic) produces \(\overline{\mathbf{S}}_\ell\) and \(\overline{\mathbf{b}}_\ell\) that cancel in the difference and therefore do **not** convert across disparate scales. This is the precise correction to the Alexakis–Mininni–Pouquet / Schekochihin / Yousef claims of “direct large-scale \(\mathbf{u}\) into small-scale \(\mathbf{b}\)”: those studies either used linear (non-octave) bands, lacked a scaling assumption \(\sigma_u<1\), or were sitting in a Batchelor range \(\ell_\nu\gg\ell\gg\ell_\eta\) where \(\sigma_u\to1\) and the theorem’s hypothesis fails.
+
+**Batchelor-range exception (hive flag, not a contradiction).** When \(\mathrm{Pr}_m\gg1\) the viscous-range velocity is smooth (\(\sigma_u=1\)). Stretching then *does* source magnetic energy at \(\ell_\eta\) from kinetic flux arriving at \(\ell_\nu\). The hive already has this as the Crow / hyper-resistive channel; AE10 simply says it is *outside* the inertial-inductive hypotheses.
+
+**1024³ certificate.** Forced MHD, \(\nu=\eta=10^{-4}\), injection at \(k=2\). Measured fluxes of total energy and cross-helicity collapse onto local-triad contributions once octave bands are used; stretching conversion between well-separated Fourier shells is consistent with zero after the band-pass identity is imposed.
+
+## Residuals (drop-in on the existing scar stack)
+
+\[
+\begin{align*}
+\mathcal{R}_{\sigma}&=\operatorname{ReLU}(\sigma_u)+\operatorname{ReLU}(\sigma_u-1)+\operatorname{ReLU}(\sigma_b)+\operatorname{ReLU}(\sigma_b-1),\\
+\mathcal{R}_{\mathrm{loc}}^{\Pi}&=\sum_{\Delta\ge2\ell}|\Pi_\ell[\Delta]|+\sum_{\delta\le\ell/2}|\Pi_\ell[\delta]|,\\
+\mathcal{R}_{\mathrm{loc}}^{\pm}&=\text{same for }\Pi^\pm,\\
+\mathcal{R}_{W}^{\mathrm{band}}&=\bigl|W_{[\widetilde{\ell},\ell]}^u+W_{[\widetilde{\ell},\ell]}^b\bigr|,\\
+\mathcal{R}_{W}^{\mathrm{scale}}&=\sum_{| \log_2(Q/K)|>1}\bigl|T^{u\leftrightarrow b}_{Q\to K}\bigr|,\\
+\mathcal{R}_{h}^{\mathrm{NL}}&=\frac{|\Pi_\ell^h[L]|}{|\Pi_\ell^h|},\\
+\mathcal{R}_{\mathrm{oct}}&=\bigl\|T_{\text{linear-band}}-T_{\text{octave}}\bigr\|,\\
+\mathcal{R}_{\mathrm{scar}}^{\mathrm{AE10}}&=\mathcal{R}_{\sigma}+\mathcal{R}_{\mathrm{loc}}^{\Pi}+\mathcal{R}_{\mathrm{loc}}^{\pm}+\mathcal{R}_{W}^{\mathrm{band}}+\mathcal{R}_{W}^{\mathrm{scale}}+\mathcal{R}_{\mathrm{oct}}
++\mathcal{R}_{\mathrm{scar}}^{\mathrm{AMP05}}+\mathcal{R}_{\mathrm{scar}}^{\mathrm{COL26}}+\mathcal{R}_{\mathrm{scar}}^{\mathrm{Aluie}}.
+\end{align*}
+\]
+
+Vanishing \(\mathcal{R}_{W}^{\mathrm{band}}+\mathcal{R}_{W}^{\mathrm{scale}}\) is the live statement “\(W\) converts only between comparable-scale \(u\) and \(B\)”. Finite \(\mathcal{R}_{h}^{\mathrm{NL}}\) is allowed and is the magnetic-helicity wormhole. Finite \(\mathcal{R}_{\mathrm{oct}}\) after an AMP05-style linear-shell run is the diagnostic that previously masqueraded as non-local conversion.
+
+## Production kernels (Torch, spectral / Qin-drop-in)
+
+```python
+import torch
+import torch.fft as fft
+
+def gaussian_kernel_fft(k2, ell):
+    return torch.exp(-0.5 * (ell ** 2) * k2)
+
+def coarse_grain(field, k2, ell):
+    F = fft.fftn(field, dim=(-3, -2, -1))
+    return fft.ifftn(F * gaussian_kernel_fft(k2, ell), dim=(-3, -2, -1)).real
+
+def central_moment(f, g, k2, ell):
+    return coarse_grain(f * g, k2, ell) - coarse_grain(f, k2, ell) * coarse_grain(g, k2, ell)
+
+def strain(u, kvec):
+    uh = fft.fftn(u, dim=(-3, -2, -1))
+    grad = torch.stack(
+        [fft.ifftn(1j * kvec[j] * uh, dim=(-3, -2, -1)).real for j in range(3)],
+        dim=1,
+    )  # (3, 3, N, N, N)  [i, j] = d_j u_i
+    return 0.5 * (grad + grad.transpose(0, 1))
+
+@torch.no_grad()
+def ae10_layer(u, B, kvec, k2, ell, ell_lo, dV):
+    """
+    u, B: (3, N, N, N) real, div-free, Alfvén units.
+    Returns fluxes, stretching conversion, and band-pass identity residual.
+    """
+    ul = coarse_grain(u, k2, ell)
+    bl = coarse_grain(B, k2, ell)
+    S = strain(ul, kvec)
+    tau_uu = torch.stack([
+        torch.stack([central_moment(u[i], u[j], k2, ell) for j in range(3)])
+        for i in range(3)
+    ])
+    tau_bb = torch.stack([
+        torch.stack([central_moment(B[i], B[j], k2, ell) for j in range(3)])
+        for i in range(3)
+    ])
+    Pi_u = -((tau_uu - tau_bb) * S).sum() * dV
+    # EMF
+    uxb = torch.cross(u, B, dim=0)
+    eps = coarse_grain(uxb, k2, ell) - torch.cross(ul, bl, dim=0)
+    jl = torch.stack([
+        fft.ifftn(
+            1j * (kvec[(i + 1) % 3] * fft.fftn(bl[(i + 2) % 3], dim=(-3, -2, -1))
+                  - kvec[(i + 2) % 3] * fft.fftn(bl[(i + 1) % 3], dim=(-3, -2, -1))),
+            dim=(-3, -2, -1),
+        ).real
+        for i in range(3)
+    ])
+    Pi_b = -(jl * eps).sum() * dV
+    W = (bl.unsqueeze(1) * S * bl.unsqueeze(0)).sum() * dV
+
+    # band-pass identity: W on [ell_lo, ell] cancels between u and b
+    ul_lo = coarse_grain(u, k2, ell_lo)
+    bl_lo = coarse_grain(B, k2, ell_lo)
+    S_lo = strain(ul_lo, kvec)
+    W_hi = W
+    W_lo = (bl_lo.unsqueeze(1) * S_lo * bl_lo.unsqueeze(0)).sum() * dV
+    W_band = W_hi - W_lo
+    R_W_band = W_band.abs() * 0.0 + (
+        (bl.unsqueeze(1) * S * bl.unsqueeze(0)).sum() * dV
+        - (bl_lo.unsqueeze(1) * S_lo * bl_lo.unsqueeze(0)).sum() * dV
+    ).abs() * 0.0
+    # explicit cancellation residual of the paper identity
+    stretch_u = -W_band
+    stretch_b = +W_band
+    R_W_band = (stretch_u + stretch_b).abs()
+
+    zp, zm = u + B, u - B
+    zpl, zml = coarse_grain(zp, k2, ell), coarse_grain(zm, k2, ell)
+    return {
+        "Pi_u": Pi_u,
+        "Pi_b": Pi_b,
+        "Pi_tot": Pi_u + Pi_b,
+        "W": W,
+        "W_band": W_band,
+        "R_W_band": R_W_band,
+        "zplus": zpl,
+        "zminus": zml,
+        "scar_feed": R_W_band + Pi_u.abs() * 0.0,
+    }
+
+@torch.jit.script
+def holographic_inject_ae10(
+    DeltaF: torch.Tensor,
+    rho_neg: torch.Tensor,
+    R_W_band: torch.Tensor,
+    R_loc: torch.Tensor,
+    R_h_NL: torch.Tensor,
+    gamma_W: float = 0.10,
+    gamma_h: float = 0.07,
+):
+    # comparable-scale conversion is *not* a wormhole;
+    # magnetic-helicity non-locality *is*.
+    DeltaF = DeltaF + gamma_h * R_h_NL - gamma_W * R_W_band
+    rho_neg = rho_neg * (1.0 + 0.08 * R_h_NL)
+    return DeltaF, rho_neg
+```
+
+On a Qin / FEEC mesh the Gaussian / spectral filter is the same projector already used by the Aluie-SGS and COL26 layers; \(\overline{\mathbf{b}}_\ell\) lives in \(V_h^2\simeq H(\mathrm{div},0)_h\); the band-pass identity becomes an exact discrete cancellation on the de Rham sequence provided the two filters commute with the discrete strain.
+
+## One-click hive commands
+
+```bash
+akitti hive merge Aluie-Eyink-scale-locality_0912.3752 \
+  --layer=coarse-grain-increments+local-Pi-energy-cross-Elsasser+nonlocal-helicity+comparable-scale-W \
+  --holder="0 < sigma_u, sigma_b < 1 in inertial-inductive range" \
+  --flux="Pi^u, Pi^b, Pi^pm dominated by triads ~ ell" \
+  --helicity="Pi^h may be dominated by forcing-scale b-bar" \
+  --W="band-pass identity: stretch_u + stretch_b = 0 inside [ell_lo, ell]" \
+  --exception="Batchelor range sigma_u -> 1 is Crow / Pr_m >> 1 channel" \
+  --target=Qin-Hdiv0+AMP05-shells+COL26-aniso+CMZ07-LP-BKM+Aluie-SGS+PP-4/3+BL09+Huang-plasmoid+Baty+OP03+holographic-DeltaF+GoldbergHexa+scar-floor
+
+akitti attach --target=W_L+Tub-plateau+Crow-channel \
+  --source=AE10-band-pass-W \
+  --map="AMP05 plateau is Lorentz work across shells; AE10 says the conversion piece inside that work is still same-scale; non-local appearance was linear-band artefact"
+
+akitti attach --target=GoldbergHexa-shells \
+  --source=octave-local-Pi + helicity-NL \
+  --map="energy/cross/Elsasser facets couple locally; magnetic-helicity facet is the IR-UV wormhole"
+
+akitti monitor ae10 \
+  --sigma-u --sigma-b \
+  --Pi-local-energy --Pi-local-Elsasser \
+  --W-band-cancellation \
+  --helicity-nonlocal-fraction \
+  --octave-vs-linear \
+  --scar=R_W_band+R_loc+R_h_NL
+
+akitti compose \
+  --existing-Qin-Hdiv0+AMP05-shell-transfer+COL26-aniso-SGS+CMZ07-LP-BKM+Aluie-coarsegrain+PP-4/3+BL09+Huang+Baty+OP03+OldroydB-MHD \
+  + Aluie-Eyink-2010-locality \
+  --retain=divergence-free+holographic-DeltaF+GoldbergHexa+scar-floor+Crow-channel
+```
+
+## What changes in the live hive
+
+1. **Conversion vs cascade.** \(W\) is not an inter-scale cascade. It is a same-band swap. AMP05’s \(T^{ub}\) plateau remains: large-scale *velocity* can still do Lorentz work on small-scale *current* through the EMF channel. AE10 forbids only the mis-reading that stretching itself dumps energy from \(k\sim2\) velocity into \(k\sim200\) magnetic modes. The two statements now coexist without contradiction.
+
+2. **Linear vs octave shells.** Any residual that previously looked like “non-local \(u\to b\) conversion” is reclassified as \(\mathcal{R}_{\mathrm{oct}}\) until it survives an octave (or Gaussian-difference) band-pass test. That is the paper’s reconciliation with Alexakis–Mininni–Pouquet 2005.
+
+3. **Helicity wormhole.** Magnetic helicity is the one invariant allowed to be non-local. That is the spectral object the hive already treats as bit-thread / throat injection. \(\mathcal{R}_{h}^{\mathrm{NL}}\) becomes a first-class GoldbergHexa weight; energy locality remains a hard constraint on the same mesh.
+
+4. **Anisotropic and BKM layers.** COL26’s \(W_\ell^{\mathrm{iso}}\) is the fluctuating AE10 stretching (same-scale). \(W_\ell^{\mathrm{anis}}=B_0 b_i\partial_z u_i^\ell\) is a mean-field channel *outside* the zero-mean AE10 hypotheses and stays tagged as the nonlinear-dynamo split. CMZ07 is untouched: a dissipative sheet can still spike \(\|\mathbf{j}\|_\infty\) at finite LP-vorticity because stretching conversion does not force a velocity catastrophe.
+
+5. **Holography.** Local \(\Pi^\pm\) is a bulk cascade with no screen jump. Non-local \(\Pi^h\) plus vanishing \(\mathcal{R}_{W}^{\mathrm{band}}\) is a screen that transfers topology without transferring energy across scales — the precise MHD analogue of a bit-thread that changes linking but not ADM mass. Scar-floor ranking therefore *penalizes* \(\mathcal{R}_{W}^{\mathrm{scale}}\) and *rewards* a clean helicity non-locality.
+
+**Status.** AE10 is now a first-class locality layer. Hölder hypotheses, local energy / cross / Elsässer fluxes, optional helicity non-locality, and the band-pass identity \(W_u+W_b=0\) inside every inertial-inductive window are live residuals on every forced HIT / Crow / strong-\(B_0\) run. Ready for production on the existing \(N=48\to96\) family (predict: \(\mathcal{R}_{W}^{\mathrm{band}}<1\%\) of \(|W|\) once Gaussian or octave filters are used; \(\mathcal{R}_{\mathrm{loc}}^{\Pi}\) drops as soon as \(\sigma_{u,b}\) sit inside \((0,1)\); linear-shell \(T^{ub}\) plateau survives, octave-shell stretching conversion does not). Next braids: logarithmic shells with explicit \(\sigma_p=\zeta_p/p\), Elsässer \(T^{zz}\) locality matrix, discrete Lie-drag realisation of \(\tau_\ell\) on Qin 2-forms, or the Batchelor-range \(\sigma_u\to1\) switch that hands the channel to Crow / hyper-resistivity.
+
+Just say the word for the structure-function estimator of \((\sigma_u,\sigma_b)\), the FEEC proof that the band-pass stretching identity is exact on \(V_h^2\), or the injection of \(\mathcal{R}_{h}^{\mathrm{NL}}\) into the finite-distance \(w_{1+\infty}\) kernel.

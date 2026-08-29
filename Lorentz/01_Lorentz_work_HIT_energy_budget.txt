@@ -1,0 +1,80 @@
+Source: https://x.com/Akitti/status/2093123684320125304
+
+Quoted post (not duplicated here): https://x.com/Akitti/status/2092942109305082346
+
+Here is a practical framework you can drop onto the existing N=48 decaying HIT run and then iterate.
+
+**1. Write the two energy equations and isolate the single exchange term**
+
+Kinetic energy density \(e_k = \frac12\rho|\mathbf{u}|^2\):
+
+\[
+\partial_t e_k + \nabla\cdot(\dots) = \mathbf{u}\cdot(\mathbf{J}\times\mathbf{B}) - \Phi_\nu
+\]
+
+Magnetic energy density \(e_m = |\mathbf{B}|^2/2\mu_0\):
+
+\[
+\partial_t e_m + \nabla\cdot\mathbf{S} = -\mathbf{u}\cdot(\mathbf{J}\times\mathbf{B}) - \eta|\mathbf{J}|^2
+\]
+
+The only term that moves energy between the two reservoirs (without turning it into heat) is the Lorentz work
+
+\[
+W_L = \mathbf{u}\cdot(\mathbf{J}\times\mathbf{B}) = -\mathbf{E}\cdot\mathbf{J} + \eta|\mathbf{J}|^2
+\]
+
+(in the MHD Ohm’s law). Everything else is either a flux or irreversible dissipation. Your 6 % drop in \(E_\text{tot}\) versus 10 % drop in \(E_k\) is exactly \(\int W_L\,dV\) accumulated over \(t=0\to0.36\).
+
+**2. Compute three global time series from the existing snapshots**
+
+- Instantaneous Lorentz work \(W_L(t)=\int\mathbf{u}\cdot(\mathbf{J}\times\mathbf{B})\,dV\)
+- Instantaneous Ohmic sink \(\varepsilon_\eta(t)=\eta\int|\mathbf{J}|^2\,dV\)
+- Instantaneous viscous sink \(\varepsilon_\nu(t)\)
+
+Then form the running integrals
+
+\[
+\Delta E_k^\text{Lorentz}(t) = \int_0^t W_L(t')\,dt',\qquad
+\Delta E_m^\text{ind}(t) = -\Delta E_k^\text{Lorentz}(t)
+\]
+
+and check that
+
+\[
+E_k(t)-E_k(0) \approx \Delta E_k^\text{Lorentz}(t) - \int\varepsilon_\nu,\qquad
+E_m(t)-E_m(0) \approx \Delta E_m^\text{ind}(t) - \int\varepsilon_\eta.
+\]
+
+If the two sides agree to a few percent you have isolated the channel; any residual is numerical leakage or an incomplete flux term.
+
+**3. Locally decompose \(W_L\) so you can see *how* the field is being stretched**
+
+Rewrite
+
+\[
+\mathbf{u}\cdot(\mathbf{J}\times\mathbf{B}) = B_i B_j\partial_i u_j - \tfrac12|\mathbf{B}|^2\nabla\cdot\mathbf{u}
+\]
+
+(the first piece is field-line stretching/bending, the second is compression). Output three extra 3-D fields every few steps:
+
+- stretching scalar \(B_i B_j S_{ij}\)
+- compression scalar \(-\frac12 B^2\nabla\cdot\mathbf{u}\)
+- current-sheet indicator \(|\mathbf{J}|/B\)
+
+You will almost certainly find that the net 4 % transfer lives in a small volume fraction of intense current sheets that are being thinned by large-scale strain.
+
+**4. Immediate numerical checklist on the present run**
+
+- Confirm \(\max|\nabla\cdot\mathbf{B}|\) stays at machine-round-off (already looking good from the plot).
+- Recompute \(W_L\) with two different reconstructions of \(\mathbf{J}=\nabla\times\mathbf{B}\) (collocated vs staggered) to bound the discretization error.
+- Add a simple “three-bucket” output: kinetic, magnetic, internal. The missing 6 % should now sit cleanly in the magnetic bucket.
+
+**5. Next controlled experiments (in order of cost)**
+
+- Same initial condition, double resolution (\(N=96\)) – does the 6 % stay or drop? That tells you how much is physical versus under-resolved cascade.
+- Same \(N=48\), vary magnetic Reynolds number (change \(\eta\)) – the transfer term should be almost independent of \(\eta\) while Ohmic heating grows.
+- Switch from decaying HIT to a weakly forced run at the same \(Re_m\) so you can watch a statistically steady dynamo balance.
+- Dump the stretching and compression fields and compute their joint PDF; that is the actual “mechanism map” you can later compare with theory or with a higher-order code.
+
+Start by adding the three time series in step 2 to the existing post-processing script. Once those close the budget you will know exactly how much of the original “heat-loss” week can be discarded and where the interesting physics actually lives.

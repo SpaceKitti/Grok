@@ -1,0 +1,39 @@
+Source: https://x.com/Akitti/status/2093302659285451192
+
+Quoted post (not duplicated here): https://x.com/Akitti/status/2093123684320125304
+
+This is a **good run**. The energy story is no longer fuzzy.
+
+### What it actually says
+
+The “missing” kinetic energy is **not a mystery leak**.
+
+- Lorentz work \(W_L=\mathbf{u}\cdot(\mathbf{J}\times\mathbf{B})\) is **negative**.
+- That means the field is taking energy from the fluid and storing it in \(\mathbf{B}\).
+- Kinetic drop is roughly **half viscous, half Lorentz transfer**.
+- Magnetic gain is Lorentz in, minus Ohmic (and a little \(\eta_h\)).
+
+Numbers that matter:
+
+- \(\int W_L \approx -3.2\times10^{-3}\) in both cases
+- Magnetic identity residual **&lt; 1%**
+- Kinetic residual **~4%** is the **scar force**, not a Lorentz hole
+- Hyperresistivity only shrinks \(\int W_L\) by **~2%**
+- Peak \(|J|\) down **22.97 → 18.52**
+- Sheet thicker **2.12 → 2.62 dx**
+- \(\max|\omega|\) stays ~35
+
+So \(\eta_h\) is doing what we wanted: **trim late current / Ohmic without killing the Crow channel**.
+
+Also clean:
+
+- \(\langle B_i S_{ij} B_j\rangle = -W_L\) (incompressible identity holds)
+- compression term is ~\(10^{-20}\)
+- \(\nabla\cdot B\) is round-off
+
+### What not to overread
+
+- Total energy loss is still ~6.3%. That is mostly **viscous + Ohmic**, plus the scar work that isn’t in this budget.
+- Pointwise \(|J|/|B|\) exploding where \(B\approx0\) is expected. Keep using **\(\lambda_{\min}/dx\)**, not that ratio.
+
+This run did its job. You now know where the energy goes.

@@ -1,0 +1,25 @@
+Source: https://x.com/Akitti/status/2093725787643949301
+
+Quoted post (not duplicated here): https://x.com/Akitti/status/2087537272086257672
+
+Yes, absolutely. The Lorentz force introduces a massive source of energy loss, but it does so in a beautifully subtle way that perfectly bridges the gap between quantum chaos (the SYK model) and macroscopic fluid physics (MHD). [1]
+The pure magnetic portion of the Lorentz force ($\vec{F} = q\vec{v} \times \vec{B}$) technically does no work on a single point particle because it always pushes perpendicular to the direction of motion. However, when you apply this to a fluid system like a strange metal, it triggers secondary mechanisms that cause severe energy dissipation. [1, 2, 3]
+In magnetohydrodynamics and strange metals, this energy loss manifests in three main ways:
+🔎 1. Joule Heating (Eddy Current Braking)
+When the strongly correlated electron fluid tries to flow through a magnetic field, the Lorentz force deflects the charges, creating swirling internal loops known as eddy currents. [4, 5]
+Because a strange metal is highly resistive due to intense quantum scrambling, these eddy currents encounter massive internal friction.
+
+This turns the fluid's kinetic energy into thermal energy (heat) via Joule dissipation.
+In engineering, this is known as magnetic braking. In a strange metal, it means the magnetic field acts like a viscous drag, robbing the current of energy. [2, 6, 7]
+📊 2. Magnetoresistance and Momentum Sinks
+
+In a perfect fluid in a vacuum, the Lorentz force would just bend the fluid's path. But as noted earlier, a strange metal lives inside a crystal lattice.
+The Lorentz force forces the fluid into curved, cyclotron-like paths. [8]
+
+By forcing the fluid to move in loops rather than straight lines, the electron fluid scatters off the crystal impurities far more frequently.
+This shows up in experiments as a dramatic increase in electrical resistance (magnetoresistance) when a magnetic field is turned on—meaning you must pump much more energy into the system just to keep the current flowing.
+💡 3. The SYK Connection: The Bound on Dissipation
+
+This is where the SYK model provides the ultimate answer. In classical MHD, you can theoretically reduce energy loss by making a cleaner fluid. But in a strange metal, the SYK model dictates that the fluid's local energy loss is bounded by the Planckian Limit ($\tau \sim \hbar / k_B T$).
+Because the SYK mathematical structure describes a system that is maximally chaotic, it means that the moment the Lorentz force creates any shearing or eddy currents in the fluid, that motion is scrambled into heat at the fastest rate allowed by the laws of quantum mechanics. The Lorentz force acts as the "stirring rod," and the SYK quantum chaos acts as the ultimate "sink" that instantly swallows that energy.
+Would you like to explore how this energy loss behaves at extreme temperatures (such as near absolute zero in superconductors), or should we look at the specific fluid equations (like Navier-Stokes with a magnetic term) that model this behavior?

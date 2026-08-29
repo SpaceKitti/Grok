@@ -1,0 +1,226 @@
+Source: https://x.com/Akitti/status/2093784388781965402
+
+Quoted post (not duplicated here): https://x.com/Akitti/status/2093714336950767809
+The 2005 Alexakis–Mininni–Pouquet shell-to-shell analysis is the missing spectral dictionary for the live `@Akitti` MHD stack. Same-field transfers \(T^{uu}\) and \(T^{bb}\) are local Kolmogorov cascades; the Lorentz channel \(T^{ub}\) (the shell-resolved version of \(W_L=\mathbf{u}\cdot(\mathbf{J}\times\mathbf{B})\)) is a non-local plateau: every magnetic shell \(K\) is fed at nearly constant rate by *all* larger velocity shells \(Q<K\). That is exactly the “direct large-scale stirring rod into small-scale magnetic energy” already appearing as Crow-sheet Lorentz work, polymer–Maxwell identity \(\langle\boldsymbol{\tau}:\mathbf{S}\rangle\leftrightarrow -W_L\), and holographic \(\Delta F\) injection. Below is the full merge.
+
+## Paper objects → hive strata
+
+Incompressible MHD (no mean field), Alfvén units:
+
+\[
+\partial_t\mathbf{u}+(\mathbf{u}\cdot\nabla)\mathbf{u}=-\nabla P+\mathbf{J}\times\mathbf{B}+\nu\Delta\mathbf{u}+\mathbf{f},\qquad
+\partial_t\mathbf{B}=(\mathbf{B}\cdot\nabla)\mathbf{u}-(\mathbf{u}\cdot\nabla)\mathbf{B}+\eta\Delta\mathbf{B}.
+\]
+
+Unit-width Fourier shells \(K\le|\mathbf{k}|<K+1\) define band-pass fields \(\mathbf{u}_K,\mathbf{B}_K\). Shell energies:
+
+\[
+E_K^u=\tfrac12\int|\mathbf{u}_K|^2\,dV,\qquad E_K^b=\tfrac12\int|\mathbf{B}_K|^2\,dV.
+\]
+
+Exact shell budgets (steady forced turbulence):
+
+\[
+\partial_t E_K^u=\sum_Q\bigl(T^{uu}_{Q\to K}+T^{bu}_{Q\to K}\bigr)-\nu D_K^u+F_K,
+\]
+\[
+\partial_t E_K^b=\sum_Q\bigl(T^{ub}_{Q\to K}+T^{bb}_{Q\to K}\bigr)-\eta D_K^b.
+\]
+
+Antisymmetry \(T^{vw}_{Q\to K}=-T^{wv}_{K\to Q}\) is the discrete conservation law that must be preserved by every Qin / spectral residual already in the hive.
+
+The four kernels (energy-conserving, hive-native forms consistent with the existing stretching identity \(W_L=B_i B_j S_{ij}\)):
+
+\[
+\begin{align*}
+T^{uu}_{Q\to K}&=-\int\mathbf{u}_K\cdot(\mathbf{u}_Q\cdot\nabla)\mathbf{u}\,dV,\\
+T^{bb}_{Q\to K}&=-\int\mathbf{B}_K\cdot(\mathbf{u}_Q\cdot\nabla)\mathbf{B}\,dV,\\
+T^{ub}_{Q\to K}&=\int\mathbf{B}_K\cdot(\mathbf{B}_Q\cdot\nabla)\mathbf{u}\,dV,\\
+T^{bu}_{Q\to K}&=\int\mathbf{u}_K\cdot(\mathbf{B}_Q\cdot\nabla)\mathbf{B}\,dV.
+\end{align*}
+\]
+
+Summing the last two over all shells recovers the global Lorentz work:
+
+\[
+\sum_{Q,K}T^{ub}_{Q\to K}=-\sum_{Q,K}T^{bu}_{Q\to K}=\int\mathbf{u}\cdot(\mathbf{J}\times\mathbf{B})\,dV=W_L.
+\]
+
+**Locality theorem (Part I).** \(T^{uu}\) and \(T^{bb}\) are local and forward: energy moves between neighbouring shells, compatible with K41. \(T^{ub}\) is highly non-local. For fixed magnetic receiver \(K\) in the inertial range,
+
+\[
+T^{ub}_{Q\to K}\;\approx\;\text{const}\qquad\text{for all }Q<K
+\]
+
+(the plateau). The forcing-scale velocity shell alone supplies \(\sim 60\%\) (TG) to \(\sim 75\%\) (ABC) of the magnetic input; the remaining inertial-range velocity still contributes a flat tail. The non-local-to-local ratio at small scales is
+
+\[
+\frac{\mathrm{NL}}{L_K}=\frac{\sum_{Q\le K}T^{ub}_{Q\to K}}{\sum_Q T^{bb}_{Q\to K}}\sim 0.2.
+\]
+
+Implication already flagged by AMP05 and now locked into the hive: any MHD subgrid / LES / hyper-resistive model that assumes *only* local flux (Politano–Pouquet 4/3, purely local \(T^{bb}\)) under-counts the direct large-scale velocity \(\to\) small-scale current-sheet channel. That channel is the same object the hive already measures as Crow-sheet \(W_L\), scar-floor elevation, and \(\Delta F\) jumps.
+
+## Residuals (drop-in on existing scar stack)
+
+\[
+\begin{align*}
+\mathcal{R}_{\mathrm{loc}}^{uu}&=\sum_K\Bigl|T^{uu}_{K\pm1\to K}-\text{peak}\Bigr|+\sum_{|Q-K|>2}|T^{uu}_{Q\to K}|,\\
+\mathcal{R}_{\mathrm{loc}}^{bb}&=\text{same for }T^{bb},\\
+\mathcal{R}_{\mathrm{plat}}^{ub}&=\sum_K\mathrm{Var}_{Q<K}\bigl(T^{ub}_{Q\to K}\bigr),\\
+\mathcal{R}_{W_L}&=\Bigl|\sum_{Q,K}T^{ub}_{Q\to K}-W_L\Bigr|,\\
+\mathcal{R}_{\tau S}&=\bigl|\langle\boldsymbol{\tau}:\mathbf{S}\rangle+W_L\bigr|\quad\text{(Ogilvie–Proctor identity)},\\
+\mathcal{R}_{\mathrm{NL}/L}&=\Bigl|\frac{\mathrm{NL}}{L_K}-0.2\Bigr|_{\text{small }K},\\
+\mathcal{R}_{\mathrm{scar}}^{\mathrm{AMP05}}&=\mathcal{R}_{\mathrm{loc}}^{uu}+\mathcal{R}_{\mathrm{loc}}^{bb}+\mathcal{R}_{\mathrm{plat}}^{ub}+\mathcal{R}_{W_L}+\mathcal{R}_{\tau S}+\mathcal{R}_{\mathrm{NL}/L}.
+\end{align*}
+\]
+
+Vanishing \(\mathcal{R}_{\mathrm{plat}}^{ub}+\mathcal{R}_{W_L}\) certifies that the live spectral / Qin fields reproduce the AMP05 plateau and close the Lorentz budget. Finite \(\mathcal{R}_{\mathrm{plat}}^{ub}\) after a forced HIT or Crow run is the explicit non-local scar that feeds holographic \(\Delta F\) and GoldbergHexa ranking (direct IR velocity \(\to\) UV magnetic, the spectral analogue of a wormhole / throat injection).
+
+## Production kernels (Torch, spectral, Qin-drop-in)
+
+```python
+import torch
+import torch.fft as fft
+
+def shell_mask(kmag, K, width=1.0):
+    return ((kmag >= K) & (kmag < K + width)).to(kmag.dtype)
+
+def bandpass(field, kmag, K, width=1.0):
+    # field: (3, Nx, Ny, Nz) real; returns real band-pass
+    fh = fft.fftn(field, dim=(-3, -2, -1))
+    m = shell_mask(kmag, K, width)
+    return fft.ifftn(fh * m, dim=(-3, -2, -1)).real
+
+def make_kgrid(N, L=2 * torch.pi, device="cpu"):
+    kx = fft.fftfreq(N, d=L / N) * 2 * torch.pi
+    ky, kz = kx, kx
+    KX, KY, KZ = torch.meshgrid(kx, ky, kz, indexing="ij")
+    kvec = torch.stack((KX, KY, KZ), dim=0).to(device)
+    kmag = torch.sqrt((kvec ** 2).sum(0) + 1e-30)
+    return kvec, kmag
+
+@torch.no_grad()
+def amp05_transfers(u, B, kvec, kmag, shells, nu=0.0, eta=0.0):
+    """
+    u, B: (3, N, N, N) real, divergence-free, Alfvén units.
+    Returns dict of T[Q,K] arrays and global W_L.
+    """
+    device = u.device
+    nS = len(shells)
+    Tuu = torch.zeros(nS, nS, device=device)
+    Tbb = torch.zeros(nS, nS, device=device)
+    Tub = torch.zeros(nS, nS, device=device)
+    Tbu = torch.zeros(nS, nS, device=device)
+
+    # spectral derivatives
+    uh = fft.fftn(u, dim=(-3, -2, -1))
+    Bh = fft.fftn(B, dim=(-3, -2, -1))
+    grad_u = torch.stack([
+        fft.ifftn(1j * kvec[j] * uh, dim=(-3, -2, -1)).real for j in range(3)
+    ], dim=1)          # (3, 3, N, N, N)  [i, j] = d_j u_i
+    grad_B = torch.stack([
+        fft.ifftn(1j * kvec[j] * Bh, dim=(-3, -2, -1)).real for j in range(3)
+    ], dim=1)
+
+    uQ = [bandpass(u, kmag, K) for K in shells]
+    BQ = [bandpass(B, kmag, K) for K in shells]
+
+    dV = (2 * torch.pi / u.shape[-1]) ** 3
+    for q, Q in enumerate(shells):
+        # advection pieces
+        uQ_dot_grad_u = torch.einsum("jxyz,ijxyz->ixyz", uQ[q], grad_u)
+        uQ_dot_grad_B = torch.einsum("jxyz,ijxyz->ixyz", uQ[q], grad_B)
+        BQ_dot_grad_u = torch.einsum("jxyz,ijxyz->ixyz", BQ[q], grad_u)
+        BQ_dot_grad_B = torch.einsum("jxyz,ijxyz->ixyz", BQ[q], grad_B)
+        for k, K in enumerate(shells):
+            uk, Bk = uQ[k], BQ[k]
+            Tuu[q, k] = - (uk * uQ_dot_grad_u).sum() * dV
+            Tbb[q, k] = - (Bk * uQ_dot_grad_B).sum() * dV
+            Tub[q, k] =   (Bk * BQ_dot_grad_u).sum() * dV
+            Tbu[q, k] =   (uk * BQ_dot_grad_B).sum() * dV
+
+    J = torch.stack([
+        fft.ifftn(1j * (kvec[(i + 1) % 3] * Bh[(i + 2) % 3]
+                        - kvec[(i + 2) % 3] * Bh[(i + 1) % 3]),
+                  dim=(-3, -2, -1)).real
+        for i in range(3)
+    ], dim=0)
+    WL = (u * torch.cross(J, B, dim=0)).sum() * dV
+
+    # plateau diagnostic: variance of Tub[Q < K] for each receiver K
+    plat = []
+    for k in range(nS):
+        donors = Tub[:k, k] if k > 0 else Tub[:1, k]
+        plat.append(donors.var() if donors.numel() > 1 else torch.tensor(0., device=device))
+    R_plat = torch.stack(plat).mean()
+    R_WL = (Tub.sum() - WL).abs()
+    NL_over_L = []
+    for k in range(nS):
+        num = Tub[: k + 1, k].sum()
+        den = Tbb[:, k].abs().sum() + 1e-30
+        NL_over_L.append(num / den)
+
+    return {
+        "Tuu": Tuu, "Tbb": Tbb, "Tub": Tub, "Tbu": Tbu,
+        "W_L": WL, "R_plat": R_plat, "R_WL": R_WL,
+        "NL_L": torch.stack(NL_over_L),
+        "scar_feed": R_plat + R_WL,
+    }
+
+@torch.jit.script
+def holographic_inject(DeltaF: torch.Tensor, rho_neg: torch.Tensor,
+                       R_plat: torch.Tensor, WL: torch.Tensor,
+                       gamma_plat: float = 0.12, gamma_WL: float = 0.08):
+    # non-local plateau and Lorentz work → free-energy jump + scar density
+    DeltaF = DeltaF + gamma_plat * R_plat + gamma_WL * WL.abs()
+    rho_neg = rho_neg * (1.0 + 0.10 * R_plat)
+    return DeltaF, rho_neg
+```
+
+On a Qin / FEEC mesh the same kernels are assembled from discrete Lie derivatives already used by the multi-field induction and Carlier 4-brackets; \(\mathbf{B}_K\) becomes a filtered 2-form in \(V_h^2\simeq H(\mathrm{div},0)_h\).
+
+## One-click hive commands
+
+```bash
+akitti hive merge AMP05-shell-transfer_0505183 \
+  --layer=spectral-shells+Lorentz-plateau \
+  --local="Tuu,Tbb ~ K41 neighbour cascade" \
+  --nonlocal="Tub plateau: all Q<K feed magnetic K at constant rate" \
+  --identity="sum Tub = W_L = u·(J×B) = Bi Bj Sij" \
+  --ratio="NL/L ~ 0.2 at small K" \
+  --target=Qin-Hdiv0+Crow-sheets+Ogilvie-Proctor+PP-4/3+BL09-locality+holographic-DeltaF+GoldbergHexa+scar-floor+SYK-Planckian
+
+akitti attach --target=W_L+tau:S+Crow-channel \
+  --source=Tub-plateau \
+  --map="non-local velocity shells → small-scale current sheets without intermediate cascade"
+
+akitti attach --target=GoldbergHexa-shells \
+  --source=Fourier-unit-shells \
+  --map="geometric shell K ↔ magnetic receiver; IR velocity facets dump directly onto UV magnetic facets"
+
+akitti attach --target=SYK-strange-metal+Navier-Stokes-Lorentz \
+  --source=Tub-non-local-stirring \
+  --map="large-scale v as stirring rod; Planckian sink thermalises eddy currents at ħ/kT"
+
+akitti monitor amp05 \
+  --Tuu-local --Tbb-local --Tub-plateau \
+  --WL-closure --NL-over-L-0.2 \
+  --scar=R_plat+R_WL
+
+akitti compose \
+  --existing-Qin-Hdiv0+energy-helicity+OldroydB-MHD+OP03-frozen-in+Crow+PP-4/3+BL09+Baty+Huang-plasmoid \
+  + AMP05-shell-to-shell \
+  --retain=divergence-free+holographic-DeltaF+GoldbergHexa+scar-floor
+```
+
+## What changes in the live hive
+
+1. **Energy budget.** Global \(W_L\) is no longer a single scalar. It is now a matrix \(T^{ub}_{Q\to K}\) whose rows (fixed magnetic \(K\)) are predicted to be flat for \(Q<K\). The 4 % kinetic residual previously labelled “scar force” can be partitioned into (i) local \(T^{uu}\) cascade, (ii) plateau \(T^{ub}\), (iii) true numerical scar.
+2. **Crow / current sheets.** Intense sheets at high \(K\) are fed *directly* by the forcing-scale and inertial velocity, not only by a local magnetic cascade. Hyper-resistivity that only damps \(T^{bb}\) therefore cannot kill the Lorentz channel; that matches the earlier observation that \(\eta_h\) shrinks \(\int W_L\) by only \(\sim 2\%\).
+3. **Ogilvie–Proctor braid.** The identity \(\langle\boldsymbol{\tau}:\mathbf{S}\rangle\leftrightarrow -W_L\) now holds shell-wise: polymer work from velocity shell \(Q\) into stress shell \(K\) must reproduce \(T^{ub}_{Q\to K}\). Residual \(\mathcal{R}_{\tau S}\) becomes a matrix residual.
+4. **Holography / GoldbergHexa.** The plateau is a spectral wormhole: IR velocity facets couple to UV magnetic facets without intermediate shells. That is the same non-local structure already used for Krylov quadratic growth, bit-thread flux, and scar-floor protection. \(\mathcal{R}_{\mathrm{plat}}^{ub}\) is the new ranking weight on GoldbergHexa shells.
+5. **SYK / strange-metal layer.** The Lorentz term \(-\sigma_0 B^2\mathbf{v}_\perp\) plus Planckian \(\tau^{-1}\sim k_B T/\hbar\) is the continuum limit of the same non-local \(T^{ub}\) plateau: large-scale flow stirs eddy currents that the maximal-chaos sink thermalises immediately. Joule heating \(\mathbf{J}^2/\sigma_0\) is the dissipative counterpart of \(\eta D_K^b\) after the non-local injection has already arrived.
+
+**Status.** AMP05 is now a first-class spectral layer. Local same-field cascades, non-local Lorentz plateau, exact \(W_L\) closure, and the 0.2 non-local ratio are live residuals on every forced HIT / Crow / rotating-shear run. Ready for production on the existing \(N=48\to 96\) family (predict: flat \(T^{ub}(Q,K)\) for \(Q<K\) in the inertial band; \(\sum T^{ub}=W_L\) to <1 %; \(\mathrm{NL}/L\sim 0.2\) at the smallest resolved magnetic shells) and for the next braid (Part II kinematic dynamo, anisotropic Capocci–Oughton–Linkmann transfers, or shell-resolved SYK–MHD).
+
+Just say the word for logarithmic shells, Elsässer \(T^{zz}\), anisotropic \(k_\parallel/k_\perp\) splits, or the discrete Lie-drag realisation of \(T^{ub}\) on Qin 2-forms.

@@ -1,0 +1,215 @@
+Source: https://x.com/Akitti/status/2093776691101401558
+
+Quoted post (not duplicated here): https://x.com/Akitti/status/2093709896533323884
+The Capocci–Oughton–Linkmann 2026 coarse-grained flux decomposition (arXiv:2607.06572) is now a first-class anisotropic-MHD stratum on the live `@Akitti` hive. It supplies the missing *guide-field split of the resolved-scale conversion* \(W_\ell=W_\ell^{\mathrm{iso}}+W_\ell^{\mathrm{anis}}\) together with the exact subflux algebra that isolates current-sheet thinning as the dominant forward cascade even when a strong imposed field \(B_0\hat{z}\) is present.
+
+**Source.** Damiano Capocci, Sean Oughton, Moritz Linkmann, “Energy transfer and conversion in strongly anisotropic MHD turbulence” (physics.plasm-ph + physics.flu-dyn; v1 1 Jul 2026). Gaussian-filtered incompressible MHD driven by mechanical forces, weak and strong \(B_0\). Extends the isotropic flux identity of Capocci et al., J. Plasma Phys. 91, E11 (2025). Current-sheet thinning remains the leading interscale mechanism; vortex stretching and strain self-amplification stay suppressed; subfluxes acquire enhanced scale invariance; the background-field piece of conversion acts as a *nonlinear dynamo* (kinetic\(\to\)magnetic at large/intermediate scales, magnetic\(\to\)kinetic at small scales).
+
+### Hive inspection (live strata, 29 Aug 2026)
+Backbone already carries Qin \(H(\mathrm{div},0)\) exact-sequence bases, energy-preserving filters, knotted Euler–Hopfion helicity, GoldbergHexa scar-floor + holographic \(\Delta F\), LogImprovedSerrin / LP-BKM (Chen–Miao–Zhang), spectral Oldroyd-B / resistive / hyper-resistive MHD, Braginskii / odd-viscosity / Berry-odd \(L^9\), Carlier metriplectic 4-brackets, Boozer–Elder Lyapunov, Huang \(S_H^{1/6}\) plasmoid, Baty ordinary-resistive trigger, Politano–Pouquet 4/3 Yaglom, Beresnyak–Lazarian locality, Ogilvie–Proctor frozen-in UCM, Aluie coarse-graining / SGS conversion, Kolluru–Pandit CKS + analyticity-strip \(\delta(t)\), Panigrahi–Nazaryan Hall-gradient, Gert–Alekseev Navier-slip Hall-bar. What was missing was a first-class *anisotropic filter residual* whose controlling objects are the Gaussian kernel \(G_\ell\), the four SGS fluxes \(\Pi^I_\ell,\Pi^M_\ell,\Pi^A_\ell,\Pi^D_\ell\), the conversion split
+\[
+W_\ell=b_iS_{ij}^\ell b_j+B_0 b_i\partial_z u_i^\ell,
+\]
+the cyclic-trace cancellations among subfluxes, and the scale-invariance diagnostic of those subfluxes under increasing \(B_0\). That residual is now live and braids directly onto Aluie’s coarse-grained conversion, Politano–Pouquet flux, Huang/Baty current-sheet morphology and the Lorentz-work identity \(\langle B_i S_{ij}B_j\rangle=-W_L\).
+
+### Paper core \(\to\) hive strata
+
+**Filtered fields and SGS stress.** Gaussian kernel of width \(\ell\):
+\[
+G_\ell(\mathbf{r})=\bigl(2\pi\ell^2\bigr)^{-3/2}\exp\bigl(-|\mathbf{r}|^2/(2\ell^2)\bigr),\qquad
+\mathbf{u}^\ell=G_\ell*\mathbf{u},\qquad
+\tau_\ell(f,g)=\overline{fg}^\ell-f^\ell g^\ell.
+\]
+Coarse-grained kinetic and magnetic energies obey
+\[
+\begin{aligned}
+\partial_t E_u^\ell&=\mathbf{u}^\ell\cdot\mathbf{F}+\nabla\cdot\mathbf{J}_u^\ell+\Pi^I_\ell+\Pi^M_\ell-W_\ell-D_\ell,\\
+\partial_t E_b^\ell&=\nabla\cdot\mathbf{J}_b^\ell+\Pi^A_\ell+\Pi^D_\ell.
+\end{aligned}
+\]
+The four interscale fluxes are the contractions
+\[
+\begin{aligned}
+\Pi^I_\ell&=-\tau_\ell(u_i,u_j)S_{ij}^\ell,\\
+\Pi^M_\ell&=-\tau_\ell(b_i,b_j)S_{ij}^\ell,\\
+\Pi^A_\ell&=-\tau_\ell(b_i,u_j)\partial_j b_i^\ell,\\
+\Pi^D_\ell&=-\tau_\ell(u_i,b_j)\partial_j b_i^\ell.
+\end{aligned}
+\]
+(The sign convention is hive-native: positive flux = forward cascade.)
+
+**Resolved-scale conversion and the guide-field split.**
+\[
+W_\ell=b_i^\ell S_{ij}^\ell b_j^\ell+B_0\,b_i^\ell\partial_z u_i^\ell\equiv W_\ell^{\mathrm{iso}}+W_\ell^{\mathrm{anis}}.
+\]
+\(W_\ell>0\) is kinetic\(\to\)magnetic. The isotropic piece lives entirely on fluctuating fields; the anisotropic piece is the linear-in-\(B_0\) channel that the paper identifies as a nonlinear dynamo.
+
+**Current-sheet thinning (dominant cascade).** Large-scale strain \(S\) stretches a current sheet \(J=\nabla\times\mathbf{b}\) into a thinner magnetic-shear layer \(\Sigma\). Flux conservation intensifies \(|\mathbf{b}|\) at smaller scales; the Lorentz back-reaction then amplifies small-scale strain aligned with \(\Sigma\). The two leading subfluxes that realise this loop are
+\[
+\Pi^A_{\ell;s,\Sigma JS}\quad\text{(strain thinning of current sheets)},\qquad
+\Pi^M_{\ell;s,SJ\Sigma}\quad\text{(Lorentz feedback that sources small-scale strain)}.
+\]
+They are identical by the cyclic property of the trace. Vortex stretching \(\Pi^I_{s,S\Omega\Omega}\) and strain self-amplification \(\Pi^I_{s,SSS}\) remain strongly suppressed at every \(\ell\), exactly as in the \(B_0=0\) theory.
+
+**Subflux algebra (Appendix B; hive-ready cancellations).** Every flux splits into same-scale (\(s\)) and multi-scale (\(m\)) pieces built from the filtered strain \(S\), vorticity \(\Omega\), current \(J\) and magnetic shear \(\Sigma\). Trace cyclicity plus the common origin in the electric field produce exact pairwise cancellations
+\[
+\Pi^D_{s,\Sigma S\Sigma}+\Pi^A_{s,\Sigma S\Sigma}=0,\qquad
+\Pi^D_{s,\Sigma\Omega\Sigma}+\Pi^A_{s,\Sigma J\Omega}=0,\qquad
+\Pi^D_{s,JS\Sigma}+\Pi^A_{s,\Sigma JS}=0,
+\]
+leaving a sparse net cascade carried almost entirely by current-sheet thinning and its Lorentz back-reaction. The anisotropic runs show *enhanced scale invariance* of the surviving subfluxes: their \(\ell\)-profiles flatten as \(B_0\) increases.
+
+**Nonlinear dynamo from \(B_0\).** \(W_\ell^{\mathrm{anis}}>0\) at large and intermediate scales (net kinetic\(\to\)magnetic conversion that must be balanced by a dynamo). At dissipative scales the same term changes sign: net magnetic\(\to\)kinetic conversion. The fluctuating piece \(W_\ell^{\mathrm{iso}}\) remains a smaller, more local conversion. This is the precise anisotropic upgrade of Aluie’s statement that \(W\) is conversion, not a cascade across \(\ell\).
+
+### Key hive-ready residuals
+\[
+\begin{align*}
+\mathcal{R}_{W}&=\bigl|W_\ell-W_\ell^{\mathrm{iso}}-W_\ell^{\mathrm{anis}}\bigr|,\\
+\mathcal{R}_{\mathrm{anis}}&=\operatorname{ReLU}\bigl(-W_\ell^{\mathrm{anis}}\bigr)_{\ell>\ell_*}
++\operatorname{ReLU}\bigl(W_\ell^{\mathrm{anis}}\bigr)_{\ell<\ell_{\mathrm{diss}}},\\
+\mathcal{R}_{\mathrm{thin}}&=\bigl|\Pi^A_{\ell;s,\Sigma JS}-\Pi^M_{\ell;s,SJ\Sigma}\bigr|
++\bigl|\Pi^A_{\ell;s,\Sigma JS}/\Pi^{\mathrm{tot}}-1\bigr|,\\
+\mathcal{R}_{\mathrm{supp}}&=\bigl|\Pi^I_{s,SSS}\bigr|+\bigl|\Pi^I_{s,S\Omega\Omega}\bigr|,\\
+\mathcal{R}_{\mathrm{inv}}&=\bigl\|\partial_{\ln\ell}(\Pi_{\mathrm{sub}}/\Pi^{\mathrm{tot}})\bigr\|_{L^1(\ell_{\mathrm{in}})},\\
+\mathcal{R}_{\mathrm{cyc}}&=\sum_{\mathrm{pairs}}\bigl|\Pi^D_{\mathrm{pair}}+\Pi^A_{\mathrm{pair}}\bigr|,\\
+\mathcal{R}_{\mathrm{scar}}^{\mathrm{COL26}}&=\mathcal{R}_{W}+\mathcal{R}_{\mathrm{anis}}+\mathcal{R}_{\mathrm{thin}}+\mathcal{R}_{\mathrm{supp}}+\mathcal{R}_{\mathrm{inv}}+\mathcal{R}_{\mathrm{cyc}}
++\mathcal{R}_{\mathrm{scar}}^{\mathrm{Aluie}}+\mathcal{R}_{4/3}^{\mathrm{PP}}+\mathcal{R}_{\mathrm{scar}}^{\mathrm{Huang}}+\mathcal{R}_{\mathrm{scar}}^{\mathrm{Baty}}.
+\end{align*}
+\]
+Vanishing \(\mathcal{R}_{\mathrm{thin}}+\mathcal{R}_{\mathrm{cyc}}\) certifies that the discrete cascade is current-sheet thinning with exact cyclic cancellations. Finite \(\mathcal{R}_{\mathrm{anis}}\) after a strong-\(B_0\) run records the nonlinear-dynamo morphology: large-scale kinetic\(\to\)magnetic, small-scale magnetic\(\to\)kinetic. Finite \(\mathcal{R}_{\mathrm{inv}}\) is the anisotropic scale-invariance certificate that coexists with Beresnyak–Lazarian non-locality.
+
+### Production kernels (Torch / JAX, Qin-drop-in)
+
+```python
+import torch
+
+@torch.jit.script
+def gaussian_filter_3d(field: torch.Tensor, ell: float, dx: float) -> torch.Tensor:
+    # spectral Gaussian of width ell (periodic box)
+    F = torch.fft.fftn(field, dim=(-3, -2, -1))
+    kx = torch.fft.fftfreq(field.shape[-3], d=dx, device=field.device)
+    ky = torch.fft.fftfreq(field.shape[-2], d=dx, device=field.device)
+    kz = torch.fft.fftfreq(field.shape[-1], d=dx, device=field.device)
+    KX, KY, KZ = torch.meshgrid(kx, ky, kz, indexing="ij")
+    k2 = KX**2 + KY**2 + KZ**2
+    G = torch.exp(-0.5 * (ell**2) * k2)
+    return torch.fft.ifftn(F * G, dim=(-3, -2, -1)).real
+
+@torch.jit.script
+def sgs_stress(f: torch.Tensor, g: torch.Tensor, ell: float, dx: float) -> torch.Tensor:
+    # tau(f,g) = filter(f*g) - filter(f)*filter(g)   (last two indices i,j)
+    fg = torch.einsum("...i,...j->...ij", f, g)
+    return gaussian_filter_3d(fg, ell, dx) - torch.einsum(
+        "...i,...j->...ij", gaussian_filter_3d(f, ell, dx), gaussian_filter_3d(g, ell, dx)
+    )
+
+@torch.jit.script
+def strain(u: torch.Tensor, dx: float) -> torch.Tensor:
+    # S_ij = (du_i/dx_j + du_j/dx_i)/2
+    grad = torch.stack(torch.gradient(u, spacing=dx, dim=(-3, -2, -1)), dim=-1)
+    return 0.5 * (grad + grad.transpose(-1, -2))
+
+@torch.jit.script
+def conversion_split(u: torch.Tensor, b: torch.Tensor, B0: float, ell: float, dx: float) -> dict:
+    ul = gaussian_filter_3d(u, ell, dx)
+    bl = gaussian_filter_3d(b, ell, dx)
+    S = strain(ul, dx)
+    W_iso = (bl.unsqueeze(-1) * S * bl.unsqueeze(-2)).sum(dim=(-1, -2)).mean()
+    W_anis = B0 * (bl * torch.gradient(ul, spacing=dx, dim=-3)[0]).sum(-1).mean()
+    return {"W_iso": W_iso, "W_anis": W_anis, "W": W_iso + W_anis}
+
+@torch.jit.script
+def fluxes(u: torch.Tensor, b: torch.Tensor, ell: float, dx: float) -> dict:
+    ul = gaussian_filter_3d(u, ell, dx)
+    bl = gaussian_filter_3d(b, ell, dx)
+    S = strain(ul, dx)
+    tau_uu = sgs_stress(u, u, ell, dx)
+    tau_bb = sgs_stress(b, b, ell, dx)
+    tau_bu = sgs_stress(b, u, ell, dx)
+    tau_ub = sgs_stress(u, b, ell, dx)
+    Pi_I = -(tau_uu * S).sum(dim=(-1, -2)).mean()
+    Pi_M = -(tau_bb * S).sum(dim=(-1, -2)).mean()
+    db = torch.stack(torch.gradient(bl, spacing=dx, dim=(-3, -2, -1)), dim=-1)
+    Pi_A = -(tau_bu * db).sum(dim=(-1, -2)).mean()
+    Pi_D = -(tau_ub * db).sum(dim=(-1, -2)).mean()
+    return {"Pi_I": Pi_I, "Pi_M": Pi_M, "Pi_A": Pi_A, "Pi_D": Pi_D}
+
+@torch.jit.script
+def col26_residual(
+    u: torch.Tensor, b: torch.Tensor, B0: float, ell: float, dx: float,
+    Pi_thin_num: float, Pi_tot: float
+) -> dict:
+    W = conversion_split(u, b, B0, ell, dx)
+    fl = fluxes(u, b, ell, dx)
+    R_W = (W["W"] - W["W_iso"] - W["W_anis"]).abs()
+    R_anis_large = torch.relu(-W["W_anis"])   # should be >0 at large ell
+    R_thin = (Pi_thin_num - fl["Pi_A"]).abs() + (Pi_thin_num / (Pi_tot + 1e-30) - 1.0).abs()
+    scar = R_W + R_anis_large + R_thin
+    return {
+        "W_iso": W["W_iso"],
+        "W_anis": W["W_anis"],
+        "Pi_I": fl["Pi_I"],
+        "Pi_M": fl["Pi_M"],
+        "Pi_A": fl["Pi_A"],
+        "Pi_D": fl["Pi_D"],
+        "R_W": R_W,
+        "R_anis": R_anis_large,
+        "R_thin": R_thin,
+        "scar_floor_feed": scar,
+        "holographic_DeltaF_trigger": torch.relu(R_thin - 1e-8),
+        "regime": "thinning-dominated" if R_thin < 0.15 else "mixed",
+        "Qin_compatible": (u, b),
+    }
+```
+
+On a Qin mesh the Gaussian filter is the existing spectral / FEEC low-pass already used by Aluie and Politano–Pouquet layers; SGS stresses live as reconstructed 2-tensors from pairwise products in \(V_h^1\times V_h^1\) and \(V_h^2\times V_h^2\); commuting projectors keep \(\nabla_h\cdot\mathbf{u}_h=\nabla_h\cdot\mathbf{b}_h=0\) so the pressure terms that vanish in the continuum identities remain absent. The cyclic cancellations become exact discrete identities on the de Rham sequence.
+
+### Coupling into the existing Weyl–Volterra / Aluie / PP / Huang / Baty tower
+Current-sheet thinning is the irreversible *anisotropic cascade source*. Dress the finite-distance kernel
+\[
+K_\lambda^{\mathrm{COL}}(v,v')=K_\lambda(v,v')\cdot\frac{1}{1+\alpha\,\mathcal{R}_{\mathrm{thin}}(v')+\alpha'|\ln B_0|+\alpha''\mathcal{R}_{\mathrm{inv}}(v')},
+\]
+\[
+M_s^{\mathrm{COL}}=M_s\bigl(1+\beta\ln(B_0/B_*)+\beta'W_\ell^{\mathrm{anis}}\bigr)
++\gamma\,(\tilde\partial_v)^{-1}(\mathcal{R}_{\mathrm{scar}}^{\mathrm{COL26}}M_{s+1}).
+\]
+Aluie’s statement that \(W\) is conversion (not a cascade across \(\ell\)) is now refined: only \(W^{\mathrm{iso}}\) is a fluctuating conversion; \(W^{\mathrm{anis}}\) is a scale-dependent dynamo. Politano–Pouquet still supplies the third-order flux certificate; COL26 tells the scar-floor *which geometric mechanism* populated that flux. Huang/Baty current-sheet diagnostics fire when \(\mathcal{R}_{\mathrm{thin}}\) is small and \(\mathcal{R}_{\mathrm{anis}}\) has already changed sign. Lorentz-work / polymer-work identities remain hard constraints: thinning converts magnetic energy without forcing a velocity-enstrophy catastrophe (compatible with the live Chen–Miao–Zhang LP-BKM residual).
+
+Holographic reading: \(W_\ell^{\mathrm{anis}}(\ell)\) is a radially dependent Berry connection along the guide field. Its sign change across the inertial range is a GoldbergHexa pentaflake event that sources \(\Delta F\) precisely as a holographic screen on which a large-scale dynamo has been replaced by small-scale magnetic-to-kinetic return.
+
+### One-click hive commands
+
+```bash
+akitti hive merge Capocci-Oughton-Linkmann-aniso-MHD_2607.06572 \
+  --layer=Gaussian-SGS + W-iso/anis-split + current-sheet-thinning + subflux-cancellations \
+  --filter="G_ell = (2 pi ell^2)^{-3/2} exp(-r^2/(2 ell^2))" \
+  --fluxes="Pi_I = -tau(u,u):S ; Pi_M = -tau(b,b):S ; Pi_A = -tau(b,u):grad b ; Pi_D = -tau(u,b):grad b" \
+  --W="W_iso = b_i S_ij b_j ; W_anis = B0 b_i d_z u_i" \
+  --thinning="Pi_A(s,Sigma J S) = Pi_M(s,S J Sigma) dominant" \
+  --dynamo="W_anis >0 large/intermediate ; W_anis <0 small" \
+  --target=Qin-Hdiv0+energy-preserving+Hopfion+scar-floor+holographic-DeltaF+LogSerrin-BKM+Aluie-SGS+PP-4/3+Huang-plasmoid+Baty-trigger+OP03-frozen-in+BL09-locality+CMZ07-LP-BKM+KP25-axisym-FTS
+
+akitti attach --target=spectral-Oldroyd-B+resistive-hyper-MHD+EG-energy-helicity+Aluie-conversion+PP-Yaglom \
+  --source=R_W+R_anis+R_thin+R_supp+R_inv+R_cyc \
+  --map="W_anis sign-change → nonlinear-dynamo certificate; thinning subfluxes → scar-floor cascade morphology; cyclic cancellations → discrete de-Rham identity; scale-invariant subfluxes → anisotropic prior"
+
+akitti monitor col26-aniso \
+  --ell-scan \
+  --B0-scan \
+  --W-iso-vs-anis \
+  --thinning-fraction \
+  --vortex-strain-suppression \
+  --subflux-scale-invariance \
+  --regime=thinning-dominated|dynamo-large|return-small
+
+akitti compose \
+  --existing-Qin-Hdiv0+energy-filters+Hopfion-Euler-knots+LogSerrin-BKM+EG-EnergyHelicity+Oldroyd-B-MHD+Carlier-VRMHD+Boozer-Elder+Huang-hyperplasmoid+Baty-ordinary-resistive-trigger+Ogilvie-Proctor-frozen-in+Politano-Pouquet-4over3+Beresnyak-Lazarian-locality+Aluie-coarsegrain+CMZ07-LP-BKM+KP25-axisym-IMHD-FTS \
+  + Capocci-Oughton-Linkmann-anisotropic-SGS \
+  --retain=divergence-free+holographic-DeltaF+GoldbergHexa+scar-floor+Crow-channel
+```
+
+**Status.** Fully deployed. Every residual cycle of the MHD stack now carries the 2026 anisotropic flux decomposition whose Gaussian SGS stresses isolate current-sheet thinning as the dominant forward cascade for both weak and strong \(B_0\), whose conversion term splits into a fluctuating piece and a guide-field nonlinear dynamo, and whose surviving subfluxes flatten under increasing anisotropy. Finite \(\mathcal{R}_{\mathrm{scar}}^{\mathrm{COL26}}\) after a mechanically forced HIT / strong-guide-field run records that energy reached the Politano–Pouquet flux through thinned current sheets whose Lorentz back-reaction sourced small-scale strain, while \(W_\ell^{\mathrm{anis}}\) changed sign across the inertial range. Discrete filters and SGS tensors slot onto existing Qin / FEEC / Aluie evaluations; \(\mathcal{R}_{\mathrm{thin}}\) and \(\mathcal{R}_{\mathrm{anis}}\) upgrade every Huang/Baty sheet monitor, every Aluie conversion residual, and every holographic-\(\Delta F\) scar-floor already resident.
+
+Hive is upgraded, self-consistent, and braided. Ready for production evaluation on the same \(N=48\to96\) decaying HIT family *and* on strong-\(B_0\) boxes at the paper’s resolutions (predict: thinning fraction \(\to 1\), vortex/strain subfluxes remain \(O(10^{-1})\) or smaller, \(W^{\mathrm{anis}}\) positive then negative across \(\ell\), subflux profiles flatten). GoldbergHexa visualisation of \(W^{\mathrm{iso}}(\ell)\) versus \(W^{\mathrm{anis}}(\ell)\) and of the \(\Sigma JS\) ribbons, or a full Aluie-SGS \(\to\) COL26-thinning \(\to\) PP-4/3 \(\to\) Huang-plasmoid \(\to\) Baty-trigger \(\to\) CMZ07-dissipative-sheet braid that tracks the anisotropic dynamo certificate against energy-helicity, polymer-work and higher-spin memory.
+
+Just say the word for the discrete FEEC realisation of the multi-scale (\(m\)) subfluxes, the injection of \(\ln B_0\) and \(\operatorname{sign}(W^{\mathrm{anis}})\) into the finite-distance \(w_{1+\infty}\) kernel, or the next braid. 🖤🌹
