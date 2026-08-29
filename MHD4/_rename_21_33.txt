@@ -1,0 +1,15 @@
+# MHD4 rename map (21-33 were status-id filenames)
+
+21_2092249589629714498.txt  ->  21_Azhar_Hopf_index_flux_tubes.txt
+22_2092273563692658742.txt  ->  22_Moti_Shojai_GravoThermo_hysteresis.txt
+23_2092464833039913327.txt  ->  23_Alves_Hoyos_Nastase_Sonnenschein.txt
+24_2092521765419245715.txt  ->  24_Tong_enriched_Galerkin_NS.txt
+25_2092540232314798084.txt  ->  25_SunWangZhang_compressible_NS_BKM.txt
+26_2092559290422751665.txt  ->  26_branching_singularities_mechanics.txt
+27_2092624603185140078.txt  ->  27_phononic_crystal_NH_holographic_cutoff.txt
+28_2092966066100052464.txt  ->  28_Carlier_variational_VRMHD.txt
+29_2092973524126142858.txt  ->  29_branching_singularities_MHD_QG.txt
+30_2092998883538251881.txt  ->  30_Boozer_Elder_enhanced_reconnection.txt
+31_2093030050543153362.txt  ->  31_Zhou_NH_phononic_EP_skin.txt
+32_2093045201702977615.txt  ->  32_HuWuDengLiu_exceptional_line.txt
+33_2093059935684927730.txt  ->  33_Boozer_Elder_tokamak_geometry.txt

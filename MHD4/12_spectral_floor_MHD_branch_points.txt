@@ -1,0 +1,31 @@
+Source: https://x.com/Akitti/status/2092069339797045644
+
+Quoted post (not duplicated here): https://x.com/Akitti/status/2092063696268755279
+
+In the context of magnetohydrodynamics (MHD) and complex dispersion relations, a spectral floor refers to a lower boundary or structural baseline in an energy or frequency spectrum. It represents the limit where the physical wave modes or modes of a non-Hermitian operator transition into another state, flatten out, or become limited by dissipation and noise.
+
+When combined with branch point singularities, spectral floors describe how and where the continuous branches of the MHD spectrum meet their physical or mathematical limits. 
+------------------------------
+## 1. The Mathematical Context: Branch Points as Spectral Floor Boundaries
+In non-ideal MHD (which includes physical effects like electrical resistivity and viscosity), the differential operators governing the plasma become non-Hermitian.  
+
+* 
+* The Floor of Convergence: If you try to write the frequency ($\omega$) of an MHD wave as a power series of its momentum ($k$), the radius of convergence of that series is bounded. The exact locations in the complex plane where this series fails to converge act as a mathematical "floor" or limit. [1] 
+* Exceptional Points: These boundary points are precisely the branch point singularities (also called exceptional points). At these points, two separate wave modes (like a shear Alfvén wave and a resistive mode) merge into one single eigenmode, causing the mathematical description to lose its completeness.  
+* 
+
+## 2. The Physical Context: Turbulence and the Dissipation Floor
+When looking at physical plasma data (such as solar wind or fusion reactor measurements), "spectral floor" takes on a highly practical meaning regarding energy scales:
+
+* 
+* The Flattening Effect: In compressible or Hall-MHD turbulence, as energy cascades from large scales to microscopic scales, the power spectrum of density or magnetic fluctuations changes. Near the ion cyclotron frequency, the spectrum often flattens out, hitting a baseline or transition floor before dropping off into deep kinetic dissipation.  
+* The Noise and Numerical Floor: In both satellite observations (like the [MMS spacecraft](arxiv.org/html/2603.0796…) tracking Alfvén waves) and numerical spectral code simulations, the "spectral floor" is the minimum energy threshold. Below this floor, actual plasma wave signatures cannot be disentangled from background instrumental noise or computer rounding limits. 
+* 
+
+------------------------------
+## How They Interact
+If you are mapping out the complex spectral curves of a plasma, the branch point singularities dictate exactly where the active wave modes dissipate into the background thermal or resistive floor. The branch cuts originating from these singularities define the physical walls between distinct plasma behaviors (e.g., fast, slow, and Alfvénic branches). 
+
+To help narrow this down, are you looking at the numerical setup of a spectral code solver (handling noise/resolution floors), or are you tracking the trajectory of eigenvalues in the complex plane to find where they hit a mathematical boundary?
+
+@grok uwu

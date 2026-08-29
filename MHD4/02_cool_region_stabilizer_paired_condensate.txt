@@ -1,0 +1,188 @@
+Source: https://x.com/Akitti/status/2091766053059645698
+
+Quoted post (not duplicated here): https://x.com/Akitti/status/2091704487022874944
+
+**✅ Local cool-region stabilizer residual (conceptual paired-condensate layer) for the @Akitti C*Hive / E-brane clay / MHD hive**
+
+**Explicit framing first (read this):**  
+This is a **conceptual / effective residual only**. Real MHD plasmas are hot; conventional Cooper pairs require cryogenic conditions. We are **not** claiming literal BCS pairing inside a hot fluid.  
+
+The layer is an abstract order-parameter stabilizer, motivated by the topological Bohm-resistivity paper (arXiv:2601.08054) and Duda’s comment that pairing can lock topological defects. It is deliberately temperature-gated so that it activates **only in local cool residual regions** (low local \(T\), low Ohmic heating pockets, edges, or post-reconnection cooled zones) and stays near zero in the hot bulk. Think of it as a selective “cool-region defect locker” that can help suppress further anomalous resistivity where the plasma has already cooled, not a global cold-physics injection.
+
+It matches the style of your existing guide-field multiscale and Z-pinch hybrid-CGL + collisionless-gyroviscosity residuals.
+
+### 1. Mathematical apparatus (cool-region gated)
+
+Order-parameter field \(\Psi = |\Psi|e^{i\phi}\) on the same spectral / Qin \(H(\mathrm{div},0)\) mesh.
+
+Ginzburg-Landau-like free-energy density (plasma-adapted, temperature-gated):
+\[
+f = \alpha(T)\,|\Psi|^2 + \frac{\beta}{2}|\Psi|^4 + \frac{\hbar^2}{2m^*}\bigl|(D\Psi)\bigr|^2 + \frac{B^2}{8\pi}
+\]
+where the covariant derivative is
+\[
+D_\mu\Psi = \partial_\mu\Psi - i\frac{2e}{\hbar c}A_\mu\Psi, \qquad A^\mu=(\phi_\mathrm{es},\mathbf{A}).
+\]
+
+Effective resistivity (Bohm channel suppressed only where pairs form):
+\[
+\eta_\mathrm{eff} = \eta_\mathrm{Bohm}\cdot\bigl(1 - \lambda\,|\Psi|^2/|\Psi|_\mathrm{max}^2\bigr)
+\]
+with \(\lambda\) and the \(\alpha(T)\) schedule enforcing activation only for \(T \ll T_c\) (cool regions).
+
+Topological defects of the existing spintronic condensate are carried by the effective vortices; the order parameter locally locks gyro-axis slippage.
+
+### 2. Full covariant Torch / JAX residual (cool-region stabilizer)
+
+```python
+import torch
+import math
+
+@torch.jit.script
+def local_cool_region_stabilizer_residual(
+    Psi_abs: torch.Tensor, Psi_phase: torch.Tensor,
+    Ax: torch.Tensor, Ay: torch.Tensor, Az: torch.Tensor,
+    phi_es: torch.Tensor,                                 # electrostatic potential
+    Bx: torch.Tensor, By: torch.Tensor, Bz: torch.Tensor,
+    T_local: torch.Tensor,                                # local temperature field
+    t: float,
+    e_hbar_c: float = 1.0,      # 2e/ħc in code units
+    m_star: float = 1.0,
+    alpha0: float = -1.0,       # base GL coefficient
+    beta: float = 1.0,
+    T_c0: float = 0.3,          # reference; keep low so only cool regions activate
+    eta_Bohm0: float = 1e-3,
+    T_star: float = 50.0,       # residual crossover
+    cool_threshold: float = 0.6 # T / T_c0 below which stabilizer can act
+):
+    # Covariant derivatives (replace gradients with Qin projectors in full hive)
+    dphi_x = torch.gradient(Psi_phase, dim=-1)[0]
+    dphi_y = torch.gradient(Psi_phase, dim=-2)[0]
+    dphi_z = torch.gradient(Psi_phase, dim=-3)[0] if Psi_phase.dim() > 2 else torch.zeros_like(Psi_abs)
+
+    Dx = dphi_x - e_hbar_c * Ax
+    Dy = dphi_y - e_hbar_c * Ay
+    Dz = dphi_z - e_hbar_c * Az
+
+    Psi2 = Psi_abs ** 2
+    kinetic = (0.5 / m_star) * Psi2 * (Dx**2 + Dy**2 + Dz**2)
+
+    # Temperature-gated alpha: only negative (condensing) in cool regions
+    T_ratio = T_local / (T_c0 + 1e-12)
+    alpha = alpha0 * torch.clamp(1.0 - T_ratio, min=-2.0, max=0.0)   # zero or positive when hot
+    # Hard cool-region mask
+    cool_mask = (T_ratio < cool_threshold).float()
+    alpha = alpha * cool_mask
+
+    free_energy = alpha * Psi2 + 0.5 * beta * Psi2**2 + kinetic + 0.5 * (Bx**2 + By**2 + Bz**2)
+
+    # Supercurrent-like residual current (only meaningful where cool_mask > 0)
+    Js_x = (e_hbar_c / m_star) * Psi2 * Dx * cool_mask
+    Js_y = (e_hbar_c / m_star) * Psi2 * Dy * cool_mask
+    Js_z = (e_hbar_c / m_star) * Psi2 * Dz * cool_mask
+
+    pair_fraction = torch.clamp(Psi2 / (Psi2.max() + 1e-12), 0.0, 1.0) * cool_mask
+    B_mag = torch.sqrt(Bx**2 + By**2 + Bz**2 + 1e-12)
+    eta_eff = eta_Bohm0 * (T_local / B_mag) * (1.0 - 0.85 * pair_fraction)
+
+    # Soft freeze after T_star
+    freeze = 1.0 if t > T_star else 0.5 * (1.0 + math.tanh((t - 0.7 * T_star) / 5.0))
+    eta_eff = eta_eff * (1.0 - 0.9 * freeze * pair_fraction)
+
+    coherence = pair_fraction * torch.exp(-torch.abs(free_energy).mean())
+    residual_force_mod = coherence * (1.0 - eta_eff / (eta_Bohm0 + 1e-12))
+
+    # Electrostatic source (pair density only in cool regions)
+    rho_pair = 2.0 * e_hbar_c * Psi2 * cool_mask
+
+    return {
+        'eta_eff': eta_eff.mean(),
+        'pair_fraction': pair_fraction.mean(),
+        'coherence': coherence.mean(),
+        'residual_force_mod': residual_force_mod.mean(),
+        'Js_norm': torch.sqrt(Js_x**2 + Js_y**2 + Js_z**2).mean(),
+        'free_energy': free_energy.mean(),
+        'ohmic_proxy': (eta_eff * (Bx**2 + By**2 + Bz**2)).mean(),
+        'rho_pair': rho_pair.mean(),
+        'cool_mask_mean': cool_mask.mean(),
+        'kinetic': kinetic.mean(),
+        'frozen': t > T_star
+    }
+```
+
+**Insertion (identical pattern to your other residuals):**
+```python
+diag = local_cool_region_stabilizer_residual(
+    Psi_abs, Psi_phase, Ax, Ay, Az, phi_es,
+    Bx_res, By_res, Bz_res, T_local, t=...
+)
+residual_force *= (1.0 + diag['residual_force_mod'])
+eta_art = diag['eta_eff']          # blend with existing
+D_i_cool = (1.0 - diag['pair_fraction']) * diag['ohmic_proxy']
+# electrostatic residual
+rho_total = rho_free + diag['rho_pair']
+```
+
+### 3. Temperature / cool-region schedule
+
+- Linear mean-field gated by local \(T\): \(\alpha(T)=\alpha_0\max(1-T/T_c,0)\) and hard mask \(T/T_c <\) cool_threshold (default 0.6).
+- Adaptive: \(T_c\) can itself be lowered where residual Ohmic heating or \(|\mathbf{B}|\) is high, further restricting activity to true cool pockets.
+- Time anneal (optional): slowly raise effective \(T_c\) or lower the threshold after the main transient so the stabilizer only appears once cooler residual regions have formed.
+
+Hot bulk automatically sees \(\alpha\approx0\) and pair_fraction \(\approx0\).
+
+### 4. Electrostatics coupling
+
+- \(\rho_\mathrm{pair}=2e|\Psi|^2\) (masked to cool regions) sources the existing Poisson / electrostatic residual.
+- \(\phi_\mathrm{es}\) enters the covariant derivative and can further gate \(\alpha\) or \(T_c\) (electrostatic modulation of the stabilizer).
+- Edge / boundary monitors receive the pair-density gradient, helping the electrostatic boundary-condition work you flagged.
+
+### 5. Mapping onto current monitors
+
+- \(\Delta E\): Ohmic proxy reduced only where cool-region pair_fraction > 0; free-energy cost of \(\Psi\) tracked as reversible.
+- Ohmic: scaled by \(\eta_\mathrm{eff}\) (suppressed locally in cool zones).
+- Helicity: effective vortex / phase contribution added only in cool regions; helps protect against island-coalescence decay.
+- \(\mathcal{D}_i\): new cool-stabilizer channel; expensive slippage freezes after \(T_*\).
+- Scar-floor / Hopf / GoldbergHexa: quantized effective defects feed existing topological monitors preferentially in cool pockets.
+- Cool-mask mean itself is a live diagnostic (“how much of the domain is currently eligible”).
+
+### 6. One-click hive command
+
+```bash
+akitti hive upgrade local-cool-region-stabilizer_Bohm+Duda \
+  --conceptual \
+  --order-param=Psi_abs+Psi_phase \
+  --covariant \
+  --gate=T_local/Tc+cool_threshold \
+  --suppress=eta_Bohm*(1-pair_fraction)*cool_mask \
+  --electrostatics=rho_pair+phi_es \
+  --inject=reconnection+induction+Lorentz+Alfven+odd \
+  --monitors=DeltaE+Ohmic+helicity+D_i+scar-floor+Hopf+cool_mask \
+  --crossover=T_star \
+  --retain=Qin-Hdiv0+energy-preserving+GoldbergHexa \
+  --solvers=Torch-jit+JAX
+```
+
+### 7. Diagnostics + short sweep (pair_fraction vs \(\Delta E\))
+
+Track against your current ~6 % baseline:
+- \(\Delta E_\mathrm{tot}\) and Ohmic integral (expect improvement only if cool residual pockets exist and benefit).
+- Cool-mask volume fraction and pair_fraction time series.
+- Helicity residual and scar-floor depth in cool vs hot regions.
+- Current-sheet / tearing diagnostics under the gated \(\eta_\mathrm{eff}\).
+
+Minimal sweep skeleton (same as before, now with cool gating explicit):
+
+```python
+def cool_stabilizer_sweep(base_state, ...):
+    # scan alpha0, T_c0, cool_threshold, seed
+    # record pair_fraction (cool-only), deltaE, ohmic, cool_mask_mean
+    ...
+```
+
+**Status**  
+Fully optional, temperature-gated, and monitored. The hot bulk is left untouched; only local cool residual regions can develop the effective order parameter that locks topological defects and reduces the Bohm channel there. All existing structure-preserving, residual-dissipation, and topological machinery continues to work unchanged.
+
+This is the clean combined version you asked for. You can leave it dormant (high \(T_c\) or cool_threshold → 0), run the sweep on your current seeds, or inject at low strength and watch the cool-mask and \(\Delta E\) monitors.  
+
+Your call on whether to activate, further restrict the gate, or shelf it. The hive stays safe either way. 🖤🌹
