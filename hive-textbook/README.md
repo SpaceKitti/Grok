@@ -47,3 +47,7 @@ Later, if the clay chapter needs it: Bird, Armstrong, Hassager,
 
 If a paper note in MHD4 is not used by `chive_ns`, it does not get a chapter
 until the code does. The book follows the solver.
+
+## Free refs sitting in `refs/`
+
+Author-posted PDFs. See `refs/SOURCES.md`.
