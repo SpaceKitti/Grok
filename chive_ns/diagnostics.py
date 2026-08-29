@@ -1,11 +1,11 @@
 # ============================================================
-# @Akitti C*Hive – Diagnostics (λ₂, energy, IPR, stretching)
+# @Akitti C*Hive – Diagnostics (λ₂, energy, IPR, stretching, MHD)
 # ============================================================
 
 import jax.numpy as jnp
 from jax import jit
 
-from .grid import _vort_from_u_2d, _vort_from_u_3d
+from .grid import _vort_from_u_2d, _vort_from_u_3d, ik_cross
 
 
 @jit
@@ -100,6 +100,55 @@ def _zero_stress():
     return {"mean_tau": z, "max_tau": z, "tau_s": z}
 
 
+def _zero_magnetic():
+    """Placeholders so NS / clay histories share the MHD key set."""
+    z = jnp.array(0.0)
+    return {
+        "mag_energy": z,
+        "max_J": z,
+        "max_divB": z,
+        "mag_helicity": z,
+        "cross_helicity": z,
+        "j2_mean": z,
+    }
+
+
+@jit
+def _magnetic_diagnostics_3d(B_hat, u_hat, grid):
+    """Magnetic energy, current, div B, helicities.
+
+    Magnetic helicity uses the Coulomb-gauge vector potential A with
+    B = curl(A), recovered the same way velocity is recovered from vorticity:
+    A-hat = (ik x B-hat) / k^2. Cross helicity is mean(u · B).
+    """
+    k = grid["k_stack"]
+    dealias = grid["dealias"]
+    B = jnp.fft.ifftn(B_hat, axes=(1, 2, 3)).real
+    mag_energy = 0.5 * jnp.mean(jnp.sum(B**2, axis=0))
+    divB = jnp.fft.ifftn(jnp.sum(k * B_hat, axis=0)).real
+    J_hat = ik_cross(B_hat, grid) * dealias
+    J = jnp.fft.ifftn(J_hat, axes=(1, 2, 3)).real
+    J2 = jnp.sum(J**2, axis=0)
+    A_hat = (ik_cross(B_hat, grid) / grid["k2"]) * dealias
+    A = jnp.fft.ifftn(A_hat, axes=(1, 2, 3)).real
+    u = jnp.fft.ifftn(u_hat, axes=(1, 2, 3)).real
+    return {
+        "mag_energy": mag_energy,
+        "max_J": jnp.max(jnp.sqrt(J2)),
+        "max_divB": jnp.max(jnp.abs(divB)),
+        "mag_helicity": jnp.mean(jnp.sum(A * B, axis=0)),
+        "cross_helicity": jnp.mean(jnp.sum(u * B, axis=0)),
+        "j2_mean": jnp.mean(J2),
+    }
+
+
+def magnetic_diagnostics(B_hat, u_hat, grid):
+    """Magnetic energy, max |J|, max |div B|, magnetic and cross helicity."""
+    if int(grid["dim"]) != 3:
+        return _zero_magnetic()
+    return _magnetic_diagnostics_3d(B_hat, u_hat, grid)
+
+
 @jit
 def _field_diagnostics_2d(u_hat, grid):
     u = jnp.fft.ifftn(u_hat, axes=(1, 2)).real
@@ -153,8 +202,8 @@ def _field_diagnostics_3d(u_hat, grid):
     }
 
 
-def field_diagnostics(u_hat, grid, tau_hat=None):
-    """Energy, enstrophy, IPR, helicity, max |ω|, stretching, max |div u|, τ stats."""
+def field_diagnostics(u_hat, grid, tau_hat=None, B_hat=None):
+    """Energy, enstrophy, IPR, helicity, max |w|, stretching, max |div u|, tau / B stats."""
     if int(grid["dim"]) == 2:
         d = _field_diagnostics_2d(u_hat, grid)
     else:
@@ -163,6 +212,10 @@ def field_diagnostics(u_hat, grid, tau_hat=None):
         d.update(_zero_stress())
     else:
         d.update(stress_diagnostics(tau_hat, u_hat, grid))
+    if B_hat is None:
+        d.update(_zero_magnetic())
+    else:
+        d.update(magnetic_diagnostics(B_hat, u_hat, grid))
     return d
 
 
@@ -186,13 +239,16 @@ def _time_derivative(y, t):
 
 @jit
 def _running_trapz(y, t):
-    """Running trapezoidal integral; out[0] = 0, out[i] = ∫_0^{t_i} y dt."""
+    """Running trapezoidal integral; out[0] = 0, out[i] = integral_0^{t_i} y dt."""
     pieces = 0.5 * (y[1:] + y[:-1]) * (t[1:] - t[:-1])
     return jnp.concatenate([jnp.zeros((1,), dtype=y.dtype), jnp.cumsum(pieces)])
 
 
-def millennium_series(hist, time, nu):
-    """BKM integral, dZ/dt, dE/dt, and dissipation from a recorded history."""
+def millennium_series(hist, time, nu, eta=0.0):
+    """BKM integral, dZ/dt, dE/dt, and dissipation from a recorded history.
+
+    Dissipation is nu Z + <tau:S> + eta <|J|^2> (Ohmic term is zero when eta=0).
+    """
     energy = hist["energy"]
     enstrophy = hist["enstrophy"]
     max_vort = hist["max_vort"]
@@ -205,7 +261,8 @@ def millennium_series(hist, time, nu):
         dE_dt = _time_derivative(energy, time)
         dZ_dt = _time_derivative(enstrophy, time)
         bkm = _running_trapz(max_vort, time)
-    dissipation = nu * enstrophy + hist["tau_s"]
+    ohmic = eta * hist["j2_mean"]
+    dissipation = nu * enstrophy + hist["tau_s"] + ohmic
     dZ_dt_budget = 2.0 * hist["stretch"] - 2.0 * nu * hist["palinstrophy"]
     return {
         "time": time,
@@ -213,6 +270,7 @@ def millennium_series(hist, time, nu):
         "dZ_dt": dZ_dt,
         "dE_dt": dE_dt,
         "dissipation": dissipation,
+        "ohmic": ohmic,
         "dZ_dt_budget": dZ_dt_budget,
         "max_strain": hist["max_strain"],
         "palinstrophy": hist["palinstrophy"],
