@@ -1,0 +1,11 @@
+qty,value
+E_drop_hydro,0.004193588
+E_drop_MHD,0.004607887
+MHD_minus_hydro,0.0004142989999999999
+MHD_minus_hydro_pct_of_E_hydro0,0.5882863290049288
+int_Ohmic,0.0005790763137918503
+Ohmic_frac_sheets,0.2314155180347128
+Ohmic_frac_tubes_rest,0.7685844819652871
+n_sheet_cells,566
+n_all,110592
+MHD_minus_hydro_over_Ohmic,0.7154480163195212

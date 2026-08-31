@@ -1,0 +1,18 @@
+N=48 t=0.360 tubes+4-scar B0=0.08 eta=1e-3 b_guide=z
+freeze_ext=0.75 uniform (75% B0 Lorentz-only, 25% stretched)
+eta_odd=1e-3 berry_gain=0.5; mu_eff=2e-4
+
+NS            ΔE_kin 5.95  |ω| 38.480  (previous hydro)
+hybrid        ΔE_kin 8.43  |ω| 37.955  W=8.71e-3
+
+case         ΔE_tot  |ω|_end  max|J|    ∫Ohm     λ/dx   N_i
+NS+MHD         6.26   34.749   22.97  5.79e-4    2.12  0.093
+freeze         6.06   38.502    6.12  3.87e-5    7.95  0.051
+hy+freeze      8.41   37.982    6.04  3.82e-5    8.05  0.053
+odd            7.03   34.893   22.53  5.68e-4    2.17  0.094
+mu_eff         8.17   33.042   21.99  5.54e-4    2.22  0.094
+freeze+odd     6.18   39.361    6.11  3.84e-5    7.99  0.051
+
+NS+MHD λ_min/dx=2.12 → sheet under-resolved at N=48
+3D odd kernel n×∇²u is NOT work-free (kin_err 9%)
+freeze mag identity residual is frozen-guide constraint work

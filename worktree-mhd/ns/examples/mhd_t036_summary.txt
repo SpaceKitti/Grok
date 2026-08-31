@@ -1,0 +1,33 @@
+N=48  dt=0.0015  steps=240  t=0.360  tubes + 4-scar  force_amp=0.35
+nu=5e-4  eta_mag=1e-3  B0=0.08  b_guide=z  eta_odd=0
+First MHD campaign (hy+MHD induction used J-mollified u — magnetic budget leak noted)
+
+========== End-state table (kinetic) ==========
+case      ΔE_kin%  |ω|_end  |ω|_peak      W=τ:S   max|τ|  stretch
+NS           5.95   38.480    38.480  0.000e+00   0.0000    5.151
+old         15.24   35.320    35.696  3.216e-02   0.3421    4.109
+hybrid       8.43   37.955    37.955  8.705e-03   0.0212    4.921
+NS+MHD      10.32   34.749    35.518  0.000e+00   0.0000    4.372
+hy+MHD       9.90   37.711    37.711  8.569e-03   0.0209    4.825
+
+========== Energy budget (kin + mag) ==========
+case      ΔE_tot%    E_kin0    E_kin1    E_mag0    E_mag1       ∫νZ        ∫W      ∫Ohm   ∫u·(J×B)
+NS           5.95 7.042e-02 6.623e-02 0.000e+00 0.000e+00 4.072e-03 0.000e+00 0.000e+00  0.000e+00
+old         15.24 7.042e-02 5.969e-02 0.000e+00 0.000e+00 3.768e-03 6.801e-03 0.000e+00  0.000e+00
+hybrid       8.43 7.042e-02 6.449e-02 0.000e+00 0.000e+00 4.028e-03 1.920e-03 0.000e+00  0.000e+00
+NS+MHD       6.26 7.042e-02 6.316e-02 3.200e-03 5.857e-03 3.918e-03 0.000e+00 5.791e-04 -3.216e-03
+hy+MHD       8.77 7.042e-02 6.345e-02 3.200e-03 3.720e-03 4.001e-03 1.907e-03 2.454e-05 -1.077e-03
+
+========== Magnetic / OP monitors at t_end ==========
+case         Ohmic   max|J|   max|B|   H_cross     H_mag       H_J op_ratio  max|divB|
+NS+MHD   5.151e-03 2.297e+01   0.4861 -1.398e-04 -3.270e-08 -5.360e-05    0.000   1.35e-16
+hy+MHD   2.188e-04 2.287e+00   0.2142 -4.802e-04  1.642e-08  2.288e-06    0.574   1.52e-17
+
+Budget notes
+- NS: ΔE_kin ≈ ∫νZ (4.19e-3 vs 4.07e-3)
+- old clay: ΔE_kin ≈ ∫νZ+∫W (10.73e-3 vs 10.57e-3) — polymer work is the extra sink
+- hybrid: ΔE_kin ≈ ∫νZ+∫W (5.93e-3 vs 5.95e-3)
+- NS+MHD: ΔE_kin ≈ ∫νZ−∫Lorentz (7.26e-3 vs 7.14e-3); ΔE_mag ≈ −∫Lorentz−∫Ohm (gain 2.66e-3 vs 2.64e-3)
+- hy+MHD: kinetic identity closes; magnetic identity does NOT (gain 0.52e-3 vs predicted 1.05e-3)
+  Cause: induction used J-mollified u, Lorentz/momentum used unmollified u.
+  Fix applied after this run (induction now uses unmollified u).

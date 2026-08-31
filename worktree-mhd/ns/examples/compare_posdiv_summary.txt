@@ -1,0 +1,7 @@
+N=48 t=0.36 Crow+4-scar B0=0.08 eta=1e-3 b_guide=z freeze=0
+
+NS+MHD   ΔE_tot=6.26  |ω|=34.749  max|J|=22.97  ∫Ohm=5.79e-4  λ/dx=2.12  mag_err=0.77%
+posdiv   ΔE_tot=6.38  |ω|=35.068  max|J|=18.52  ∫Ohm=5.04e-4  ∫η_h=1.59e-4  λ/dx=2.62  mag_err=0.88%
+
+ON:  eta_hyper=2e-7, posdiv=1 (Heun midpoint Helmholtz)
+OFF: freeze, odd, mu_eff, harris, es_lhdi, heavy scaffolds

@@ -1,0 +1,459 @@
+# ============================================================
+# @Akitti C*Hive – Unified Driver
+# ============================================================
+
+import jax
+import jax.numpy as jnp
+from jax import random
+
+from .grid import (
+    make_grid, project_div_free, generate_smooth_div_free_u0,
+    generate_taylor_green, generate_antiparallel_tubes,
+    velocity_from_vorticity, vorticity_from_velocity, cfl_dt,
+    paper_ni_ic, paper_sigma_c,
+)
+from .vorticity import (
+    modest_liar, z7_braid_forcing, ns_vorticity_step,
+    coupled_vorticity_stress_step, coupled_mhd_step, resolve_scar_centres,
+)
+from .clay import DEFAULT_CLAY, zero_tau_hat
+from .bubble import coupled_rp_attractor_rhs
+from .diagnostics import field_diagnostics, millennium_series, sample_times
+from .live import live_diagnostics_and_feedback, _zero_live
+from .constants import DELTA_MIN
+from .mhd import (
+    DEFAULT_MHD, generate_b0, zero_b_hat, mhd_field_diagnostics,
+    _zero_mhd, cfl_dt_mhd, split_guide_fields,
+)
+from .es_lhdi import es_placeholder_diagnostics
+
+
+_TUBE_KEYS = ("circulation", "radius", "separation", "perturbation", "axial_wave")
+_REG_KEYS = (
+    "soft_J", "alpha_par", "alpha_perp", "gamma_s", "epsilon_frechet",
+    "high_de", "alpha_LB", "soft_LB", "lam_kin_gain",
+)
+_REG_DEFAULTS = (0.004, 0.0, 3e-4, 1.5, 0.0, 0.08, 0.08, 0.05, 0.10)
+
+
+def _regs_from_params(p):
+    return jnp.array([p.get(k, d) for k, d in zip(_REG_KEYS, _REG_DEFAULTS)],
+                     dtype=jnp.float64)
+
+
+def _snapshot_ns(omega_hat, grid):
+    u_hat = velocity_from_vorticity(omega_hat, grid)
+    d = field_diagnostics(u_hat, grid, tau_hat=None)
+    d.update(_zero_live())
+    d.update(_zero_mhd())
+    d.update(es_placeholder_diagnostics())
+    return d
+
+
+def _snapshot_clay(state, grid, nu, clay_params):
+    omega_hat, tau_hat = state
+    u_hat = velocity_from_vorticity(omega_hat, grid)
+    d = field_diagnostics(u_hat, grid, tau_hat=tau_hat)
+    live = live_diagnostics_and_feedback(
+        u_hat, tau_hat, grid, nu, clay_params["eta_p"],
+        clay_params["lambda_relax"], 0.0)
+    d.update(live)
+    d.update(_zero_mhd())
+    d.update(es_placeholder_diagnostics())
+    return d
+
+
+def _snapshot_mhd(state, grid, nu, clay_params, mhd_params, B_ext_hat):
+    omega_hat, tau_hat, B_hat = state
+    u_hat = velocity_from_vorticity(omega_hat, grid)
+    d = field_diagnostics(u_hat, grid, tau_hat=tau_hat)
+    live = live_diagnostics_and_feedback(
+        u_hat, tau_hat, grid, nu, clay_params["eta_p"],
+        clay_params["lambda_relax"], 0.0)
+    d.update(live)
+    d.update(mhd_field_diagnostics(
+        B_hat, u_hat, grid, mhd_params["eta_mag"], tau_hat, B_ext_hat,
+        eta_hyper=float(mhd_params.get("eta_hyper", 0.0))))
+    R = float(mhd_params.get("tube_radius", 0.08))
+    G0 = float(mhd_params.get("tube_circulation", 0.7))
+    Gm0 = float(mhd_params.get("gamma_m", 0.0))
+    eta = float(mhd_params["eta_mag"])
+    d["ni_paper0"] = jnp.array(paper_ni_ic(G0, Gm0, eta, R))
+    area = jnp.pi * R * R
+    sig = paper_sigma_c(R)
+    Gt = d["max_vort"] * area
+    Gmt = d["max_b"] * area
+    d["ni_paper"] = Gmt**2 / (Gt * eta * sig * sig + 1e-30)
+    # Dimensionless Lorentz/inertia: <|J×B|> / (ρ u²/ℓ), ℓ=σ_c, ρ=1.
+    d["ni_li"] = d["N_i_force"] * sig
+    L = float(grid["L"])
+    u_rms = jnp.sqrt(2.0 * d["energy"])
+    v_A = jnp.sqrt(2.0 * d["e_mag_tot"])
+    d["Re"] = u_rms * L / (nu + 1e-30)
+    d["Rm"] = u_rms * L / (eta + 1e-30)
+    d["Pr_m"] = jnp.array(nu / (eta + 1e-30))
+    d["v_A"] = v_A
+    d["lundquist"] = L * v_A / (eta + 1e-30)
+    d["plasma_beta"] = 2.0 * d["energy"] / (d["e_mag_tot"] + 1e-30)
+    d.update(es_placeholder_diagnostics())
+    return d
+
+
+def _initial_velocity(key, grid, ic, dim, ic_params=None):
+    p = ic_params or {}
+    if dim == 3 and ic == "taylor_green":
+        return generate_taylor_green(grid, scale=p.get("scale", 1.0))
+    if dim == 3 and ic == "tubes":
+        return generate_antiparallel_tubes(
+            grid, **{k: p[k] for k in _TUBE_KEYS if k in p})
+    return generate_smooth_div_free_u0(key, grid)
+
+
+def _scan_loop(advance, snapshot, state0, steps, diag_every):
+    """Chunked lax.scan with a t=0 snapshot. `advance(state, idx) -> state`."""
+    n_chunks = int(steps // diag_every)
+    remainder = int(steps % diag_every)
+    d0 = snapshot(state0)
+
+    def chunk(state, cidx):
+        start = cidx * diag_every
+
+        def one(state, j):
+            return advance(state, start + j), None
+
+        state, _ = jax.lax.scan(one, state, jnp.arange(diag_every))
+        return state, snapshot(state)
+
+    if n_chunks:
+        state, hist = jax.lax.scan(chunk, state0, jnp.arange(n_chunks))
+        hist = jax.tree.map(lambda a, b: jnp.concatenate([a[None], b]), d0, hist)
+    else:
+        state, hist = state0, jax.tree.map(lambda v: v[None], d0)
+    if remainder:
+        start = n_chunks * diag_every
+
+        def tail(state, j):
+            return advance(state, start + j), None
+
+        state, _ = jax.lax.scan(tail, state, jnp.arange(remainder))
+        last = snapshot(state)
+        hist = jax.tree.map(lambda a, b: jnp.concatenate([a, b[None]]), hist, last)
+    return state, hist
+
+
+def _run_vorticity_scanned(omega_hat, grid, nu, dt, steps, force_on,
+                           scheme, diag_every, n_scars=1, scar_centres=None,
+                           force_amp=1.0):
+    """Pure NS stretching loop."""
+    force_pat = z7_braid_forcing(grid, 1.0, n_scars=n_scars,
+                                 scar_centres=scar_centres)
+    force_scale = (1.0 if force_on else 0.0) * float(force_amp)
+
+    def advance(omega_hat, idx):
+        t_norm = idx / jnp.maximum(steps - 1, 1)
+        force = force_pat * (modest_liar(t_norm) * force_scale)
+        return ns_vorticity_step(omega_hat, grid, nu, dt, force, scheme)
+
+    def snapshot(omega_hat):
+        return _snapshot_ns(omega_hat, grid)
+
+    return _scan_loop(advance, snapshot, omega_hat, steps, diag_every)
+
+
+def _run_clay_scanned(omega_hat, tau_hat, grid, nu, dt, steps, force_on,
+                      scheme, diag_every, clay_params, n_scars=1,
+                      scar_centres=None, force_amp=1.0):
+    """Coupled NS stretching + Oldroyd-B extra-stress loop."""
+    force_pat = z7_braid_forcing(grid, 1.0, n_scars=n_scars,
+                                 scar_centres=scar_centres)
+    force_scale = (1.0 if force_on else 0.0) * float(force_amp)
+    eta_p = clay_params["eta_p"]
+    lambda_relax = clay_params["lambda_relax"]
+    alpha = clay_params["alpha"]
+    beta_scar = clay_params["beta_scar"]
+    stress_diff = clay_params["stress_diff"]
+    clay_gain = clay_params["clay_gain"]
+    gum_scale = clay_params.get("gum_scale", 1.0)
+    stress_couple = clay_params.get("stress_couple", 1.0)
+    regs = _regs_from_params(clay_params)
+
+    def advance(state, idx):
+        omega_hat, tau_hat = state
+        t = idx * dt
+        t_norm = idx / jnp.maximum(steps - 1, 1)
+        force = force_pat * (modest_liar(t_norm) * force_scale)
+        return coupled_vorticity_stress_step(
+            omega_hat, tau_hat, grid, nu, dt, force, scheme, t,
+            eta_p, lambda_relax, alpha, beta_scar, stress_diff, clay_gain,
+            gum_scale, stress_couple, regs)
+
+    def snapshot(state):
+        return _snapshot_clay(state, grid, nu, clay_params)
+
+    return _scan_loop(advance, snapshot, (omega_hat, tau_hat), steps, diag_every)
+
+
+def _run_mhd_scanned(omega_hat, tau_hat, B_hat, grid, nu, dt, steps, force_on,
+                     scheme, diag_every, clay_params, mhd_params, n_scars=1,
+                     scar_centres=None, force_amp=1.0, B_ext_hat=None,
+                     induct_ext=1.0):
+    """Coupled NS + Oldroyd-B + induction / Lorentz loop."""
+    force_pat = z7_braid_forcing(grid, 1.0, n_scars=n_scars,
+                                 scar_centres=scar_centres)
+    force_scale = (1.0 if force_on else 0.0) * float(force_amp)
+    eta_p = clay_params["eta_p"]
+    lambda_relax = clay_params["lambda_relax"]
+    alpha = clay_params["alpha"]
+    beta_scar = clay_params["beta_scar"]
+    stress_diff = clay_params["stress_diff"]
+    clay_gain = clay_params["clay_gain"]
+    gum_scale = clay_params.get("gum_scale", 1.0)
+    stress_couple = clay_params.get("stress_couple", 1.0)
+    regs = _regs_from_params(clay_params)
+    eta_mag = mhd_params["eta_mag"]
+    eta_odd = mhd_params["eta_odd"]
+    mu_eff = float(mhd_params.get("mu_eff", 0.0))
+    berry_gain = float(mhd_params.get("berry_gain", 0.0))
+    eta_hyper = float(mhd_params.get("eta_hyper", 0.0))
+    posdiv = float(mhd_params.get("posdiv", 0.0))
+    hyper_kcut = float(mhd_params.get("hyper_kcut", 0.0))
+    if B_ext_hat is None:
+        B_ext_hat = zero_b_hat(grid, dtype=omega_hat.dtype)
+
+    def advance(state, idx):
+        omega_hat, tau_hat, B_hat = state
+        t = idx * dt
+        t_norm = idx / jnp.maximum(steps - 1, 1)
+        force = force_pat * (modest_liar(t_norm) * force_scale)
+        return coupled_mhd_step(
+            omega_hat, tau_hat, B_hat, grid, nu, dt, force, scheme, t,
+            eta_p, lambda_relax, alpha, beta_scar, stress_diff, clay_gain,
+            gum_scale, stress_couple, regs, eta_mag, eta_odd,
+            B_ext_hat, induct_ext, mu_eff, berry_gain, eta_hyper, posdiv,
+            hyper_kcut)
+
+    def snapshot(state):
+        return _snapshot_mhd(state, grid, nu, clay_params, mhd_params, B_ext_hat)
+
+    return _scan_loop(advance, snapshot, (omega_hat, tau_hat, B_hat),
+                      steps, diag_every)
+
+
+_MHD_HIST = (
+    "e_mag", "e_mag_ext", "e_mag_tot", "ohmic", "hyper_ohmic", "max_j", "max_b",
+    "H_mag", "H_cross", "H_current", "max_div_b", "lorentz_work",
+    "maxwell", "op_ratio", "N_i", "N_i_force", "ni_paper", "ni_paper0",
+    "ni_li", "Re", "Rm", "Pr_m", "v_A", "lundquist", "plasma_beta",
+    "lam_min", "lam_min_dx",
+    "P_back", "b_stretch", "b_comp", "b_stretch_j", "b_comp_j",
+    "wl_j", "K_sheet", "j_w", "j_over_b_w", "sheet_ind",
+    "max_e", "max_charge", "es_energy", "edge_j",
+)
+
+
+def _pack_out(hist, u_hat, omega_hat, tau_hat, grid, dt, N, nu, ic, scheme,
+              viscoelastic, clay_params, steps, diag_every, n_scars,
+              scar_centres, force_on, B_hat=None, mhd_params=None,
+              magnetic=False):
+    time = sample_times(hist["energy"].shape[0], steps, dt, diag_every)
+    mill = millennium_series(hist, time, nu)
+    out = {
+        "energy": hist["energy"],
+        "enstrophy": hist["enstrophy"],
+        "ipr": hist["ipr"],
+        "helicity": hist["helicity"],
+        "max_vort": hist["max_vort"],
+        "stretch": hist["stretch"],
+        "max_div": hist["max_div"],
+        "lambda2_neg_frac": hist["lambda2_neg_frac"],
+        "mean_tau": hist["mean_tau"],
+        "max_tau": hist["max_tau"],
+        "tau_s": hist["tau_s"],
+        "max_strain": mill["max_strain"],
+        "palinstrophy": mill["palinstrophy"],
+        "bkm_integral": mill["bkm_integral"],
+        "dZ_dt": mill["dZ_dt"],
+        "dE_dt": mill["dE_dt"],
+        "dE_tot_dt": mill["dE_tot_dt"],
+        "e_tot": mill["e_tot"],
+        "eps_nu": mill["eps_nu"],
+        "I_nu": mill["I_nu"],
+        "I_eta": mill["I_eta"],
+        "I_tau": mill["I_tau"],
+        "energy_leak": mill["energy_leak"],
+        "I_leak": mill["I_leak"],
+        "dissipation": mill["dissipation"],
+        "dZ_dt_budget": mill["dZ_dt_budget"],
+        "I_bkm_w": mill["I_bkm_w"],
+        "I_sigma": mill["I_sigma"],
+        "sheet_order": mill["sheet_order"],
+        "work": mill["work"],
+        "lambda_kin": mill["lambda_kin"],
+        "eps_ratio": mill["eps_ratio"],
+        "Gamma": mill["Gamma"],
+        "Tstar": hist.get("Tstar", mill["time"] * 0.0),
+        "time": mill["time"],
+        "u_hat": u_hat,
+        "omega_hat": omega_hat,
+        "tau_hat": tau_hat,
+        "B_hat": B_hat,
+        "grid": grid,
+        "dt": dt,
+        "N": N,
+        "nu": nu,
+        "ic": ic,
+        "scheme": scheme,
+        "viscoelastic": viscoelastic,
+        "magnetic": magnetic,
+        "clay_params": clay_params,
+        "mhd_params": mhd_params,
+        "n_scars": n_scars,
+        "scar_centres": scar_centres,
+        "force_on": force_on,
+    }
+    z = mill["time"] * 0.0
+    for k in _MHD_HIST:
+        out[k] = hist.get(k, z)
+    return out
+
+
+def run_framework(N=None, dim=2, steps=800, mode="vorticity",
+                  nu=None, dt=None, seed=42, force_on=True,
+                  bubble_params=None, ic=None, scheme=None,
+                  cfl=0.4, diag_every=20, viscoelastic=None,
+                  clay_params=None, ic_params=None,
+                  n_scars=1, scar_centres=None, force_amp=1.0,
+                  magnetic=None, mhd_params=None):
+    """
+    mode = "vorticity"   → rotational-form NS (full 3D stretching)
+         = "clay"        → same NS + Oldroyd-B E-brane extra-stress
+         = "hybrid"      → alias for clay (λ₂ is always recorded in 3D)
+         = "mhd"         → NS + (optional clay) + induction / Lorentz
+         = "bubble"      → pure RP + Liu–Sun tower
+
+    viscoelastic=True forces the clay coupling even if mode="vorticity".
+    magnetic=True forces the MHD layer (induction + Lorentz + helicity).
+    mode="mhd" implies magnetic=True; clay stays on unless viscoelastic=False.
+    ic = "taylor_green" | "tubes" | "smooth".  tubes = Crow-perturbed
+    anti-parallel pair (reconnection / singularity IC).
+    n_scars / scar_centres select the helical Z₇ lattice (n_scars=1 default).
+    dim=3 defaults: N=64, Taylor–Green IC, RK2, CFL dt, helical Z₇ force.
+    """
+    if magnetic is None:
+        magnetic = mode == "mhd"
+    if viscoelastic is None:
+        viscoelastic = mode in ("clay", "hybrid", "mhd")
+    if mode == "hybrid":
+        mode = "clay" if viscoelastic else "vorticity"
+    if clay_params is None:
+        clay_params = dict(DEFAULT_CLAY)
+    else:
+        merged = dict(DEFAULT_CLAY)
+        merged.update(clay_params)
+        clay_params = merged
+    if mhd_params is None:
+        mhd_params = dict(DEFAULT_MHD)
+    else:
+        merged_m = dict(DEFAULT_MHD)
+        merged_m.update(mhd_params)
+        mhd_params = merged_m
+    if ic_params:
+        _map = (("radius", "tube_radius"), ("circulation", "tube_circulation"),
+                ("separation", "tube_separation"),
+                ("perturbation", "tube_perturbation"),
+                ("axial_wave", "tube_axial_wave"))
+        for src, dst in _map:
+            if src in ic_params:
+                mhd_params[dst] = ic_params[src]
+
+    if N is None:
+        N = 64 if dim == 3 else 32
+    if nu is None:
+        nu = 5e-4 if dim == 3 else 0.001
+    if ic is None:
+        ic = "taylor_green" if dim == 3 else "smooth"
+    if scheme is None:
+        scheme = "rk2" if (dim == 3 or viscoelastic) else "euler"
+
+    grid = make_grid(N, L=1.0 if mode != "bubble" else 2 * jnp.pi, dim=dim)
+    key = random.PRNGKey(seed)
+
+    if mode == "bubble":
+        p = bubble_params or {
+            "rho": 1000., "sigma": 0.072, "mu": 0.001,
+            "Pg0": 1.01325e5, "R0": 1e-5, "kappa": 1.4,
+            "P0": 1.01325e5, "Pa": 1.2e5, "omega": 2 * jnp.pi * 20e3,
+            "omega1_r": 2 * jnp.pi * 20e3, "omega1_i": 5e3,
+            "alpha": 0.125, "n_max": 8, "beta": 0.05,
+            "scar_floor": DELTA_MIN, "mu_visc": 0.01, "drive": 0.1
+        }
+        y = jnp.array([p["R0"], 0.0, 1.0])
+        hist = []
+        bubble_dt = dt if dt is not None else 0.005
+        for step in range(steps):
+            t = step * bubble_dt
+            y = y + bubble_dt * coupled_rp_attractor_rhs(y, t, p)
+            if step % 20 == 0:
+                hist.append(y)
+        return {"traj": jnp.stack(hist), "params": p}
+
+    u0 = _initial_velocity(key, grid, ic, dim, ic_params)
+    B_hat = None
+    B_ext_hat = None
+    induct_ext = 1.0
+    if magnetic:
+        B_hat, B_ext_hat, induct_ext = split_guide_fields(
+            grid, mhd_params, ic_params)
+        B0_phys = jnp.fft.ifftn(
+            B_hat + B_ext_hat, axes=range(1, dim + 1)).real
+    if dt is None:
+        nu_cfl = nu + (clay_params["eta_p"] if (viscoelastic or mode == "clay") else 0.0)
+        if magnetic:
+            nu_cfl = nu_cfl + float(mhd_params.get("mu_eff", 0.0))
+            dt = float(cfl_dt_mhd(
+                u0, B0_phys, grid["dx"], nu_cfl, mhd_params["eta_mag"], cfl=cfl))
+        else:
+            dt = float(cfl_dt(u0, grid["dx"], nu_cfl, cfl=cfl))
+        if dim == 2:
+            dt = 0.005
+
+    u_hat = project_div_free(jnp.fft.fftn(u0, axes=range(1, dim + 1)), grid)
+    omega_hat = vorticity_from_velocity(u_hat, grid)
+    if dim == 3:
+        omega_hat = project_div_free(omega_hat, grid)
+
+    centres = resolve_scar_centres(grid, n_scars, scar_centres)
+    n_scars = len(centres)
+
+    if magnetic:
+        tau_hat = zero_tau_hat(grid, dtype=omega_hat.dtype)
+        clay_use = clay_params
+        if not viscoelastic:
+            clay_use = dict(clay_params, eta_p=0.0, stress_couple=0.0,
+                            clay_gain=0.0, gum_scale=0.0,
+                            soft_J=0.0, high_de=0.0, alpha_LB=0.0,
+                            lam_kin_gain=0.0, alpha_perp=0.0)
+        (omega_hat, tau_hat, B_hat), hist = _run_mhd_scanned(
+            omega_hat, tau_hat, B_hat, grid, nu, dt, steps, force_on,
+            scheme, diag_every, clay_use, mhd_params, n_scars, centres,
+            force_amp, B_ext_hat=B_ext_hat, induct_ext=induct_ext)
+    elif viscoelastic or mode == "clay":
+        tau_hat = zero_tau_hat(grid, dtype=omega_hat.dtype)
+        (omega_hat, tau_hat), hist = _run_clay_scanned(
+            omega_hat, tau_hat, grid, nu, dt, steps, force_on,
+            scheme, diag_every, clay_params, n_scars, centres, force_amp)
+    else:
+        omega_hat, hist = _run_vorticity_scanned(
+            omega_hat, grid, nu, dt, steps, force_on, scheme, diag_every,
+            n_scars, centres, force_amp)
+        tau_hat = zero_tau_hat(grid, dtype=omega_hat.dtype)
+
+    u_hat = velocity_from_vorticity(omega_hat, grid)
+    nu_out = nu + (float(mhd_params.get("mu_eff", 0.0)) if magnetic else 0.0)
+    out = _pack_out(hist, u_hat, omega_hat, tau_hat, grid, dt, N, nu_out, ic,
+                    scheme, bool(viscoelastic or mode == "clay"), clay_params,
+                    steps, diag_every, n_scars, centres, force_on,
+                    B_hat=B_hat, mhd_params=mhd_params, magnetic=bool(magnetic))
+    out["nu_solvent"] = nu
+    out["B_ext_hat"] = B_ext_hat
+    return out

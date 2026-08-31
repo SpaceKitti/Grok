@@ -1,0 +1,19 @@
+N=48 t=0.36 tubes+4-scar B0=0.08 eta=1e-3 b_guide=z NS+MHD
+
+========== freeze_ext sweep ==========
+freeze  ΔE_tot  |ω|_end  max|J|     ∫Ohm    λ/dx    N_i
+0.00     6.26    34.749   22.97  5.79e-4   2.12   0.093
+0.30     6.34    36.840   16.64  2.93e-4   2.93   0.070
+0.50     6.27    37.839   12.08  1.52e-4   4.03   0.060
+0.60     6.20    38.185    9.72  9.81e-5   5.00   0.056
+0.75     6.06    38.502    6.12  3.87e-5   7.95   0.051
+NS hydro |ω|_end = 38.480
+No requested freeze keeps |ω|<36 AND λ/dx meaningfully up.
+Closest in-set: 0.3 (ω=36.84 just over). Interpolated ω=36 at freeze≈0.18.
+
+========== sheet resolution freeze=0 ==========
+N    ΔE_tot  |ω|     max|J|    ∫Ohm     Ohm_end   λ/dx   λ_phys=λ/N
+48    6.26   34.75    22.97  5.791e-4  5.151e-3  2.12   0.0442
+64    6.26   34.59    23.08  5.801e-4  5.167e-3  2.82   0.0441
+96    6.27   34.37    24.95  5.802e-4  5.170e-3  3.89   0.0405
+∫Ohmic converged. Peak J still creeping (+8% 48→96). Late ramp shape unchanged.

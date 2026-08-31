@@ -1,0 +1,15 @@
+qty,value
+force_on,0
+mask,abs(J)>=0.5*max|J|
+mean_R_global,-7.870504659524403e-19
+mean_WL_global,-0.014984417175330682
+mean_BS_global,0.014984417175330682
+mean_WL_plus_BS_global,0.0
+mean_WL_M,-0.43351322309350976
+mean_BS_M,0.097629656782232
+mean_R_M,-0.3358835663112778
+int_M_R,-0.001646130759374209
+flux_dM_P,-0.0006732814534958593
+flux_minus_int_R,0.0009728493058783496
+n_mask,542
+n_all,110592
