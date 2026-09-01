@@ -10,7 +10,7 @@ import jax
 jax.config.update("jax_enable_x64", True)
 
 import numpy as np
-from chive_ns import run_framework
+from chive_ns import run_framework, generate_u_alfven, make_grid
 
 
 def _arr(x):
@@ -94,6 +94,47 @@ def main():
     ok_h = all(np.isfinite(v) for v in (fx, fy, rr, er))
     check("E Harris finite", ok_h,
           f"flux_x={fx:.4e} flux_y={fy:.4e} rec_rate={rr:.4e} E_rec={er:.4e}")
+
+    # F Alfven: small transverse wiggle on the incompressible toy, Qin (glm_ch=0).
+    B0 = 1.0
+    amp = 0.05
+    L = 1.0
+    N = 16
+    dt = 0.01
+    steps = 20
+    out_a = run_framework(
+        N=N, dim=2, steps=steps, dt=dt, diag_every=steps, scheme="rk2",
+        mode="mhd", ic="alfven", force_on=False, viscoelastic=False, nu=1e-4,
+        mhd_params=dict(
+            B0=B0, alfven_amp=amp, eta_mag=1e-4, glm_ch=0.0, eta_hyper=0.0,
+        ),
+    )
+    u = np.fft.ifftn(np.asarray(out_a["u_hat"]), axes=(1, 2)).real
+    grid0 = make_grid(N, L=L, dim=2)
+    u0 = np.asarray(generate_u_alfven(grid0, amp=amp))
+
+    def _phase_y(fx):
+        profile = np.mean(np.asarray(fx), axis=0)
+        return float(np.angle(np.fft.fft(profile)[1]))
+
+    phi0 = _phase_y(u0[0])
+    phi1 = _phase_y(u[0])
+    dphi = float(np.unwrap(np.array([phi0, phi1]))[1] - phi0)
+    T = steps * dt
+    k = 2.0 * np.pi / L
+    v_A = abs(B0)
+    v_phase = -dphi / (k * T + 1e-30)
+    ratio = v_phase / (v_A + 1e-30)
+    print(
+        f"F Alfven: v_phase={v_phase:.6f} v_A={v_A:.6f} v_phase/v_A={ratio:.6f} "
+        f"dphi={dphi:.6f} T={T:.4f} b_guide={out_a['mhd_params'].get('b_guide')}",
+        flush=True,
+    )
+    check("F Alfven phase speed", abs(ratio - 1.0) < 0.1,
+          f"v_phase={v_phase:.4f} v_A={v_A:.4f} ratio={ratio:.4f}")
+    check("F Alfven ic wiring", out_a.get("ic") == "alfven"
+          and out_a["mhd_params"].get("b_guide") == "alfven",
+          f"ic={out_a.get('ic')} b_guide={out_a['mhd_params'].get('b_guide')}")
 
     if failed:
         print("FAILED: " + ", ".join(failed), flush=True)

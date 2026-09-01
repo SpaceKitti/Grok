@@ -31,7 +31,7 @@ from .residual import hybrid_asgs_residual
 from .live import live_diagnostics_and_feedback
 from .mhd import (
     DEFAULT_MHD, generate_b0, generate_b_ext, generate_b_flux_tubes,
-    generate_u_ot, zero_b_hat, zero_psi_hat, current_from_b,
+    generate_u_ot, generate_u_alfven, zero_b_hat, zero_psi_hat, current_from_b,
     lorentz_vorticity_force, induction_rhs, odd_vorticity_force,
     glm_grad_psi, glm_psi_rhs,
     mhd_field_diagnostics, cfl_dt_mhd, split_guide_fields, beta_from_lambda_in,

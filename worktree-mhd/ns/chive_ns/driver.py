@@ -22,7 +22,8 @@ from .diagnostics import field_diagnostics, millennium_series, sample_times
 from .live import live_diagnostics_and_feedback, _zero_live
 from .constants import DELTA_MIN
 from .mhd import (
-    DEFAULT_MHD, generate_b0, generate_u_ot, zero_b_hat, zero_psi_hat,
+    DEFAULT_MHD, generate_b0, generate_u_ot, generate_u_alfven,
+    zero_b_hat, zero_psi_hat,
     mhd_field_diagnostics, _zero_mhd, cfl_dt_mhd, split_guide_fields,
 )
 from .es_lhdi import es_placeholder_diagnostics
@@ -113,6 +114,9 @@ def _initial_velocity(key, grid, ic, dim, ic_params=None, mhd_params=None):
     if ic == "ot":
         U0 = float((mhd_params or {}).get("ot_u0", p.get("ot_u0", 1.0)))
         return generate_u_ot(grid, U0=U0)
+    if ic == "alfven":
+        amp = float((mhd_params or {}).get("alfven_amp", p.get("alfven_amp", 0.01)))
+        return generate_u_alfven(grid, amp=amp)
     if dim == 3 and ic == "taylor_green":
         return generate_taylor_green(grid, scale=p.get("scale", 1.0))
     if dim == 3 and ic == "tubes":
@@ -354,8 +358,9 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     viscoelastic=True forces the clay coupling even if mode="vorticity".
     magnetic=True forces the MHD layer (induction + Lorentz + helicity).
     mode="mhd" implies magnetic=True; clay stays on unless viscoelastic=False.
-    ic = "taylor_green" | "tubes" | "smooth" | "ot".  tubes = Crow-perturbed
+    ic = "taylor_green" | "tubes" | "smooth" | "ot" | "alfven".  tubes = Crow-perturbed
     anti-parallel pair. ot = Orszag-Tang u matching generate_b0(kind='ot').
+    alfven = small transverse δv=-δb on the uniform guide (v_A = |B0|).
     n_scars / scar_centres select the helical Z₇ lattice (n_scars=1 default).
     dim=3 defaults: N=64, Taylor–Green IC, RK2, CFL dt, helical Z₇ force.
     """
@@ -394,6 +399,8 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
         ic = "taylor_green" if dim == 3 else "smooth"
     if ic == "ot":
         mhd_params["b_guide"] = "ot"
+    if ic == "alfven":
+        mhd_params["b_guide"] = "alfven"
     if scheme is None:
         scheme = "rk2" if (dim == 3 or viscoelastic) else "euler"
 

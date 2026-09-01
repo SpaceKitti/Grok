@@ -74,7 +74,9 @@ def vorticity_from_velocity(u_hat, grid):
 
 @jit
 def _u_from_vort_2d(vort_hat, grid):
-    psi_hat = -vort_hat / grid["k2"]
+    # ω = ∂x v - ∂y u = -∇²ψ  ⇒  ψ̂ = ω̂ / k²,  (u, v) = (∂y ψ, -∂x ψ).
+    # The previous minus recovered u → -u and anti-aligned 2D induction vs Lorentz.
+    psi_hat = vort_hat / grid["k2"]
     return jnp.stack([
         1j * grid["k"][1] * psi_hat,
         -1j * grid["k"][0] * psi_hat,

@@ -50,6 +50,7 @@ DEFAULT_MHD = dict(
     tube_perturbation=0.04,
     tube_axial_wave=1,
     ot_u0=1.0,
+    alfven_amp=0.01,
     # Dedner GLM (Dedner et al. 2002). glm_ch=0 disables; Qin projector remains.
     # Extra scalar psi carries div B as a damped wave; not Lorentz, not projector.
     glm_ch=0.0,
@@ -67,7 +68,7 @@ def zero_psi_hat(grid, dtype=jnp.complex128):
     return jnp.zeros((N,) * dim, dtype=dtype)
 
 
-def generate_b0(grid, B0=0.08, kind="z"):
+def generate_b0(grid, B0=0.08, kind="z", amp=None):
     """Divergence-free magnetic seed. Weak so hydro CFL stays dominant.
 
     kind:
@@ -76,17 +77,26 @@ def generate_b0(grid, B0=0.08, kind="z"):
       "tube" — alias of "x" (uniform field along the tube axis)
       "flux" / "flux_tubes" / "shen" — co-located Crow flux tubes
       "ot"   — Orszag–Tang-like seed (has current from t=0)
+      "alfven" — uniform guide (ê_y in 2D / ê_z in 3D) plus a small
+                transverse Alfvén δb; amp is the wave amplitude.
     For kind="flux", B0 is ignored; use mhd_params["gamma_m"] via
     generate_b_flux_tubes / split_guide_fields.
     """
     N, L, dim = int(grid["N"]), float(grid["L"]), int(grid["dim"])
     x = jnp.linspace(0.0, L, N, endpoint=False)
     B0 = float(B0)
+    if amp is None:
+        amp = 0.01
     if dim == 2:
         X, Y = jnp.meshgrid(x, x, indexing="ij")
         if kind == "ot":
             Bx = -B0 * jnp.sin(2 * jnp.pi * Y / L)
             By = B0 * jnp.sin(2 * jnp.pi * X / L)
+        elif kind == "alfven":
+            # Existing 2D guide is ê_y. δb_x = -amp sin(2π y/L) so δv=-δb
+            # rides +B0 at v_A = |B0|.
+            Bx = -float(amp) * jnp.sin(2 * jnp.pi * Y / L)
+            By = jnp.ones_like(X) * B0
         else:
             Bx = jnp.zeros_like(X)
             By = jnp.ones_like(X) * B0
@@ -101,6 +111,9 @@ def generate_b0(grid, B0=0.08, kind="z"):
             By = B0 * jnp.sin(2 * jnp.pi * X / L)
             Bz = B0 * 0.2 * jnp.cos(2 * jnp.pi * Z / L)
             B = jnp.stack([Bx, By, Bz])
+        elif kind == "alfven":
+            Bx = -float(amp) * jnp.sin(2 * jnp.pi * Z / L)
+            B = jnp.stack([Bx, z, jnp.ones_like(X) * B0])
         else:
             B = jnp.stack([z, z, jnp.ones_like(X) * B0])
     B_hat = jnp.fft.fftn(B, axes=range(1, dim + 1))
@@ -127,6 +140,29 @@ def generate_u_ot(grid, U0=1.0):
         uy = U0 * jnp.sin(2 * jnp.pi * X / L)
         uz = U0 * 0.2 * jnp.cos(2 * jnp.pi * Z / L)
         u = jnp.stack([ux, uy, uz])
+    u_hat = project_div_free(jnp.fft.fftn(u, axes=range(1, dim + 1)), grid)
+    return jnp.fft.ifftn(u_hat, axes=range(1, dim + 1)).real
+
+
+def generate_u_alfven(grid, amp=0.01):
+    """Forward Alfvén velocity matching generate_b0(kind='alfven').
+
+    Same sin profile, δv = -δb (ρ=1): the packet propagates along +B0
+    at v_A = |B0|. 2D guide is ê_y; 3D guide is ê_z. Qin-projected.
+    """
+    N, L, dim = int(grid["N"]), float(grid["L"]), int(grid["dim"])
+    x = jnp.linspace(0.0, L, N, endpoint=False)
+    amp = float(amp)
+    if dim == 2:
+        X, Y = jnp.meshgrid(x, x, indexing="ij")
+        ux = amp * jnp.sin(2 * jnp.pi * Y / L)
+        uy = jnp.zeros_like(X)
+        u = jnp.stack([ux, uy])
+    else:
+        X, Y, Z = jnp.meshgrid(x, x, x, indexing="ij")
+        z = jnp.zeros_like(X)
+        ux = amp * jnp.sin(2 * jnp.pi * Z / L)
+        u = jnp.stack([ux, z, z])
     u_hat = project_div_free(jnp.fft.fftn(u, axes=range(1, dim + 1)), grid)
     return jnp.fft.ifftn(u_hat, axes=range(1, dim + 1)).real
 
@@ -204,7 +240,9 @@ def split_guide_fields(grid, mhd_params, ic_params=None):
     if kind in ("flux", "flux_tubes", "shen"):
         B_hat = generate_b_flux_tubes(grid, mhd_params, ic_params)
     else:
-        B_hat = generate_b0(grid, B0=B0 * (1.0 - freeze), kind=kind)
+        B_hat = generate_b0(
+            grid, B0=B0 * (1.0 - freeze), kind=kind,
+            amp=float(mhd_params.get("alfven_amp", 0.01)))
     if bool(mhd_params.get("harris", False)):
         from .es_lhdi import generate_harris_sheet, generate_harris_edge_seed
         hw = float(mhd_params.get("harris_width", 0.08))
