@@ -77,6 +77,10 @@ def main():
     check("D GLM finite", np.isfinite(div0) and np.isfinite(div1),
           f"div0={div0:.3e} div1={div1:.3e}")
 
+    rg, ileakg, e0g = _leak_ratio(out_glm)
+    print(f"D GLM leak: I_leak/E0={rg:.6e} I_leak={ileakg:.6e} E0={e0g:.6e}", flush=True)
+    check("D GLM leak", rg < 1e-6, f"I_leak/E0={rg:.3e}")
+
     # E Harris sheet (default/smooth IC). Do not interpret smear vs ribbon.
     out_h = run_framework(
         mhd_params=dict(eta_hyper=0.0, glm_ch=0.0, harris=True),

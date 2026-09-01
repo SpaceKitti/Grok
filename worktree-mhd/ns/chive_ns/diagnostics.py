@@ -217,21 +217,27 @@ def millennium_series(hist, time, nu):
     dissipation = eps_nu + hist["tau_s"] + eps_eta
     e_mag = hist.get("e_mag_tot", hist.get("e_mag", jnp.zeros_like(energy)))
     e_tot = energy + e_mag
+    # GLM psi energy is in the conserved total when Dedner is on.
+    # glm_ch=0 (Qin) records e_glm=0; missing key (hydro) is treated as 0.
+    # mill e_tot stays kinetic+magnetic; identity uses e_cons = e_tot + e_glm.
+    e_glm = hist.get("e_glm", jnp.zeros_like(energy))
+    e_cons = e_tot + e_glm
     if energy.shape[0] < 2:
         dE_tot_dt = jnp.zeros_like(energy)
         I_nu = jnp.zeros_like(energy)
         I_eta = jnp.zeros_like(energy)
         I_tau = jnp.zeros_like(energy)
+        dE_cons_dt = jnp.zeros_like(energy)
     else:
         dE_tot_dt = _time_derivative(e_tot, time)
         I_nu = _running_trapz(eps_nu, time)
         I_eta = _running_trapz(eps_eta, time)
         I_tau = _running_trapz(hist["tau_s"], time)
-    # Instantaneous residual of Ė_tot + ε_ν + ε_η (+τ:S). Lorentz excluded.
-    energy_leak = dE_tot_dt + dissipation
-    # Integrated: ∫(Ė + ε) dt = ΔE_tot + ∫ε. Old (E0-E)+∫ε was a
-    # hidden sign error (≈2∫ε when the identity holds).
-    I_leak = (e_tot - e_tot[0]) + I_nu + I_eta + I_tau
+        dE_cons_dt = _time_derivative(e_cons, time)
+    # Instantaneous residual of d/dt(e_tot+e_glm) + eps. Lorentz excluded.
+    energy_leak = dE_cons_dt + dissipation
+    # I_leak = ((e_tot+e_glm)-(e_tot+e_glm)[0]) + I_nu + I_eta + I_tau
+    I_leak = (e_cons - e_cons[0]) + I_nu + I_eta + I_tau
     dZ_dt_budget = 2.0 * hist["stretch"] - 2.0 * nu * hist["palinstrophy"]
     work = hist.get("work", hist["tau_s"])
     sheet = hist.get("sheet_order", jnp.zeros_like(max_vort))
