@@ -49,12 +49,22 @@ DEFAULT_MHD = dict(
     tube_separation=0.24,
     tube_perturbation=0.04,
     tube_axial_wave=1,
+    ot_u0=1.0,
+    # Dedner GLM (Dedner et al. 2002). glm_ch=0 disables; Qin projector remains.
+    # Extra scalar psi carries div B as a damped wave; not Lorentz, not projector.
+    glm_ch=0.0,
+    glm_cr=0.18,
 )
 
 
 def zero_b_hat(grid, dtype=jnp.complex128):
     d, N = int(grid["dim"]), int(grid["N"])
     return jnp.zeros((d,) + (N,) * d, dtype=dtype)
+
+
+def zero_psi_hat(grid, dtype=jnp.complex128):
+    N, dim = int(grid["N"]), int(grid["dim"])
+    return jnp.zeros((N,) * dim, dtype=dtype)
 
 
 def generate_b0(grid, B0=0.08, kind="z"):
@@ -95,6 +105,30 @@ def generate_b0(grid, B0=0.08, kind="z"):
             B = jnp.stack([z, z, jnp.ones_like(X) * B0])
     B_hat = jnp.fft.fftn(B, axes=range(1, dim + 1))
     return project_div_free(B_hat, grid)
+
+
+def generate_u_ot(grid, U0=1.0):
+    """Orszag-Tang velocity matching generate_b0(kind='ot').
+
+    Same trigonometric skeleton as the OT magnetic seed, amplitude U0.
+    3D includes a weak uz so the pair stays analogous to OT B; Qin-projected.
+    """
+    N, L, dim = int(grid["N"]), float(grid["L"]), int(grid["dim"])
+    x = jnp.linspace(0.0, L, N, endpoint=False)
+    U0 = float(U0)
+    if dim == 2:
+        X, Y = jnp.meshgrid(x, x, indexing="ij")
+        ux = -U0 * jnp.sin(2 * jnp.pi * Y / L)
+        uy = U0 * jnp.sin(2 * jnp.pi * X / L)
+        u = jnp.stack([ux, uy])
+    else:
+        X, Y, Z = jnp.meshgrid(x, x, x, indexing="ij")
+        ux = -U0 * jnp.sin(2 * jnp.pi * Y / L)
+        uy = U0 * jnp.sin(2 * jnp.pi * X / L)
+        uz = U0 * 0.2 * jnp.cos(2 * jnp.pi * Z / L)
+        u = jnp.stack([ux, uy, uz])
+    u_hat = project_div_free(jnp.fft.fftn(u, axes=range(1, dim + 1)), grid)
+    return jnp.fft.ifftn(u_hat, axes=range(1, dim + 1)).real
 
 
 def generate_b_ext(grid, B0=0.08, kind="z", profile="midplane", width=0.12):
@@ -278,14 +312,31 @@ def _induction_3d(B_hat, u_hat, grid, eta_mag, B_cross_hat, eta_hyper, hyper_kcu
 
 
 def induction_rhs(B_hat, u_hat, grid, eta_mag, B_cross_hat=None, eta_hyper=0.0,
-                  hyper_kcut=0.0):
+                  hyper_kcut=0.0, psi_hat=None, glm_ch=0.0):
     if B_cross_hat is None:
         B_cross_hat = B_hat
     if B_hat.shape[0] == 2:
-        return _induction_2d(B_hat, u_hat, grid, eta_mag, B_cross_hat, eta_hyper,
-                             hyper_kcut)
-    return _induction_3d(B_hat, u_hat, grid, eta_mag, B_cross_hat, eta_hyper,
-                         hyper_kcut)
+        dB = _induction_2d(B_hat, u_hat, grid, eta_mag, B_cross_hat, eta_hyper,
+                           hyper_kcut)
+    else:
+        dB = _induction_3d(B_hat, u_hat, grid, eta_mag, B_cross_hat, eta_hyper,
+                           hyper_kcut)
+    if psi_hat is not None and glm_ch != 0.0:
+        dB = dB + glm_grad_psi(psi_hat, grid)
+    return dB
+
+
+def glm_grad_psi(psi_hat, grid):
+    """-grad psi in Fourier space (Dedner hyperbolic flux)."""
+    return -1j * grid["k_stack"] * psi_hat * grid["dealias"]
+
+
+def glm_psi_rhs(psi_hat, B_hat, grid, glm_ch, glm_cr):
+    """dt psi = -c_h^2 div B - (c_h / (c_r dx)) psi."""
+    divB_hat = 1j * jnp.sum(grid["k_stack"] * B_hat, axis=0)
+    ch = glm_ch
+    alpha = ch / (glm_cr * grid["dx"] + 1e-30)
+    return (-ch * ch * divB_hat - alpha * psi_hat) * grid["dealias"]
 
 
 @jit
@@ -389,6 +440,20 @@ def _mhd_diag_2d(B_hat, u_hat, grid, eta_mag, tau_hat, B_ext_hat, eta_hyper):
     b_w = jnp.mean(w * jnp.sqrt(b2)) / wsum
     j_over_b_w = j_w / (b_w + 1e-30)
     sheet_ind = j_over_b_w
+    N = B.shape[-1]
+    half = N // 2
+    # Half-plane fluxes: y<L/2 for Bx (Crow midplane), x<L/2 for By (transfer).
+    flux_x_half = jnp.mean(Btot[0][:, :half])
+    flux_y_half = jnp.mean(Btot[1][:half, :])
+    flux_z_half = jnp.array(0.0)
+    vort_hat = _vort_from_u_2d(u_hat, grid)
+    vort = jnp.fft.ifftn(vort_hat).real
+    circ_x_half = jnp.array(0.0)
+    circ_y_half = jnp.mean(vort[:, :half])
+    Ez = eta_mag * J - (u[0] * Btot[1] - u[1] * Btot[0])
+    E_rec = jnp.max(jnp.abs(Ez))
+    E_par = jnp.array(0.0)
+    E_rec_sheet = jnp.mean(w * Ez) / wsum
     return {
         "e_mag": e_mag,
         "e_mag_ext": e_mag_ext,
@@ -418,6 +483,14 @@ def _mhd_diag_2d(B_hat, u_hat, grid, eta_mag, tau_hat, B_ext_hat, eta_hyper):
         "j_w": j_w,
         "j_over_b_w": j_over_b_w,
         "sheet_ind": sheet_ind,
+        "flux_x_half": flux_x_half,
+        "flux_y_half": flux_y_half,
+        "flux_z_half": flux_z_half,
+        "circ_x_half": circ_x_half,
+        "circ_y_half": circ_y_half,
+        "E_rec": E_rec,
+        "E_par": E_par,
+        "E_rec_sheet": E_rec_sheet,
     }
 
 
@@ -476,6 +549,18 @@ def _mhd_diag_3d(B_hat, u_hat, grid, eta_mag, tau_hat, B_ext_hat, eta_hyper):
     b_w = jnp.mean(w * jnp.sqrt(b2)) / wsum
     j_over_b_w = j_w / (b_w + 1e-30)
     sheet_ind = j_over_b_w
+    N = B.shape[-1]
+    half = N // 2
+    flux_x_half = jnp.mean(Btot[0][:, :half, :])
+    flux_y_half = jnp.mean(Btot[1][:half, :, :])
+    flux_z_half = jnp.mean(Btot[2][:, :, :half])
+    omega = jnp.fft.ifftn(ik_cross(u_hat, grid), axes=(1, 2, 3)).real
+    circ_x_half = jnp.mean(omega[0][:, :half, :])
+    circ_y_half = jnp.mean(omega[1][:half, :, :])
+    E_par_field = eta_mag * jnp.sum(J * Btot, axis=0) / (jnp.sqrt(b2) + 1e-30)
+    E_par = jnp.max(jnp.abs(E_par_field))
+    E_rec = E_par
+    E_rec_sheet = jnp.mean(w * E_par_field) / wsum
     return {
         "e_mag": e_mag,
         "e_mag_ext": e_mag_ext,
@@ -505,12 +590,25 @@ def _mhd_diag_3d(B_hat, u_hat, grid, eta_mag, tau_hat, B_ext_hat, eta_hyper):
         "j_w": j_w,
         "j_over_b_w": j_over_b_w,
         "sheet_ind": sheet_ind,
+        "flux_x_half": flux_x_half,
+        "flux_y_half": flux_y_half,
+        "flux_z_half": flux_z_half,
+        "circ_x_half": circ_x_half,
+        "circ_y_half": circ_y_half,
+        "E_rec": E_rec,
+        "E_par": E_par,
+        "E_rec_sheet": E_rec_sheet,
     }
 
 
 def mhd_field_diagnostics(B_hat, u_hat, grid, eta_mag, tau_hat=None,
                           B_ext_hat=None, eta_hyper=0.0):
-    """Magnetic energy, Ohmic, |J|, helicities, Maxwell, N_i, sheet scale."""
+    """Magnetic energy, Ohmic, |J|, helicities, Maxwell, N_i, sheet scale.
+
+    lorentz_work = ⟨u·(J×B)⟩ is a kinetic↔magnetic transfer. It is
+    recorded here but excluded from I_leak / energy_leak (E_tot identity
+    is Ė_tot + ε_ν + ε_η; Lorentz cancels between the two reservoirs).
+    """
     d = int(grid["dim"])
     N = int(grid["N"])
     if tau_hat is None:
@@ -539,4 +637,8 @@ def _zero_mhd():
         "b_stretch": z, "b_comp": z, "b_stretch_j": z, "b_comp_j": z,
         "wl_j": z, "K_sheet": z, "j_w": z, "j_over_b_w": z, "sheet_ind": z,
         "max_e": z, "max_charge": z, "es_energy": z, "edge_j": z,
+        "flux_x_half": z, "flux_y_half": z, "flux_z_half": z,
+        "circ_x_half": z, "circ_y_half": z,
+        "E_rec": z, "E_par": z, "E_rec_sheet": z,
+        "e_glm": z, "max_psi": z,
     }
