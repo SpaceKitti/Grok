@@ -1,12 +1,13 @@
 # ============================================================
-# @Akitti C*Hive – Compressible MHD scaffold (patch 5)
+# @Akitti C*Hive – Compressible MHD (patches 5+6)
 # Continuity:  dt rho + div(rho u) = 0. Dealias the product rho u.
 # Energy: Russell Dp/Dt = -gamma p div(u) + (gamma-1) Q
 #         ideal EOS p = (gamma-1) rho e ; gamma=5/3 default.
-# Patch 5 (mode="cmhd" ONLY): Helmholtz OFF. Primitive u with -grad p / rho
-# (spectral ik p). u may have a divergence (acoustics seed). Not WENO.
-# mode="mhd" still Qin-projects in vorticity.py (untouched).
-# Continuity + Russell p stay. No CFL rewrite, no pin/floor.
+# Primitive u on mode="cmhd" only:
+#   dt u = -(u·∇)u - ∇p/ρ + (J×B)/ρ + ν ∇²u
+# Qin / Helmholtz / project_div_free is OFF on u (sound lives here).
+# mode="mhd" stays the projected vorticity toy in vorticity.py.
+# No nabla p on the vorticity RHS. No mean-pin and no floor.
 # ============================================================
 
 from functools import partial
@@ -118,6 +119,19 @@ def sound_wave_fields(grid, eps=1e-3, rho0=1.0, p0=1.0, gamma=GAMMA_DEFAULT):
     rho = rho0 + eps * wave
     p = p0 + (cs * cs) * eps * wave
     return u, rho, p, cs
+
+
+def cfl_dt_cmhd(u, rho, p, B, dx, nu, eta_mag, gamma=GAMMA_DEFAULT, cfl=0.4):
+    """dt from max(|u| + c_s + |v_A|) with c_s = sqrt(gamma p / rho).
+
+    v_A = |B| / sqrt(rho). Viscous/resistive piece matches cfl_dt_mhd.
+    No rho pin/floor.
+    """
+    speed = jnp.sqrt(jnp.sum(u ** 2, axis=0))
+    cs = jnp.sqrt(gamma * p / rho)
+    vA = jnp.sqrt(jnp.sum(B ** 2, axis=0) / rho)
+    fast = jnp.max(speed + cs + vA)
+    return cfl * dx / (fast + 4.0 * (nu + eta_mag) / dx + 1e-12)
 
 
 @jit

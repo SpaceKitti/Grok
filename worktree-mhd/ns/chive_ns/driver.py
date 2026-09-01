@@ -30,7 +30,7 @@ from .es_lhdi import es_placeholder_diagnostics
 from .compressible import (
     uniform_rho_hat, bump_rho_hat, uniform_p_hat, bump_p_hat, coupled_cmhd_step,
     density_diagnostics, energy_diagnostics, heating_Q, GAMMA_DEFAULT,
-    sound_wave_fields,
+    sound_wave_fields, cfl_dt_cmhd,
 )
 
 
@@ -537,7 +537,28 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
             B_hat + B_ext_hat, axes=range(1, dim + 1)).real
     if dt is None:
         nu_cfl = nu + (clay_params["eta_p"] if (viscoelastic or mode == "clay") else 0.0)
-        if magnetic:
+        if is_cmhd:
+            nu_cfl = nu_cfl + float(mhd_params.get("mu_eff", 0.0))
+            gamma_cfl = float(mhd_params.get("gamma", GAMMA_DEFAULT))
+            p0_cfl = float(mhd_params.get("p0", 1.0))
+            icp_cfl = ic_params or {}
+            if ic == "sound":
+                _u_s, rho_cfl, p_cfl, _cs = sound_wave_fields(
+                    grid, eps=float(icp_cfl.get("sound_eps", 1e-3)),
+                    rho0=float(icp_cfl.get("rho0", 1.0)), p0=p0_cfl,
+                    gamma=gamma_cfl)
+                del _u_s, _cs
+            else:
+                rho_eps = float(icp_cfl.get("rho_eps", 0.0))
+                if rho_eps != 0.0:
+                    rho_cfl = jnp.fft.ifftn(bump_rho_hat(grid, eps=rho_eps)).real
+                else:
+                    rho_cfl = jnp.full((N,) * dim, float(icp_cfl.get("rho0", 1.0)))
+                p_cfl = jnp.full((N,) * dim, p0_cfl)
+            dt = float(cfl_dt_cmhd(
+                u0, rho_cfl, p_cfl, B0_phys, grid["dx"], nu_cfl,
+                mhd_params["eta_mag"], gamma_cfl, cfl=cfl))
+        elif magnetic:
             nu_cfl = nu_cfl + float(mhd_params.get("mu_eff", 0.0))
             dt = float(cfl_dt_mhd(
                 u0, B0_phys, grid["dx"], nu_cfl, mhd_params["eta_mag"], cfl=cfl))
