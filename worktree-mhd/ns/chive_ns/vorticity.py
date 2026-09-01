@@ -25,6 +25,7 @@ from .mhd import (
     _lorentz_vort_2d, _lorentz_vort_3d,
     _induction_2d, _induction_3d,
     _odd_vort_2d, _odd_vort_3d,
+    glm_grad_psi, glm_psi_rhs,
 )
 
 # regs = (soft_J, α∥, α⊥, γ_s, ε_Fréchet, high_De, α_LB, soft_LB, λ_kin)
@@ -330,12 +331,13 @@ def _coupled_mhd_step_2d(omega, tau, B, grid, nu, dt, force, scheme, t,
                          eta_p, lambda_relax, alpha, beta_scar, stress_diff,
                          clay_gain, gum_scale, stress_couple, regs,
                          eta_mag, eta_odd, B_ext, induct_ext, mu_eff,
-                         berry_gain, eta_hyper, posdiv, hyper_kcut):
-    """(ω, τ, B) step in 2D: NS + Oldroyd-B + Lorentz + induction + odd visc."""
+                         berry_gain, eta_hyper, posdiv, hyper_kcut,
+                         psi, glm_ch, glm_cr):
+    """(omega, tau, B, psi) step in 2D: NS + Oldroyd-B + Lorentz + induction + odd visc."""
     soft_J, a_par, a_perp, g_s, eps_fr, high_de, a_LB, s_LB, lam_g = regs
     nu_tot = nu + mu_eff
 
-    def rhs(omega, tau, B):
+    def rhs(omega, tau, B, psi):
         u_raw = _u_from_vort_2d(omega, grid)
         u_hat = mollify_hat(u_raw, grid, soft_J)
         tau_phys = jnp.fft.ifftn(tau, axes=(2, 3)).real
@@ -357,26 +359,33 @@ def _coupled_mhd_step_2d(omega, tau, B, grid, nu, dt, force, scheme, t,
         mag_f = _lorentz_vort_2d(B_tot, grid) + _odd_vort_2d(u_raw, grid, eta_odd)
         dw = _rhs_2d(omega, grid, nu_tot, force + tau_f + mag_f)
         dB = _induction_2d(B, u_raw, grid, eta_mag, B_cross, eta_hyper, hyper_kcut)
-        return dw, dtau, dB
+        glm_on = (glm_ch != 0.0).astype(B.real.dtype)
+        dB = dB + glm_grad_psi(psi, grid) * glm_on
+        dpsi = glm_psi_rhs(psi, B, grid, glm_ch, glm_cr) * glm_on
+        return dw, dtau, dB, dpsi
 
     if scheme == "euler":
-        dw, dtau, dB = rhs(omega, tau, B)
+        dw, dtau, dB, dpsi = rhs(omega, tau, B, psi)
         omega, tau, B = omega + dt * dw, tau + dt * dtau, B + dt * dB
+        psi = psi + dt * dpsi
     else:
-        k1w, k1t, k1b = rhs(omega, tau, B)
+        k1w, k1t, k1b, k1p = rhs(omega, tau, B, psi)
         om_m = omega + dt * k1w
         B_m = B + dt * k1b
         om_p = om_m * grid["dealias"]
         B_p = project_div_free(B_m, grid)
         om_m = posdiv * om_p + (1.0 - posdiv) * om_m
         B_m = posdiv * B_p + (1.0 - posdiv) * B_m
-        k2w, k2t, k2b = rhs(om_m, tau + dt * k1t, B_m)
+        k2w, k2t, k2b, k2p = rhs(om_m, tau + dt * k1t, B_m, psi + dt * k1p)
         omega = omega + 0.5 * dt * (k1w + k2w)
         tau = tau + 0.5 * dt * (k1t + k2t)
         B = B + 0.5 * dt * (k1b + k2b)
+        psi = psi + 0.5 * dt * (k1p + k2p)
     tau = 0.5 * (tau + jnp.swapaxes(tau, 0, 1))
-    B = project_div_free(B, grid)
-    return omega * grid["dealias"], gum_damping(tau, t, gum_scale), B
+    B_proj = project_div_free(B, grid)
+    B = jnp.where(glm_ch != 0.0, B * grid["dealias"], B_proj)
+    psi = psi * grid["dealias"]
+    return omega * grid["dealias"], gum_damping(tau, t, gum_scale), B, psi
 
 
 @partial(jit, static_argnums=(7,))
@@ -384,8 +393,9 @@ def _coupled_mhd_step_3d(omega, tau, B, grid, nu, dt, force, scheme, t,
                          eta_p, lambda_relax, alpha, beta_scar, stress_diff,
                          clay_gain, gum_scale, stress_couple, regs,
                          eta_mag, eta_odd, B_ext, induct_ext, mu_eff,
-                         berry_gain, eta_hyper, posdiv, hyper_kcut):
-    """(ω, τ, B) step in 3D: stretching + ∇×(∇·τ) + curl(J×B_tot) + induction.
+                         berry_gain, eta_hyper, posdiv, hyper_kcut,
+                         psi, glm_ch, glm_cr):
+    """(omega, tau, B, psi) step in 3D: stretching + curl(div tau) + curl(JxB) + induction.
 
     B_ext is a static freeze-out field: Lorentz uses B+B_ext, induction
     stretches only B + induct_ext B_ext (induct_ext=0 → pure back-pressure).
@@ -395,7 +405,7 @@ def _coupled_mhd_step_3d(omega, tau, B, grid, nu, dt, force, scheme, t,
     soft_J, a_par, a_perp, g_s, eps_fr, high_de, a_LB, s_LB, lam_g = regs
     nu_tot = nu + mu_eff
 
-    def rhs(omega, tau, B):
+    def rhs(omega, tau, B, psi):
         u_raw = _u_from_vort_3d(omega, grid)
         u_hat = mollify_hat(u_raw, grid, soft_J)
         omg = jnp.fft.ifftn(omega, axes=(1, 2, 3)).real
@@ -417,27 +427,34 @@ def _coupled_mhd_step_3d(omega, tau, B, grid, nu, dt, force, scheme, t,
                  + _odd_vort_3d(u_raw, B_tot, grid, eta_odd, berry_gain))
         dw = _rhs_3d(omega, grid, nu_tot, force + tau_f + mag_f)
         dB = _induction_3d(B, u_raw, grid, eta_mag, B_cross, eta_hyper, hyper_kcut)
-        return dw, dtau, dB
+        glm_on = (glm_ch != 0.0).astype(B.real.dtype)
+        dB = dB + glm_grad_psi(psi, grid) * glm_on
+        dpsi = glm_psi_rhs(psi, B, grid, glm_ch, glm_cr) * glm_on
+        return dw, dtau, dB, dpsi
 
     if scheme == "euler":
-        dw, dtau, dB = rhs(omega, tau, B)
+        dw, dtau, dB, dpsi = rhs(omega, tau, B, psi)
         omega, tau, B = omega + dt * dw, tau + dt * dtau, B + dt * dB
+        psi = psi + dt * dpsi
     else:
-        k1w, k1t, k1b = rhs(omega, tau, B)
+        k1w, k1t, k1b, k1p = rhs(omega, tau, B, psi)
         om_m = omega + dt * k1w
         B_m = B + dt * k1b
         om_p = project_div_free(om_m, grid)
         B_p = project_div_free(B_m, grid)
         om_m = posdiv * om_p + (1.0 - posdiv) * om_m
         B_m = posdiv * B_p + (1.0 - posdiv) * B_m
-        k2w, k2t, k2b = rhs(om_m, tau + dt * k1t, B_m)
+        k2w, k2t, k2b, k2p = rhs(om_m, tau + dt * k1t, B_m, psi + dt * k1p)
         omega = omega + 0.5 * dt * (k1w + k2w)
         tau = tau + 0.5 * dt * (k1t + k2t)
         B = B + 0.5 * dt * (k1b + k2b)
+        psi = psi + 0.5 * dt * (k1p + k2p)
     omega = project_div_free(omega, grid)
-    B = project_div_free(B, grid)
+    B_proj = project_div_free(B, grid)
+    B = jnp.where(glm_ch != 0.0, B * grid["dealias"], B_proj)
+    psi = psi * grid["dealias"]
     tau = 0.5 * (tau + jnp.swapaxes(tau, 0, 1))
-    return omega, gum_damping(tau, t, gum_scale), B
+    return omega, gum_damping(tau, t, gum_scale), B, psi
 
 
 def coupled_mhd_step(omega_hat, tau_hat, B_hat, grid, nu, dt, force_hat=0,
@@ -448,8 +465,11 @@ def coupled_mhd_step(omega_hat, tau_hat, B_hat, grid, nu, dt, force_hat=0,
                      gum_scale=1.0, stress_couple=1.0,
                      regs=None, eta_mag=1.0e-3, eta_odd=0.0,
                      B_ext_hat=None, induct_ext=1.0, mu_eff=0.0,
-                     berry_gain=0.0, eta_hyper=0.0, posdiv=0.0, hyper_kcut=0.0):
-    """One coupled (ω, τ, B) step. Polymer law unchanged.
+                     berry_gain=0.0, eta_hyper=0.0, posdiv=0.0, hyper_kcut=0.0,
+                     psi_hat=None, glm_ch=0.0, glm_cr=0.18):
+    """One coupled (omega, tau, B, psi) step. Polymer law unchanged.
+
+    Dedner GLM: psi carries div B as a damped wave (not Lorentz, not projector).
 
     B_ext_hat is a static freeze-out guide (not time-stepped). Lorentz
     uses B+B_ext; induction stretches B + induct_ext B_ext. mu_eff is an
@@ -460,11 +480,13 @@ def coupled_mhd_step(omega_hat, tau_hat, B_hat, grid, nu, dt, force_hat=0,
         regs = _ZERO_REGS
     if B_ext_hat is None:
         B_ext_hat = jnp.zeros_like(B_hat)
+    if psi_hat is None:
+        psi_hat = jnp.zeros_like(B_hat[0])
     args = (omega_hat, tau_hat, B_hat, grid, nu, dt, force_hat, scheme, t,
             eta_p, lambda_relax, alpha, beta_scar, stress_diff, clay_gain,
             gum_scale, stress_couple, regs, eta_mag, eta_odd,
             B_ext_hat, induct_ext, mu_eff, berry_gain, eta_hyper, posdiv,
-            hyper_kcut)
+            hyper_kcut, psi_hat, glm_ch, glm_cr)
     if omega_hat.ndim == 2:
         return _coupled_mhd_step_2d(*args)
     return _coupled_mhd_step_3d(*args)
