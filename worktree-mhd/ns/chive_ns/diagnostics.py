@@ -105,7 +105,7 @@ def _zero_stress():
 def _field_diagnostics_2d(u_hat, grid):
     u = jnp.fft.ifftn(u_hat, axes=(1, 2)).real
     energy = 0.5 * jnp.mean(jnp.sum(u**2, axis=0))
-    div = jnp.fft.ifftn(jnp.sum(grid["k_stack"] * u_hat, axis=0)).real
+    div = jnp.fft.ifftn(1j * jnp.sum(grid["k_stack"] * u_hat, axis=0)).real
     vort_hat = _vort_from_u_2d(u_hat, grid)
     vort = jnp.fft.ifftn(vort_hat).real
     S = strain_tensor(u_hat, grid)
@@ -130,7 +130,7 @@ def _field_diagnostics_3d(u_hat, grid):
     k = grid["k_stack"]
     u = jnp.fft.ifftn(u_hat, axes=(1, 2, 3)).real
     energy = 0.5 * jnp.mean(jnp.sum(u**2, axis=0))
-    div = jnp.fft.ifftn(jnp.sum(k * u_hat, axis=0)).real
+    div = jnp.fft.ifftn(1j * jnp.sum(k * u_hat, axis=0)).real
     omega_hat = _vort_from_u_3d(u_hat, grid)
     omega = jnp.fft.ifftn(omega_hat, axes=(1, 2, 3)).real
     w2 = jnp.sum(omega**2, axis=0)

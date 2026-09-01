@@ -1,7 +1,8 @@
-"""Tiny cmhd smoke: uniform RHS=0, 3b bump advection, patch-4 energy.
+"""Tiny cmhd smoke: rest RHS=0, bump advection, Russell energy, pressure-bump acoustics.
 
-Helmholtz-on; not acoustics. No mean-pin and no floor in the solver.
-Uniform smoke is the RHS=0 check and is not sufficient alone.
+Primitive u; Qin/Helmholtz off on cmhd. No mean-pin and no floor in the solver.
+Helmholtz-off proof is a pressure bump (nonzero div u). Not Brio-Wu.
+mode=mhd stays Qin-projected.
 """
 import os
 import sys
@@ -17,7 +18,10 @@ import numpy as np
 import jax.numpy as jnp
 from chive_ns import (
     run_framework, make_grid, project_div_free,
-    bump_rho_hat, continuity_step, density_diagnostics,
+    bump_rho_hat, bump_p_hat, continuity_step, density_diagnostics,
+    sound_wave_fields, GAMMA_DEFAULT, coupled_cmhd_step,
+    uniform_rho_hat, uniform_p_hat, max_abs_div_u,
+    zero_tau_hat, zero_b_hat,
 )
 
 
@@ -25,35 +29,105 @@ def _arr(x):
     return np.asarray(x)
 
 
-def _uniform_smoke():
+def _sound_wave():
+    """1D traveling acoustic wave on a 1D-like 2D grid. v_phase / c_s ~ 1."""
+    gamma = float(GAMMA_DEFAULT)
+    p0, rho0, eps = 1.0, 1.0, 1e-3
+    N, L = 16, 1.0
+    dt, steps = 0.005, 40
+    T = steps * dt
+    cs = float(np.sqrt(gamma * p0 / rho0))
     out = run_framework(
-        N=16, dim=2, steps=8, dt=5e-4, diag_every=8, scheme="rk2",
-        mode="cmhd", force_on=False, viscoelastic=False,
-        mhd_params=dict(eta_hyper=0.0, glm_ch=0.0),
+        N=N, dim=2, steps=steps, dt=dt, diag_every=steps, scheme="rk2",
+        mode="cmhd", ic="sound", force_on=False, viscoelastic=False, nu=0.0,
+        ic_params=dict(sound_eps=eps, rho0=rho0),
+        mhd_params=dict(
+            B0=0.0, eta_mag=0.0, eta_hyper=0.0, glm_ch=0.0,
+            gamma=gamma, p0=p0,
+        ),
     )
+    grid = make_grid(N, L=L, dim=2)
+    _u0, rho0f, _p0f, cs_f = sound_wave_fields(
+        grid, eps=eps, rho0=rho0, p0=p0, gamma=gamma)
+    rho0_phys = _arr(rho0f)
     rho = np.fft.ifftn(_arr(out["rho_hat"])).real
-    max_rho_m1 = float(np.max(np.abs(rho - 1.0)))
-    hist_m1 = float(np.max(np.abs(_arr(out["max_abs_rho_m1"]))))
-    max_drho = float(np.max(np.abs(_arr(out["max_drho_dt"]))))
-    mean_rho = float(np.mean(rho))
+    max_div = float(_arr(max_abs_div_u(out["u_hat"], out["grid"])))
+
+    def _phase_x(field):
+        prof = np.mean(np.asarray(field), axis=1)
+        return float(np.angle(np.fft.fft(prof)[1]))
+
+    phi0 = _phase_x(rho0_phys)
+    phi1 = _phase_x(rho)
+    dphi = float(np.unwrap(np.array([phi0, phi1]))[1] - phi0)
+    k = 2.0 * np.pi / L
+    v_phase = -dphi / (k * T + 1e-30)
+    ratio = v_phase / (cs + 1e-30)
+    amp0 = float(np.max(np.abs(rho0_phys - rho0)))
+    amp1 = float(np.max(np.abs(rho - rho0)))
+    print(
+        f"cmhd sound: v_phase={v_phase:.6f} c_s={cs:.6f} v_phase/c_s={ratio:.6f} "
+        f"dphi={dphi:.6f} T={T:.4f} max_div={max_div:.6e} "
+        f"amp0={amp0:.6e} amp1={amp1:.6e} cs_f={float(cs_f):.6f}",
+        flush=True,
+    )
+    failed = []
+    if abs(ratio - 1.0) >= 0.1:
+        failed.append(f"v_phase/c_s={ratio}")
+    if max_div <= 1e-8:
+        failed.append(f"Qin still on? max_div={max_div}")
+    if amp1 < 0.5 * amp0:
+        failed.append(f"wave died amp1={amp1} amp0={amp0}")
+    if failed:
+        print("FAIL cmhd sound: " + ", ".join(failed), flush=True)
+        return False
+    print("SMOKE CMHD sound wave OK", flush=True)
+    return True
+
+
+def _rest_state(grid):
+    N, dim = int(grid["N"]), int(grid["dim"])
+    u = jnp.zeros((dim,) + (N,) * dim, dtype=jnp.float64)
+    u_hat = jnp.fft.fftn(u, axes=range(1, dim + 1))
+    tau = zero_tau_hat(grid, dtype=jnp.complex128)
+    B = zero_b_hat(grid, dtype=jnp.complex128)
+    rho = uniform_rho_hat(grid, rho0=1.0)
+    return u_hat, tau, B, rho
+
+
+def _uniform_smoke():
+    """Rest + uniform rho/p: continuity and momentum RHS stay ~0."""
+    grid = make_grid(16, L=1.0, dim=2)
+    u_hat, tau, B, rho = _rest_state(grid)
+    p = uniform_p_hat(grid, p0=1.0)
+    dt, steps = 5e-4, 8
+    for _ in range(steps):
+        u_hat, tau, B, _psi, rho, p = coupled_cmhd_step(
+            u_hat, tau, B, rho, p, grid, 0.001, dt,
+            0, "rk2", 0.0,
+            0.0, 0.6, 0.085, 0.13, 1e-4, 0.0, 0.0, 0.0, None,
+            1e-3, 0.0, None, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            None, 0.0, 0.18, 5.0 / 3.0)
+    rho_x = np.fft.ifftn(_arr(rho)).real
+    u = np.fft.ifftn(_arr(u_hat), axes=(1, 2)).real
+    max_rho_m1 = float(np.max(np.abs(rho_x - 1.0)))
+    max_u = float(np.max(np.abs(u)))
+    divu = float(_arr(max_abs_div_u(u_hat, grid)))
+    mean_rho = float(np.mean(rho_x))
     leftover = mean_rho - 1.0
     print(
-        f"cmhd uniform rho: max|rho-1|={max_rho_m1:.6e} "
-        f"hist max|rho-1|={hist_m1:.6e} max|d_t rho|={max_drho:.6e} "
-        f"mean_rho={mean_rho:.16f} <rho>-1={leftover:.6e}",
+        f"cmhd uniform rest: max|rho-1|={max_rho_m1:.6e} max|u|={max_u:.6e} "
+        f"max|div u|={divu:.6e} mean_rho={mean_rho:.16f} <rho>-1={leftover:.6e}",
         flush=True,
     )
     ok = (
-        out.get("rho_hat") is not None
-        and np.isfinite(max_rho_m1)
-        and max_rho_m1 < 1e-12
-        and hist_m1 < 1e-12
-        and max_drho < 1e-12
+        np.isfinite(max_rho_m1) and max_rho_m1 < 1e-12
+        and max_u < 1e-12 and divu < 1e-12
     )
     if not ok:
         print(
-            f"FAIL cmhd uniform rho leftover too large: "
-            f"max|rho-1|={max_rho_m1:.3e} max|d_t rho|={max_drho:.3e}",
+            f"FAIL cmhd uniform rest leftover too large: "
+            f"max|rho-1|={max_rho_m1:.3e} max|u|={max_u:.3e} max|div u|={divu:.3e}",
             flush=True,
         )
         return False
@@ -114,42 +188,14 @@ def _bump_advection():
     return True
 
 
-def _no_backreaction():
-    common = dict(
-        N=16, dim=2, steps=8, dt=5e-4, diag_every=8, scheme="rk2",
-        mode="cmhd", force_on=False, viscoelastic=False, seed=0,
-        mhd_params=dict(eta_hyper=0.0, glm_ch=0.0),
-    )
-    out0 = run_framework(**common)
-    outb = run_framework(ic_params=dict(rho_eps=0.01), **common)
-    u0 = _arr(out0["u_hat"])
-    ub = _arr(outb["u_hat"])
-    du = float(np.max(np.abs(ub - u0)))
-    rho = np.fft.ifftn(_arr(outb["rho_hat"])).real
-    leftover = float(np.mean(rho) - 1.0)
-    min_rho = float(np.min(rho))
-    print(
-        f"cmhd no back-reaction: max|u_bump-u_uni|={du:.6e} "
-        f"<rho>-1={leftover:.6e} min_rho={min_rho:.8f}",
-        flush=True,
-    )
-    if du >= 1e-14:
-        print(f"FAIL cmhd bump back-reacted on u: {du:.3e}", flush=True)
-        return False
-    if not (min_rho > 0.0):
-        print(f"FAIL cmhd coupled bump min_rho={min_rho}", flush=True)
-        return False
-    print("SMOKE CMHD no back-reaction OK", flush=True)
-    return True
-
-
 def _energy_smoke():
     gamma = 5.0 / 3.0
     p0 = 1.0
     out = run_framework(
         N=16, dim=2, steps=8, dt=5e-4, diag_every=1, scheme="rk2",
         mode="cmhd", force_on=False, viscoelastic=False,
-        mhd_params=dict(eta_hyper=0.0, glm_ch=0.0, gamma=gamma, p0=p0),
+        ic_params=dict(u_scale=0.0),
+        mhd_params=dict(eta_hyper=0.0, glm_ch=0.0, gamma=gamma, p0=p0, B0=0.0),
     )
     e = _arr(out["mean_e_int"])
     t = _arr(out["time"])
@@ -179,16 +225,58 @@ def _energy_smoke():
     return True
 
 
+def _pressure_bump_acoustics():
+    """Rest + p bump: Helmholtz-off must produce nonzero div u (acoustics seed)."""
+    grid = make_grid(16, L=1.0, dim=2)
+    u_hat, tau, B, rho = _rest_state(grid)
+    p = bump_p_hat(grid, eps=0.01, p0=1.0)
+    dt, steps = 5e-4, 4
+    for _ in range(steps):
+        u_hat, tau, B, _psi, rho, p = coupled_cmhd_step(
+            u_hat, tau, B, rho, p, grid, 0.001, dt,
+            0, "rk2", 0.0,
+            0.0, 0.6, 0.085, 0.13, 1e-4, 0.0, 0.0, 0.0, None,
+            1e-3, 0.0, None, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            None, 0.0, 0.18, 5.0 / 3.0)
+    div_cmhd = float(_arr(max_abs_div_u(u_hat, grid)))
+    u_proj = project_div_free(u_hat, grid)
+    div_proj = float(_arr(max_abs_div_u(u_proj, grid)))
+    out_mhd = run_framework(
+        N=16, dim=2, steps=8, dt=5e-4, diag_every=8, scheme="rk2",
+        mode="mhd", force_on=False, viscoelastic=False,
+        mhd_params=dict(eta_hyper=0.0, glm_ch=0.0),
+    )
+    div_mhd = float(_arr(max_abs_div_u(out_mhd["u_hat"], out_mhd["grid"])))
+    print(
+        f"cmhd pressure bump: max|div u|={div_cmhd:.6e} "
+        f"after Qin on same u={div_proj:.6e} "
+        f"mode=mhd max|div u|={div_mhd:.6e}",
+        flush=True,
+    )
+    failed = []
+    if not (div_cmhd > 1e-8):
+        failed.append(f"cmhd max|div u| still roundoff {div_cmhd}")
+    if not (div_proj < 1e-10):
+        failed.append(f"Qin on cmhd u not killed {div_proj}")
+    if not (div_mhd < 1e-10):
+        failed.append(f"mode=mhd still projected? max|div u|={div_mhd}")
+    if failed:
+        print("FAIL cmhd acoustics: " + ", ".join(failed), flush=True)
+        return False
+    print("SMOKE CMHD pressure-bump acoustics OK", flush=True)
+    return True
+
+
 def main():
     failed = []
     if not _uniform_smoke():
         failed.append("uniform")
     if not _bump_advection():
         failed.append("bump")
-    if not _no_backreaction():
-        failed.append("back-reaction")
     if not _energy_smoke():
         failed.append("energy")
+    if not _pressure_bump_acoustics():
+        failed.append("acoustics")
     if failed:
         print("FAILED: " + ", ".join(failed), flush=True)
         sys.exit(1)

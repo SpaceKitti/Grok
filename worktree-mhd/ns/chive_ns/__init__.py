@@ -42,9 +42,11 @@ from .es_lhdi import (
 )
 from .scaffold_heavy import heavy_placeholder_diagnostics, heavy_equation_notes
 from .compressible import (
-    uniform_rho_hat, bump_rho_hat, uniform_p_hat, uniform_eint_hat, zero_eint_hat,
+    uniform_rho_hat, bump_rho_hat, uniform_p_hat, bump_p_hat, uniform_eint_hat, zero_eint_hat,
     continuity_rhs, continuity_step, density_step, density_diagnostics,
     eos_pressure, eos_eint, pressure_rhs, pressure_step, heating_Q,
     energy_diagnostics, coupled_cmhd_step, GAMMA_DEFAULT,
+    sound_wave_fields, cfl_dt_cmhd, primitive_u_rhs, primitive_cmhd_step,
+    max_abs_div_u,
 )
 from .driver import run_framework
