@@ -47,6 +47,7 @@ from .compressible import (
     eos_pressure, eos_eint, pressure_rhs, pressure_step, heating_Q,
     energy_diagnostics, coupled_cmhd_step, GAMMA_DEFAULT,
     sound_wave_fields, cfl_dt_cmhd, primitive_u_rhs, primitive_cmhd_step,
-    max_abs_div_u,
+    max_abs_div_u, kinetic_energy_rho, viscous_work_lap, viscous_heat_SS,
+    viscous_disagreement,
 )
 from .driver import run_framework

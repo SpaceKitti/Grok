@@ -1,5 +1,5 @@
 # ============================================================
-# @Akitti C*Hive – Compressible MHD (patches 5+6)
+# @Akitti C*Hive – Compressible MHD (patches 5+6, 7 Venus I_leak)
 # Continuity:  dt rho + div(rho u) = 0. Dealias the product rho u.
 # Energy: Russell Dp/Dt = -gamma p div(u) + (gamma-1) Q
 #         ideal EOS p = (gamma-1) rho e ; gamma=5/3 default.
@@ -7,6 +7,9 @@
 #   dt u = -(u·∇)u - ∇p/ρ + (J×B)/ρ + ν ∇²u
 # Qin / Helmholtz / project_div_free is OFF on u (sound lives here).
 # mode="mhd" stays the projected vorticity toy in vorticity.py.
+# I_leak (cmhd only) = Delta(E_kin + E_int + E_mag + e_glm),
+# E_kin = <1/2 rho |u|^2>. Heat already in E_int; do not add int(eps_nu+eps_eta).
+# Lorentz and p div u are transfers, not leaks. No bulk viscosity.
 # No nabla p on the vorticity RHS. No mean-pin and no floor.
 # ============================================================
 
@@ -232,11 +235,38 @@ def pressure_step(p_hat, u_hat, grid, dt, scheme, gamma, Q):
     return out * grid["dealias"]
 
 
-def energy_diagnostics(rho_hat, p_hat, gamma=GAMMA_DEFAULT):
-    """e_int here is volumetric internal energy density <p/(gamma-1)>."""
+def kinetic_energy_rho(rho_hat, u_hat):
+    """E_kin = <1/2 rho |u|^2>. Not 1/2 <|u|^2>."""
+    spatial = tuple(range(1, u_hat.ndim))
+    rho = jnp.fft.ifftn(rho_hat).real
+    u = jnp.fft.ifftn(u_hat, axes=spatial).real
+    return 0.5 * jnp.mean(rho * jnp.sum(u * u, axis=0))
+
+
+def viscous_work_lap(u_hat, grid, nu):
+    """Mean work of the primitive viscous term: <u · ν ∇²u>. No bulk visc."""
+    spatial = tuple(range(1, u_hat.ndim))
+    u = jnp.fft.ifftn(u_hat, axes=spatial).real
+    lap = jnp.fft.ifftn(-grid["k2"][None] * u_hat, axes=spatial).real
+    return jnp.mean(jnp.sum(u * (nu * lap), axis=0))
+
+
+def viscous_heat_SS(u_hat, grid, nu):
+    """Mean viscous heat Q = <2 ν S:S>. No bulk viscosity."""
+    S = strain_tensor(u_hat, grid)
+    return jnp.mean(2.0 * nu * jnp.sum(S * S, axis=(0, 1)))
+
+
+def viscous_disagreement(u_hat, grid, nu):
+    """When ∇·u ≠ 0, <u · ν ∇²u> and <2 ν S:S> disagree. Measure, do not retune."""
+    return viscous_work_lap(u_hat, grid, nu), viscous_heat_SS(u_hat, grid, nu)
+
+
+def energy_diagnostics(rho_hat, p_hat, gamma=GAMMA_DEFAULT, u_hat=None):
+    """e_int is volumetric <p/(gamma-1)>. Optional e_kin = <1/2 rho |u|^2>."""
     p = jnp.fft.ifftn(p_hat).real
     e_dens = p / (gamma - 1.0)
-    return {
+    out = {
         "e_int": jnp.mean(e_dens),
         "mean_e_int": jnp.mean(e_dens),
         "p": jnp.mean(p),
@@ -244,6 +274,9 @@ def energy_diagnostics(rho_hat, p_hat, gamma=GAMMA_DEFAULT):
         "min_p": jnp.min(p),
         "gamma": jnp.asarray(gamma, dtype=jnp.float64),
     }
+    if u_hat is not None:
+        out["e_kin"] = kinetic_energy_rho(rho_hat, u_hat)
+    return out
 
 
 @jit

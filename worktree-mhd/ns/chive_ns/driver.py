@@ -279,7 +279,7 @@ def _snapshot_cmhd(state, grid, nu, clay_params, mhd_params, B_ext_hat, gamma):
         (omega_hat, tau_hat, B_hat, psi_hat), grid, nu, clay_params,
         mhd_params, B_ext_hat, u_hat=u_hat)
     d.update(density_diagnostics(rho_hat, u_hat, grid))
-    d.update(energy_diagnostics(rho_hat, p_hat, gamma))
+    d.update(energy_diagnostics(rho_hat, p_hat, gamma, u_hat=u_hat))
     Q = heating_Q(u_hat, B_hat, grid, mhd_params["eta_mag"], nu, B_ext_hat)
     d["mean_Q"] = jnp.mean(Q)
     return d
@@ -358,7 +358,7 @@ _MHD_HIST = (
 
 _CMHD_HIST = (
     "mean_rho", "max_rho", "min_rho", "max_abs_rho_m1", "max_drho_dt",
-    "e_int", "p", "gamma", "mean_p", "min_p", "mean_e_int", "mean_Q",
+    "e_int", "e_kin", "p", "gamma", "mean_p", "min_p", "mean_e_int", "mean_Q",
 )
 
 
@@ -430,6 +430,17 @@ def _pack_out(hist, u_hat, omega_hat, tau_hat, grid, dt, N, nu, ic, scheme,
         out[k] = hist.get(k, z)
     out["rho_hat"] = rho_hat
     out["p_hat"] = p_hat
+    # PATCH 7 Venus (cmhd only). mill I_leak above stays the two-bucket
+    # MHD identity: (e_tot+e_glm - that[0]) + I_nu + I_eta + I_tau.
+    # Heat already sits in E_int, so do NOT add int(eps_nu+eps_eta).
+    if "e_kin" in hist:
+        e_kin = hist["e_kin"]
+        e_int = hist["e_int"]
+        e_mag = hist.get("e_mag_tot", hist.get("e_mag", z))
+        e_glm = hist.get("e_glm", z)
+        e_cons_c = e_kin + e_int + e_mag + e_glm
+        out["I_leak"] = e_cons_c - e_cons_c[0]
+        out["e_cons_cmhd"] = e_cons_c
     return out
 
 

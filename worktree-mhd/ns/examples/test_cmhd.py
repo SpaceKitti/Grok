@@ -22,6 +22,7 @@ from chive_ns import (
     sound_wave_fields, GAMMA_DEFAULT, coupled_cmhd_step,
     uniform_rho_hat, uniform_p_hat, max_abs_div_u,
     zero_tau_hat, zero_b_hat,
+    viscous_disagreement,
 )
 
 
@@ -267,6 +268,63 @@ def _pressure_bump_acoustics():
     return True
 
 
+
+def _ileak_venus_smoke():
+    """force_off cmhd: Venus I_leak and viscous nu lap u vs 2 nu S:S.
+
+    Spectral leftover is NOT 1e-12; report I_leak/E0, do not hunt 0%.
+    Measure viscous disagreement once div u != 0. No bulk viscosity.
+    """
+    nu = 0.001
+    out = run_framework(
+        N=16, dim=2, steps=16, dt=0.002, diag_every=1, scheme="rk2",
+        mode="cmhd", ic="sound", force_on=False, viscoelastic=False, nu=nu,
+        ic_params=dict(sound_eps=1e-3, rho0=1.0),
+        mhd_params=dict(
+            B0=0.0, eta_mag=0.0, eta_hyper=0.0, glm_ch=0.0,
+            gamma=float(GAMMA_DEFAULT), p0=1.0,
+        ),
+    )
+    e_kin = _arr(out["e_kin"])
+    e_int = _arr(out["e_int"])
+    e_mag = _arr(out["e_mag_tot"])
+    e_glm = _arr(out["e_glm"])
+    e_cons = e_kin + e_int + e_mag + e_glm
+    ileak = _arr(out["I_leak"])
+    E0 = float(e_cons[0])
+    ratio = abs(float(ileak[-1])) / (abs(E0) + 1e-30)
+    expect = e_cons - e_cons[0]
+    formula_err = float(np.max(np.abs(ileak - expect)))
+    two_bucket = expect + _arr(out["I_nu"]) + _arr(out["I_eta"]) + _arr(out["I_tau"])
+    not_mill = float(np.max(np.abs(ileak - two_bucket)))
+    work_lap, Q_SS = viscous_disagreement(out["u_hat"], out["grid"], float(out["nu"]))
+    work_lap = float(_arr(work_lap))
+    Q_SS = float(_arr(Q_SS))
+    max_div = float(_arr(max_abs_div_u(out["u_hat"], out["grid"])))
+    print(
+        f"cmhd Venus I_leak: I_leak={float(ileak[-1]):.6e} E0={E0:.6e} "
+        f"I_leak/E0={ratio:.6e} formula_err={formula_err:.3e} "
+        f"not_two_bucket={not_mill:.3e} "
+        f"visc_work_nu_lap_u={work_lap:.6e} visc_Q_2nuSS={Q_SS:.6e} "
+        f"max|div u|={max_div:.6e}",
+        flush=True,
+    )
+    failed = []
+    if not np.isfinite(ratio):
+        failed.append(f"I_leak/E0 not finite {ratio}")
+    if formula_err >= 1e-12:
+        failed.append(f"I_leak is not Delta(E_kin+E_int+E_mag+e_glm) err={formula_err}")
+    if max_div <= 1e-8:
+        failed.append(f"need div u != 0 for visc measure max_div={max_div}")
+    if not np.isfinite(work_lap) or not np.isfinite(Q_SS):
+        failed.append(f"visc not finite work={work_lap} Q={Q_SS}")
+    if failed:
+        print("FAIL cmhd Venus I_leak: " + ", ".join(failed), flush=True)
+        return False
+    print("SMOKE CMHD Venus I_leak OK (leftover reported, not hunted)", flush=True)
+    return True
+
+
 def main():
     failed = []
     if not _sound_wave():
@@ -277,6 +335,8 @@ def main():
         failed.append("bump")
     if not _energy_smoke():
         failed.append("energy")
+    if not _ileak_venus_smoke():
+        failed.append("ileak")
     if not _pressure_bump_acoustics():
         failed.append("acoustics")
     if failed:
