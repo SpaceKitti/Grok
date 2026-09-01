@@ -1,4 +1,4 @@
-"""Tiny cmhd smoke: uniform RHS=0 plus 3b bump advection.
+"""Tiny cmhd smoke: uniform RHS=0, 3b bump advection, patch-4 energy.
 
 Helmholtz-on; not acoustics. No mean-pin and no floor in the solver.
 Uniform smoke is the RHS=0 check and is not sufficient alone.
@@ -187,6 +187,8 @@ def main():
         failed.append("bump")
     if not _no_backreaction():
         failed.append("back-reaction")
+    if not _energy_smoke():
+        failed.append("energy")
     if failed:
         print("FAILED: " + ", ".join(failed), flush=True)
         sys.exit(1)
