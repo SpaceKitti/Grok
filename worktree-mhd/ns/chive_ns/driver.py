@@ -27,6 +27,9 @@ from .mhd import (
     mhd_field_diagnostics, _zero_mhd, cfl_dt_mhd, split_guide_fields,
 )
 from .es_lhdi import es_placeholder_diagnostics
+from .compressible import (
+    uniform_rho_hat, coupled_cmhd_step, density_diagnostics,
+)
 
 
 _TUBE_KEYS = ("circulation", "radius", "separation", "perturbation", "axial_wave")
@@ -258,6 +261,69 @@ def _run_mhd_scanned(omega_hat, tau_hat, B_hat, grid, nu, dt, steps, force_on,
                       steps, diag_every)
 
 
+def _snapshot_cmhd(state, grid, nu, clay_params, mhd_params, B_ext_hat):
+    omega_hat, tau_hat, B_hat, psi_hat, rho_hat = state
+    d = _snapshot_mhd(
+        (omega_hat, tau_hat, B_hat, psi_hat), grid, nu, clay_params,
+        mhd_params, B_ext_hat)
+    u_hat = velocity_from_vorticity(omega_hat, grid)
+    d.update(density_diagnostics(rho_hat, u_hat, grid))
+    return d
+
+
+def _run_cmhd_scanned(omega_hat, tau_hat, B_hat, rho_hat, grid, nu, dt, steps,
+                      force_on, scheme, diag_every, clay_params, mhd_params,
+                      n_scars=1, scar_centres=None, force_amp=1.0,
+                      B_ext_hat=None, induct_ext=1.0):
+    """Incompressible MHD (existing coupled_mhd_step) + live continuity.
+
+    u stays Helmholtz-projected (Qin). Density does not back-react (no nabla p).
+    """
+    force_pat = z7_braid_forcing(grid, 1.0, n_scars=n_scars,
+                                 scar_centres=scar_centres)
+    force_scale = (1.0 if force_on else 0.0) * float(force_amp)
+    eta_p = clay_params["eta_p"]
+    lambda_relax = clay_params["lambda_relax"]
+    alpha = clay_params["alpha"]
+    beta_scar = clay_params["beta_scar"]
+    stress_diff = clay_params["stress_diff"]
+    clay_gain = clay_params["clay_gain"]
+    gum_scale = clay_params.get("gum_scale", 1.0)
+    stress_couple = clay_params.get("stress_couple", 1.0)
+    regs = _regs_from_params(clay_params)
+    eta_mag = mhd_params["eta_mag"]
+    eta_odd = mhd_params["eta_odd"]
+    mu_eff = float(mhd_params.get("mu_eff", 0.0))
+    berry_gain = float(mhd_params.get("berry_gain", 0.0))
+    eta_hyper = float(mhd_params.get("eta_hyper", 0.0))
+    posdiv = float(mhd_params.get("posdiv", 0.0))
+    hyper_kcut = float(mhd_params.get("hyper_kcut", 0.0))
+    glm_ch = float(mhd_params.get("glm_ch", 0.0))
+    glm_cr = float(mhd_params.get("glm_cr", 0.18))
+    if B_ext_hat is None:
+        B_ext_hat = zero_b_hat(grid, dtype=omega_hat.dtype)
+    psi0 = zero_psi_hat(grid, dtype=omega_hat.dtype)
+
+    def advance(state, idx):
+        omega_hat, tau_hat, B_hat, psi_hat, rho_hat = state
+        t = idx * dt
+        t_norm = idx / jnp.maximum(steps - 1, 1)
+        force = force_pat * (modest_liar(t_norm) * force_scale)
+        return coupled_cmhd_step(
+            omega_hat, tau_hat, B_hat, rho_hat, grid, nu, dt, force, scheme, t,
+            eta_p, lambda_relax, alpha, beta_scar, stress_diff, clay_gain,
+            gum_scale, stress_couple, regs, eta_mag, eta_odd,
+            B_ext_hat, induct_ext, mu_eff, berry_gain, eta_hyper, posdiv,
+            hyper_kcut, psi_hat, glm_ch, glm_cr)
+
+    def snapshot(state):
+        return _snapshot_cmhd(state, grid, nu, clay_params, mhd_params, B_ext_hat)
+
+    return _scan_loop(
+        advance, snapshot, (omega_hat, tau_hat, B_hat, psi0, rho_hat),
+        steps, diag_every)
+
+
 _MHD_HIST = (
     "e_mag", "e_mag_ext", "e_mag_tot", "ohmic", "hyper_ohmic", "max_j", "max_b",
     "H_mag", "H_cross", "H_current", "max_div_b", "lorentz_work",
@@ -273,11 +339,15 @@ _MHD_HIST = (
     "e_glm", "max_psi",
 )
 
+_CMHD_HIST = (
+    "mean_rho", "max_rho", "min_rho", "max_abs_rho_m1", "max_drho_dt",
+)
+
 
 def _pack_out(hist, u_hat, omega_hat, tau_hat, grid, dt, N, nu, ic, scheme,
               viscoelastic, clay_params, steps, diag_every, n_scars,
               scar_centres, force_on, B_hat=None, mhd_params=None,
-              magnetic=False):
+              magnetic=False, rho_hat=None):
     time = sample_times(hist["energy"].shape[0], steps, dt, diag_every)
     mill = millennium_series(hist, time, nu)
     out = {
@@ -338,6 +408,9 @@ def _pack_out(hist, u_hat, omega_hat, tau_hat, grid, dt, N, nu, ic, scheme,
     z = mill["time"] * 0.0
     for k in _MHD_HIST:
         out[k] = hist.get(k, z)
+    for k in _CMHD_HIST:
+        out[k] = hist.get(k, z)
+    out["rho_hat"] = rho_hat
     return out
 
 
@@ -353,6 +426,9 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
          = "clay"        → same NS + Oldroyd-B E-brane extra-stress
          = "hybrid"      → alias for clay (λ₂ is always recorded in 3D)
          = "mhd"         → NS + (optional clay) + induction / Lorentz
+         = "cmhd"        → new compressible tree: live rho + continuity
+                           on the existing incompressible (projected) MHD.
+                           Does not replace mode="mhd". No nabla p / EOS yet.
          = "bubble"      → pure RP + Liu–Sun tower
 
     viscoelastic=True forces the clay coupling even if mode="vorticity".
@@ -368,6 +444,9 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
         magnetic = mode == "mhd"
     if viscoelastic is None:
         viscoelastic = mode in ("clay", "hybrid", "mhd")
+    if mode == "cmhd":
+        # New tree. mode="mhd" defaults above are unchanged.
+        magnetic = True
     if mode == "hybrid":
         mode = "clay" if viscoelastic else "vorticity"
     if clay_params is None:
@@ -431,6 +510,7 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     B_ext_hat = None
     induct_ext = 1.0
     psi_hat = None
+    rho_hat = None
     if magnetic:
         B_hat, B_ext_hat, induct_ext = split_guide_fields(
             grid, mhd_params, ic_params)
@@ -456,7 +536,20 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     centres = resolve_scar_centres(grid, n_scars, scar_centres)
     n_scars = len(centres)
 
-    if magnetic:
+    if mode == "cmhd":
+        tau_hat = zero_tau_hat(grid, dtype=omega_hat.dtype)
+        clay_use = clay_params
+        if not viscoelastic:
+            clay_use = dict(clay_params, eta_p=0.0, stress_couple=0.0,
+                            clay_gain=0.0, gum_scale=0.0,
+                            soft_J=0.0, high_de=0.0, alpha_LB=0.0,
+                            lam_kin_gain=0.0, alpha_perp=0.0)
+        rho_hat = uniform_rho_hat(grid, rho0=1.0, dtype=omega_hat.dtype)
+        (omega_hat, tau_hat, B_hat, psi_hat, rho_hat), hist = _run_cmhd_scanned(
+            omega_hat, tau_hat, B_hat, rho_hat, grid, nu, dt, steps, force_on,
+            scheme, diag_every, clay_use, mhd_params, n_scars, centres,
+            force_amp, B_ext_hat=B_ext_hat, induct_ext=induct_ext)
+    elif magnetic:
         tau_hat = zero_tau_hat(grid, dtype=omega_hat.dtype)
         clay_use = clay_params
         if not viscoelastic:
@@ -484,7 +577,8 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     out = _pack_out(hist, u_hat, omega_hat, tau_hat, grid, dt, N, nu_out, ic,
                     scheme, bool(viscoelastic or mode == "clay"), clay_params,
                     steps, diag_every, n_scars, centres, force_on,
-                    B_hat=B_hat, mhd_params=mhd_params, magnetic=bool(magnetic))
+                    B_hat=B_hat, mhd_params=mhd_params, magnetic=bool(magnetic),
+                    rho_hat=rho_hat)
     out["nu_solvent"] = nu
     out["B_ext_hat"] = B_ext_hat
     if magnetic:

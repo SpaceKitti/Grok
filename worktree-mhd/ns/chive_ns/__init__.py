@@ -41,4 +41,8 @@ from .es_lhdi import (
     generate_harris_edge_seed, es_placeholder_diagnostics, es_equation_notes,
 )
 from .scaffold_heavy import heavy_placeholder_diagnostics, heavy_equation_notes
+from .compressible import (
+    uniform_rho_hat, zero_eint_hat, continuity_rhs, continuity_step,
+    density_diagnostics, coupled_cmhd_step,
+)
 from .driver import run_framework
