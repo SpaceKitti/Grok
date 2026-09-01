@@ -268,4 +268,9 @@ def millennium_series(hist, time, nu):
         "I_tau": I_tau,
         "energy_leak": energy_leak,
         "I_leak": I_leak,
+        "rec_rate_flux": (
+            -_time_derivative(hist["flux_x_half"], time)
+            if energy.shape[0] >= 2 and "flux_x_half" in hist
+            else jnp.zeros_like(energy)
+        ),
     }
