@@ -42,7 +42,8 @@ from .es_lhdi import (
 )
 from .scaffold_heavy import heavy_placeholder_diagnostics, heavy_equation_notes
 from .compressible import (
-    uniform_rho_hat, zero_eint_hat, continuity_rhs, continuity_step,
-    density_diagnostics, coupled_cmhd_step,
+    continuity_rhs, density_step, continuity_step, uniform_rho_hat,
+    rho_diagnostics, density_diagnostics, constrain_rho_hat, RHO_FLOOR,
+    coupled_cmhd_step,
 )
 from .driver import run_framework

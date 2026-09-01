@@ -277,7 +277,8 @@ def _run_cmhd_scanned(omega_hat, tau_hat, B_hat, rho_hat, grid, nu, dt, steps,
                       B_ext_hat=None, induct_ext=1.0):
     """Incompressible MHD (existing coupled_mhd_step) + live continuity.
 
-    u stays Helmholtz-projected (Qin). Density does not back-react (no nabla p).
+    Helmholtz stays ON: u is Qin-projected (density tracer, not acoustics).
+    Density does not back-react (no nabla p).
     """
     force_pat = z7_braid_forcing(grid, 1.0, n_scars=n_scars,
                                  scar_centres=scar_centres)
@@ -426,9 +427,7 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
          = "clay"        → same NS + Oldroyd-B E-brane extra-stress
          = "hybrid"      → alias for clay (λ₂ is always recorded in 3D)
          = "mhd"         → NS + (optional clay) + induction / Lorentz
-         = "cmhd"        → new compressible tree: live rho + continuity
-                           on the existing incompressible (projected) MHD.
-                           Does not replace mode="mhd". No nabla p / EOS yet.
+         = "cmhd" / "compressible" → MHD + density tracer (Helmholtz ON)
          = "bubble"      → pure RP + Liu–Sun tower
 
     viscoelastic=True forces the clay coupling even if mode="vorticity".
@@ -444,8 +443,8 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
         magnetic = mode == "mhd"
     if viscoelastic is None:
         viscoelastic = mode in ("clay", "hybrid", "mhd")
-    if mode == "cmhd":
-        # New tree. mode="mhd" defaults above are unchanged.
+    if mode in ("cmhd", "compressible"):
+        # Density tracer on incompressible MHD. mode="mhd" defaults unchanged.
         magnetic = True
     if mode == "hybrid":
         mode = "clay" if viscoelastic else "vorticity"
@@ -536,7 +535,7 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     centres = resolve_scar_centres(grid, n_scars, scar_centres)
     n_scars = len(centres)
 
-    if mode == "cmhd":
+    if mode in ("cmhd", "compressible"):
         tau_hat = zero_tau_hat(grid, dtype=omega_hat.dtype)
         clay_use = clay_params
         if not viscoelastic:

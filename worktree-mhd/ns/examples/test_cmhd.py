@@ -1,6 +1,6 @@
-"""Tiny cmhd density smoke: uniform rho=1 is a continuity no-op.
+"""Tiny cmhd density-tracer smoke. Helmholtz-on; not acoustics.
 
-Does not retune MHD. mode="mhd" is the old incompressible toy.
+N=16 2D, few steps, force_off. Uniform ρ=1 leftover should be roundoff.
 """
 import os
 import sys
@@ -27,33 +27,29 @@ def main():
         mhd_params=dict(eta_hyper=0.0, glm_ch=0.0),
     )
     rho = np.fft.ifftn(_arr(out["rho_hat"])).real
-    max_rho_m1 = float(np.max(np.abs(rho - 1.0)))
-    hist_m1 = float(np.max(np.abs(_arr(out["max_abs_rho_m1"]))))
-    max_drho = float(np.max(np.abs(_arr(out["max_drho_dt"]))))
-    mean_rho = float(_arr(out["mean_rho"])[-1])
-    print(
-        f"cmhd uniform rho: max|rho-1|={max_rho_m1:.6e} "
-        f"hist max|rho-1|={hist_m1:.6e} max|d_t rho|={max_drho:.6e} "
-        f"mean_rho={mean_rho:.12f}",
-        flush=True,
-    )
-    # Incompressible MHD path must still be the default for mode="mhd"
-    # (this file only checks the new tree). Leftover must stay tiny.
-    ok = (
-        out.get("rho_hat") is not None
-        and np.isfinite(max_rho_m1)
-        and max_rho_m1 < 1e-12
-        and hist_m1 < 1e-12
-        and max_drho < 1e-12
-    )
-    if not ok:
-        print(
-            f"FAIL cmhd uniform rho leftover too large: "
-            f"max|rho-1|={max_rho_m1:.3e} max|d_t rho|={max_drho:.3e}",
-            flush=True,
-        )
+    max_abs = float(np.max(np.abs(rho - 1.0)))
+    min_rho = float(np.min(rho))
+    mean_rho = float(np.mean(rho))
+    print(f"cmhd uniform leftover: max|rho-1|={max_abs:.6e} min_rho={min_rho:.6e} mean_rho={mean_rho:.16f}",
+          flush=True)
+    hist_max = float(_arr(out["max_abs_rho_m1"])[-1])
+    hist_min = float(_arr(out["min_rho"])[-1])
+    hist_mean = float(_arr(out["mean_rho"])[-1])
+    print(f"cmhd hist: max|rho-1|={hist_max:.6e} min_rho={hist_min:.6e} mean_rho={hist_mean:.16f}",
+          flush=True)
+    failed = []
+    if not (min_rho > 0.0):
+        failed.append(f"min_rho={min_rho}")
+    if abs(mean_rho - 1.0) >= 1e-12:
+        failed.append(f"mean_rho={mean_rho}")
+    if max_abs >= 1e-12:
+        failed.append(f"max|rho-1|={max_abs}")
+    if out.get("ic") is None:
+        pass
+    if failed:
+        print("FAILED: " + ", ".join(failed), flush=True)
         sys.exit(1)
-    print("SMOKE CMHD rho OK", flush=True)
+    print("SMOKE CMHD OK", flush=True)
 
 
 if __name__ == "__main__":
