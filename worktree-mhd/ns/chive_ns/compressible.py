@@ -120,19 +120,6 @@ def sound_wave_fields(grid, eps=1e-3, rho0=1.0, p0=1.0, gamma=GAMMA_DEFAULT):
     return u, rho, p, cs
 
 
-def cfl_dt_cmhd(u, rho, p, B, dx, nu, eta_mag, gamma=GAMMA_DEFAULT, cfl=0.4):
-    """dt from max(|u| + c_s + |v_A|) with c_s = sqrt(gamma p / rho).
-
-    v_A = |B| / sqrt(rho). Viscous/resistive piece matches cfl_dt_mhd.
-    No rho pin/floor.
-    """
-    speed = jnp.sqrt(jnp.sum(u ** 2, axis=0))
-    cs = jnp.sqrt(gamma * p / rho)
-    vA = jnp.sqrt(jnp.sum(B ** 2, axis=0) / rho)
-    fast = jnp.max(speed + cs + vA)
-    return cfl * dx / (fast + 4.0 * (nu + eta_mag) / dx + 1e-12)
-
-
 @jit
 def continuity_rhs(rho_hat, u_hat, grid):
     """Spectral 2/3-dealiased continuity: d_t rho = -div(rho u)."""

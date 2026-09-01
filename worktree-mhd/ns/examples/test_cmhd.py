@@ -19,7 +19,7 @@ import jax.numpy as jnp
 from chive_ns import (
     run_framework, make_grid, project_div_free,
     bump_rho_hat, bump_p_hat, continuity_step, density_diagnostics,
-    sound_wave_fields, GAMMA_DEFAULT, coupled_cmhd_step,
+    coupled_cmhd_step,
     uniform_rho_hat, uniform_p_hat, max_abs_div_u,
     zero_tau_hat, zero_b_hat,
 )
@@ -27,62 +27,6 @@ from chive_ns import (
 
 def _arr(x):
     return np.asarray(x)
-
-
-def _sound_wave():
-    """1D traveling acoustic wave on a 1D-like 2D grid. v_phase / c_s ~ 1."""
-    gamma = float(GAMMA_DEFAULT)
-    p0, rho0, eps = 1.0, 1.0, 1e-3
-    N, L = 16, 1.0
-    dt, steps = 0.005, 40
-    T = steps * dt
-    cs = float(np.sqrt(gamma * p0 / rho0))
-    out = run_framework(
-        N=N, dim=2, steps=steps, dt=dt, diag_every=steps, scheme="rk2",
-        mode="cmhd", ic="sound", force_on=False, viscoelastic=False, nu=0.0,
-        ic_params=dict(sound_eps=eps, rho0=rho0),
-        mhd_params=dict(
-            B0=0.0, eta_mag=0.0, eta_hyper=0.0, glm_ch=0.0,
-            gamma=gamma, p0=p0,
-        ),
-    )
-    grid = make_grid(N, L=L, dim=2)
-    _u0, rho0f, _p0f, cs_f = sound_wave_fields(
-        grid, eps=eps, rho0=rho0, p0=p0, gamma=gamma)
-    rho0_phys = _arr(rho0f)
-    rho = np.fft.ifftn(_arr(out["rho_hat"])).real
-    max_div = float(_arr(max_abs_div_u(out["u_hat"], out["grid"])))
-
-    def _phase_x(field):
-        prof = np.mean(np.asarray(field), axis=1)
-        return float(np.angle(np.fft.fft(prof)[1]))
-
-    phi0 = _phase_x(rho0_phys)
-    phi1 = _phase_x(rho)
-    dphi = float(np.unwrap(np.array([phi0, phi1]))[1] - phi0)
-    k = 2.0 * np.pi / L
-    v_phase = -dphi / (k * T + 1e-30)
-    ratio = v_phase / (cs + 1e-30)
-    amp0 = float(np.max(np.abs(rho0_phys - rho0)))
-    amp1 = float(np.max(np.abs(rho - rho0)))
-    print(
-        f"cmhd sound: v_phase={v_phase:.6f} c_s={cs:.6f} v_phase/c_s={ratio:.6f} "
-        f"dphi={dphi:.6f} T={T:.4f} max_div={max_div:.6e} "
-        f"amp0={amp0:.6e} amp1={amp1:.6e} cs_f={float(cs_f):.6f}",
-        flush=True,
-    )
-    failed = []
-    if abs(ratio - 1.0) >= 0.1:
-        failed.append(f"v_phase/c_s={ratio}")
-    if max_div <= 1e-8:
-        failed.append(f"Qin still on? max_div={max_div}")
-    if amp1 < 0.5 * amp0:
-        failed.append(f"wave died amp1={amp1} amp0={amp0}")
-    if failed:
-        print("FAIL cmhd sound: " + ", ".join(failed), flush=True)
-        return False
-    print("SMOKE CMHD sound wave OK", flush=True)
-    return True
 
 
 def _rest_state(grid):

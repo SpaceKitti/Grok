@@ -46,7 +46,7 @@ from .compressible import (
     continuity_rhs, continuity_step, density_step, density_diagnostics,
     eos_pressure, eos_eint, pressure_rhs, pressure_step, heating_Q,
     energy_diagnostics, coupled_cmhd_step, GAMMA_DEFAULT,
-    sound_wave_fields, cfl_dt_cmhd, primitive_u_rhs, primitive_cmhd_step,
+    sound_wave_fields, primitive_u_rhs, primitive_cmhd_step,
     max_abs_div_u,
 )
 from .driver import run_framework
