@@ -137,7 +137,8 @@ def _initial_velocity(key, grid, ic, dim, ic_params=None, mhd_params=None):
             grid, eps=eps, rho0=rho0, p0=p0, gamma=gamma)
         return u
     if ic == "brio_wu":
-        gamma = float((mhd_params or {}).get("gamma", GAMMA_DEFAULT))
+        gamma = float((mhd_params or {}).get(
+            "gamma", p.get("gamma", 2.0)))
         u, _rho, _p, _B = brio_wu_fields(grid, gamma=gamma)
         return u
     return generate_smooth_div_free_u0(key, grid, scale=p.get("u_scale", 0.008))
@@ -469,7 +470,7 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     ic = "taylor_green" | "tubes" | "smooth" | "ot" | "alfven" | "sound" | "brio_wu".  tubes = Crow-perturbed
     anti-parallel pair. ot = Orszag-Tang u matching generate_b0(kind='ot').
     alfven = small transverse δv=-δb on the uniform guide (v_A = |B0|).
-    brio_wu = Brio-Wu 1988 1D MHD Riemann (cmhd; spectral ringing expected).
+    brio_wu = Brio-Wu 1988 1D MHD Riemann on the torus (cmhd; paper gamma=2 test-local; stop before wrap; spectral ringing expected).
     n_scars / scar_centres select the helical Z₇ lattice (n_scars=1 default).
     dim=3 defaults: N=64, Taylor–Green IC, RK2, CFL dt, helical Z₇ force.
     """
@@ -565,7 +566,8 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
         nu_cfl = nu + (clay_params["eta_p"] if (viscoelastic or mode == "clay") else 0.0)
         if is_cmhd:
             nu_cfl = nu_cfl + float(mhd_params.get("mu_eff", 0.0))
-            gamma_cfl = float(mhd_params.get("gamma", GAMMA_DEFAULT))
+            gamma_cfl = float(mhd_params.get(
+                "gamma", (ic_params or {}).get("gamma", GAMMA_DEFAULT)))
             p0_cfl = float(mhd_params.get("p0", 1.0))
             icp_cfl = ic_params or {}
             if ic == "sound":
@@ -620,7 +622,8 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
                             clay_gain=0.0, gum_scale=0.0,
                             soft_J=0.0, high_de=0.0, alpha_LB=0.0,
                             lam_kin_gain=0.0, alpha_perp=0.0)
-        gamma = float(mhd_params.get("gamma", GAMMA_DEFAULT))
+        gamma = float(mhd_params.get(
+            "gamma", (ic_params or {}).get("gamma", GAMMA_DEFAULT)))
         p0 = float(mhd_params.get("p0", 1.0))
         icp = ic_params or {}
         if ic == "sound":

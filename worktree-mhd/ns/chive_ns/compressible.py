@@ -1,5 +1,5 @@
 # ============================================================
-# @Akitti C*Hive – Compressible MHD (patches 5+6, 7 Venus I_leak)
+# @Akitti C*Hive – Compressible MHD (patches 5+6, 7 Venus I_leak, 8 Brio-Wu)
 # Continuity:  dt rho + div(rho u) = 0. Dealias the product rho u.
 # Energy: Russell Dp/Dt = -gamma p div(u) + (gamma-1) Q
 #         ideal EOS p = (gamma-1) rho e ; gamma=5/3 default.
@@ -124,15 +124,21 @@ def sound_wave_fields(grid, eps=1e-3, rho0=1.0, p0=1.0, gamma=GAMMA_DEFAULT):
     return u, rho, p, cs
 
 
-def brio_wu_fields(grid, gamma=GAMMA_DEFAULT):
-    """Brio & Wu 1988 1D MHD Riemann on a 1D-like periodic 2D/3D grid.
+def brio_wu_fields(grid, gamma=2.0):
+    """Brio & Wu 1988 1D MHD Riemann on a 1D-like periodic torus.
 
-    Left  (x < L/2):  rho=1,     p=1,   u=0, By=+1
-    Right (x >= L/2): rho=0.125, p=0.1, u=0, By=-1
-    Bx=0.75. gamma=5/3 in this tree. Sharp jump: spectral Gibbs ringing
-    at the shocks is expected (no WENO/TVD/limiter).
+    Paper gamma is 2. Primitive left/right states do not depend on gamma;
+    the arg is for the caller EOS/CFL. Hive GAMMA_DEFAULT stays 5/3;
+    evolution gamma is test-local via mhd_params/ic_params.
+
+    Left  (x < L/2):  rho=1,     p=1,   u=0, Bx=0.75, By=+1
+    Right (x >= L/2): rho=0.125, p=0.1, u=0, Bx=0.75, By=-1
+
+    Periodic wrap puts a second jump at x=0. Stop before waves meet
+    (t < (L/4) / max(|u|+c_s+|v_A|)). Spectral Gibbs ringing is the
+    scheme (rho may go negative); no floor, no WENO/TVD.
     """
-    del gamma
+    gamma = float(gamma)
     N, L, dim = int(grid["N"]), float(grid["L"]), int(grid["dim"])
     x = jnp.linspace(0.0, L, N, endpoint=False)
     if dim == 2:
@@ -156,6 +162,21 @@ def brio_wu_fields(grid, gamma=GAMMA_DEFAULT):
         By = jnp.where(left, 1.0, -1.0)
         B = jnp.stack([Bx, By, z])
     return u, rho, p, B
+
+
+def brio_wu_wrap_time(grid, gamma=2.0):
+    """Earliest t at which the two periodic Riemann fans can meet.
+
+    Jumps at x=0 and x=L/2; each fan travels at most L/4. Bound by
+    max(|u| + c_s + |v_A|) on the IC. No floor.
+    """
+    gamma = float(gamma)
+    u, rho, p, B = brio_wu_fields(grid, gamma=gamma)
+    speed = jnp.sqrt(jnp.sum(u ** 2, axis=0))
+    cs = jnp.sqrt(gamma * p / rho)
+    vA = jnp.sqrt(jnp.sum(B ** 2, axis=0) / rho)
+    vfast = jnp.max(speed + cs + vA)
+    return 0.25 * float(grid["L"]) / (float(vfast) + 1e-30)
 
 
 def cfl_dt_cmhd(u, rho, p, B, dx, nu, eta_mag, gamma=GAMMA_DEFAULT, cfl=0.4):
