@@ -209,8 +209,12 @@ def millennium_series(hist, time, nu):
         dZ_dt = _time_derivative(enstrophy, time)
         bkm = _running_trapz(max_vort, time)
     ohmic = hist.get("ohmic", jnp.zeros_like(enstrophy))
+    hyper_ohmic = hist.get("hyper_ohmic", jnp.zeros_like(enstrophy))
     eps_nu = nu * enstrophy
-    dissipation = eps_nu + hist["tau_s"] + ohmic
+    # ε_η = η⟨|J|²⟩ + η_h⟨|∇²B|²⟩. Lorentz work is a kin↔mag
+    # transfer and MUST NOT enter this meter (it cancels in E_tot).
+    eps_eta = ohmic + hyper_ohmic
+    dissipation = eps_nu + hist["tau_s"] + eps_eta
     e_mag = hist.get("e_mag_tot", hist.get("e_mag", jnp.zeros_like(energy)))
     e_tot = energy + e_mag
     if energy.shape[0] < 2:
@@ -221,11 +225,13 @@ def millennium_series(hist, time, nu):
     else:
         dE_tot_dt = _time_derivative(e_tot, time)
         I_nu = _running_trapz(eps_nu, time)
-        I_eta = _running_trapz(ohmic, time)
+        I_eta = _running_trapz(eps_eta, time)
         I_tau = _running_trapz(hist["tau_s"], time)
-    # dE_tot/dt + ε_ν + ε_η + τ:S ; nonzero = unaccounted (force, dealias, …)
+    # Instantaneous residual of Ė_tot + ε_ν + ε_η (+τ:S). Lorentz excluded.
     energy_leak = dE_tot_dt + dissipation
-    I_leak = (e_tot[0] - e_tot) + I_nu + I_eta + I_tau
+    # Integrated: ∫(Ė + ε) dt = ΔE_tot + ∫ε. Old (E0-E)+∫ε was a
+    # hidden sign error (≈2∫ε when the identity holds).
+    I_leak = (e_tot - e_tot[0]) + I_nu + I_eta + I_tau
     dZ_dt_budget = 2.0 * hist["stretch"] - 2.0 * nu * hist["palinstrophy"]
     work = hist.get("work", hist["tau_s"])
     sheet = hist.get("sheet_order", jnp.zeros_like(max_vort))
