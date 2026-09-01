@@ -22,8 +22,8 @@ from .diagnostics import field_diagnostics, millennium_series, sample_times
 from .live import live_diagnostics_and_feedback, _zero_live
 from .constants import DELTA_MIN
 from .mhd import (
-    DEFAULT_MHD, generate_b0, zero_b_hat, mhd_field_diagnostics,
-    _zero_mhd, cfl_dt_mhd, split_guide_fields,
+    DEFAULT_MHD, generate_b0, generate_u_ot, zero_b_hat, zero_psi_hat,
+    mhd_field_diagnostics, _zero_mhd, cfl_dt_mhd, split_guide_fields,
 )
 from .es_lhdi import es_placeholder_diagnostics
 
@@ -64,7 +64,8 @@ def _snapshot_clay(state, grid, nu, clay_params):
 
 
 def _snapshot_mhd(state, grid, nu, clay_params, mhd_params, B_ext_hat):
-    omega_hat, tau_hat, B_hat = state
+    omega_hat, tau_hat, B_hat = state[0], state[1], state[2]
+    psi_hat = state[3] if len(state) > 3 else None
     u_hat = velocity_from_vorticity(omega_hat, grid)
     d = field_diagnostics(u_hat, grid, tau_hat=tau_hat)
     live = live_diagnostics_and_feedback(
@@ -96,11 +97,22 @@ def _snapshot_mhd(state, grid, nu, clay_params, mhd_params, B_ext_hat):
     d["lundquist"] = L * v_A / (eta + 1e-30)
     d["plasma_beta"] = 2.0 * d["energy"] / (d["e_mag_tot"] + 1e-30)
     d.update(es_placeholder_diagnostics())
+    glm_ch = float(mhd_params.get("glm_ch", 0.0))
+    if psi_hat is not None and glm_ch != 0.0:
+        psi = jnp.fft.ifftn(psi_hat).real
+        d["max_psi"] = jnp.max(jnp.abs(psi))
+        d["e_glm"] = 0.5 * jnp.mean(psi ** 2) / (glm_ch ** 2 + 1e-30)
+    else:
+        d["max_psi"] = jnp.array(0.0)
+        d["e_glm"] = jnp.array(0.0)
     return d
 
 
-def _initial_velocity(key, grid, ic, dim, ic_params=None):
+def _initial_velocity(key, grid, ic, dim, ic_params=None, mhd_params=None):
     p = ic_params or {}
+    if ic == "ot":
+        U0 = float((mhd_params or {}).get("ot_u0", p.get("ot_u0", 1.0)))
+        return generate_u_ot(grid, U0=U0)
     if dim == 3 and ic == "taylor_green":
         return generate_taylor_green(grid, scale=p.get("scale", 1.0))
     if dim == 3 and ic == "tubes":
@@ -217,11 +229,14 @@ def _run_mhd_scanned(omega_hat, tau_hat, B_hat, grid, nu, dt, steps, force_on,
     eta_hyper = float(mhd_params.get("eta_hyper", 0.0))
     posdiv = float(mhd_params.get("posdiv", 0.0))
     hyper_kcut = float(mhd_params.get("hyper_kcut", 0.0))
+    glm_ch = float(mhd_params.get("glm_ch", 0.0))
+    glm_cr = float(mhd_params.get("glm_cr", 0.18))
     if B_ext_hat is None:
         B_ext_hat = zero_b_hat(grid, dtype=omega_hat.dtype)
+    psi0 = zero_psi_hat(grid, dtype=omega_hat.dtype)
 
     def advance(state, idx):
-        omega_hat, tau_hat, B_hat = state
+        omega_hat, tau_hat, B_hat, psi_hat = state
         t = idx * dt
         t_norm = idx / jnp.maximum(steps - 1, 1)
         force = force_pat * (modest_liar(t_norm) * force_scale)
@@ -230,12 +245,12 @@ def _run_mhd_scanned(omega_hat, tau_hat, B_hat, grid, nu, dt, steps, force_on,
             eta_p, lambda_relax, alpha, beta_scar, stress_diff, clay_gain,
             gum_scale, stress_couple, regs, eta_mag, eta_odd,
             B_ext_hat, induct_ext, mu_eff, berry_gain, eta_hyper, posdiv,
-            hyper_kcut)
+            hyper_kcut, psi_hat, glm_ch, glm_cr)
 
     def snapshot(state):
         return _snapshot_mhd(state, grid, nu, clay_params, mhd_params, B_ext_hat)
 
-    return _scan_loop(advance, snapshot, (omega_hat, tau_hat, B_hat),
+    return _scan_loop(advance, snapshot, (omega_hat, tau_hat, B_hat, psi0),
                       steps, diag_every)
 
 
@@ -248,6 +263,10 @@ _MHD_HIST = (
     "P_back", "b_stretch", "b_comp", "b_stretch_j", "b_comp_j",
     "wl_j", "K_sheet", "j_w", "j_over_b_w", "sheet_ind",
     "max_e", "max_charge", "es_energy", "edge_j",
+    "flux_x_half", "flux_y_half", "flux_z_half",
+    "circ_x_half", "circ_y_half",
+    "E_rec", "E_par", "E_rec_sheet",
+    "e_glm", "max_psi",
 )
 
 
@@ -282,6 +301,7 @@ def _pack_out(hist, u_hat, omega_hat, tau_hat, grid, dt, N, nu, ic, scheme,
         "I_tau": mill["I_tau"],
         "energy_leak": mill["energy_leak"],
         "I_leak": mill["I_leak"],
+        "rec_rate_flux": mill.get("rec_rate_flux", mill["time"] * 0.0),
         "dissipation": mill["dissipation"],
         "dZ_dt_budget": mill["dZ_dt_budget"],
         "I_bkm_w": mill["I_bkm_w"],
@@ -334,8 +354,8 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     viscoelastic=True forces the clay coupling even if mode="vorticity".
     magnetic=True forces the MHD layer (induction + Lorentz + helicity).
     mode="mhd" implies magnetic=True; clay stays on unless viscoelastic=False.
-    ic = "taylor_green" | "tubes" | "smooth".  tubes = Crow-perturbed
-    anti-parallel pair (reconnection / singularity IC).
+    ic = "taylor_green" | "tubes" | "smooth" | "ot".  tubes = Crow-perturbed
+    anti-parallel pair. ot = Orszag-Tang u matching generate_b0(kind='ot').
     n_scars / scar_centres select the helical Z₇ lattice (n_scars=1 default).
     dim=3 defaults: N=64, Taylor–Green IC, RK2, CFL dt, helical Z₇ force.
     """
@@ -372,6 +392,8 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
         nu = 5e-4 if dim == 3 else 0.001
     if ic is None:
         ic = "taylor_green" if dim == 3 else "smooth"
+    if ic == "ot":
+        mhd_params["b_guide"] = "ot"
     if scheme is None:
         scheme = "rk2" if (dim == 3 or viscoelastic) else "euler"
 
@@ -397,10 +419,11 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
                 hist.append(y)
         return {"traj": jnp.stack(hist), "params": p}
 
-    u0 = _initial_velocity(key, grid, ic, dim, ic_params)
+    u0 = _initial_velocity(key, grid, ic, dim, ic_params, mhd_params)
     B_hat = None
     B_ext_hat = None
     induct_ext = 1.0
+    psi_hat = None
     if magnetic:
         B_hat, B_ext_hat, induct_ext = split_guide_fields(
             grid, mhd_params, ic_params)
@@ -414,7 +437,8 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
                 u0, B0_phys, grid["dx"], nu_cfl, mhd_params["eta_mag"], cfl=cfl))
         else:
             dt = float(cfl_dt(u0, grid["dx"], nu_cfl, cfl=cfl))
-        if dim == 2:
+        # 2D scar default. Do not clobber MHD Alfvén CFL (hidden dt sink).
+        if dim == 2 and not magnetic:
             dt = 0.005
 
     u_hat = project_div_free(jnp.fft.fftn(u0, axes=range(1, dim + 1)), grid)
@@ -433,7 +457,7 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
                             clay_gain=0.0, gum_scale=0.0,
                             soft_J=0.0, high_de=0.0, alpha_LB=0.0,
                             lam_kin_gain=0.0, alpha_perp=0.0)
-        (omega_hat, tau_hat, B_hat), hist = _run_mhd_scanned(
+        (omega_hat, tau_hat, B_hat, psi_hat), hist = _run_mhd_scanned(
             omega_hat, tau_hat, B_hat, grid, nu, dt, steps, force_on,
             scheme, diag_every, clay_use, mhd_params, n_scars, centres,
             force_amp, B_ext_hat=B_ext_hat, induct_ext=induct_ext)
@@ -456,4 +480,6 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
                     B_hat=B_hat, mhd_params=mhd_params, magnetic=bool(magnetic))
     out["nu_solvent"] = nu
     out["B_ext_hat"] = B_ext_hat
+    if magnetic:
+        out["psi_hat"] = psi_hat
     return out
