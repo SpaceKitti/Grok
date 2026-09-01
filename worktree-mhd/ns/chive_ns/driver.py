@@ -30,7 +30,7 @@ from .es_lhdi import es_placeholder_diagnostics
 from .compressible import (
     uniform_rho_hat, bump_rho_hat, uniform_p_hat, bump_p_hat, coupled_cmhd_step,
     density_diagnostics, energy_diagnostics, heating_Q, GAMMA_DEFAULT,
-    sound_wave_fields, cfl_dt_cmhd,
+    sound_wave_fields, brio_wu_fields, cfl_dt_cmhd,
 )
 
 
@@ -135,6 +135,10 @@ def _initial_velocity(key, grid, ic, dim, ic_params=None, mhd_params=None):
         gamma = float((mhd_params or {}).get("gamma", GAMMA_DEFAULT))
         u, _rho, _p, _cs = sound_wave_fields(
             grid, eps=eps, rho0=rho0, p0=p0, gamma=gamma)
+        return u
+    if ic == "brio_wu":
+        gamma = float((mhd_params or {}).get("gamma", GAMMA_DEFAULT))
+        u, _rho, _p, _B = brio_wu_fields(grid, gamma=gamma)
         return u
     return generate_smooth_div_free_u0(key, grid, scale=p.get("u_scale", 0.008))
 
@@ -462,9 +466,10 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     viscoelastic=True forces the clay coupling even if mode="vorticity".
     magnetic=True forces the MHD layer (induction + Lorentz + helicity).
     mode="mhd" implies magnetic=True; clay stays on unless viscoelastic=False.
-    ic = "taylor_green" | "tubes" | "smooth" | "ot" | "alfven" | "sound".  tubes = Crow-perturbed
+    ic = "taylor_green" | "tubes" | "smooth" | "ot" | "alfven" | "sound" | "brio_wu".  tubes = Crow-perturbed
     anti-parallel pair. ot = Orszag-Tang u matching generate_b0(kind='ot').
     alfven = small transverse δv=-δb on the uniform guide (v_A = |B0|).
+    brio_wu = Brio-Wu 1988 1D MHD Riemann (cmhd; spectral ringing expected).
     n_scars / scar_centres select the helical Z₇ lattice (n_scars=1 default).
     dim=3 defaults: N=64, Taylor–Green IC, RK2, CFL dt, helical Z₇ force.
     """
@@ -544,8 +549,18 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     if magnetic:
         B_hat, B_ext_hat, induct_ext = split_guide_fields(
             grid, mhd_params, ic_params)
-        B0_phys = jnp.fft.ifftn(
-            B_hat + B_ext_hat, axes=range(1, dim + 1)).real
+        if is_cmhd and ic == "brio_wu":
+            _u_bw, _rho_bw, _p_bw, B_bw = brio_wu_fields(
+                grid, gamma=float(mhd_params.get("gamma", GAMMA_DEFAULT)))
+            del _u_bw, _rho_bw, _p_bw
+            B_hat = project_div_free(
+                jnp.fft.fftn(B_bw, axes=range(1, dim + 1)), grid)
+            B_ext_hat = zero_b_hat(grid, dtype=B_hat.dtype)
+            induct_ext = 1.0
+            B0_phys = B_bw
+        else:
+            B0_phys = jnp.fft.ifftn(
+                B_hat + B_ext_hat, axes=range(1, dim + 1)).real
     if dt is None:
         nu_cfl = nu + (clay_params["eta_p"] if (viscoelastic or mode == "clay") else 0.0)
         if is_cmhd:
@@ -559,6 +574,10 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
                     rho0=float(icp_cfl.get("rho0", 1.0)), p0=p0_cfl,
                     gamma=gamma_cfl)
                 del _u_s, _cs
+            elif ic == "brio_wu":
+                _u_bw, rho_cfl, p_cfl, _B_bw = brio_wu_fields(
+                    grid, gamma=gamma_cfl)
+                del _u_bw, _B_bw
             else:
                 rho_eps = float(icp_cfl.get("rho_eps", 0.0))
                 if rho_eps != 0.0:
@@ -609,6 +628,11 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
                 grid, eps=float(icp.get("sound_eps", 1e-3)),
                 rho0=float(icp.get("rho0", 1.0)), p0=p0, gamma=gamma)
             del _u_s, _cs
+            rho_hat = jnp.fft.fftn(rho_phys).astype(omega_hat.dtype) * grid["dealias"]
+            p_hat = jnp.fft.fftn(p_phys).astype(omega_hat.dtype) * grid["dealias"]
+        elif ic == "brio_wu":
+            _u_bw, rho_phys, p_phys, _B_bw = brio_wu_fields(grid, gamma=gamma)
+            del _u_bw, _B_bw
             rho_hat = jnp.fft.fftn(rho_phys).astype(omega_hat.dtype) * grid["dealias"]
             p_hat = jnp.fft.fftn(p_phys).astype(omega_hat.dtype) * grid["dealias"]
         else:

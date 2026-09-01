@@ -124,6 +124,40 @@ def sound_wave_fields(grid, eps=1e-3, rho0=1.0, p0=1.0, gamma=GAMMA_DEFAULT):
     return u, rho, p, cs
 
 
+def brio_wu_fields(grid, gamma=GAMMA_DEFAULT):
+    """Brio & Wu 1988 1D MHD Riemann on a 1D-like periodic 2D/3D grid.
+
+    Left  (x < L/2):  rho=1,     p=1,   u=0, By=+1
+    Right (x >= L/2): rho=0.125, p=0.1, u=0, By=-1
+    Bx=0.75. gamma=5/3 in this tree. Sharp jump: spectral Gibbs ringing
+    at the shocks is expected (no WENO/TVD/limiter).
+    """
+    del gamma
+    N, L, dim = int(grid["N"]), float(grid["L"]), int(grid["dim"])
+    x = jnp.linspace(0.0, L, N, endpoint=False)
+    if dim == 2:
+        X, _Y = jnp.meshgrid(x, x, indexing="ij")
+        z = jnp.zeros_like(X)
+        left = X < (0.5 * L)
+        rho = jnp.where(left, 1.0, 0.125)
+        p = jnp.where(left, 1.0, 0.1)
+        u = jnp.stack([z, z])
+        Bx = jnp.full_like(X, 0.75)
+        By = jnp.where(left, 1.0, -1.0)
+        B = jnp.stack([Bx, By])
+    else:
+        X, _Y, _Z = jnp.meshgrid(x, x, x, indexing="ij")
+        z = jnp.zeros_like(X)
+        left = X < (0.5 * L)
+        rho = jnp.where(left, 1.0, 0.125)
+        p = jnp.where(left, 1.0, 0.1)
+        u = jnp.stack([z, z, z])
+        Bx = jnp.full_like(X, 0.75)
+        By = jnp.where(left, 1.0, -1.0)
+        B = jnp.stack([Bx, By, z])
+    return u, rho, p, B
+
+
 def cfl_dt_cmhd(u, rho, p, B, dx, nu, eta_mag, gamma=GAMMA_DEFAULT, cfl=0.4):
     """dt from max(|u| + c_s + |v_A|) with c_s = sqrt(gamma p / rho).
 
