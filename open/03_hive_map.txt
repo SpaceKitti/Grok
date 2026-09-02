@@ -1,0 +1,58 @@
+Source: compiled by Orion, 2026-09-01; DONE tonight by the hive 2026-09-02
+Folder: C:\Users\Akitt\Grok\open\
+
+Which open problems the live solver can actually poke
+=====================================================
+
+Live now (do not smash)
+-----------------------
+mode="mhd"  incompressible vorticity MHD, Qin on, Crow/0%/B0 off.
+Patches 1–8 closed as bones on aethon/mhd-patches, not merged:
+  Alfvén wave at v_A, e_glm in I_leak, cmhd tracer ρ, γ=5/3 heat-into-gas,
+  primitive u + c_s CFL, three-bucket I_leak, Brio–Wu γ=2 test-local.
+
+DONE tonight (no more runs)
+---------------------------
+G2  magnetosonic: v_phase / sqrt(c_s² + v_A²) = 1.0004
+A2  OT seed was matching u=B; fixed B_y = sin(2x). Then |J| peels off |ω|,
+    peak t ≈ 0.4
+F3  divB monitor was missing 1j (fixed). Qin wipes a divB kick. GLM is the
+    slow clean + e_glm already in I_leak
+E2  Harris forming sheet, Φ crosses, rec_rate_flux live
+
+Do not merge. Do not start a sim. No Crow, no OT, no Harris tonight.
+
+Can poke without a new campaign
+-------------------------------
+B1  Aluie σ proxies if a filter/structure-function diagnostic is added.
+B3  W conversion — already a hive sentence; leftover hunt closed.
+C5  C_ε and viscous/Ohmic split — LBG17 is in Merge/09; Crow floor locked.
+F2  viscous disagreement on cmhd — already measured on the sound wave.
+G1  Brio–Wu Gibbs vs NaN — HAVE 8; do not add WENO.
+
+Needs a new diagnostic, still cheap (not tonight)
+-------------------------------------------------
+B2  Π_h(ℓ) and L^3 — Aluie layer is written in Merge/01 as Torch; not in the
+    JAX spectral driver.
+C2  sheet aspect ratio / D(k)/E_J(k) peak for hyper_kcut (Maron, parked).
+D1  kinematic dynamo on a frozen chaotic u — only if someone asks.
+G2b 3D magnetosonic (2D G2 is done).
+E2b Harris v_in / v_A vs S (meter is live; this scan is not tonight).
+
+Cannot poke on this toy
+-----------------------
+A1  the theorem itself.
+A4  Hall / ES-LHDI (parked).
+B4  convex integration.
+D3  catastrophic α-quenching in a mean-field star.
+E3  MMS EDR statistics; electron-only reconnection.
+E4  ion/electron nonthermal partition (no particles).
+kinetic Debye-scale EDR turbulence.
+
+Do not
+------
+Re-audit 1–8.
+Hunt 0% I_leak on cmhd.
+Pin or floor ρ.
+Merge aethon/mhd-patches.
+Start a sim tonight.
