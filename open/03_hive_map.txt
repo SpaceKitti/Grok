@@ -38,7 +38,7 @@ C2  sheet aspect ratio / D(k)/E_J(k) peak for hyper_kcut (Maron, parked).
 D1  kinematic dynamo on a frozen chaotic u — only if someone asks.
 G2b 3D magnetosonic (2D G2 is done).
 E2b Harris v_in / v_A vs S (meter is live; this scan is not tonight).
-A2c 3D textbook-B OT seed (analog of 2D By=sin 2x). Stage 5 N=8 watch sat on the matching-u diagonal. Parked; do not reopen 1-5.
+A2c 3D textbook-B OT seed (analog of 2D By=sin 2x). HAVE (this commit). Watch max|w| vs max|J|. Do not reopen 1-5.
 E2c Harris n~sech^2 peel so nabla n != 0 (Te>0 then peels hall vs twofluid). HAVE (this commit).
 
 Cannot poke on this toy

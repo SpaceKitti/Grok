@@ -94,7 +94,7 @@ def generate_b0(grid, B0=0.08, kind="z", amp=None):
       "x"    — uniform guide along ê_x (across Crow tubes)
       "tube" — alias of "x" (uniform field along the tube axis)
       "flux" / "flux_tubes" / "shen" — co-located Crow flux tubes
-      "ot"   — Orszag–Tang-like seed (has current from t=0)
+      "ot"   — 2D matching u=B; 3D textbook-B By=sin 2x (not a copy of u)
       "alfven" — uniform guide (ê_y in 2D / ê_z in 3D) plus a small
                 transverse Alfvén δb; amp is the wave amplitude.
     For kind="flux", B0 is ignored; use mhd_params["gamma_m"] via
@@ -125,8 +125,11 @@ def generate_b0(grid, B0=0.08, kind="z", amp=None):
         if kind in ("x", "tube"):
             B = jnp.stack([jnp.ones_like(X) * B0, z, z])
         elif kind == "ot":
+            # Venus 3D textbook-B (not a copy of u):
+            # x=2pi X/L, y=2pi Y/L, z=2pi Z/L
+            # B = B0 (-sin y, sin 2x, 0.2 cos z); Qin-project (Bz not div-free).
             Bx = B0 * (-jnp.sin(2 * jnp.pi * Y / L))
-            By = B0 * jnp.sin(2 * jnp.pi * X / L)
+            By = B0 * jnp.sin(4 * jnp.pi * X / L)
             Bz = B0 * 0.2 * jnp.cos(2 * jnp.pi * Z / L)
             B = jnp.stack([Bx, By, Bz])
         elif kind == "alfven":
@@ -139,10 +142,11 @@ def generate_b0(grid, B0=0.08, kind="z", amp=None):
 
 
 def generate_u_ot(grid, U0=1.0):
-    """Orszag-Tang velocity matching generate_b0(kind='ot').
+    """Orszag-Tang velocity. 2D matches generate_b0; 3D u is not a copy of B.
 
-    Same trigonometric skeleton as the OT magnetic seed, amplitude U0.
-    3D includes a weak uz so the pair stays analogous to OT B; Qin-projected.
+    x=2pi X/L, y=2pi Y/L, z=2pi Z/L
+    u = U0 (-sin y, sin x, 0.2 cos z) in 3D (2D drops z). Qin-projected.
+    3D B uses By = B0 sin 2x (textbook-B); matching seed would be u=B up to amp.
     """
     N, L, dim = int(grid["N"]), float(grid["L"]), int(grid["dim"])
     x = jnp.linspace(0.0, L, N, endpoint=False)
@@ -215,7 +219,7 @@ def generate_b_ext(grid, B0=0.08, kind="z", profile="midplane", width=0.12):
         elif kind == "ot":
             B = jnp.stack([
                 -B0 * jnp.sin(2 * jnp.pi * Y / L) * env,
-                B0 * jnp.sin(2 * jnp.pi * X / L) * env,
+                B0 * jnp.sin(4 * jnp.pi * X / L) * env,
                 B0 * 0.2 * jnp.cos(2 * jnp.pi * Z / L) * env,
             ])
         else:
