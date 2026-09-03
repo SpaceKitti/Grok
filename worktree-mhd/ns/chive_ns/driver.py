@@ -254,6 +254,8 @@ def _run_mhd_scanned(omega_hat, tau_hat, B_hat, grid, nu, dt, steps, force_on,
     hyper_kcut = float(mhd_params.get("hyper_kcut", 0.0))
     glm_ch = float(mhd_params.get("glm_ch", 0.0))
     glm_cr = float(mhd_params.get("glm_cr", 0.18))
+    d_i = float(mhd_params.get("d_i", 0.0))
+    n_hall = float(mhd_params.get("n_hall", mhd_params.get("n", 1.0)))
     if B_ext_hat is None:
         B_ext_hat = zero_b_hat(grid, dtype=omega_hat.dtype)
     psi0 = zero_psi_hat(grid, dtype=omega_hat.dtype)
@@ -268,7 +270,7 @@ def _run_mhd_scanned(omega_hat, tau_hat, B_hat, grid, nu, dt, steps, force_on,
             eta_p, lambda_relax, alpha, beta_scar, stress_diff, clay_gain,
             gum_scale, stress_couple, regs, eta_mag, eta_odd,
             B_ext_hat, induct_ext, mu_eff, berry_gain, eta_hyper, posdiv,
-            hyper_kcut, psi_hat, glm_ch, glm_cr)
+            hyper_kcut, psi_hat, glm_ch, glm_cr, d_i, n_hall)
 
     def snapshot(state):
         return _snapshot_mhd(state, grid, nu, clay_params, mhd_params, B_ext_hat)
@@ -461,12 +463,14 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
          = "clay"        → same NS + Oldroyd-B E-brane extra-stress
          = "hybrid"      → alias for clay (λ₂ is always recorded in 3D)
          = "mhd"         → NS + (optional clay) + induction / Lorentz
+         = "hall"        -> same vorticity MHD path as mode="mhd" with Hall Ohm
+                            E = -u x B + eta J + (d_i/n) J x B; d_i=0 matches mhd
          = "cmhd" / "compressible" → primitive-u MHD + continuity + Russell p (Qin off)
          = "bubble"      → pure RP + Liu–Sun tower
 
     viscoelastic=True forces the clay coupling even if mode="vorticity".
     magnetic=True forces the MHD layer (induction + Lorentz + helicity).
-    mode="mhd" implies magnetic=True; clay stays on unless viscoelastic=False.
+    mode="mhd" or mode="hall" implies magnetic=True; clay stays on unless viscoelastic=False.
     ic = "taylor_green" | "tubes" | "smooth" | "ot" | "alfven" | "sound" | "brio_wu".  tubes = Crow-perturbed
     anti-parallel pair. ot = Orszag-Tang u matching generate_b0(kind='ot').
     alfven = small transverse δv=-δb on the uniform guide (v_A = |B0|).
@@ -475,9 +479,9 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     dim=3 defaults: N=64, Taylor–Green IC, RK2, CFL dt, helical Z₇ force.
     """
     if magnetic is None:
-        magnetic = mode == "mhd"
+        magnetic = mode in ("mhd", "hall")
     if viscoelastic is None:
-        viscoelastic = mode in ("clay", "hybrid", "mhd")
+        viscoelastic = mode in ("clay", "hybrid", "mhd", "hall")
     is_cmhd = mode in ("cmhd", "compressible")
     if is_cmhd:
         # Primitive u + continuity + Russell p. Qin off. mode="mhd" unchanged.
@@ -550,6 +554,13 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     if magnetic:
         B_hat, B_ext_hat, induct_ext = split_guide_fields(
             grid, mhd_params, ic_params)
+        d_i_run = float(mhd_params.get("d_i", 0.0))
+        # 2.5D pad: in-plane Hall Faraday is identically 0, so Bz is
+        # required for whistlers. mode=mhd / d_i=0 stay 2-comp.
+        if (not is_cmhd) and dim == 2 and d_i_run != 0.0 and B_hat.shape[0] == 2:
+            z = jnp.zeros_like(B_hat[0])
+            B_hat = jnp.concatenate([B_hat, z[None]], axis=0)
+            B_ext_hat = jnp.concatenate([B_ext_hat, z[None]], axis=0)
         if is_cmhd and ic == "brio_wu":
             _u_bw, _rho_bw, _p_bw, B_bw = brio_wu_fields(
                 grid, gamma=float(mhd_params.get("gamma", GAMMA_DEFAULT)))
@@ -593,7 +604,8 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
         elif magnetic:
             nu_cfl = nu_cfl + float(mhd_params.get("mu_eff", 0.0))
             dt = float(cfl_dt_mhd(
-                u0, B0_phys, grid["dx"], nu_cfl, mhd_params["eta_mag"], cfl=cfl))
+                u0, B0_phys, grid["dx"], nu_cfl, mhd_params["eta_mag"], cfl=cfl,
+                d_i=float(mhd_params.get("d_i", 0.0))))
         else:
             dt = float(cfl_dt(u0, grid["dx"], nu_cfl, cfl=cfl))
         # 2D scar default. Do not clobber MHD Alfvén CFL (hidden dt sink).

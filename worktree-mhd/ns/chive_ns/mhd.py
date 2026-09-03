@@ -55,6 +55,14 @@ DEFAULT_MHD = dict(
     # Extra scalar psi carries div B as a damped wave; not Lorentz, not projector.
     glm_ch=0.0,
     glm_cr=0.18,
+    # Hall-MHD Ohm (Stage 1; hive notes parked A4 / MHD2-04 Hall/Ohm).
+    # E = -u x B + eta J + (d_i / n) J x B, n=1 default.
+    # Faraday: dt B = -curl E (plus existing GLM/Dedner if glm_ch!=0).
+    # d_i=0 recovers the ideal+resistive MHD induction. Hall is
+    # dispersive, not heat: I_leak mill unchanged (no Hall heat term).
+    # Do NOT dump Hall as a momentum body force (Venus/Russell Ohm).
+    d_i=0.0,
+    n_hall=1.0,
 )
 
 
@@ -267,11 +275,43 @@ def split_guide_fields(grid, mhd_params, ic_params=None):
     return B_hat, B_ext, float(induct)
 
 
-def cfl_dt_mhd(u, B, dx, nu, eta_mag, cfl=0.4):
+def cfl_dt_mhd(u, B, dx, nu, eta_mag, cfl=0.4, d_i=0.0):
     """Advective + Alfvén + (viscous, resistive) CFL."""
     umax = jnp.max(jnp.sqrt(jnp.sum(u**2, axis=0)))
     bmax = jnp.max(jnp.sqrt(jnp.sum(B**2, axis=0)))
-    return cfl * dx / (umax + bmax + 4.0 * (nu + eta_mag) / dx + 1e-12)
+    hall = (jnp.pi ** 2) * jnp.abs(d_i) * bmax / (dx + 1e-30)
+    return cfl * dx / (umax + bmax + 4.0 * (nu + eta_mag) / dx + hall + 1e-12)
+
+
+@jit
+def _curl_2d5(v_hat, grid):
+    """curl of a 3-vector on a 2D grid (dz = 0). v_hat is (3, N, N).
+
+    2.5D Hall needs Bz: in-plane-only Faraday of (J x B) is identically
+    zero, so whistlers live in (Bx, By, Bz) even when hydro is 2-D.
+    """
+    kx, ky = grid["k"]
+    dealias = grid["dealias"]
+    return jnp.stack([
+        1j * ky * v_hat[2],
+        -1j * kx * v_hat[2],
+        1j * (kx * v_hat[1] - ky * v_hat[0]),
+    ]) * dealias
+
+
+def _project_b_2d5(B_hat, grid):
+    """Qin on in-plane B; dealias Bz. 2D k_stack cannot project 3-comp."""
+    xy = project_div_free(B_hat[:2], grid)
+    bz = B_hat[2] * grid["dealias"]
+    return jnp.concatenate([xy, bz[None]], axis=0)
+
+
+def _glm_grad_psi_for_b(psi_hat, B_hat, grid):
+    """-grad psi with a zero z-row when B is 2.5D (3-comp on 2D grid)."""
+    g = glm_grad_psi(psi_hat, grid)
+    if B_hat.shape[0] == 3 and g.shape[0] == 2:
+        return jnp.concatenate([g, jnp.zeros_like(g[:1])], axis=0)
+    return g
 
 
 @jit
@@ -279,6 +319,8 @@ def current_from_b(B_hat, grid):
     """Ĵ = ik × B̂  (2D returns scalar J_z)."""
     if B_hat.shape[0] == 2:
         return _vort_from_u_2d(B_hat, grid)
+    if B_hat.ndim == 3:
+        return _curl_2d5(B_hat, grid)
     return ik_cross(B_hat, grid) * grid["dealias"]
 
 
@@ -306,9 +348,25 @@ def _lorentz_vort_3d(B_hat, grid):
     return ik_cross(jnp.fft.fftn(L, axes=(1, 2, 3)), grid) * grid["dealias"]
 
 
+@jit
+def _lorentz_vort_2d5(B_hat, grid):
+    """curl_z(J x B) for 2.5D B (3, N, N). Bz=0 reduces to _lorentz_vort_2d.
+
+    This is still the ion Lorentz force, not a Hall body force.
+    """
+    J = jnp.fft.ifftn(_curl_2d5(B_hat, grid), axes=(1, 2)).real
+    B = jnp.fft.ifftn(B_hat, axes=(1, 2)).real
+    fx = J[1] * B[2] - J[2] * B[1]
+    fy = J[2] * B[0] - J[0] * B[2]
+    f_hat = jnp.stack([jnp.fft.fftn(fx), jnp.fft.fftn(fy)]) * grid["dealias"]
+    return _vort_from_u_2d(f_hat, grid) * grid["dealias"]
+
+
 def lorentz_vorticity_force(B_hat, grid):
     if B_hat.shape[0] == 2:
         return _lorentz_vort_2d(B_hat, grid)
+    if B_hat.ndim == 3:
+        return _lorentz_vort_2d5(B_hat, grid)
     return _lorentz_vort_3d(B_hat, grid)
 
 
@@ -349,18 +407,72 @@ def _induction_3d(B_hat, u_hat, grid, eta_mag, B_cross_hat, eta_hyper, hyper_kcu
     return rhs - (eta_mag * grid["k2"] + eta_hyper * mask * grid["k2"] ** 2) * B_hat
 
 
+@jit
+def _hall_induction_3d(B_cross_hat, grid, d_i, n_hall):
+    """-curl((d_i/n) J x B). d_i=0 is the zero field (ideal+resistive MHD)."""
+    J = jnp.fft.ifftn(ik_cross(B_cross_hat, grid), axes=(1, 2, 3)).real
+    B = jnp.fft.ifftn(B_cross_hat, axes=(1, 2, 3)).real
+    JxB = jnp.stack([
+        J[1] * B[2] - J[2] * B[1],
+        J[2] * B[0] - J[0] * B[2],
+        J[0] * B[1] - J[1] * B[0],
+    ])
+    coeff = d_i / (n_hall + 1e-30)
+    return -coeff * ik_cross(jnp.fft.fftn(JxB, axes=(1, 2, 3)), grid) * grid["dealias"]
+
+
+@jit
+def _induction_2d5(B_hat, u_hat, grid, eta_mag, B_cross_hat, eta_hyper, hyper_kcut,
+                   d_i, n_hall):
+    """2.5D Faraday: dt B = -curl E, E = -u x B + eta J + (d_i/n) J x B.
+
+    u is 2-comp (uz=0). In-plane ideal+resistive matches _induction_2d
+    when Bz=0 and d_i=0; Hall then seeds Bz and whistlers.
+    """
+    u = jnp.fft.ifftn(u_hat, axes=(1, 2)).real
+    B = jnp.fft.ifftn(B_cross_hat, axes=(1, 2)).real
+    # uz = 0: u x B = (uy Bz, -ux Bz, ux By - uy Bx)
+    cross = jnp.stack([
+        u[1] * B[2],
+        -u[0] * B[2],
+        u[0] * B[1] - u[1] * B[0],
+    ])
+    rhs = _curl_2d5(jnp.fft.fftn(cross, axes=(1, 2)), grid)
+    mask = _hyper_mask(grid, hyper_kcut)
+    rhs = rhs - (eta_mag * grid["k2"] + eta_hyper * mask * grid["k2"] ** 2) * B_hat
+    J = jnp.fft.ifftn(_curl_2d5(B_cross_hat, grid), axes=(1, 2)).real
+    JxB = jnp.stack([
+        J[1] * B[2] - J[2] * B[1],
+        J[2] * B[0] - J[0] * B[2],
+        J[0] * B[1] - J[1] * B[0],
+    ])
+    coeff = d_i / (n_hall + 1e-30)
+    hall = -coeff * _curl_2d5(jnp.fft.fftn(JxB, axes=(1, 2)), grid)
+    return rhs + hall
+
+
 def induction_rhs(B_hat, u_hat, grid, eta_mag, B_cross_hat=None, eta_hyper=0.0,
-                  hyper_kcut=0.0, psi_hat=None, glm_ch=0.0):
+                  hyper_kcut=0.0, psi_hat=None, glm_ch=0.0, d_i=0.0, n_hall=1.0):
+    """dt B = -curl E (+ GLM). Hall Ohm is (d_i/n) J x B; d_i=0 is MHD.
+
+    Keyword d_i/n_hall default so mode=cmhd callers stay resistive MHD.
+    """
     if B_cross_hat is None:
         B_cross_hat = B_hat
     if B_hat.shape[0] == 2:
         dB = _induction_2d(B_hat, u_hat, grid, eta_mag, B_cross_hat, eta_hyper,
                            hyper_kcut)
+        # 2-comp in-plane Hall Faraday is identically 0 (curl of JxB is ez).
+    elif B_hat.ndim == 3:
+        dB = _induction_2d5(B_hat, u_hat, grid, eta_mag, B_cross_hat, eta_hyper,
+                            hyper_kcut, d_i, n_hall)
     else:
         dB = _induction_3d(B_hat, u_hat, grid, eta_mag, B_cross_hat, eta_hyper,
                            hyper_kcut)
+        hall = _hall_induction_3d(B_cross_hat, grid, d_i, n_hall)
+        dB = jnp.where(d_i != 0.0, dB + hall, dB)
     if psi_hat is not None and glm_ch != 0.0:
-        dB = dB + glm_grad_psi(psi_hat, grid)
+        dB = dB + _glm_grad_psi_for_b(psi_hat, B_hat, grid)
     return dB
 
 
@@ -639,6 +751,40 @@ def _mhd_diag_3d(B_hat, u_hat, grid, eta_mag, tau_hat, B_ext_hat, eta_hyper):
     }
 
 
+def _mhd_diag_2d5(B_hat, u_hat, grid, eta_mag, tau_hat, B_ext_hat, eta_hyper):
+    """2.5D meters: 2-comp sheet diagnostics plus full-B energy / Ohmic / divB.
+
+    Hall energy in Bz must sit in e_mag or I_leak looks like a Hall heat term.
+    """
+    d = _mhd_diag_2d(B_hat[:2], u_hat, grid, eta_mag, tau_hat,
+                     B_ext_hat[:2], eta_hyper)
+    B = jnp.fft.ifftn(B_hat, axes=(1, 2)).real
+    Bext = jnp.fft.ifftn(B_ext_hat, axes=(1, 2)).real
+    Btot = B + Bext
+    Btot_hat = B_hat + B_ext_hat
+    u = jnp.fft.ifftn(u_hat, axes=(1, 2)).real
+    d["e_mag"] = 0.5 * jnp.mean(jnp.sum(B**2, axis=0))
+    d["e_mag_ext"] = 0.5 * jnp.mean(jnp.sum(Bext**2, axis=0))
+    d["e_mag_tot"] = 0.5 * jnp.mean(jnp.sum(Btot**2, axis=0))
+    J_hat = _curl_2d5(Btot_hat, grid)
+    J = jnp.fft.ifftn(J_hat, axes=(1, 2)).real
+    j2 = jnp.sum(J**2, axis=0)
+    d["ohmic"] = eta_mag * jnp.mean(j2)
+    d["max_j"] = jnp.max(jnp.sqrt(j2))
+    d["max_b"] = jnp.max(jnp.sqrt(jnp.sum(Btot**2, axis=0)))
+    divB = jnp.fft.ifftn(jnp.sum(grid["k_stack"] * Btot_hat[:2], axis=0)).real
+    d["max_div_b"] = jnp.max(jnp.abs(divB))
+    lapB = jnp.fft.ifftn(grid["k2"] * Btot_hat, axes=(1, 2)).real
+    d["hyper_ohmic"] = eta_hyper * jnp.mean(jnp.sum(lapB**2, axis=0))
+    JxB_x = J[1] * Btot[2] - J[2] * Btot[1]
+    JxB_y = J[2] * Btot[0] - J[0] * Btot[2]
+    d["lorentz_work"] = jnp.mean(u[0] * JxB_x + u[1] * JxB_y)
+    d["maxwell"] = jnp.mean(jnp.sum(Btot**2, axis=0))
+    e_kin = 0.5 * jnp.mean(jnp.sum(u**2, axis=0))
+    d["N_i"] = d["e_mag_tot"] / (e_kin + 1e-30)
+    return dict(d)
+
+
 def mhd_field_diagnostics(B_hat, u_hat, grid, eta_mag, tau_hat=None,
                           B_ext_hat=None, eta_hyper=0.0):
     """Magnetic energy, Ohmic, |J|, helicities, Maxwell, N_i, sheet scale.
@@ -657,6 +803,9 @@ def mhd_field_diagnostics(B_hat, u_hat, grid, eta_mag, tau_hat=None,
     if B_hat.shape[0] == 2:
         return _mhd_diag_2d(B_hat, u_hat, grid, eta_mag, tau_hat, B_ext_hat,
                             eta_hyper)
+    if B_hat.ndim == 3:
+        return _mhd_diag_2d5(B_hat, u_hat, grid, eta_mag, tau_hat, B_ext_hat,
+                             eta_hyper)
     return _mhd_diag_3d(B_hat, u_hat, grid, eta_mag, tau_hat, B_ext_hat,
                         eta_hyper)
 
