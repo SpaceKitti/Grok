@@ -63,6 +63,11 @@ DEFAULT_MHD = dict(
     # Do NOT dump Hall as a momentum body force (Venus/Russell Ohm).
     d_i=0.0,
     n_hall=1.0,
+    # Two-fluid Ohm (Stage 2; Venus electron pressure; no inertia).
+    # E = -u_e x B - grad(p_e)/n + eta J, u_e = u_i - (d_i/n) J, p_e = n T_e.
+    # T_e=0 recovers Hall (same d_i, n). Continuity on n; no pin/floor.
+    # Electron pressure is transfer/dispersive, not mill heat.
+    T_e=0.0,
 )
 
 
@@ -471,6 +476,109 @@ def induction_rhs(B_hat, u_hat, grid, eta_mag, B_cross_hat=None, eta_hyper=0.0,
                            hyper_kcut)
         hall = _hall_induction_3d(B_cross_hat, grid, d_i, n_hall)
         dB = jnp.where(d_i != 0.0, dB + hall, dB)
+    if psi_hat is not None and glm_ch != 0.0:
+        dB = dB + _glm_grad_psi_for_b(psi_hat, B_hat, grid)
+    return dB
+
+
+@jit
+def _twofluid_induction_2d(B_hat, u_hat, n_hat, grid, eta_mag, B_cross_hat,
+                           eta_hyper, hyper_kcut, d_i, T_e):
+    """2-comp Faraday. T_e=0 matches _induction_2d.
+
+    In-plane Hall Faraday of (J x B) is identically 0 (caller uses 2.5D
+    when d_i>0, same as hall). Electron-pressure E is in-plane, so it
+    does not update in-plane B. n_hat/d_i/T_e kept for a uniform signature.
+    """
+    return _induction_2d(
+        B_hat, u_hat, grid, eta_mag, B_cross_hat, eta_hyper, hyper_kcut)
+
+
+@jit
+def _twofluid_induction_2d5(B_hat, u_hat, n_hat, grid, eta_mag, B_cross_hat,
+                            eta_hyper, hyper_kcut, d_i, T_e):
+    """2.5D Faraday: dt B = -curl E (Qin/GLM applied by the caller).
+
+    E = -u_e x B - grad(p_e)/n + eta J
+    u_e = u_i - (d_i/n) J , p_e = n T_e (T_e const; no electron inertia).
+    T_e=0 and n=const recovers hall _induction_2d5 (same d_i).
+    u is 2-comp (uz=0). Ion Lorentz is not this routine.
+    """
+    u = jnp.fft.ifftn(u_hat, axes=(1, 2)).real
+    B = jnp.fft.ifftn(B_cross_hat, axes=(1, 2)).real
+    n = jnp.fft.ifftn(n_hat).real
+    J = jnp.fft.ifftn(_curl_2d5(B_cross_hat, grid), axes=(1, 2)).real
+    invn = 1.0 / (n + 1e-30)
+    ue = jnp.stack([
+        u[0] - d_i * invn * J[0],
+        u[1] - d_i * invn * J[1],
+        -d_i * invn * J[2],
+    ])
+    cross = jnp.stack([
+        ue[1] * B[2] - ue[2] * B[1],
+        ue[2] * B[0] - ue[0] * B[2],
+        ue[0] * B[1] - ue[1] * B[0],
+    ])
+    rhs = _curl_2d5(jnp.fft.fftn(cross, axes=(1, 2)), grid)
+    mask = _hyper_mask(grid, hyper_kcut)
+    rhs = rhs - (eta_mag * grid["k2"] + eta_hyper * mask * grid["k2"] ** 2) * B_hat
+    gn = jnp.fft.ifftn(1j * grid["k_stack"] * n_hat, axes=(1, 2)).real
+    gpx = T_e * gn[0] * invn
+    gpy = T_e * gn[1] * invn
+    pe_hat = jnp.stack([
+        jnp.fft.fftn(gpx),
+        jnp.fft.fftn(gpy),
+        jnp.zeros_like(n_hat),
+    ])
+    return rhs + _curl_2d5(pe_hat, grid)
+
+
+@jit
+def _twofluid_induction_3d(B_hat, u_hat, n_hat, grid, eta_mag, B_cross_hat,
+                           eta_hyper, hyper_kcut, d_i, T_e):
+    """3D Faraday for twofluid Ohm. T_e=0 and n=const recovers Hall."""
+    u = jnp.fft.ifftn(u_hat, axes=(1, 2, 3)).real
+    B = jnp.fft.ifftn(B_cross_hat, axes=(1, 2, 3)).real
+    n = jnp.fft.ifftn(n_hat).real
+    J = jnp.fft.ifftn(ik_cross(B_cross_hat, grid), axes=(1, 2, 3)).real
+    invn = 1.0 / (n + 1e-30)
+    ue = u - d_i * invn * J
+    cross = jnp.stack([
+        ue[1] * B[2] - ue[2] * B[1],
+        ue[2] * B[0] - ue[0] * B[2],
+        ue[0] * B[1] - ue[1] * B[0],
+    ])
+    rhs = ik_cross(jnp.fft.fftn(cross, axes=(1, 2, 3)), grid) * grid["dealias"]
+    mask = _hyper_mask(grid, hyper_kcut)
+    rhs = rhs - (eta_mag * grid["k2"] + eta_hyper * mask * grid["k2"] ** 2) * B_hat
+    gn = jnp.fft.ifftn(1j * grid["k_stack"] * n_hat, axes=(1, 2, 3)).real
+    gp = T_e * gn * invn
+    return rhs + ik_cross(jnp.fft.fftn(gp, axes=(1, 2, 3)), grid) * grid["dealias"]
+
+
+def twofluid_induction_rhs(B_hat, u_hat, n_hat, grid, eta_mag,
+                           B_cross_hat=None, eta_hyper=0.0, hyper_kcut=0.0,
+                           psi_hat=None, glm_ch=0.0, d_i=0.0, T_e=0.0):
+    """dt B = -curl E (+ GLM). Two-fluid Ohm, no electron inertia.
+
+    E = -u_e x B - grad(p_e)/n + eta J, u_e = u_i - (d_i/n) J, p_e = n T_e.
+    T_e=0 and n=const is the Hall Ohm. d_i=0 and T_e=0 is MHD.
+    mode=cmhd does not call this (induction_rhs keeps d_i=0 default).
+    """
+    if B_cross_hat is None:
+        B_cross_hat = B_hat
+    if B_hat.shape[0] == 2:
+        dB = _twofluid_induction_2d(
+            B_hat, u_hat, n_hat, grid, eta_mag, B_cross_hat, eta_hyper,
+            hyper_kcut, d_i, T_e)
+    elif B_hat.ndim == 3:
+        dB = _twofluid_induction_2d5(
+            B_hat, u_hat, n_hat, grid, eta_mag, B_cross_hat, eta_hyper,
+            hyper_kcut, d_i, T_e)
+    else:
+        dB = _twofluid_induction_3d(
+            B_hat, u_hat, n_hat, grid, eta_mag, B_cross_hat, eta_hyper,
+            hyper_kcut, d_i, T_e)
     if psi_hat is not None and glm_ch != 0.0:
         dB = dB + _glm_grad_psi_for_b(psi_hat, B_hat, grid)
     return dB

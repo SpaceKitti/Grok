@@ -14,7 +14,8 @@ from .grid import (
 )
 from .vorticity import (
     modest_liar, z7_braid_forcing, ns_vorticity_step,
-    coupled_vorticity_stress_step, coupled_mhd_step, resolve_scar_centres,
+    coupled_vorticity_stress_step, coupled_mhd_step, coupled_twofluid_step,
+    resolve_scar_centres,
 )
 from .clay import DEFAULT_CLAY, zero_tau_hat
 from .bubble import coupled_rp_attractor_rhs
@@ -279,6 +280,78 @@ def _run_mhd_scanned(omega_hat, tau_hat, B_hat, grid, nu, dt, steps, force_on,
                       steps, diag_every)
 
 
+def _snapshot_twofluid(state, grid, nu, clay_params, mhd_params, B_ext_hat):
+    """MHD snapshot plus quasi-neutral n_i = n_e meters. No pin/floor."""
+    omega_hat, tau_hat, B_hat, psi_hat, n_i_hat = state
+    d = _snapshot_mhd(
+        (omega_hat, tau_hat, B_hat, psi_hat), grid, nu, clay_params,
+        mhd_params, B_ext_hat)
+    u_hat = velocity_from_vorticity(omega_hat, grid)
+    d.update(density_diagnostics(n_i_hat, u_hat, grid))
+    n = jnp.fft.ifftn(n_i_hat).real
+    d["min_n_i"] = jnp.min(n)
+    d["min_n_e"] = jnp.min(n)
+    d["mean_n_i"] = jnp.mean(n)
+    d["mean_n_e"] = jnp.mean(n)
+    d["max_n_i"] = jnp.max(n)
+    d["max_n_e"] = jnp.max(n)
+    return d
+
+
+def _run_twofluid_scanned(omega_hat, tau_hat, B_hat, n_i_hat, grid, nu, dt,
+                          steps, force_on, scheme, diag_every, clay_params,
+                          mhd_params, n_scars=1, scar_centres=None,
+                          force_amp=1.0, B_ext_hat=None, induct_ext=1.0):
+    """Hall vorticity MHD + twofluid Ohm + continuity on n_i."""
+    force_pat = z7_braid_forcing(grid, 1.0, n_scars=n_scars,
+                                 scar_centres=scar_centres)
+    force_scale = (1.0 if force_on else 0.0) * float(force_amp)
+    eta_p = clay_params["eta_p"]
+    lambda_relax = clay_params["lambda_relax"]
+    alpha = clay_params["alpha"]
+    beta_scar = clay_params["beta_scar"]
+    stress_diff = clay_params["stress_diff"]
+    clay_gain = clay_params["clay_gain"]
+    gum_scale = clay_params.get("gum_scale", 1.0)
+    stress_couple = clay_params.get("stress_couple", 1.0)
+    regs = _regs_from_params(clay_params)
+    eta_mag = mhd_params["eta_mag"]
+    eta_odd = mhd_params["eta_odd"]
+    mu_eff = float(mhd_params.get("mu_eff", 0.0))
+    berry_gain = float(mhd_params.get("berry_gain", 0.0))
+    eta_hyper = float(mhd_params.get("eta_hyper", 0.0))
+    posdiv = float(mhd_params.get("posdiv", 0.0))
+    hyper_kcut = float(mhd_params.get("hyper_kcut", 0.0))
+    glm_ch = float(mhd_params.get("glm_ch", 0.0))
+    glm_cr = float(mhd_params.get("glm_cr", 0.18))
+    d_i = float(mhd_params.get("d_i", 0.0))
+    T_e = float(mhd_params.get("T_e", 0.0))
+    if B_ext_hat is None:
+        B_ext_hat = zero_b_hat(grid, dtype=omega_hat.dtype)
+    psi0 = zero_psi_hat(grid, dtype=omega_hat.dtype)
+
+    def advance(state, idx):
+        omega_hat, tau_hat, B_hat, psi_hat, n_i_hat = state
+        t = idx * dt
+        t_norm = idx / jnp.maximum(steps - 1, 1)
+        force = force_pat * (modest_liar(t_norm) * force_scale)
+        return coupled_twofluid_step(
+            omega_hat, tau_hat, B_hat, n_i_hat, grid, nu, dt, force, scheme, t,
+            eta_p, lambda_relax, alpha, beta_scar, stress_diff, clay_gain,
+            gum_scale, stress_couple, regs, eta_mag, eta_odd,
+            B_ext_hat, induct_ext, mu_eff, berry_gain, eta_hyper, posdiv,
+            hyper_kcut, psi_hat, glm_ch, glm_cr, d_i, T_e)
+
+    def snapshot(state):
+        return _snapshot_twofluid(state, grid, nu, clay_params, mhd_params,
+                                  B_ext_hat)
+
+    return _scan_loop(
+        advance, snapshot,
+        (omega_hat, tau_hat, B_hat, psi0, n_i_hat),
+        steps, diag_every)
+
+
 def _snapshot_cmhd(state, grid, nu, clay_params, mhd_params, B_ext_hat, gamma):
     u_hat, tau_hat, B_hat, psi_hat, rho_hat, p_hat = state
     omega_hat = vorticity_from_velocity(u_hat, grid)
@@ -368,11 +441,15 @@ _CMHD_HIST = (
     "e_int", "e_kin", "p", "gamma", "mean_p", "min_p", "mean_e_int", "mean_Q",
 )
 
+_TWOFLUID_HIST = (
+    "min_n_i", "min_n_e", "mean_n_i", "mean_n_e", "max_n_i", "max_n_e",
+)
+
 
 def _pack_out(hist, u_hat, omega_hat, tau_hat, grid, dt, N, nu, ic, scheme,
               viscoelastic, clay_params, steps, diag_every, n_scars,
               scar_centres, force_on, B_hat=None, mhd_params=None,
-              magnetic=False, rho_hat=None, p_hat=None):
+              magnetic=False, rho_hat=None, p_hat=None, n_i_hat=None):
     time = sample_times(hist["energy"].shape[0], steps, dt, diag_every)
     mill = millennium_series(hist, time, nu)
     out = {
@@ -435,8 +512,12 @@ def _pack_out(hist, u_hat, omega_hat, tau_hat, grid, dt, N, nu, ic, scheme,
         out[k] = hist.get(k, z)
     for k in _CMHD_HIST:
         out[k] = hist.get(k, z)
+    for k in _TWOFLUID_HIST:
+        out[k] = hist.get(k, z)
     out["rho_hat"] = rho_hat
     out["p_hat"] = p_hat
+    out["n_i_hat"] = n_i_hat
+    out["n_e_hat"] = n_i_hat
     # PATCH 7 Venus (cmhd only). mill I_leak above stays the two-bucket
     # MHD identity: (e_tot+e_glm - that[0]) + I_nu + I_eta + I_tau.
     # Heat already sits in E_int, so do NOT add int(eps_nu+eps_eta).
@@ -465,12 +546,15 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
          = "mhd"         → NS + (optional clay) + induction / Lorentz
          = "hall"        -> same vorticity MHD path as mode="mhd" with Hall Ohm
                             E = -u x B + eta J + (d_i/n) J x B; d_i=0 matches mhd
+         = "twofluid"    -> hall path + electron pressure in Ohm (no inertia)
+                            E = -u_e x B - grad(p_e)/n + eta J, u_e = u_i - (d_i/n) J
+                            p_e = n T_e, T_e=0 matches hall; continuity on n_i=n_e
          = "cmhd" / "compressible" → primitive-u MHD + continuity + Russell p (Qin off)
          = "bubble"      → pure RP + Liu–Sun tower
 
     viscoelastic=True forces the clay coupling even if mode="vorticity".
     magnetic=True forces the MHD layer (induction + Lorentz + helicity).
-    mode="mhd" or mode="hall" implies magnetic=True; clay stays on unless viscoelastic=False.
+    mode="mhd" or mode="hall" or mode="twofluid" implies magnetic=True; clay stays on unless viscoelastic=False.
     ic = "taylor_green" | "tubes" | "smooth" | "ot" | "alfven" | "sound" | "brio_wu".  tubes = Crow-perturbed
     anti-parallel pair. ot = Orszag-Tang u matching generate_b0(kind='ot').
     alfven = small transverse δv=-δb on the uniform guide (v_A = |B0|).
@@ -479,10 +563,11 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     dim=3 defaults: N=64, Taylor–Green IC, RK2, CFL dt, helical Z₇ force.
     """
     if magnetic is None:
-        magnetic = mode in ("mhd", "hall")
+        magnetic = mode in ("mhd", "hall", "twofluid")
     if viscoelastic is None:
-        viscoelastic = mode in ("clay", "hybrid", "mhd", "hall")
+        viscoelastic = mode in ("clay", "hybrid", "mhd", "hall", "twofluid")
     is_cmhd = mode in ("cmhd", "compressible")
+    is_twofluid = mode == "twofluid"
     if is_cmhd:
         # Primitive u + continuity + Russell p. Qin off. mode="mhd" unchanged.
         magnetic = True
@@ -551,6 +636,7 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     psi_hat = None
     rho_hat = None
     p_hat = None
+    n_i_hat = None
     if magnetic:
         B_hat, B_ext_hat, induct_ext = split_guide_fields(
             grid, mhd_params, ic_params)
@@ -666,6 +752,24 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
             u_hat, tau_hat, B_hat, rho_hat, p_hat, grid, nu, dt, steps, force_on,
             scheme, diag_every, clay_use, mhd_params, n_scars, centres,
             force_amp, B_ext_hat=B_ext_hat, induct_ext=induct_ext, gamma=gamma)
+    elif is_twofluid:
+        tau_hat = zero_tau_hat(grid, dtype=omega_hat.dtype)
+        clay_use = clay_params
+        if not viscoelastic:
+            clay_use = dict(clay_params, eta_p=0.0, stress_couple=0.0,
+                            clay_gain=0.0, gum_scale=0.0,
+                            soft_J=0.0, high_de=0.0, alpha_LB=0.0,
+                            lam_kin_gain=0.0, alpha_perp=0.0)
+        n0 = float(mhd_params.get("n", mhd_params.get("n_hall", 1.0)))
+        n_eps = float(mhd_params.get("n_eps", 0.0))
+        if n_eps != 0.0:
+            n_i_hat = bump_rho_hat(grid, eps=n_eps, dtype=omega_hat.dtype)
+        else:
+            n_i_hat = uniform_rho_hat(grid, rho0=n0, dtype=omega_hat.dtype)
+        (omega_hat, tau_hat, B_hat, psi_hat, n_i_hat), hist = _run_twofluid_scanned(
+            omega_hat, tau_hat, B_hat, n_i_hat, grid, nu, dt, steps, force_on,
+            scheme, diag_every, clay_use, mhd_params, n_scars, centres,
+            force_amp, B_ext_hat=B_ext_hat, induct_ext=induct_ext)
     elif magnetic:
         tau_hat = zero_tau_hat(grid, dtype=omega_hat.dtype)
         clay_use = clay_params
@@ -698,7 +802,7 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
                     scheme, bool(viscoelastic or mode == "clay"), clay_params,
                     steps, diag_every, n_scars, centres, force_on,
                     B_hat=B_hat, mhd_params=mhd_params, magnetic=bool(magnetic),
-                    rho_hat=rho_hat, p_hat=p_hat)
+                    rho_hat=rho_hat, p_hat=p_hat, n_i_hat=n_i_hat)
     out["nu_solvent"] = nu
     out["B_ext_hat"] = B_ext_hat
     if magnetic:

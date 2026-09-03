@@ -24,10 +24,12 @@ from .constants import DELTA_MIN
 from .mhd import (
     _lorentz_vort_2d, _lorentz_vort_3d, _lorentz_vort_2d5,
     _induction_2d, _induction_3d, _induction_2d5, _hall_induction_3d,
+    _twofluid_induction_2d, _twofluid_induction_2d5, _twofluid_induction_3d,
     _odd_vort_2d, _odd_vort_3d,
     glm_grad_psi, glm_psi_rhs,
     _project_b_2d5, _glm_grad_psi_for_b,
 )
+from .compressible import continuity_rhs
 
 # regs = (soft_J, α∥, α⊥, γ_s, ε_Fréchet, high_De, α_LB, soft_LB, λ_kin)
 _ZERO_REGS = jnp.zeros((9,), dtype=jnp.float64)
@@ -507,3 +509,194 @@ def coupled_mhd_step(omega_hat, tau_hat, B_hat, grid, nu, dt, force_hat=0,
     if omega_hat.ndim == 2:
         return _coupled_mhd_step_2d(*args)
     return _coupled_mhd_step_3d(*args)
+
+@partial(jit, static_argnums=(7,))
+def _coupled_twofluid_step_2d(omega, tau, B, grid, nu, dt, force, scheme, t,
+                              eta_p, lambda_relax, alpha, beta_scar, stress_diff,
+                              clay_gain, gum_scale, stress_couple, regs,
+                              eta_mag, eta_odd, B_ext, induct_ext, mu_eff,
+                              berry_gain, eta_hyper, posdiv, hyper_kcut,
+                              psi, glm_ch, glm_cr, d_i, T_e, n):
+    """(omega, tau, B, psi, n_i) 2D twofluid step.
+
+    Same NS/Oldroyd/Lorentz/Qin/GLM path as hall. Induction uses twofluid
+    Ohm (Hall + electron pressure). Continuity on n_i; n_e = n_i.
+    Do not add Hall as a momentum body force. No n pin/floor.
+    """
+    soft_J, a_par, a_perp, g_s, eps_fr, high_de, a_LB, s_LB, lam_g = regs
+    nu_tot = nu + mu_eff
+
+    def rhs(omega, tau, B, psi, n):
+        u_raw = _u_from_vort_2d(omega, grid)
+        u_hat = mollify_hat(u_raw, grid, soft_J)
+        tau_phys = jnp.fft.ifftn(tau, axes=(2, 3)).real
+        S = strain_tensor(u_hat, grid)
+        eta_eff = _strain_source_eta(eta_p, tau_phys, S, nu, lam_g)
+        dtau = (_oldroyd_rhs_2d(tau, u_hat, grid, eta_eff, lambda_relax,
+                                alpha, beta_scar, stress_diff, clay_gain)
+                + _voigt_rhs_2d(tau, None, grid, a_par, a_perp, g_s)
+                + frechet_stress_rhs(tau, tau_phys, grid, eps_fr))
+        vort = jnp.fft.ifftn(omega).real
+        blended, _ = high_de_blend(tau_phys, vort[None], S, eta_p,
+                                   lambda_relax, high_de)
+        tau_use = jnp.fft.fftn(blended, axes=(2, 3)) * grid["dealias"]
+        tau_f = stress_couple * _stress_vort_force_2d(tau_use, grid)
+        f_lb = _vort_from_u_2d(lb_filtered_div(tau_use, grid, s_LB), grid)
+        tau_f = (1.0 - a_LB) * tau_f + a_LB * f_lb * grid["dealias"]
+        B_tot = B + B_ext
+        B_cross = B + induct_ext * B_ext
+        if B.shape[0] == 2:
+            mag_f = _lorentz_vort_2d(B_tot, grid) + _odd_vort_2d(u_raw, grid, eta_odd)
+            dB = _twofluid_induction_2d(
+                B, u_raw, n, grid, eta_mag, B_cross, eta_hyper, hyper_kcut,
+                d_i, T_e)
+            B_glm = B
+        else:
+            mag_f = _lorentz_vort_2d5(B_tot, grid) + _odd_vort_2d(u_raw, grid, eta_odd)
+            dB = _twofluid_induction_2d5(
+                B, u_raw, n, grid, eta_mag, B_cross, eta_hyper, hyper_kcut,
+                d_i, T_e)
+            B_glm = B[:2]
+        dw = _rhs_2d(omega, grid, nu_tot, force + tau_f + mag_f)
+        dn = continuity_rhs(n, u_raw, grid)
+        glm_on = (glm_ch != 0.0).astype(B.real.dtype)
+        dB = dB + _glm_grad_psi_for_b(psi, B, grid) * glm_on
+        dpsi = glm_psi_rhs(psi, B_glm, grid, glm_ch, glm_cr) * glm_on
+        return dw, dtau, dB, dpsi, dn
+
+    if scheme == "euler":
+        dw, dtau, dB, dpsi, dn = rhs(omega, tau, B, psi, n)
+        omega, tau, B = omega + dt * dw, tau + dt * dtau, B + dt * dB
+        psi = psi + dt * dpsi
+        n = n + dt * dn
+    else:
+        k1w, k1t, k1b, k1p, k1n = rhs(omega, tau, B, psi, n)
+        om_m = omega + dt * k1w
+        B_m = B + dt * k1b
+        n_m = n + dt * k1n
+        om_p = om_m * grid["dealias"]
+        B_p = project_div_free(B_m, grid) if B_m.shape[0] == 2 else _project_b_2d5(B_m, grid)
+        om_m = posdiv * om_p + (1.0 - posdiv) * om_m
+        B_m = posdiv * B_p + (1.0 - posdiv) * B_m
+        k2w, k2t, k2b, k2p, k2n = rhs(
+            om_m, tau + dt * k1t, B_m, psi + dt * k1p, n_m)
+        omega = omega + 0.5 * dt * (k1w + k2w)
+        tau = tau + 0.5 * dt * (k1t + k2t)
+        B = B + 0.5 * dt * (k1b + k2b)
+        psi = psi + 0.5 * dt * (k1p + k2p)
+        n = n + 0.5 * dt * (k1n + k2n)
+    tau = 0.5 * (tau + jnp.swapaxes(tau, 0, 1))
+    if B.shape[0] == 2:
+        B_proj = project_div_free(B, grid)
+        B_deal = B * grid["dealias"]
+    else:
+        B_proj = _project_b_2d5(B, grid)
+        B_deal = jnp.concatenate(
+            [B[:2] * grid["dealias"], (B[2] * grid["dealias"])[None]], axis=0)
+    B = jnp.where(glm_ch != 0.0, B_deal, B_proj)
+    psi = psi * grid["dealias"]
+    n = n * grid["dealias"]
+    return omega * grid["dealias"], gum_damping(tau, t, gum_scale), B, psi, n
+
+
+@partial(jit, static_argnums=(7,))
+def _coupled_twofluid_step_3d(omega, tau, B, grid, nu, dt, force, scheme, t,
+                              eta_p, lambda_relax, alpha, beta_scar, stress_diff,
+                              clay_gain, gum_scale, stress_couple, regs,
+                              eta_mag, eta_odd, B_ext, induct_ext, mu_eff,
+                              berry_gain, eta_hyper, posdiv, hyper_kcut,
+                              psi, glm_ch, glm_cr, d_i, T_e, n):
+    """(omega, tau, B, psi, n_i) 3D twofluid step. Lorentz is still curl(J x B)."""
+    soft_J, a_par, a_perp, g_s, eps_fr, high_de, a_LB, s_LB, lam_g = regs
+    nu_tot = nu + mu_eff
+
+    def rhs(omega, tau, B, psi, n):
+        u_raw = _u_from_vort_3d(omega, grid)
+        u_hat = mollify_hat(u_raw, grid, soft_J)
+        omg = jnp.fft.ifftn(omega, axes=(1, 2, 3)).real
+        tau_phys = jnp.fft.ifftn(tau, axes=(2, 3, 4)).real
+        S = strain_tensor(u_hat, grid)
+        eta_eff = _strain_source_eta(eta_p, tau_phys, S, nu, lam_g)
+        dtau = (_oldroyd_rhs_3d(tau, u_hat, grid, eta_eff, lambda_relax,
+                                alpha, beta_scar, stress_diff, clay_gain)
+                + _voigt_rhs_3d_sheet(tau, omg, S, grid, a_par, a_perp, g_s)
+                + frechet_stress_rhs(tau, tau_phys, grid, eps_fr))
+        blended, _ = high_de_blend(tau_phys, omg, S, eta_p, lambda_relax, high_de)
+        tau_use = jnp.fft.fftn(blended, axes=(2, 3, 4)) * grid["dealias"]
+        tau_f = stress_couple * _stress_vort_force_3d(tau_use, grid)
+        f_lb = ik_cross(lb_filtered_div(tau_use, grid, s_LB), grid)
+        tau_f = (1.0 - a_LB) * tau_f + a_LB * f_lb * grid["dealias"]
+        B_tot = B + B_ext
+        B_cross = B + induct_ext * B_ext
+        mag_f = (_lorentz_vort_3d(B_tot, grid)
+                 + _odd_vort_3d(u_raw, B_tot, grid, eta_odd, berry_gain))
+        dw = _rhs_3d(omega, grid, nu_tot, force + tau_f + mag_f)
+        dB = _twofluid_induction_3d(
+            B, u_raw, n, grid, eta_mag, B_cross, eta_hyper, hyper_kcut,
+            d_i, T_e)
+        dn = continuity_rhs(n, u_raw, grid)
+        glm_on = (glm_ch != 0.0).astype(B.real.dtype)
+        dB = dB + glm_grad_psi(psi, grid) * glm_on
+        dpsi = glm_psi_rhs(psi, B, grid, glm_ch, glm_cr) * glm_on
+        return dw, dtau, dB, dpsi, dn
+
+    if scheme == "euler":
+        dw, dtau, dB, dpsi, dn = rhs(omega, tau, B, psi, n)
+        omega, tau, B = omega + dt * dw, tau + dt * dtau, B + dt * dB
+        psi = psi + dt * dpsi
+        n = n + dt * dn
+    else:
+        k1w, k1t, k1b, k1p, k1n = rhs(omega, tau, B, psi, n)
+        om_m = omega + dt * k1w
+        B_m = B + dt * k1b
+        n_m = n + dt * k1n
+        om_p = project_div_free(om_m, grid)
+        B_p = project_div_free(B_m, grid)
+        om_m = posdiv * om_p + (1.0 - posdiv) * om_m
+        B_m = posdiv * B_p + (1.0 - posdiv) * B_m
+        k2w, k2t, k2b, k2p, k2n = rhs(
+            om_m, tau + dt * k1t, B_m, psi + dt * k1p, n_m)
+        omega = omega + 0.5 * dt * (k1w + k2w)
+        tau = tau + 0.5 * dt * (k1t + k2t)
+        B = B + 0.5 * dt * (k1b + k2b)
+        psi = psi + 0.5 * dt * (k1p + k2p)
+        n = n + 0.5 * dt * (k1n + k2n)
+    omega = project_div_free(omega, grid)
+    B_proj = project_div_free(B, grid)
+    B = jnp.where(glm_ch != 0.0, B * grid["dealias"], B_proj)
+    psi = psi * grid["dealias"]
+    n = n * grid["dealias"]
+    tau = 0.5 * (tau + jnp.swapaxes(tau, 0, 1))
+    return omega, gum_damping(tau, t, gum_scale), B, psi, n
+
+
+def coupled_twofluid_step(omega_hat, tau_hat, B_hat, n_i_hat, grid, nu, dt,
+                          force_hat=0, scheme="rk2", t=0.0, eta_p=0.003,
+                          lambda_relax=0.6, alpha=0.085,
+                          beta_scar=0.13, stress_diff=1e-4,
+                          clay_gain=float(DELTA_MIN),
+                          gum_scale=1.0, stress_couple=1.0,
+                          regs=None, eta_mag=1.0e-3, eta_odd=0.0,
+                          B_ext_hat=None, induct_ext=1.0, mu_eff=0.0,
+                          berry_gain=0.0, eta_hyper=0.0, posdiv=0.0, hyper_kcut=0.0,
+                          psi_hat=None, glm_ch=0.0, glm_cr=0.18,
+                          d_i=0.0, T_e=0.0):
+    """One coupled (omega, tau, B, psi, n_i) twofluid step.
+
+    Quasi-neutral: n_e = n_i (caller). Continuity on n_i, no pin/floor.
+    Ion Lorentz is J x B as in hall/mhd. T_e=0 recovers Hall Faraday.
+    """
+    if regs is None:
+        regs = _ZERO_REGS
+    if B_ext_hat is None:
+        B_ext_hat = jnp.zeros_like(B_hat)
+    if psi_hat is None:
+        psi_hat = jnp.zeros_like(B_hat[0])
+    args = (omega_hat, tau_hat, B_hat, grid, nu, dt, force_hat, scheme, t,
+            eta_p, lambda_relax, alpha, beta_scar, stress_diff, clay_gain,
+            gum_scale, stress_couple, regs, eta_mag, eta_odd,
+            B_ext_hat, induct_ext, mu_eff, berry_gain, eta_hyper, posdiv,
+            hyper_kcut, psi_hat, glm_ch, glm_cr, d_i, T_e, n_i_hat)
+    if omega_hat.ndim == 2:
+        return _coupled_twofluid_step_2d(*args)
+    return _coupled_twofluid_step_3d(*args)
