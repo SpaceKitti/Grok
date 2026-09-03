@@ -9,7 +9,8 @@
 # mode="mhd" stays the projected vorticity toy in vorticity.py.
 # I_leak (cmhd only) = Delta(E_kin + E_int + E_mag + e_glm),
 # E_kin = <1/2 rho |u|^2>. Heat already in E_int; do not add int(eps_nu+eps_eta).
-# Lorentz and p div u are transfers, not leaks. No bulk viscosity.
+# Lorentz and p div u are transfers, not leaks. Bulk visc zeta default 0
+# (cmhd only): dt u += grad(zeta div u), Q += zeta (div u)^2. zeta=0 is current cmhd.
 # No nabla p on the vorticity RHS. No mean-pin and no floor.
 # ============================================================
 
@@ -179,7 +180,7 @@ def brio_wu_wrap_time(grid, gamma=2.0):
     return 0.25 * float(grid["L"]) / (float(vfast) + 1e-30)
 
 
-def cfl_dt_cmhd(u, rho, p, B, dx, nu, eta_mag, gamma=GAMMA_DEFAULT, cfl=0.4):
+def cfl_dt_cmhd(u, rho, p, B, dx, nu, eta_mag, gamma=GAMMA_DEFAULT, cfl=0.4, zeta=0.0):
     """dt from max(|u| + c_s + |v_A|) with c_s = sqrt(gamma p / rho).
 
     v_A = |B| / sqrt(rho). Viscous/resistive piece matches cfl_dt_mhd.
@@ -189,7 +190,7 @@ def cfl_dt_cmhd(u, rho, p, B, dx, nu, eta_mag, gamma=GAMMA_DEFAULT, cfl=0.4):
     cs = jnp.sqrt(gamma * p / rho)
     vA = jnp.sqrt(jnp.sum(B ** 2, axis=0) / rho)
     fast = jnp.max(speed + cs + vA)
-    return cfl * dx / (fast + 4.0 * (nu + eta_mag) / dx + 1e-12)
+    return cfl * dx / (fast + 4.0 * (nu + eta_mag + zeta) / dx + 1e-12)
 
 
 @jit
@@ -234,10 +235,11 @@ def density_diagnostics(rho_hat, u_hat, grid):
 
 
 @jit
-def heating_Q(u_hat, B_hat, grid, eta_mag, nu, B_ext_hat=None):
-    """Volumetric Q = Ohmic eta|J|^2 + viscous 2 nu S:S (physical space).
+def heating_Q(u_hat, B_hat, grid, eta_mag, nu, B_ext_hat=None, zeta=0.0):
+    """Volumetric Q = Ohmic eta|J|^2 + viscous 2 nu S:S + zeta (div u)^2.
 
     For incompressible u, 2<S:S> = <omega^2> so mean Q_visc matches eps_nu.
+    zeta=0 is the current cmhd (no bulk). Do not retune 2 nu S:S vs nu lap u.
     """
     Btot = B_hat if B_ext_hat is None else (B_hat + B_ext_hat)
     J_hat = current_from_b(Btot, grid)
@@ -250,7 +252,9 @@ def heating_Q(u_hat, B_hat, grid, eta_mag, nu, B_ext_hat=None):
         Q_ohm = eta_mag * jnp.sum(J * J, axis=0)
     S = strain_tensor(u_hat, grid)
     Q_visc = 2.0 * nu * jnp.sum(S * S, axis=(0, 1))
-    return Q_ohm + Q_visc
+    div_u = jnp.fft.ifftn(1j * jnp.sum(grid["k_stack"] * u_hat, axis=0)).real
+    Q_bulk = zeta * (div_u * div_u)
+    return Q_ohm + Q_visc + Q_bulk
 
 
 @jit
@@ -299,7 +303,7 @@ def kinetic_energy_rho(rho_hat, u_hat):
 
 
 def viscous_work_lap(u_hat, grid, nu):
-    """Mean work of the primitive viscous term: <u · ν ∇²u>. No bulk visc."""
+    """Mean work of the primitive viscous term: <u · ν ∇²u>. Bulk is separate."""
     spatial = tuple(range(1, u_hat.ndim))
     u = jnp.fft.ifftn(u_hat, axes=spatial).real
     lap = jnp.fft.ifftn(-grid["k2"][None] * u_hat, axes=spatial).real
@@ -307,9 +311,15 @@ def viscous_work_lap(u_hat, grid, nu):
 
 
 def viscous_heat_SS(u_hat, grid, nu):
-    """Mean viscous heat Q = <2 ν S:S>. No bulk viscosity."""
+    """Mean viscous heat Q = <2 ν S:S>. Bulk is separate."""
     S = strain_tensor(u_hat, grid)
     return jnp.mean(2.0 * nu * jnp.sum(S * S, axis=(0, 1)))
+
+
+def bulk_heat_div(u_hat, grid, zeta):
+    """Mean bulk heat Q_bulk = <ζ (∇·u)²>. Zero when zeta=0."""
+    div_u = jnp.fft.ifftn(1j * jnp.sum(grid["k_stack"] * u_hat, axis=0)).real
+    return jnp.mean(zeta * div_u * div_u)
 
 
 def viscous_disagreement(u_hat, grid, nu):
@@ -336,8 +346,8 @@ def energy_diagnostics(rho_hat, p_hat, gamma=GAMMA_DEFAULT, u_hat=None):
 
 @jit
 def primitive_u_rhs(u_hat, rho_hat, p_hat, B_hat, grid, nu, force_hat,
-                    B_ext_hat):
-    """dt u = -(u·∇)u - ∇p/ρ + (J×B)/ρ + ν ∇²u + f. No Qin on u."""
+                    B_ext_hat, zeta=0.0):
+    """dt u = -(u·∇)u - ∇p/ρ + (J×B)/ρ + ν ∇²u + ζ ∇(∇·u) + f. No Qin on u."""
     spatial = tuple(range(1, u_hat.ndim))
     dealias = grid["dealias"]
     k_stack = grid["k_stack"]
@@ -363,16 +373,19 @@ def primitive_u_rhs(u_hat, rho_hat, p_hat, B_hat, grid, nu, force_hat,
         ])
     lor_hat = jnp.fft.fftn(JxB / rho, axes=spatial) * dealias[None]
     visc = -nu * grid["k2"][None] * u_hat
-    return (-adv_hat - gp_hat + lor_hat + visc + force_hat) * dealias[None]
+    # Constant-zeta bulk, same kinematic placement as nu lap u (not /rho).
+    div_u_hat = 1j * jnp.sum(k_stack * u_hat, axis=0)
+    bulk = zeta * (1j * k_stack * div_u_hat[None])
+    return (-adv_hat - gp_hat + lor_hat + visc + bulk + force_hat) * dealias[None]
 
 
 @jit
 def primitive_cmhd_rhs(u_hat, B_hat, rho_hat, p_hat, psi_hat, grid,
                        nu, force_hat, eta_mag, B_ext_hat, induct_ext,
-                       eta_hyper, hyper_kcut, glm_ch, glm_cr, gamma):
+                       eta_hyper, hyper_kcut, glm_ch, glm_cr, gamma, zeta):
     """Coupled (u, B, rho, p, psi) tendencies. Helmholtz off on u."""
     du = primitive_u_rhs(
-        u_hat, rho_hat, p_hat, B_hat, grid, nu, force_hat, B_ext_hat)
+        u_hat, rho_hat, p_hat, B_hat, grid, nu, force_hat, B_ext_hat, zeta)
     B_cross = B_hat + induct_ext * B_ext_hat
     dB = induction_rhs(
         B_hat, u_hat, grid, eta_mag, B_cross, eta_hyper, hyper_kcut,
@@ -380,7 +393,7 @@ def primitive_cmhd_rhs(u_hat, B_hat, rho_hat, p_hat, psi_hat, grid,
     glm_on = (glm_ch != 0.0).astype(B_hat.real.dtype)
     dB = dB + glm_grad_psi(psi_hat, grid) * glm_on
     drho = continuity_rhs(rho_hat, u_hat, grid)
-    Q = heating_Q(u_hat, B_hat, grid, eta_mag, nu, B_ext_hat)
+    Q = heating_Q(u_hat, B_hat, grid, eta_mag, nu, B_ext_hat, zeta)
     dp = pressure_rhs(p_hat, u_hat, grid, gamma, Q)
     dpsi = glm_psi_rhs(psi_hat, B_hat, grid, glm_ch, glm_cr) * glm_on
     return du, dB, drho, dp, dpsi
@@ -389,12 +402,12 @@ def primitive_cmhd_rhs(u_hat, B_hat, rho_hat, p_hat, psi_hat, grid,
 @partial(jit, static_argnums=(7,))
 def primitive_cmhd_step(u_hat, B_hat, rho_hat, p_hat, psi_hat, grid, dt, scheme,
                         nu, force_hat, eta_mag, B_ext_hat, induct_ext,
-                        eta_hyper, hyper_kcut, glm_ch, glm_cr, gamma):
+                        eta_hyper, hyper_kcut, glm_ch, glm_cr, gamma, zeta):
     """One coupled primitive-u cmhd step. No project_div_free on u."""
     def rhs(u, B, rho, p, psi):
         return primitive_cmhd_rhs(
             u, B, rho, p, psi, grid, nu, force_hat, eta_mag, B_ext_hat,
-            induct_ext, eta_hyper, hyper_kcut, glm_ch, glm_cr, gamma)
+            induct_ext, eta_hyper, hyper_kcut, glm_ch, glm_cr, gamma, zeta)
 
     if scheme == "euler":
         du, dB, drho, dp, dpsi = rhs(u_hat, B_hat, rho_hat, p_hat, psi_hat)
@@ -432,7 +445,7 @@ def coupled_cmhd_step(u_hat, tau_hat, B_hat, rho_hat, p_hat, grid, nu, dt,
                       induct_ext=1.0, mu_eff=0.0, berry_gain=0.0,
                       eta_hyper=0.0, posdiv=0.0, hyper_kcut=0.0,
                       psi_hat=None, glm_ch=0.0, glm_cr=0.18,
-                      gamma=GAMMA_DEFAULT):
+                      gamma=GAMMA_DEFAULT, zeta=0.0):
     """Primitive-u compressible MHD step + continuity + Russell p.
 
     force_hat is in velocity space. Qin/Helmholtz is OFF on u (no
@@ -452,5 +465,5 @@ def coupled_cmhd_step(u_hat, tau_hat, B_hat, rho_hat, p_hat, grid, nu, dt,
     u_hat, B_hat, rho_hat, p_hat, psi_hat = primitive_cmhd_step(
         u_hat, B_hat, rho_hat, p_hat, psi_hat, grid, dt, scheme,
         nu_tot, force_hat, eta_mag, B_ext_hat, induct_ext,
-        eta_hyper, hyper_kcut, glm_ch, glm_cr, gamma)
+        eta_hyper, hyper_kcut, glm_ch, glm_cr, gamma, zeta)
     return u_hat, tau_hat, B_hat, psi_hat, rho_hat, p_hat

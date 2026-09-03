@@ -32,7 +32,7 @@ from .particles import with_passive_particles
 from .compressible import (
     uniform_rho_hat, bump_rho_hat, uniform_p_hat, bump_p_hat, coupled_cmhd_step,
     density_diagnostics, energy_diagnostics, heating_Q, GAMMA_DEFAULT,
-    sound_wave_fields, brio_wu_fields, cfl_dt_cmhd,
+    sound_wave_fields, brio_wu_fields, cfl_dt_cmhd, bulk_heat_div,
 )
 
 
@@ -47,6 +47,15 @@ _REG_DEFAULTS = (0.004, 0.0, 3e-4, 1.5, 0.0, 0.08, 0.08, 0.05, 0.10)
 def _regs_from_params(p):
     return jnp.array([p.get(k, d) for k, d in zip(_REG_KEYS, _REG_DEFAULTS)],
                      dtype=jnp.float64)
+
+
+def _cmhd_zeta(mhd_params):
+    """cmhd-only bulk viscosity. Default 0. Accepts zeta or bulk_zeta."""
+    if not mhd_params:
+        return 0.0
+    if "zeta" in mhd_params:
+        return float(mhd_params["zeta"])
+    return float(mhd_params.get("bulk_zeta", 0.0))
 
 
 def _snapshot_ns(omega_hat, grid):
@@ -371,8 +380,10 @@ def _snapshot_cmhd(state, grid, nu, clay_params, mhd_params, B_ext_hat, gamma):
         mhd_params, B_ext_hat, u_hat=u_hat)
     d.update(density_diagnostics(rho_hat, u_hat, grid))
     d.update(energy_diagnostics(rho_hat, p_hat, gamma, u_hat=u_hat))
-    Q = heating_Q(u_hat, B_hat, grid, mhd_params["eta_mag"], nu, B_ext_hat)
+    zeta = _cmhd_zeta(mhd_params)
+    Q = heating_Q(u_hat, B_hat, grid, mhd_params["eta_mag"], nu, B_ext_hat, zeta)
     d["mean_Q"] = jnp.mean(Q)
+    d["Q_bulk"] = bulk_heat_div(u_hat, grid, zeta)
     return d
 
 
@@ -382,7 +393,7 @@ def _run_cmhd_scanned(u_hat, tau_hat, B_hat, rho_hat, p_hat, grid, nu, dt, steps
                       B_ext_hat=None, induct_ext=1.0, gamma=GAMMA_DEFAULT):
     """Primitive-u compressible MHD: Qin/Helmholtz off on u.
 
-    dt u = -(u·∇)u - ∇p/ρ + (J×B)/ρ + ν ∇²u. Continuity + Russell p stay.
+    dt u = -(u·∇)u - ∇p/ρ + (J×B)/ρ + ν ∇²u + ζ ∇(∇·u). Continuity + Russell p stay.
     force_pat is converted from vorticity space to velocity space.
     mode="mhd" is not this loop.
     """
@@ -408,6 +419,7 @@ def _run_cmhd_scanned(u_hat, tau_hat, B_hat, rho_hat, p_hat, grid, nu, dt, steps
     hyper_kcut = float(mhd_params.get("hyper_kcut", 0.0))
     glm_ch = float(mhd_params.get("glm_ch", 0.0))
     glm_cr = float(mhd_params.get("glm_cr", 0.18))
+    zeta = _cmhd_zeta(mhd_params)
     if B_ext_hat is None:
         B_ext_hat = zero_b_hat(grid, dtype=u_hat.dtype)
     psi0 = zero_psi_hat(grid, dtype=u_hat.dtype)
@@ -422,7 +434,7 @@ def _run_cmhd_scanned(u_hat, tau_hat, B_hat, rho_hat, p_hat, grid, nu, dt, steps
             eta_p, lambda_relax, alpha, beta_scar, stress_diff, clay_gain,
             gum_scale, stress_couple, regs, eta_mag, eta_odd,
             B_ext_hat, induct_ext, mu_eff, berry_gain, eta_hyper, posdiv,
-            hyper_kcut, psi_hat, glm_ch, glm_cr, gamma)
+            hyper_kcut, psi_hat, glm_ch, glm_cr, gamma, zeta)
 
     def snapshot(state):
         return _snapshot_cmhd(state, grid, nu, clay_params, mhd_params, B_ext_hat, gamma)
@@ -450,6 +462,7 @@ _MHD_HIST = (
 _CMHD_HIST = (
     "mean_rho", "max_rho", "min_rho", "max_abs_rho_m1", "max_drho_dt",
     "e_int", "e_kin", "p", "gamma", "mean_p", "min_p", "mean_e_int", "mean_Q",
+    "Q_bulk",
 )
 
 _TWOFLUID_HIST = (
@@ -706,7 +719,8 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
                 p_cfl = jnp.full((N,) * dim, p0_cfl)
             dt = float(cfl_dt_cmhd(
                 u0, rho_cfl, p_cfl, B0_phys, grid["dx"], nu_cfl,
-                mhd_params["eta_mag"], gamma_cfl, cfl=cfl))
+                mhd_params["eta_mag"], gamma_cfl, cfl=cfl,
+                zeta=_cmhd_zeta(mhd_params)))
         elif magnetic:
             nu_cfl = nu_cfl + float(mhd_params.get("mu_eff", 0.0))
             dt = float(cfl_dt_mhd(
