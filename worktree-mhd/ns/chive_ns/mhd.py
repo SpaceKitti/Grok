@@ -836,6 +836,17 @@ def _mhd_diag_3d(B_hat, u_hat, grid, eta_mag, tau_hat, B_ext_hat, eta_hyper):
     E_par = jnp.max(jnp.abs(E_par_field))
     E_rec = E_par
     E_rec_sheet = jnp.mean(w * E_par_field) / wsum
+    # Outermost dealiased spectral shell vs total spectral kin+mag.
+    # E = 0.5 N^{-6} sum |hat|^2 (numpy FFT Parseval; matches 0.5 mean |field|^2).
+    kmag = jnp.sqrt(jnp.maximum(grid["k2"] - 1e-12, 0.0))
+    k_max = jnp.max(kmag * grid["dealias"])
+    dk = 2.0 * jnp.pi / grid["L"]
+    shell = grid["dealias"] & (kmag >= (k_max - dk))
+    spec = jnp.sum(jnp.abs(u_hat) ** 2, axis=0) + jnp.sum(jnp.abs(B_hat) ** 2, axis=0)
+    n6 = float(B.shape[-1]) ** 6
+    e_tot_spec = 0.5 * jnp.sum(spec) / n6
+    e_kmax = 0.5 * jnp.sum(spec * shell) / n6
+    ekmax_frac = e_kmax / (e_tot_spec + 1e-30)
     return {
         "e_mag": e_mag,
         "e_mag_ext": e_mag_ext,
@@ -873,6 +884,7 @@ def _mhd_diag_3d(B_hat, u_hat, grid, eta_mag, tau_hat, B_ext_hat, eta_hyper):
         "E_rec": E_rec,
         "E_par": E_par,
         "E_rec_sheet": E_rec_sheet,
+        "ekmax_frac": ekmax_frac,
     }
 
 
@@ -953,4 +965,5 @@ def _zero_mhd():
         "circ_x_half": z, "circ_y_half": z,
         "E_rec": z, "E_par": z, "E_rec_sheet": z,
         "e_glm": z, "max_psi": z,
+        "ekmax_frac": z,
     }

@@ -473,6 +473,7 @@ _MHD_HIST = (
     "circ_x_half", "circ_y_half",
     "E_rec", "E_par", "E_rec_sheet",
     "e_glm", "max_psi",
+    "ekmax_frac",
 )
 
 _CMHD_HIST = (
