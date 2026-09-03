@@ -28,6 +28,7 @@ from .mhd import (
     mhd_field_diagnostics, _zero_mhd, cfl_dt_mhd, split_guide_fields,
 )
 from .es_lhdi import es_placeholder_diagnostics
+from .particles import with_passive_particles
 from .compressible import (
     uniform_rho_hat, bump_rho_hat, uniform_p_hat, bump_p_hat, coupled_cmhd_step,
     density_diagnostics, energy_diagnostics, heating_Q, GAMMA_DEFAULT,
@@ -276,8 +277,14 @@ def _run_mhd_scanned(omega_hat, tau_hat, B_hat, grid, nu, dt, steps, force_on,
     def snapshot(state):
         return _snapshot_mhd(state, grid, nu, clay_params, mhd_params, B_ext_hat)
 
-    return _scan_loop(advance, snapshot, (omega_hat, tau_hat, B_hat, psi0),
-                      steps, diag_every)
+    state0 = (omega_hat, tau_hat, B_hat, psi0)
+    if bool(mhd_params.get('particles', False)):
+        advance, snapshot, state0 = with_passive_particles(
+            advance, snapshot, state0, grid, dt, mhd_params, n_from='hall')
+    state, hist = _scan_loop(advance, snapshot, state0, steps, diag_every)
+    if bool(mhd_params.get('particles', False)):
+        state = state[0]
+    return state, hist
 
 
 def _snapshot_twofluid(state, grid, nu, clay_params, mhd_params, B_ext_hat):
@@ -346,10 +353,14 @@ def _run_twofluid_scanned(omega_hat, tau_hat, B_hat, n_i_hat, grid, nu, dt,
         return _snapshot_twofluid(state, grid, nu, clay_params, mhd_params,
                                   B_ext_hat)
 
-    return _scan_loop(
-        advance, snapshot,
-        (omega_hat, tau_hat, B_hat, psi0, n_i_hat),
-        steps, diag_every)
+    state0 = (omega_hat, tau_hat, B_hat, psi0, n_i_hat)
+    if bool(mhd_params.get('particles', False)):
+        advance, snapshot, state0 = with_passive_particles(
+            advance, snapshot, state0, grid, dt, mhd_params, n_from='twofluid')
+    state, hist = _scan_loop(advance, snapshot, state0, steps, diag_every)
+    if bool(mhd_params.get('particles', False)):
+        state = state[0]
+    return state, hist
 
 
 def _snapshot_cmhd(state, grid, nu, clay_params, mhd_params, B_ext_hat, gamma):
@@ -445,6 +456,10 @@ _TWOFLUID_HIST = (
     "min_n_i", "min_n_e", "mean_n_i", "mean_n_e", "max_n_i", "max_n_e",
 )
 
+_PART_HIST = (
+    "KE_i", "KE_e",
+)
+
 
 def _pack_out(hist, u_hat, omega_hat, tau_hat, grid, dt, N, nu, ic, scheme,
               viscoelastic, clay_params, steps, diag_every, n_scars,
@@ -514,6 +529,11 @@ def _pack_out(hist, u_hat, omega_hat, tau_hat, grid, dt, N, nu, ic, scheme,
         out[k] = hist.get(k, z)
     for k in _TWOFLUID_HIST:
         out[k] = hist.get(k, z)
+    for k in _PART_HIST:
+        out[k] = hist.get(k, z)
+    for k in ("x_i", "x_e", "v_i", "v_e"):
+        if k in hist:
+            out[k] = hist[k]
     out["rho_hat"] = rho_hat
     out["p_hat"] = p_hat
     out["n_i_hat"] = n_i_hat
@@ -807,4 +827,7 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
     out["B_ext_hat"] = B_ext_hat
     if magnetic:
         out["psi_hat"] = psi_hat
+    if bool((mhd_params or {}).get("particles", False)):
+        out["n_p"] = int(mhd_params.get("n_p", 8))
+        out["m_e"] = float(mhd_params.get("m_e", 1.0 / 25.0))
     return out
