@@ -63,6 +63,11 @@ DEFAULT_MHD = dict(
     # Do NOT dump Hall as a momentum body force (Venus/Russell Ohm).
     d_i=0.0,
     n_hall=1.0,
+    # E2c Harris n = n_bg + harris_n1 sech^2((y-L/2)/delta). Off by default.
+    # Spatial n is Hall Ohm only (d_i/n); d_i=0 still Qin MHD. No floor.
+    harris_n=False,
+    n_bg=0.25,
+    harris_n1=0.75,
     # Two-fluid Ohm (Stage 2; Venus electron pressure; no inertia).
     # E = -u_e x B - grad(p_e)/n + eta J, u_e = u_i - (d_i/n) J, p_e = n T_e.
     # T_e=0 recovers Hall (same d_i, n). Continuity on n; no pin/floor.
@@ -414,7 +419,12 @@ def _induction_3d(B_hat, u_hat, grid, eta_mag, B_cross_hat, eta_hyper, hyper_kcu
 
 @jit
 def _hall_induction_3d(B_cross_hat, grid, d_i, n_hall):
-    """-curl((d_i/n) J x B). d_i=0 is the zero field (ideal+resistive MHD)."""
+    """-curl((d_i/n) J x B). d_i=0 is the zero field (ideal+resistive MHD).
+
+    n_hall may be a scalar (uniform n) or a real-space density array.
+    Multiply (d_i/n)*(J x B) in real space before the curl so a spatial
+    Harris n is not pulled out of nabla x. Scalar n recovers the old Ohm.
+    """
     J = jnp.fft.ifftn(ik_cross(B_cross_hat, grid), axes=(1, 2, 3)).real
     B = jnp.fft.ifftn(B_cross_hat, axes=(1, 2, 3)).real
     JxB = jnp.stack([
@@ -422,8 +432,9 @@ def _hall_induction_3d(B_cross_hat, grid, d_i, n_hall):
         J[2] * B[0] - J[0] * B[2],
         J[0] * B[1] - J[1] * B[0],
     ])
-    coeff = d_i / (n_hall + 1e-30)
-    return -coeff * ik_cross(jnp.fft.fftn(JxB, axes=(1, 2, 3)), grid) * grid["dealias"]
+    invn = 1.0 / (jnp.asarray(n_hall) + 1e-30)
+    E_h = d_i * invn * JxB
+    return -ik_cross(jnp.fft.fftn(E_h, axes=(1, 2, 3)), grid) * grid["dealias"]
 
 
 @jit
@@ -451,8 +462,9 @@ def _induction_2d5(B_hat, u_hat, grid, eta_mag, B_cross_hat, eta_hyper, hyper_kc
         J[2] * B[0] - J[0] * B[2],
         J[0] * B[1] - J[1] * B[0],
     ])
-    coeff = d_i / (n_hall + 1e-30)
-    hall = -coeff * _curl_2d5(jnp.fft.fftn(JxB, axes=(1, 2)), grid)
+    invn = 1.0 / (jnp.asarray(n_hall) + 1e-30)
+    E_h = d_i * invn * JxB
+    hall = -_curl_2d5(jnp.fft.fftn(E_h, axes=(1, 2)), grid)
     return rhs + hall
 
 
@@ -461,6 +473,7 @@ def induction_rhs(B_hat, u_hat, grid, eta_mag, B_cross_hat=None, eta_hyper=0.0,
     """dt B = -curl E (+ GLM). Hall Ohm is (d_i/n) J x B; d_i=0 is MHD.
 
     Keyword d_i/n_hall default so mode=cmhd callers stay resistive MHD.
+    n_hall may be scalar or real-space n. d_i=0 does not rewrite Qin MHD.
     """
     if B_cross_hat is None:
         B_cross_hat = B_hat

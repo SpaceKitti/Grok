@@ -1,10 +1,9 @@
-"""E2 mill: forming Harris sheet, hall vs twofluid (Te>0). Not Crow, not SP.
+"""E2c mill: Harris n ~ sech^2 peel, hall vs twofluid (Te>0). Not Crow, not SP.
 
+n = n_bg + n1 sech^2((y - L/2)/delta) with n_bg=0.25, n1=0.75 (no floor).
 Same thick Harris + edge seed as examples/test_harris_meter.py.
-flux_x_half in the mill is mean <Bx> on y<L/2 (mhd.py _mhd_diag_2d).
-rec_rate_flux is -d<Bx>/dt (diagnostics.millennium_series).
-Phi = <Bx>_{y<L/2} * (L/2); rate_norm = -dPhi/dt / (v_A B0)
-     = rec_rate_flux * (L/2) / (v_A B0).
+Phi = <Bx>_{y<L/2} * (L/2); rate_norm = rec_rate_flux * (L/2) / (v_A B0).
+v_A = B0 / sqrt(n_bg)  (Harris lobe / background density; printed).
 """
 import os
 import sys
@@ -17,7 +16,9 @@ import jax
 jax.config.update("jax_enable_x64", True)
 
 import numpy as np
-from chive_ns import make_grid, run_framework, split_guide_fields, cfl_dt_mhd
+from chive_ns import (
+    make_grid, run_framework, split_guide_fields, cfl_dt_mhd, generate_harris_n,
+)
 
 
 def _arr(x):
@@ -73,31 +74,52 @@ def main():
     D_I = 0.05
     T_E = 0.01
     B0 = 1.0
-    N_DENSITY = 1.0
+    N_BG = 0.25
+    N1 = 0.75
     NU = 1e-3
     ETA = 1e-3
     CFL = 0.4
 
-    print(f"E2 Te knob T_e={T_E} (NOT 0; Te=0 would make twofluid==hall)", flush=True)
     print(
-        f"Harris IC: harris=True harris_width={DELTA} harris_edge={EDGE} "
+        f"E2c Harris n = n_bg + n1 sech^2((y-L/2)/delta)  "
+        f"n_bg={N_BG} n1={N1} delta={DELTA} (NO floor)",
+        flush=True,
+    )
+    print(f"E2c Te knob T_e={T_E} (NOT 0; Te=0 would make twofluid==hall at uniform n)", flush=True)
+    print(
+        f"Harris IC: harris=True harris_n=True harris_width={DELTA} harris_edge={EDGE} "
         f"b_guide=x B0={B0} (same forming sheet as test_harris_meter)",
         flush=True,
     )
 
     mp_base = dict(
         B0=B0, b_guide="x", harris=True, harris_width=DELTA,
-        harris_edge=EDGE, eta_mag=ETA, eta_hyper=0.0, hyper_kcut=0.0,
-        glm_ch=0.0, freeze_ext=0.0, d_i=D_I, n_hall=N_DENSITY, n=N_DENSITY,
+        harris_edge=EDGE, harris_n=True, n_bg=N_BG, harris_n1=N1,
+        eta_mag=ETA, eta_hyper=0.0, hyper_kcut=0.0,
+        glm_ch=0.0, freeze_ext=0.0, d_i=D_I, T_e=0.0,
     )
 
     grid = make_grid(N, L=L, dim=2)
     L_grid = float(grid["L"])
+    n_real = np.asarray(generate_harris_n(grid, n_bg=N_BG, n1=N1, width=DELTA))
+    n_min = float(n_real.min())
+    n_max = float(n_real.max())
+    n_mean = float(n_real.mean())
+    print(
+        f"n on grid: min={n_min:.6e} max={n_max:.6e} mean={n_mean:.6e} "
+        f"(min n > 0; no floor applied)",
+        flush=True,
+    )
+    if n_min <= 0.0:
+        raise SystemExit("E2c abort: min n <= 0; would need a floor (forbidden)")
+
     B_hat, B_ext_hat, _ = split_guide_fields(grid, mp_base)
     B = np.fft.ifftn(np.asarray(B_hat) + np.asarray(B_ext_hat), axes=(1, 2)).real
     u0 = np.zeros((2, N, N), dtype=float)
-    dt = float(cfl_dt_mhd(u0, B, float(grid["dx"]), NU, ETA, cfl=CFL, d_i=D_I))
-    # Exact chunks so rec_rate_flux is not a one-sided spike on a remainder dt.
+    # CFL helper assumes n=1; Hall ~ d_i/n and lobe v_A = B0/sqrt(n_bg).
+    # Pass d_i/n_bg so the Hall CFL uses the lobe 1/n (does not rewrite mhd RHS).
+    dt = float(cfl_dt_mhd(
+        u0, B, float(grid["dx"]), NU, ETA, cfl=CFL, d_i=D_I / max(N_BG, 1e-30)))
     diag_every = max(1, int(np.ceil(T_END / dt)) // 10)
     steps = diag_every * 10
     print(
@@ -112,44 +134,49 @@ def main():
         flush=True,
     )
 
+    # v_A from Harris lobe / background density, not mean n and not invented 0.1.
+    v_A = B0 / np.sqrt(N_BG)
+    print(
+        f"v_A definition: v_A = B0/sqrt(n_bg) = {v_A:.6e}  "
+        f"(Harris lobe/background density n_bg={N_BG}; "
+        f"NOT B0/sqrt(mean n)={B0/np.sqrt(n_mean):.6e}; NOT 0.1)",
+        flush=True,
+    )
+    print(
+        f"B0={B0}  n_bg={N_BG}  n1={N1}  v_A={v_A:.6e}  L={L_grid}  "
+        f"delta={DELTA}  d_i={D_I}  T_e={T_E}",
+        flush=True,
+    )
+
     mp_hall = dict(mp_base)
     mp_tf = dict(mp_base, T_e=T_E)
 
-    print("RUN mode=hall d_i=%.4f" % D_I, flush=True)
+    print("RUN mode=hall d_i=%.4f harris_n=True (frozen spatial n in Ohm)" % D_I, flush=True)
     out_h = _run_one("hall", mp_hall, N, steps, dt, diag_every, NU)
-    print("RUN mode=twofluid d_i=%.4f T_e=%.4f" % (D_I, T_E), flush=True)
+    print("RUN mode=twofluid d_i=%.4f T_e=%.4f harris_n=True (n_i=n_e IC)" % (D_I, T_E), flush=True)
     out_t = _run_one("twofluid", mp_tf, N, steps, dt, diag_every, NU)
 
-    n_h = N_DENSITY
-    n_t = N_DENSITY
     if "mean_n_i" in out_t:
         n_hist = _arr(out_t["mean_n_i"])
+        min_hist = _arr(out_t["min_n_i"]) if "min_n_i" in out_t else n_hist
         if n_hist.size:
-            n_t = float(n_hist[0])
             print(
-                f"twofluid mean n_i[0]={n_t:.6e} mean n_i[-1]={float(n_hist[-1]):.6e} "
-                f"(n=1 default unless mean n is not 1)",
+                f"twofluid mean n_i[0]={float(n_hist[0]):.6e} mean n_i[-1]={float(n_hist[-1]):.6e} "
+                f"min n_i[0]={float(min_hist[0]):.6e} min n_i[-1]={float(min_hist[-1]):.6e} "
+                f"(no floor)",
                 flush=True,
             )
-    vA_h = B0 / np.sqrt(n_h)
-    vA_t = B0 / np.sqrt(n_t if n_t > 0.0 else 1.0)
-    print(
-        f"B0={B0} (Harris amplitude)  n_hall={n_h} v_A_hall={vA_h:.6e}  "
-        f"n_twofluid={n_t} v_A_twofluid={vA_t:.6e}  L={L_grid}  delta={DELTA}  "
-        f"d_i={D_I}  T_e={T_E}",
-        flush=True,
-    )
 
     t_h = _arr(out_h["time"])
     phi_h = _phi_from_mean_bx(out_h["flux_x_half"], L_grid)
     rec_h = _arr(out_h["rec_rate_flux"])
-    rn_h = _rate_norm(rec_h, L_grid, vA_h, B0)
+    rn_h = _rate_norm(rec_h, L_grid, v_A, B0)
     j_h = _arr(out_h["max_j"])
 
     t_t = _arr(out_t["time"])
     phi_t = _phi_from_mean_bx(out_t["flux_x_half"], L_grid)
     rec_t = _arr(out_t["rec_rate_flux"])
-    rn_t = _rate_norm(rec_t, L_grid, vA_t, B0)
+    rn_t = _rate_norm(rec_t, L_grid, v_A, B0)
     j_t = _arr(out_t["max_j"])
 
     _print_table("hall", t_h, phi_h, rec_h, rn_h, j_h)
@@ -170,11 +197,11 @@ def main():
     print(
         f"max|hall-twofluid| Phi={dphi:.3e} rec_rate_flux={drec:.3e} "
         f"rate_norm={drn:.3e} max|J|={dj:.3e} "
-        "(uniform n=1 => grad p_e = Te grad n ~ 0 on this IC)",
+        "(Harris n => grad p_e = Te grad n != 0 on twofluid)",
         flush=True,
     )
 
-    print("=== E2 comparison (forming Harris; not Sweet-Parker; not universal 0.1) ===", flush=True)
+    print("=== E2c comparison (Harris n sech2 peel; not Sweet-Parker; not universal 0.1) ===", flush=True)
     print(
         f"{'mode':<10} {'peak_rate_norm':>16} {'min_rate_norm':>16} {'max|rate_norm|':>16} "
         f"{'Phi0':>14} {'Phi_end':>14} {'sign_change':>12} {'|Phi| dropped':>14}",
@@ -191,8 +218,8 @@ def main():
         flush=True,
     )
     print(
-        "HAVE E2 hall vs twofluid reconnection "
-        f"(thick Harris; Te={T_E}>0; rate_norm=-dPhi/(vA B0)).",
+        "HAVE E2c Harris n sech2 peel "
+        f"(hall vs twofluid; Te={T_E}>0; no floor).",
         flush=True,
     )
 

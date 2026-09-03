@@ -27,7 +27,7 @@ from .mhd import (
     zero_b_hat, zero_psi_hat,
     mhd_field_diagnostics, _zero_mhd, cfl_dt_mhd, split_guide_fields,
 )
-from .es_lhdi import es_placeholder_diagnostics
+from .es_lhdi import es_placeholder_diagnostics, generate_harris_n
 from .particles import with_passive_particles
 from .compressible import (
     uniform_rho_hat, bump_rho_hat, uniform_p_hat, bump_p_hat, coupled_cmhd_step,
@@ -239,6 +239,22 @@ def _run_clay_scanned(omega_hat, tau_hat, grid, nu, dt, steps, force_on,
     return _scan_loop(advance, snapshot, (omega_hat, tau_hat), steps, diag_every)
 
 
+
+def _harris_n_real(grid, mhd_params):
+    """Real-space Harris n = n_bg + n1 sech^2((y-L/2)/delta). No floor."""
+    hw = float(mhd_params.get("harris_width", 0.08))
+    n_bg = float(mhd_params.get("n_bg", 0.25))
+    n1 = float(mhd_params.get("harris_n1", mhd_params.get("n1", 0.75)))
+    return generate_harris_n(grid, n_bg=n_bg, n1=n1, width=hw)
+
+
+def _hall_n_from_params(grid, mhd_params):
+    """Scalar n_hall, or frozen real-space Harris n if harris_n. No floor."""
+    if bool(mhd_params.get("harris_n", False)):
+        return _harris_n_real(grid, mhd_params)
+    return float(mhd_params.get("n_hall", mhd_params.get("n", 1.0)))
+
+
 def _run_mhd_scanned(omega_hat, tau_hat, B_hat, grid, nu, dt, steps, force_on,
                      scheme, diag_every, clay_params, mhd_params, n_scars=1,
                      scar_centres=None, force_amp=1.0, B_ext_hat=None,
@@ -266,7 +282,7 @@ def _run_mhd_scanned(omega_hat, tau_hat, B_hat, grid, nu, dt, steps, force_on,
     glm_ch = float(mhd_params.get("glm_ch", 0.0))
     glm_cr = float(mhd_params.get("glm_cr", 0.18))
     d_i = float(mhd_params.get("d_i", 0.0))
-    n_hall = float(mhd_params.get("n_hall", mhd_params.get("n", 1.0)))
+    n_hall = _hall_n_from_params(grid, mhd_params)
     if B_ext_hat is None:
         B_ext_hat = zero_b_hat(grid, dtype=omega_hat.dtype)
     psi0 = zero_psi_hat(grid, dtype=omega_hat.dtype)
@@ -796,7 +812,10 @@ def run_framework(N=None, dim=2, steps=800, mode="vorticity",
                             lam_kin_gain=0.0, alpha_perp=0.0)
         n0 = float(mhd_params.get("n", mhd_params.get("n_hall", 1.0)))
         n_eps = float(mhd_params.get("n_eps", 0.0))
-        if n_eps != 0.0:
+        if bool(mhd_params.get("harris_n", False)):
+            n_i_hat = jnp.fft.fftn(
+                _harris_n_real(grid, mhd_params)).astype(omega_hat.dtype)
+        elif n_eps != 0.0:
             n_i_hat = bump_rho_hat(grid, eps=n_eps, dtype=omega_hat.dtype)
         else:
             n_i_hat = uniform_rho_hat(grid, rho0=n0, dtype=omega_hat.dtype)

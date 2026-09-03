@@ -113,6 +113,24 @@ def generate_harris_sheet(grid, B0=0.08, width=0.08, kind="x"):
     return project_div_free(B_hat, grid)
 
 
+def generate_harris_n(grid, n_bg=0.25, n1=0.75, width=0.08):
+    """Venus Harris density: n = n_bg + n1 sech^2((y - L/2)/delta). No floor.
+
+    n_bg=0.25, n1=0.75 keeps min n >= n_bg > 0 on the periodic box.
+    Same delta as generate_harris_sheet (caller passes harris_width).
+    Returns real-space n (not Fourier).
+    """
+    N, L, dim = int(grid["N"]), float(grid["L"]), int(grid["dim"])
+    n_bg, n1, w = float(n_bg), float(n1), max(float(width), 1e-8)
+    x = jnp.linspace(0.0, L, N, endpoint=False)
+    if dim == 2:
+        _X, Y = jnp.meshgrid(x, x, indexing="ij")
+    else:
+        _X, Y, _Z = jnp.meshgrid(x, x, x, indexing="ij")
+    eta = (Y - 0.5 * L) / w
+    return n_bg + n1 / jnp.cosh(eta) ** 2
+
+
 def generate_harris_edge_seed(grid, amp=0.02, width=0.08, k_edge=4):
     """Small solenoidal perturbation localised at the Harris *edges*.
 

@@ -38,7 +38,7 @@ from .mhd import (
 )
 from .es_lhdi import (
     zero_e_hat, zero_charge_hat, generate_harris_sheet,
-    generate_harris_edge_seed, es_placeholder_diagnostics, es_equation_notes,
+    generate_harris_edge_seed, generate_harris_n, es_placeholder_diagnostics, es_equation_notes,
 )
 from .scaffold_heavy import heavy_placeholder_diagnostics, heavy_equation_notes
 from .compressible import (
