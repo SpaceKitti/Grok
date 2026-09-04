@@ -248,7 +248,7 @@ def print_table(t, w, j, ibkm, ek, divb, fh=None):
         )
 
 
-def one_run(N, mode, nu, eta, d_i, ic_fields, fh=None, t_end=None):
+def one_run(N, mode, nu, eta, d_i, ic_fields, fh=None, t_end=None, dt_scale=1.0):
     if t_end is None:
         t_end = T_END
     u, B = ic_fields["u"], ic_fields["B"]
@@ -256,17 +256,21 @@ def one_run(N, mode, nu, eta, d_i, ic_fields, fh=None, t_end=None):
     dt, n_per, dt_cfl, dt_job, umax, bmax, k_nyq, v_hall = choose_dt(
         u, B, dx, nu, eta, d_i
     )
+    dt_scale = float(dt_scale) if float(dt_scale) > 0 else 1.0
+    dt_base = dt
+    dt = dt_base / dt_scale
+    n_per = max(1, int(round(DT_SAMPLE / dt)))
     steps = int(round(t_end / dt))
     diag_every = n_per
     log(
         f"RUN mode={mode} N={N} t_end={t_end} nu={nu:.3e} eta={eta:.3e} "
-        f"d_i={d_i} force_off scheme=rk2 ic=ot",
+        f"d_i={d_i} force_off scheme=rk2 ic=ot dt_scale={dt_scale:g}",
         fh,
     )
     log(
         f"  Hall CFL: hive dt_cfl={dt_cfl:.6e}  job-style "
-        f"dt(v_hall=d_i*k_nyq*max|B|)={dt_job:.6e}  used dt={dt:.6e} "
-        f"(snapped to sample 0.1; hive is stricter by ~pi). "
+        f"dt(v_hall=d_i*k_nyq*max|B|)={dt_job:.6e}  snapped dt={dt_base:.6e} "
+        f"used dt={dt:.6e} (= snapped/dt_scale; sample 0.1). "
         f"k_nyq={k_nyq:.4f} max|u|={umax:.4f} max|B|={bmax:.4f} "
         f"v_hall={v_hall:.4f} steps={steps} diag_every={diag_every}",
         fh,
@@ -438,6 +442,11 @@ def parse_args():
     p.add_argument("--out", dest="out", type=str, default=None,
                    help="Output txt path. Default: section_A_out.txt or "
                         "section_A_crank_out.txt with --crank.")
+    p.add_argument(
+        "--dt-scale", dest="dt_scale", type=float, default=1.0,
+        help="Divide the snapped CFL dt by this (default 1). "
+             "dt_used = dt / dt_scale. Larger = smaller steps.",
+    )
     return p.parse_args()
 
 
@@ -685,6 +694,9 @@ def main():
     t_end = float(args.t_end) if args.t_end is not None else (2.0 if crank else 1.5)
     T_END = t_end
     nu_fac = float(args.nu_fac) if args.nu_fac is not None else (8.0 if crank else 4.0)
+    dt_scale = float(args.dt_scale) if args.dt_scale is not None else 1.0
+    if dt_scale <= 0:
+        raise SystemExit("--dt-scale must be > 0")
     d_i_list = list(args.d_i) if args.d_i is not None else (
         [0.2] if crank else [0.05, 0.2]
     )
@@ -770,6 +782,7 @@ def main():
             rr = one_run(
                 N, spec["mode"], spec["nu"], spec["eta"], spec["d_i"],
                 ic, fh, t_end=t_end,
+                dt_scale=dt_scale,
             )
             if k == "1" and rr.get("oom") and N > 32:
                 log(
@@ -785,7 +798,8 @@ def main():
                 rr = one_run(
                     N, spec["mode"], spec["nu"], spec["eta"], spec["d_i"],
                     ic, fh, t_end=t_end,
-                )
+                dt_scale=dt_scale,
+            )
             if rr.get("oom") and k == "1" and N <= 32:
                 log("FAILED: OOM even at N=32. Stop.", fh)
                 sys.exit(1)
