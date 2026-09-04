@@ -1,8 +1,29 @@
 """Section A study: 3D textbook-B OT regularity / current sheets (A1-A4).
 
-Orion short-list #1. Not a smoke. Re-run from:
+Orion short-list #1. Not a smoke.
+
+Re-run from:
   cd C:\\Users\\Akitt\\Grok\\worktree-mhd\\ns
   python .\\examples\\run_section_A.py
+
+Default (no flags) = original HAVE matrix:
+  N=32, t_end=1.5, sample 0.1, nu_fac=4
+  1) mhd default  2) mhd default/4
+  3) hall d_i=0.05 default  4) hall d_i=0.2 default
+  writes examples/section_A_out.txt
+
+Crank matrix:
+  python .\\examples\\run_section_A.py --crank
+  python .\\examples\\run_section_A.py --crank --N 32 --t-end 2 --nu-fac 8 --d-i 0.2
+  Tries N=64; drops ALL runs to N=32 on OOM or if hall will not finish overnight.
+  t_end=2.0, sample 0.1, nu_fac=8
+  1) mhd default nu,eta (1e-3 / 1e-3)
+  2) mhd default/8 (1.25e-4)
+  3) hall d_i=0.2 default nu,eta
+  4) hall d_i=0.2 default/8  (skip if run 2 or 3 NaN)
+  writes examples/section_A_crank_out.txt
+
+CLI: --N, --t-end, --nu-fac, --d-i (one or more), --out, --crank
 
 Venus mill language:
   Finite max|omega|, max|J| on one run = this solution stayed smooth,
@@ -10,12 +31,14 @@ Venus mill language:
   Peel = |J| climbs (or stays high) while |omega| does not follow.
   I_BKM finite on the table is yes/no only.
   If E(k_max)/E_tot >= 1e-2, flag aliasing; do not retune hyper_kcut.
+  Next after aliasing on /8 is N up, not hyper_kcut.
 
 Seed (A2c HAVE, do not replace with u=B):
   u = U0 (-sin y, sin x, 0.2 cos z)
   B = B0 (-sin y, sin 2x, 0.2 cos z)
   Qin-project B. N must be >= 16 (N=8 drops the 2x harmonic).
 """
+import argparse
 import os
 import sys
 import time
@@ -46,6 +69,16 @@ ALIAS_FLAG = 1.0e-2
 DIVB_LIMIT = 1.0e-12
 PREFERRED_N = 32
 FALLBACK_N = 16
+# Wall-time policy (CPU, TrinityOrb calibration from HAVE Section A N=32).
+SEC_PER_STEP_N32 = 0.44
+OVERNIGHT_S = 8.0 * 3600.0
+RUN_TIMEOUT_S = 3.0 * 3600.0
+# Previous N=32 t=1.5 |J| peaks (HAVE Section A) for crank verdict (2).
+PREV_N32_T15 = {
+    "mhd_default": (95.21, 0.3),
+    "mhd_div4": (104.02, 0.3),  # not /8; last study had no /8
+    "hall_di02": (53.16, 0.3),
+}
 
 
 def _arr(x):
@@ -129,6 +162,24 @@ def choose_dt(u, B, dx, nu, eta, d_i, cfl=CFL):
     return dt, n, dt_cfl, dt_job, umax, bmax, k_nyq, v_hall
 
 
+def estimate_dt_steps(N, t_end, nu, eta, d_i, cfl=CFL,
+                      umax=1.414213562, bmax=1.414213562):
+    """Cheap CFL estimate without allocating fields (hive formula)."""
+    dx = 1.0 / float(N)
+    hall = (np.pi ** 2) * abs(float(d_i)) * bmax / dx
+    dt_cfl = cfl * dx / (umax + bmax + 4.0 * (nu + eta) / dx + hall + 1e-12)
+    n = max(1, int(np.ceil(DT_SAMPLE / dt_cfl)))
+    dt = DT_SAMPLE / n
+    steps = int(round(float(t_end) / dt))
+    return dt, steps, dt_cfl
+
+
+def estimate_wall_s(N, t_end, nu, eta, d_i):
+    dt, steps, dt_cfl = estimate_dt_steps(N, t_end, nu, eta, d_i)
+    scale = (float(N) / 32.0) ** 3 * (np.log(max(float(N), 2.0)) / np.log(32.0))
+    return steps * SEC_PER_STEP_N32 * scale, dt, steps, dt_cfl
+
+
 def seed_and_divb(N, fh=None):
     g = make_grid(N, L=1.0, dim=3)
     L = float(g["L"])
@@ -197,16 +248,18 @@ def print_table(t, w, j, ibkm, ek, divb, fh=None):
         )
 
 
-def one_run(N, mode, nu, eta, d_i, ic_fields, fh=None):
+def one_run(N, mode, nu, eta, d_i, ic_fields, fh=None, t_end=None):
+    if t_end is None:
+        t_end = T_END
     u, B = ic_fields["u"], ic_fields["B"]
     dx = float(ic_fields["grid"]["dx"])
     dt, n_per, dt_cfl, dt_job, umax, bmax, k_nyq, v_hall = choose_dt(
         u, B, dx, nu, eta, d_i
     )
-    steps = int(round(T_END / dt))
+    steps = int(round(t_end / dt))
     diag_every = n_per
     log(
-        f"RUN mode={mode} N={N} t_end={T_END} nu={nu:.3e} eta={eta:.3e} "
+        f"RUN mode={mode} N={N} t_end={t_end} nu={nu:.3e} eta={eta:.3e} "
         f"d_i={d_i} force_off scheme=rk2 ic=ot",
         fh,
     )
@@ -233,6 +286,12 @@ def one_run(N, mode, nu, eta, d_i, ic_fields, fh=None):
         log(f"OOM during run_framework: {e}", fh)
         return dict(oom=True, nan=True)
     elapsed = time.perf_counter() - t0
+    if elapsed > RUN_TIMEOUT_S:
+        log(
+            f"  WALL CLOCK {elapsed:.1f}s exceeded ~3h budget "
+            f"(finished anyway; report last good t).",
+            fh,
+        )
     t = _arr(out["time"])
     w = _arr(out["max_vort"])
     j = _arr(out["max_j"])
@@ -307,15 +366,25 @@ def one_run(N, mode, nu, eta, d_i, ic_fields, fh=None):
         nan=nan, oom=False, t=t, w=w, j=j, ibkm=ibkm, ek=ek, divb=divb,
         peel=peel, why=why, alias=alias, ek_max=ek_max,
         last_good_t=last_good_t, dt=dt, dt_cfl=dt_cfl, elapsed=elapsed,
-        nu=nu, eta=eta, d_i=d_i, mode=mode, N=N,
+        nu=nu, eta=eta, d_i=d_i, mode=mode, N=N, t_end=t_end,
         ibkm_end=float(ibkm[-1]) if ibkm.size else float("nan"),
         r_start=float(r[0]), r_end=float(r[-1]), r_peak=float(np.max(r)),
         w_end=float(w[-1]), j_end=float(j[-1]),
         w_max=float(np.max(w)), j_max=float(np.max(j)),
+        tw_max=float(t[int(np.argmax(w))]), tj_max=float(t[int(np.argmax(j))]),
         divb0=float(divb[0]),
         finite_ibkm=bool(np.isfinite(ibkm[-1])) if ibkm.size else False,
         smooth=smooth,
     )
+
+
+def peak_window(t, y, tmax=1.5):
+    t, y = _arr(t), _arr(y)
+    m = t <= tmax + 1e-12
+    if not np.any(m):
+        return float("nan"), float("nan")
+    i = int(np.argmax(y[m]))
+    return float(y[m][i]), float(t[m][i])
 
 
 def compare_peel(a, b):
@@ -345,8 +414,288 @@ def compare_peel(a, b):
     return "same"
 
 
+def parse_args():
+    p = argparse.ArgumentParser(
+        description="Section A 3D textbook-B OT study (HAVE + crank)."
+    )
+    p.add_argument(
+        "--crank", action="store_true",
+        help="CRANK matrix: t_end=2, nu_fac=8, hall d_i=0.2 at both dampings; "
+             "try N=64 then drop to 32 if OOM/overnight.",
+    )
+    p.add_argument("--N", dest="N", type=int, default=None,
+                   help="Grid N (crank default 64-try; HAVE default 32).")
+    p.add_argument("--t-end", dest="t_end", type=float, default=None,
+                   help="Integration time (crank default 2.0; HAVE default 1.5).")
+    p.add_argument("--nu-fac", dest="nu_fac", type=float, default=None,
+                   help="Divide default nu,eta by this for the small-damping run "
+                        "(crank default 8; HAVE default 4).")
+    p.add_argument(
+        "--d-i", dest="d_i", type=float, nargs="+", default=None,
+        help="Hall d_i values. HAVE default: 0.05 0.2 (both at default nu). "
+             "Crank default: 0.2 (used at default AND /nu_fac).",
+    )
+    p.add_argument("--out", dest="out", type=str, default=None,
+                   help="Output txt path. Default: section_A_out.txt or "
+                        "section_A_crank_out.txt with --crank.")
+    return p.parse_args()
+
+
+def build_runs(crank, nu_fac, d_i_list, nu_def, eta_def):
+    """Return ordered run dicts. Crank: hall at same d_i, two dampings."""
+    if crank:
+        di = float(d_i_list[0]) if d_i_list else 0.2
+        return [
+            dict(key="1", mode="mhd", nu=nu_def, eta=eta_def, d_i=0.0,
+                 label="mhd default"),
+            dict(key="2", mode="mhd", nu=nu_def / nu_fac, eta=eta_def / nu_fac,
+                 d_i=0.0, label=f"mhd default/{nu_fac:g}"),
+            dict(key="3", mode="hall", nu=nu_def, eta=eta_def, d_i=di,
+                 label=f"hall d_i={di:g} default"),
+            dict(key="4", mode="hall", nu=nu_def / nu_fac, eta=eta_def / nu_fac,
+                 d_i=di, label=f"hall d_i={di:g} default/{nu_fac:g}"),
+        ]
+    di_list = d_i_list if d_i_list else [0.05, 0.2]
+    runs = [
+        dict(key="1", mode="mhd", nu=nu_def, eta=eta_def, d_i=0.0,
+             label="mhd default"),
+        dict(key="2", mode="mhd", nu=nu_def / nu_fac, eta=eta_def / nu_fac,
+             d_i=0.0, label=f"mhd default/{nu_fac:g}"),
+    ]
+    for i, di in enumerate(di_list):
+        runs.append(dict(
+            key=str(3 + i), mode="hall", nu=nu_def, eta=eta_def, d_i=float(di),
+            label=f"hall d_i={di:g} default",
+        ))
+    return runs
+
+
+def choose_crank_N(prefer_N, t_end, nu_fac, d_i_hall, fh):
+    """Try N=64; drop ALL to 32 if OOM-risk or hall won't finish overnight."""
+    reason = "preferred"
+    N = int(prefer_N)
+    est_rows = []
+    specs = [
+        ("mhd default", NU_DEF, ETA_DEF, 0.0),
+        (f"mhd /{nu_fac:g}", NU_DEF / nu_fac, ETA_DEF / nu_fac, 0.0),
+        (f"hall d_i={d_i_hall:g} default", NU_DEF, ETA_DEF, d_i_hall),
+        (f"hall d_i={d_i_hall:g} /{nu_fac:g}", NU_DEF / nu_fac, ETA_DEF / nu_fac,
+         d_i_hall),
+    ]
+    for label, nu, eta, di in specs:
+        wall, dt, steps, dt_cfl = estimate_wall_s(N, t_end, nu, eta, di)
+        est_rows.append((label, wall, dt, steps, dt_cfl))
+        log(
+            f"EST N={N} {label}: dt~{dt:.3e} steps={steps} "
+            f"wall~{wall/3600.0:.2f}h (N=32 calib {SEC_PER_STEP_N32}s/step "
+            f"* N^3 logN)",
+            fh,
+        )
+    hall_walls = [r[1] for r in est_rows if r[0].startswith("hall")]
+    total = sum(r[1] for r in est_rows)
+    log(
+        f"EST N={N} total matrix ~{total/3600.0:.2f}h  "
+        f"max hall ~{(max(hall_walls) if hall_walls else 0)/3600.0:.2f}h",
+        fh,
+    )
+    drop = False
+    if hall_walls and max(hall_walls) > OVERNIGHT_S:
+        drop = True
+        reason = (
+            f"hall d_i={d_i_hall:g} N={N} t_end={t_end} estimated "
+            f"{max(hall_walls)/3600.0:.1f}h; will not finish overnight"
+        )
+    elif total > 1.5 * OVERNIGHT_S:
+        drop = True
+        reason = (
+            f"full matrix N={N} estimated {total/3600.0:.1f}h; "
+            "will not finish overnight"
+        )
+    if drop and N > 32:
+        log(
+            f"N={N} dropped for ALL runs -> N=32. Reason: {reason}. "
+            "Prefer completing the matrix at N=32 t=2 over a partial N=64.",
+            fh,
+        )
+        N = 32
+        reason = "dropped to 32: " + reason
+        for label, nu, eta, di in specs:
+            wall, dt, steps, dt_cfl = estimate_wall_s(N, t_end, nu, eta, di)
+            log(
+                f"EST N={N} {label}: dt~{dt:.3e} steps={steps} "
+                f"wall~{wall/3600.0:.2f}h",
+                fh,
+            )
+    return N, reason
+
+
+def crank_three_verdicts(results, N, n_reason, nu_fac, skipped4, fh):
+    """Venus mill THREE verdicts only. Do not invent peel."""
+    r1, r2 = results.get("1"), results.get("2")
+    r3, r4 = results.get("3"), results.get("4")
+    log("", fh)
+    log("==== THREE VERDICTS (Venus mill) ====", fh)
+
+    # (1) /8 — peel back, or omega still follows?
+    if r2 is None or r2.get("oom"):
+        v1 = "no /8 table (run 2 missing/OOM); no peel claim"
+    elif r2.get("nan"):
+        v1 = (
+            f"run 2 NaN last good t={r2.get('last_good_t')}; "
+            "no clean /8 peel claim"
+        )
+    else:
+        peel8 = bool(r2.get("peel"))
+        peel1 = bool(r1.get("peel")) if r1 and not r1.get("nan") else None
+        if peel8:
+            v1 = (
+                f"peel on /{nu_fac:g} — |J| runs while |omega| does not follow. "
+                f"{r2.get('why')}"
+            )
+        else:
+            follow = (
+                "omega still follows |J| on this window "
+                f"(PEEL=no). {r2.get('why')}"
+            )
+            if peel1 is True:
+                v1 = (
+                    f"peel back at /{nu_fac:g} vs default: default peeled, "
+                    f"/{nu_fac:g} did not — {follow}"
+                )
+            elif peel1 is False:
+                v1 = (
+                    f"no peel on default or /{nu_fac:g} — {follow}"
+                )
+            else:
+                v1 = follow
+        v1 += (
+            f"  |J|_peak={r2.get('j_max'):.4f} @{r2.get('tj_max')}  "
+            f"|omega|_peak={r2.get('w_max'):.4f} @{r2.get('tw_max')}  "
+            f"r_peak={r2.get('r_peak'):.4f}"
+        )
+    log(f"(1) /{nu_fac:g} — peel back, or omega still follows? {v1}", fh)
+
+    # (2) peak |J| at 64 vs 32
+    def jline(rr, tag):
+        if rr is None or rr.get("oom"):
+            return f"{tag}: missing"
+        j15, t15 = peak_window(rr["t"], rr["j"], 1.5)
+        jall, tall = rr.get("j_max"), rr.get("tj_max")
+        return (
+            f"{tag} N={rr.get('N')} |J|_peak={jall:.2f} @{tall}  "
+            f"t<=1.5 |J|_peak={j15:.2f} @{t15}  NaN={rr.get('nan')}"
+        )
+
+    prev = (
+        f"previous N=32 t=1.5: mhd default |J| peak {PREV_N32_T15['mhd_default'][0]} "
+        f"@{PREV_N32_T15['mhd_default'][1]}; /4 was {PREV_N32_T15['mhd_div4'][0]} "
+        f"(not /8); hall d_i=0.2 |J| peak {PREV_N32_T15['hall_di02'][0]} "
+        f"@{PREV_N32_T15['hall_di02'][1]}"
+    )
+    if N == 64 and r1 and not r1.get("oom"):
+        jump_notes = []
+        for rr, prev_j, name in [
+            (r1, PREV_N32_T15["mhd_default"][0], "mhd default"),
+            (r3, PREV_N32_T15["hall_di02"][0], "hall d_i=0.2 default"),
+        ]:
+            if rr is None or rr.get("oom") or rr.get("nan"):
+                continue
+            j15, t15 = peak_window(rr["t"], rr["j"], 1.5)
+            if j15 > 1.3 * prev_j:
+                jump_notes.append(
+                    f"{name} t<=1.5 |J| {j15:.2f} vs prev N=32 {prev_j:.2f} "
+                    "JUMPS — sheet was not resolved at 32"
+                )
+            else:
+                jump_notes.append(
+                    f"{name} t<=1.5 |J| {j15:.2f} vs prev N=32 {prev_j:.2f} "
+                    "(no jump; not a newly unresolved sheet)"
+                )
+        v2 = (
+            f"this crank ran N=64. {'; '.join(jump_notes) if jump_notes else 'no comparable peaks'}. "
+            f"{jline(r1, 'run1')} | {jline(r2, 'run2')} | {jline(r3, 'run3')}"
+            + (f" | {jline(r4, 'run4')}" if r4 else "")
+            + f"  {prev}"
+        )
+    else:
+        v2 = (
+            f"N=64 not used for the matrix ({n_reason}). "
+            "Cannot compare 64 vs 32 from this crank. "
+            "This N=32 t<=1.5 |J| vs previous N=32 t=1.5: "
+            f"{jline(r1, 'run1')} | {jline(r2, 'run2')} | {jline(r3, 'run3')}"
+            + (f" | {jline(r4, 'run4')}" if r4 else "")
+            + f"  {prev}"
+        )
+    log(f"(2) peak |J| at 64 vs 32 — if it jumps, the sheet wasn't resolved. {v2}", fh)
+
+    # (3) hall d_i vs mhd at the SAME damping
+    bits = []
+    if r1 is None or r3 is None or r1.get("oom") or r3.get("oom"):
+        bits.append("1 vs 3: n/a (missing/OOM)")
+    elif r1.get("nan") or r3.get("nan"):
+        bits.append(
+            f"1 vs 3: no clean claim (NaN last_t mhd={r1.get('last_good_t')} "
+            f"hall={r3.get('last_good_t')})"
+        )
+    else:
+        chg = compare_peel(r1, r3)
+        bits.append(
+            f"1 vs 3 (default nu,eta): peel {chg}; "
+            f"mhd |J|_peak={r1.get('j_max'):.2f} @{r1.get('tj_max')} "
+            f"|omega|_peak={r1.get('w_max'):.2f} r_peak={r1.get('r_peak'):.4f}; "
+            f"hall |J|_peak={r3.get('j_max'):.2f} @{r3.get('tj_max')} "
+            f"|omega|_peak={r3.get('w_max'):.2f} r_peak={r3.get('r_peak'):.4f}"
+        )
+    if skipped4:
+        bits.append("2 vs 4: skipped (run 2 or 3 NaN)")
+    elif r4 is None:
+        bits.append("2 vs 4: did not run")
+    elif r2 is None or r2.get("oom") or r4.get("oom"):
+        bits.append("2 vs 4: n/a (missing/OOM)")
+    elif r2.get("nan") or r4.get("nan"):
+        bits.append(
+            f"2 vs 4: no clean claim (NaN last_t mhd={r2.get('last_good_t')} "
+            f"hall={r4.get('last_good_t')})"
+        )
+    else:
+        chg = compare_peel(r2, r4)
+        bits.append(
+            f"2 vs 4 (default/{nu_fac:g}): peel {chg}; "
+            f"mhd |J|_peak={r2.get('j_max'):.2f} @{r2.get('tj_max')} "
+            f"|omega|_peak={r2.get('w_max'):.2f} r_peak={r2.get('r_peak'):.4f}; "
+            f"hall |J|_peak={r4.get('j_max'):.2f} @{r4.get('tj_max')} "
+            f"|omega|_peak={r4.get('w_max'):.2f} r_peak={r4.get('r_peak'):.4f}"
+        )
+    v3 = "  ".join(bits)
+    log(
+        f"(3) hall d_i vs mhd at the SAME damping (1 vs 3, and 2 vs 4 if 4 ran). {v3}",
+        fh,
+    )
+    log(
+        "Finite max|omega|, max|J| on these runs is NOT an A1 / Clay theorem claim.",
+        fh,
+    )
+    return v1, v2, v3
+
+
 def main():
-    out_path = Path(__file__).resolve().parent / "section_A_out.txt"
+    global T_END
+    args = parse_args()
+    crank = bool(args.crank)
+    t_end = float(args.t_end) if args.t_end is not None else (2.0 if crank else 1.5)
+    T_END = t_end
+    nu_fac = float(args.nu_fac) if args.nu_fac is not None else (8.0 if crank else 4.0)
+    d_i_list = list(args.d_i) if args.d_i is not None else (
+        [0.2] if crank else [0.05, 0.2]
+    )
+    here = Path(__file__).resolve().parent
+    if args.out:
+        out_path = Path(args.out)
+        if not out_path.is_absolute():
+            out_path = here / out_path
+    else:
+        out_path = here / ("section_A_crank_out.txt" if crank else "section_A_out.txt")
+
     fh = open(out_path, "w", encoding="utf-8")
     try:
         log("Section A study — 3D textbook-B OT (A1-A4). Not a smoke.", fh)
@@ -354,9 +703,14 @@ def main():
         log("u = U0 (-sin y, sin x, 0.2 cos z)", fh)
         log("B = B0 (-sin y, sin 2x, 0.2 cos z)  Qin-project B.", fh)
         log(
+            f"matrix={'CRANK' if crank else 'HAVE-default'}  N_cli={args.N} "
+            f"t_end={t_end} nu_fac={nu_fac:g} d_i={d_i_list} out={out_path}",
+            fh,
+        )
+        log(
             f"hive defaults: nu={NU_DEF:.3e} (A2c OT, Pr_m=1)  "
             f"eta=DEFAULT_MHD eta_mag={ETA_DEF:.3e}  "
-            f"/4 -> nu={NU_DEF/4:.3e} eta={ETA_DEF/4:.3e}",
+            f"/{nu_fac:g} -> nu={NU_DEF/nu_fac:.3e} eta={ETA_DEF/nu_fac:.3e}",
             fh,
         )
         log(
@@ -366,9 +720,24 @@ def main():
         )
         log("I_BKM = trapezoid of (max|omega|+max|J|) on the 0.1 samples.", fh)
 
-        N = PREFERRED_N
+        n_reason = "HAVE default N=32"
+        if crank:
+            prefer = int(args.N) if args.N is not None else 64
+            N, n_reason = choose_crank_N(
+                prefer, t_end, nu_fac, float(d_i_list[0]), fh
+            )
+        else:
+            N = int(args.N) if args.N is not None else PREFERRED_N
+
         ic = seed_and_divb(N, fh)
         if ic is None:
+            if crank:
+                log(
+                    f"FAILED seed/projection at N={N}. STOP (do not march). "
+                    "div B / textbook-B seed must pass before crank.",
+                    fh,
+                )
+                sys.exit(1)
             log(f"N={N} seed/divB failed; trying N={FALLBACK_N}", fh)
             N = FALLBACK_N
             ic = seed_and_divb(N, fh)
@@ -376,106 +745,136 @@ def main():
                 log("FAILED seed/projection. Stop.", fh)
                 sys.exit(1)
             log(f"N={N} (fallback because preferred N seed/divB failed)", fh)
+            n_reason = f"fallback N={N}"
         else:
-            log(f"N={N} preferred (2x harmonic resolved; N=8 would drop it)", fh)
+            log(f"N={N} ({n_reason}; 2x harmonic resolved; N=8 would drop it)", fh)
 
+        runs = build_runs(crank, nu_fac, d_i_list, NU_DEF, ETA_DEF)
         results = {}
-        # 1) mhd default
-        r1 = one_run(N, "mhd", NU_DEF, ETA_DEF, 0.0, ic, fh)
-        if r1.get("oom"):
-            log("N=32 OOM; dropping to N=16 as allowed.", fh)
-            N = FALLBACK_N
-            ic = seed_and_divb(N, fh)
-            if ic is None:
-                log("FAILED seed on fallback N. Stop.", fh)
-                sys.exit(1)
-            r1 = one_run(N, "mhd", NU_DEF, ETA_DEF, 0.0, ic, fh)
-        results["1"] = r1
-        if r1.get("oom"):
-            log("FAILED: OOM even at N=16. Stop.", fh)
-            sys.exit(1)
+        skipped4 = False
 
-        # 2) smaller damping
-        r2 = one_run(N, "mhd", NU_DEF / 4.0, ETA_DEF / 4.0, 0.0, ic, fh)
-        failed_small = bool(r2.get("nan") or r2.get("oom"))
-        if failed_small:
+        for spec in runs:
+            k = spec["key"]
+            if crank and k == "4":
+                r2 = results.get("2") or {}
+                r3 = results.get("3") or {}
+                if r2.get("nan") or r2.get("oom") or r3.get("nan") or r3.get("oom"):
+                    skipped4 = True
+                    log(
+                        "skip run 4 (run 2 or 3 NaN/OOM) as specified for crank.",
+                        fh,
+                    )
+                    results["4"] = None
+                    continue
+            log(f"--- {spec['label']} ---", fh)
+            rr = one_run(
+                N, spec["mode"], spec["nu"], spec["eta"], spec["d_i"],
+                ic, fh, t_end=t_end,
+            )
+            if k == "1" and rr.get("oom") and N > 32:
+                log(
+                    f"N={N} OOM on run 1; dropping ALL runs to N=32 and restarting.",
+                    fh,
+                )
+                N = 32
+                n_reason = "OOM at larger N; dropped ALL to 32"
+                ic = seed_and_divb(N, fh)
+                if ic is None:
+                    log("FAILED seed on N=32 after OOM. Stop.", fh)
+                    sys.exit(1)
+                rr = one_run(
+                    N, spec["mode"], spec["nu"], spec["eta"], spec["d_i"],
+                    ic, fh, t_end=t_end,
+                )
+            if rr.get("oom") and k == "1" and N <= 32:
+                log("FAILED: OOM even at N=32. Stop.", fh)
+                sys.exit(1)
+            results[k] = rr
+
+        if crank:
+            crank_three_verdicts(
+                results, N, n_reason, nu_fac, skipped4, fh
+            )
+        else:
+            log("", fh)
+            log("==== 4-line verdict ====", fh)
+            p1 = results["1"]
+            peel1 = "peel" if p1.get("peel") else "no peel"
+            if p1.get("nan"):
+                peel1 = (
+                    f"no clean peel claim (NaN; last good t={p1.get('last_good_t')})"
+                )
+            log(f"- peel or no peel on run 1: {peel1}. {p1.get('why','')}", fh)
+            failed_small = bool(
+                results["2"] and (results["2"].get("nan") or results["2"].get("oom"))
+            )
+            if failed_small:
+                v2 = "FAILED smaller-damping (NaN/blowup); keep default"
+            else:
+                v2 = compare_peel(p1, results["2"])
             log(
-                "FAILED smaller-damping: nu,eta = default/4 blew up or NaN. "
-                "Keeping default (run 1) for the /4 comparison.",
+                f"- peel stronger / weaker / same when nu,eta dropped (run 2): {v2}",
                 fh,
             )
-        results["2"] = r2
-
-        # 3) hall d_i=0.05
-        r3 = one_run(N, "hall", NU_DEF, ETA_DEF, 0.05, ic, fh)
-        results["3"] = r3
-
-        # 4) hall d_i=0.2 if 1-3 did not OOM
-        r4 = None
-        if not r3.get("oom"):
-            r4 = one_run(N, "hall", NU_DEF, ETA_DEF, 0.2, ic, fh)
-            results["4"] = r4
-        else:
-            log("skip run 4 (run 3 OOM)", fh)
-
-        log("", fh)
-        log("==== 4-line verdict ====", fh)
-        p1 = results["1"]
-        peel1 = "peel" if p1.get("peel") else "no peel"
-        if p1.get("nan"):
-            peel1 = f"no clean peel claim (NaN; last good t={p1.get('last_good_t')})"
-        log(f"- peel or no peel on run 1: {peel1}. {p1.get('why','')}", fh)
-
-        if failed_small:
-            v2 = "FAILED smaller-damping (NaN/blowup); keep default"
-        else:
-            v2 = compare_peel(p1, results["2"])
-        log(f"- peel stronger / weaker / same when nu,eta dropped (run 2): {v2}", fh)
-
-        if results["3"].get("nan"):
-            v3 = (
-                f"hall run NaN at t>{results['3'].get('last_good_t')}; "
-                "no clean hall-vs-mhd peel claim"
+            if results["3"].get("nan"):
+                v3 = (
+                    f"hall run NaN at t>{results['3'].get('last_good_t')}; "
+                    "no clean hall-vs-mhd peel claim"
+                )
+            else:
+                chg = compare_peel(p1, results["3"])
+                r_m = p1.get("r_peak")
+                r_h = results["3"].get("r_peak")
+                di3 = results["3"].get("d_i")
+                v3 = (
+                    f"peel {chg}; peak r mhd={r_m:.4f} hall(d_i={di3})={r_h:.4f}"
+                )
+            log(f"- hall vs mhd: peel changed? ratio changed? {v3}", fh)
+            ibkm_all = []
+            for k, rr in results.items():
+                if rr and not rr.get("oom"):
+                    ibkm_all.append(bool(rr.get("finite_ibkm")))
+            yesno = "yes" if ibkm_all and all(ibkm_all) else "no"
+            extra = []
+            for k, rr in results.items():
+                if not rr:
+                    continue
+                extra.append(
+                    f"run{k}: I_BKM={rr.get('ibkm_end')} finite={rr.get('finite_ibkm')} "
+                    f"NaN={rr.get('nan')}"
+                )
+            log(
+                f"- I_BKM still finite on all runs? {yesno}  ({'; '.join(extra)})",
+                fh,
             )
-        else:
-            chg = compare_peel(p1, results["3"])
-            r_m = p1.get("r_peak")
-            r_h = results["3"].get("r_peak")
-            v3 = (
-                f"peel {chg}; peak r mhd={r_m:.4f} hall(d_i=0.05)={r_h:.4f}"
-            )
-        log(f"- hall vs mhd: peel changed? ratio changed? {v3}", fh)
-
-        ibkm_all = []
-        for k, rr in results.items():
-            if rr and not rr.get("oom"):
-                ibkm_all.append(bool(rr.get("finite_ibkm")))
-        yesno = "yes" if ibkm_all and all(ibkm_all) else "no"
-        extra = []
-        for k, rr in results.items():
-            if not rr:
-                continue
-            extra.append(
-                f"run{k}: I_BKM={rr.get('ibkm_end')} finite={rr.get('finite_ibkm')} "
-                f"NaN={rr.get('nan')}"
-            )
-        log(f"- I_BKM still finite on all runs? {yesno}  ({'; '.join(extra)})", fh)
 
         log("", fh)
         log("==== run summary ====", fh)
         for k, rr in results.items():
             if not rr:
+                log(f"run {k}: skipped", fh)
                 continue
             log(
-                f"run {k}: mode={rr.get('mode')} N={rr.get('N')} t_end_req={T_END} "
+                f"run {k}: mode={rr.get('mode')} N={rr.get('N')} t_end_req={t_end} "
                 f"last_t={rr.get('last_good_t')} nu={rr.get('nu')} eta={rr.get('eta')} "
                 f"d_i={rr.get('d_i')} NaN={rr.get('nan')} dt={rr.get('dt')} "
                 f"divB0={rr.get('divb0')} alias={rr.get('alias')} "
+                f"ek_max={rr.get('ek_max')} elapsed={rr.get('elapsed')} "
                 f"smooth={rr.get('smooth')}",
                 fh,
             )
         log(f"tables written to {out_path}", fh)
-        log("HAVE Section A (3D textbook-B; mhd/hall matrix; BKM + peel verdict).", fh)
+        if crank:
+            log(
+                f"HAVE Section A crank (N={N} t={t_end:g}; "
+                f"/{nu_fac:g} + hall {d_i_list[0]:g}; three verdicts).",
+                fh,
+            )
+        else:
+            log(
+                "HAVE Section A (3D textbook-B; mhd/hall matrix; BKM + peel verdict).",
+                fh,
+            )
     finally:
         fh.close()
 

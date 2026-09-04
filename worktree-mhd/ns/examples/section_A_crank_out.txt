@@ -1,0 +1,158 @@
+Section A study — 3D textbook-B OT (A1-A4). Not a smoke.
+Watch only. No Clay-proof. No singularity claim. No Crow, no merge.
+u = U0 (-sin y, sin x, 0.2 cos z)
+B = B0 (-sin y, sin 2x, 0.2 cos z)  Qin-project B.
+matrix=CRANK  N_cli=32 t_end=2.0 nu_fac=8 d_i=[0.2] out=C:\Users\Akitt\Grok\worktree-mhd\ns\examples\section_A_crank_out.txt
+hive defaults: nu=1.000e-03 (A2c OT, Pr_m=1)  eta=DEFAULT_MHD eta_mag=1.000e-03  /8 -> nu=1.250e-04 eta=1.250e-04
+E(k_max)/E_tot: outermost dealiased Fourier shell vs total spectral kinetic+magnetic energy (Parseval 0.5 N^{-6} sum |hat|^2).
+I_BKM = trapezoid of (max|omega|+max|J|) on the 0.1 samples.
+EST N=32 mhd default: dt~4.000e-03 steps=500 wall~0.06h (N=32 calib 0.44s/step * N^3 logN)
+EST N=32 mhd /8: dt~4.348e-03 steps=460 wall~0.06h (N=32 calib 0.44s/step * N^3 logN)
+EST N=32 hall d_i=0.2 default: dt~1.351e-04 steps=14800 wall~1.81h (N=32 calib 0.44s/step * N^3 logN)
+EST N=32 hall d_i=0.2 /8: dt~1.355e-04 steps=14760 wall~1.80h (N=32 calib 0.44s/step * N^3 logN)
+EST N=32 total matrix ~3.73h  max hall ~1.81h
+SEED N=32  corr(By, sin 2x)=1.0000  corr(By, sin x)=0.0000  corr(uy, sin x)=1.0000  corr(uy, By)=0.0000  max|div B|=3.191e-14  (immediately after Qin)
+PASS Qin max|div B|=3.191e-14 < 1e-12; textbook-B seed OK (not u=B)
+N=32 (preferred; 2x harmonic resolved; N=8 would drop it)
+--- mhd default ---
+RUN mode=mhd N=32 t_end=2.0 nu=1.000e-03 eta=1.000e-03 d_i=0.0 force_off scheme=rk2 ic=ot
+  Hall CFL: hive dt_cfl=4.052616e-03  job-style dt(v_hall=d_i*k_nyq*max|B|)=4.052616e-03  used dt=4.000000e-03 (snapped to sample 0.1; hive is stricter by ~pi). k_nyq=100.5310 max|u|=1.4142 max|B|=1.4142 v_hall=0.0000 steps=500 diag_every=25
+  finished t=2.0000 elapsed=213.1s  NaN=no  rows=21
+       t         max|w|         max|J|      |J|/|w|          I_BKM   E(kmax)/Etot    max|divB|
+  0.0000   1.256637e+01   1.884956e+01     1.500000   0.000000e+00   0.000000e+00    3.155e-30
+  0.1000   1.633159e+01   2.838591e+01     1.738099   3.806671e+00   1.466910e-36    1.265e-31
+  0.2000   3.514817e+01   5.953921e+01     1.693949   1.077692e+01   6.158427e-36    1.602e-31
+  0.3000   4.411839e+01   9.521314e+01     2.158128   2.247786e+01   9.961659e-36    2.712e-31
+  0.4000   5.425993e+01   7.188834e+01     1.324888   3.575185e+01   1.979699e-35    2.496e-31
+  0.5000   6.190361e+01   5.963341e+01     0.963327   4.813611e+01   1.980819e-35    1.541e-31
+  0.6000   5.753420e+01   5.504826e+01     0.956792   5.984209e+01   3.306558e-35    1.576e-31
+  0.7000   4.278903e+01   5.136185e+01     1.200351   7.017875e+01   4.051697e-35    2.034e-31
+  0.8000   4.852035e+01   6.727365e+01     1.386504   8.067600e+01   7.848667e-35    2.034e-31
+  0.9000   3.924064e+01   4.657628e+01     1.186940   9.075654e+01   1.243809e-34    1.582e-31
+  1.0000   3.815579e+01   4.362405e+01     1.143314   9.913638e+01   1.673330e-34    1.160e-31
+  1.1000   2.778574e+01   3.710258e+01     1.335310   1.064698e+02   2.442813e-34    9.101e-32
+  1.2000   2.929345e+01   3.543604e+01     1.209692   1.129507e+02   6.756318e-34    8.320e-32
+  1.3000   2.668472e+01   3.180266e+01     1.191793   1.191115e+02   9.681254e-34    1.279e-31
+  1.4000   2.669361e+01   3.208418e+01     1.201942   1.249748e+02   3.139265e-33    1.048e-31
+  1.5000   2.180680e+01   3.031880e+01     1.390337   1.305200e+02   1.607116e-32    9.244e-32
+  1.6000   2.064796e+01   2.722744e+01     1.318651   1.355200e+02   9.053300e-33    1.356e-31
+  1.7000   2.195392e+01   2.376369e+01     1.082435   1.401997e+02   1.219684e-32    5.547e-32
+  1.8000   1.842682e+01   2.228150e+01     1.209189   1.445210e+02   2.183610e-32    6.317e-32
+  1.9000   2.202081e+01   2.119807e+01     0.962638   1.487173e+02   7.101180e-32    5.470e-32
+  2.0000   1.851362e+01   2.145566e+01     1.158912   1.528767e+02   4.807534e-32    6.760e-32
+  PEEL=yes: columns not identical (max rel |J-omega|=0.537); |J| runs (peak 9.5213e+01 at t=0.3000) at bounded |omega| (peak 6.1904e+01 at t=0.5000, end/peak=0.299)
+  r=|J|/|omega|  start=1.5000  end=1.1589  peak=2.1581 at t=0.3000
+  I_BKM method=trapezoid on dt_sample=0.1 rows; I_BKM(t_end)=1.528767e+02  finite=True
+  E(k_max)/E_tot def: outermost dealiased shell (k >= k_max_dealias - 2pi/L) of 0.5 N^{-6} sum(|u_hat|^2+|B_hat|^2) over total spectral kin+mag. max=7.101e-32  ALIASING=no flag
+  max|div B| t=0 (history)=3.155e-30  t_end=6.760e-32  pre-march Qin=3.191e-14
+  this solution stayed smooth on this run (finite max|omega|, max|J|; NOT an A1 theorem claim).
+--- mhd default/8 ---
+RUN mode=mhd N=32 t_end=2.0 nu=1.250e-04 eta=1.250e-04 d_i=0.0 force_off scheme=rk2 ic=ot
+  Hall CFL: hive dt_cfl=4.369977e-03  job-style dt(v_hall=d_i*k_nyq*max|B|)=4.369977e-03  used dt=4.347826e-03 (snapped to sample 0.1; hive is stricter by ~pi). k_nyq=100.5310 max|u|=1.4142 max|B|=1.4142 v_hall=0.0000 steps=460 diag_every=23
+  finished t=2.0000 elapsed=192.3s  NaN=no  rows=21
+       t         max|w|         max|J|      |J|/|w|          I_BKM   E(kmax)/Etot    max|divB|
+  0.0000   1.256637e+01   1.884956e+01     1.500000   0.000000e+00   0.000000e+00    3.155e-30
+  0.1000   1.662121e+01   2.874509e+01     1.729422   3.839111e+00   3.193973e-36    8.538e-32
+  0.2000   4.174609e+01   6.726730e+01     1.611344   1.155810e+01   1.330639e-35    2.527e-31
+  0.3000   5.799598e+01   1.054188e+02     1.817691   2.517950e+01   6.756682e-35    2.330e-31
+  0.4000   8.278065e+01   7.925341e+01     0.957391   4.145195e+01   1.303027e-34    2.527e-31
+  0.5000   8.734061e+01   8.131074e+01     0.930961   5.798622e+01   3.383876e-34    2.952e-31
+  0.6000   8.260301e+01   9.803837e+01     1.186862   7.545085e+01   1.298252e-32    2.731e-31
+  0.7000   7.638193e+01   1.044144e+02     1.367004   9.352274e+01   6.808689e-32    2.614e-31
+  0.8000   8.642126e+01   8.289677e+01     0.959217   1.110285e+02   7.984476e-31    2.680e-31
+  0.9000   9.716421e+01   8.835940e+01     0.909382   1.287705e+02   5.666574e-30    4.564e-31
+  1.0000   8.440449e+01   8.655588e+01     1.025489   1.465947e+02   2.042069e-29    3.944e-31
+  1.1000   1.034179e+02   9.532407e+01     0.921736   1.650799e+02   2.015967e-28    2.799e-31
+  1.2000   8.888675e+01   1.057710e+02     1.189953   1.847498e+02   2.320280e-27    2.814e-31
+  1.3000   1.015413e+02   7.856953e+01     0.773769   2.034883e+02   2.322427e-26    3.133e-31
+  1.4000   8.644040e+01   8.356748e+01     0.966764   2.209942e+02   1.714445e-25    3.020e-31
+  1.5000   8.486167e+01   7.905022e+01     0.931519   2.376902e+02   2.516594e-24    2.937e-31
+  1.6000   1.104359e+02   1.140593e+02     1.032810   2.571106e+02   5.542672e-23    3.364e-31
+  1.7000   8.081963e+01   8.023244e+01     0.992735   2.763879e+02   2.044137e-22    2.378e-31
+  1.8000   7.327633e+01   8.178434e+01     1.116109   2.921936e+02   5.533944e-21    3.081e-31
+  1.9000   7.561424e+01   8.422308e+01     1.113852   3.079385e+02   4.208914e-20    3.836e-31
+  2.0000   7.912516e+01   9.135497e+01     1.154563   3.244543e+02   9.441867e-19    3.513e-31
+  PEEL=no: columns differ (max rel |J-omega|=0.450, |J|_peak/|omega|_peak=1.033) but |J| does not run away at bounded |omega| on this window
+  r=|J|/|omega|  start=1.5000  end=1.1546  peak=1.8177 at t=0.3000
+  I_BKM method=trapezoid on dt_sample=0.1 rows; I_BKM(t_end)=3.244543e+02  finite=True
+  E(k_max)/E_tot def: outermost dealiased shell (k >= k_max_dealias - 2pi/L) of 0.5 N^{-6} sum(|u_hat|^2+|B_hat|^2) over total spectral kin+mag. max=9.442e-19  ALIASING=no flag
+  max|div B| t=0 (history)=3.155e-30  t_end=3.513e-31  pre-march Qin=3.191e-14
+  this solution stayed smooth on this run (finite max|omega|, max|J|; NOT an A1 theorem claim).
+--- hall d_i=0.2 default ---
+RUN mode=hall N=32 t_end=2.0 nu=1.000e-03 eta=1.000e-03 d_i=0.2 force_off scheme=rk2 ic=ot
+  Hall CFL: hive dt_cfl=1.352611e-04  job-style dt(v_hall=d_i*k_nyq*max|B|)=3.965877e-04  used dt=1.351351e-04 (snapped to sample 0.1; hive is stricter by ~pi). k_nyq=100.5310 max|u|=1.4142 max|B|=1.4142 v_hall=28.4345 steps=14800 diag_every=740
+  finished t=2.0000 elapsed=6499.4s  NaN=no  rows=21
+       t         max|w|         max|J|      |J|/|w|          I_BKM   E(kmax)/Etot    max|divB|
+  0.0000   1.256637e+01   1.884956e+01     1.500000   0.000000e+00   0.000000e+00    3.155e-30
+  0.1000   1.592645e+01   4.060038e+01     2.549242   4.397138e+00   4.296029e-35    1.746e-31
+  0.2000   1.469279e+01   4.528843e+01     3.082357   1.022254e+01   2.194518e-34    1.941e-31
+  0.3000   1.849561e+01   5.316165e+01     2.874285   1.680446e+01   2.515193e-34    1.160e-31
+  0.4000   2.063396e+01   5.209220e+01     2.524585   2.402364e+01   5.334093e-34    9.244e-32
+  0.5000   2.364255e+01   4.313854e+01     1.824615   3.099900e+01   1.069469e-33    1.356e-31
+  0.6000   2.558833e+01   4.085378e+01     1.596579   3.766016e+01   1.076305e-33    9.282e-32
+  0.7000   2.523623e+01   4.946275e+01     1.959990   4.471721e+01   6.355850e-34    8.575e-32
+  0.8000   2.459191e+01   4.084421e+01     1.660880   5.172397e+01   3.019249e-34    8.756e-32
+  0.9000   2.319450e+01   3.341392e+01     1.440597   5.782619e+01   3.288148e-34    1.079e-31
+  1.0000   1.922311e+01   4.320064e+01     2.247328   6.377780e+01   3.434325e-34    7.343e-32
+  1.1000   1.872697e+01   3.241776e+01     1.731074   6.945623e+01   1.811044e-34    5.610e-32
+  1.2000   1.756129e+01   2.877745e+01     1.638686   7.433040e+01   3.445673e-34    6.933e-32
+  1.3000   1.820179e+01   3.365191e+01     1.848825   7.924002e+01   4.401716e-35    6.255e-32
+  1.4000   1.609275e+01   3.133534e+01     1.947171   8.420411e+01   1.632027e-34    8.060e-32
+  1.5000   1.619008e+01   3.118469e+01     1.926160   8.894425e+01   1.978942e-34    6.031e-32
+  1.6000   1.621205e+01   3.538500e+01     2.182635   9.389285e+01   1.858337e-35    4.493e-32
+  1.7000   1.655205e+01   3.411633e+01     2.061154   9.900612e+01   3.734955e-35    4.323e-32
+  1.8000   1.413764e+01   3.373707e+01     2.386330   1.039333e+02   3.315438e-35    3.097e-32
+  1.9000   1.349667e+01   2.979592e+01     2.207649   1.084916e+02   1.285992e-35    3.159e-32
+  2.0000   1.389941e+01   2.843162e+01     2.045527   1.127728e+02   1.253932e-35    4.885e-32
+  PEEL=yes: columns not identical (max rel |J-omega|=0.676); |J| runs (peak 5.3162e+01 at t=0.3000) at bounded |omega| (peak 2.5588e+01 at t=0.6000, end/peak=0.543)
+  r=|J|/|omega|  start=1.5000  end=2.0455  peak=3.0824 at t=0.2000
+  I_BKM method=trapezoid on dt_sample=0.1 rows; I_BKM(t_end)=1.127728e+02  finite=True
+  E(k_max)/E_tot def: outermost dealiased shell (k >= k_max_dealias - 2pi/L) of 0.5 N^{-6} sum(|u_hat|^2+|B_hat|^2) over total spectral kin+mag. max=1.076e-33  ALIASING=no flag
+  max|div B| t=0 (history)=3.155e-30  t_end=4.885e-32  pre-march Qin=3.191e-14
+  this solution stayed smooth on this run (finite max|omega|, max|J|; NOT an A1 theorem claim).
+--- hall d_i=0.2 default/8 ---
+RUN mode=hall N=32 t_end=2.0 nu=1.250e-04 eta=1.250e-04 d_i=0.2 force_off scheme=rk2 ic=ot
+  Hall CFL: hive dt_cfl=1.355897e-04  job-style dt(v_hall=d_i*k_nyq*max|B|)=3.994264e-04  used dt=1.355014e-04 (snapped to sample 0.1; hive is stricter by ~pi). k_nyq=100.5310 max|u|=1.4142 max|B|=1.4142 v_hall=28.4345 steps=14760 diag_every=738
+  finished t=2.0000 elapsed=6713.4s  NaN=no  rows=21
+       t         max|w|         max|J|      |J|/|w|          I_BKM   E(kmax)/Etot    max|divB|
+  0.0000   1.256637e+01   1.884956e+01     1.500000   0.000000e+00   0.000000e+00    3.155e-30
+  0.1000   1.640991e+01   4.279660e+01     2.607973   4.531122e+00   3.101040e-35    1.287e-31
+  0.2000   1.560598e+01   4.556451e+01     2.919684   1.054997e+01   4.235514e-34    1.892e-31
+  0.3000   2.031490e+01   8.741731e+01     4.303113   1.899511e+01   5.212354e-33    1.726e-31
+  0.4000   2.443480e+01   7.015054e+01     2.870928   2.911098e+01   7.196924e-32    1.704e-31
+  0.5000   3.298024e+01   6.303352e+01     1.911251   3.864094e+01   7.431289e-31    1.929e-31
+  0.6000   3.694697e+01   5.833961e+01     1.579010   4.820596e+01   2.241937e-29    1.815e-31
+  0.7000   3.743279e+01   6.387620e+01     1.706424   5.803574e+01   1.568051e-28    1.638e-31
+  0.8000   3.833496e+01   5.743751e+01     1.498306   6.788981e+01   1.708852e-27    1.541e-31
+  0.9000   3.997767e+01   5.655159e+01     1.414579   7.750490e+01   2.270679e-26    1.751e-31
+  1.0000   4.338778e+01   5.372372e+01     1.238222   8.718693e+01   2.495720e-25    1.726e-31
+  1.1000   4.334787e+01   7.348875e+01     1.695325   9.788434e+01   3.645756e-24    1.682e-31
+  1.2000   4.714170e+01   6.607514e+01     1.401628   1.093870e+02   1.941081e-23    1.998e-31
+  1.3000   4.182899e+01   6.352855e+01     1.518768   1.203157e+02   1.446552e-22    2.095e-31
+  1.4000   4.088354e+01   4.961833e+01     1.213651   1.301087e+02   2.204955e-21    1.828e-31
+  1.5000   3.563788e+01   5.872631e+01     1.647862   1.393520e+02   1.159208e-20    1.892e-31
+  1.6000   3.578661e+01   7.566050e+01     2.114212   1.496426e+02   2.989761e-20    1.929e-31
+  1.7000   3.796723e+01   6.347771e+01     1.671908   1.602872e+02   2.251131e-19    1.271e-31
+  1.8000   3.990723e+01   5.153049e+01     1.291257   1.699313e+02   9.408476e-19    2.034e-31
+  1.9000   5.019861e+01   5.487616e+01     1.093181   1.797569e+02   3.265664e-18    1.856e-31
+  2.0000   4.165865e+01   6.608786e+01     1.586414   1.903980e+02   1.346246e-17    1.505e-31
+  PEEL=yes: columns not identical (max rel |J-omega|=0.768); |J| runs (peak 8.7417e+01 at t=0.3000) at bounded |omega| (peak 5.0199e+01 at t=1.9000, end/peak=0.830)
+  r=|J|/|omega|  start=1.5000  end=1.5864  peak=4.3031 at t=0.3000
+  I_BKM method=trapezoid on dt_sample=0.1 rows; I_BKM(t_end)=1.903980e+02  finite=True
+  E(k_max)/E_tot def: outermost dealiased shell (k >= k_max_dealias - 2pi/L) of 0.5 N^{-6} sum(|u_hat|^2+|B_hat|^2) over total spectral kin+mag. max=1.346e-17  ALIASING=no flag
+  max|div B| t=0 (history)=3.155e-30  t_end=1.505e-31  pre-march Qin=3.191e-14
+  this solution stayed smooth on this run (finite max|omega|, max|J|; NOT an A1 theorem claim).
+
+==== THREE VERDICTS (Venus mill) ====
+(1) /8 — peel back, or omega still follows? peel back at /8 vs default: default peeled, /8 did not — omega still follows |J| on this window (PEEL=no). columns differ (max rel |J-omega|=0.450, |J|_peak/|omega|_peak=1.033) but |J| does not run away at bounded |omega| on this window  |J|_peak=114.0593 @1.6  |omega|_peak=110.4359 @1.6  r_peak=1.8177
+(2) peak |J| at 64 vs 32 — if it jumps, the sheet wasn't resolved. N=64 not used for the matrix (preferred). Cannot compare 64 vs 32 from this crank. This N=32 t<=1.5 |J| vs previous N=32 t=1.5: run1 N=32 |J|_peak=95.21 @0.30000000000000004  t<=1.5 |J|_peak=95.21 @0.30000000000000004  NaN=False | run2 N=32 |J|_peak=114.06 @1.6  t<=1.5 |J|_peak=105.77 @1.2000000000000002  NaN=False | run3 N=32 |J|_peak=53.16 @0.30000000000000004  t<=1.5 |J|_peak=53.16 @0.30000000000000004  NaN=False | run4 N=32 |J|_peak=87.42 @0.30000000000000004  t<=1.5 |J|_peak=87.42 @0.30000000000000004  NaN=False  previous N=32 t=1.5: mhd default |J| peak 95.21 @0.3; /4 was 104.02 (not /8); hall d_i=0.2 |J| peak 53.16 @0.3
+(3) hall d_i vs mhd at the SAME damping (1 vs 3, and 2 vs 4 if 4 ran). 1 vs 3 (default nu,eta): peel stronger; mhd |J|_peak=95.21 @0.30000000000000004 |omega|_peak=61.90 r_peak=2.1581; hall |J|_peak=53.16 @0.30000000000000004 |omega|_peak=25.59 r_peak=3.0824  2 vs 4 (default/8): peel stronger (peel appears when damping dropped / Hall on); mhd |J|_peak=114.06 @1.6 |omega|_peak=110.44 r_peak=1.8177; hall |J|_peak=87.42 @0.30000000000000004 |omega|_peak=50.20 r_peak=4.3031
+Finite max|omega|, max|J| on these runs is NOT an A1 / Clay theorem claim.
+
+==== run summary ====
+run 1: mode=mhd N=32 t_end_req=2.0 last_t=2.0 nu=0.001 eta=0.001 d_i=0.0 NaN=False dt=0.004 divB0=3.1554436208840472e-30 alias=False ek_max=7.101179750542878e-32 elapsed=213.06327919999603 smooth=True
+run 2: mode=mhd N=32 t_end_req=2.0 last_t=2.0 nu=0.000125 eta=0.000125 d_i=0.0 NaN=False dt=0.004347826086956522 divB0=3.1554436208840472e-30 alias=False ek_max=9.44186726518801e-19 elapsed=192.3065955999773 smooth=True
+run 3: mode=hall N=32 t_end_req=2.0 last_t=2.0 nu=0.001 eta=0.001 d_i=0.2 NaN=False dt=0.00013513513513513514 divB0=3.1554436208840472e-30 alias=False ek_max=1.0763052189175476e-33 elapsed=6499.400462300051 smooth=True
+run 4: mode=hall N=32 t_end_req=2.0 last_t=2.0 nu=0.000125 eta=0.000125 d_i=0.2 NaN=False dt=0.00013550135501355014 divB0=3.1554436208840472e-30 alias=False ek_max=1.346245739987906e-17 elapsed=6713.446607600083 smooth=True
+tables written to C:\Users\Akitt\Grok\worktree-mhd\ns\examples\section_A_crank_out.txt
+HAVE Section A crank (N=32 t=2; /8 + hall 0.2; three verdicts).
