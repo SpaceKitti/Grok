@@ -1,54 +1,72 @@
-Source: compiled by Orion, 2026-09-01; DONE tonight by the hive 2026-09-02
+Source: compiled by Orion, 2026-09-01; hive 2026-09-02 DONE + 2026-09-03 modes
 Folder: C:\Users\Akitt\Grok\open\
 
 Which open problems the live solver can actually poke
 =====================================================
 
-Live now (do not smash)
------------------------
-mode="mhd"  incompressible vorticity MHD, Qin on, Crow/0%/B0 off.
+HAVE (live engine — do not smash)
+---------------------------------
+mode="mhd"        incompressible vorticity MHD, Qin on, Crow/0%/B0 off.
+mode="cmhd"       compressible tracer ρ, γ=5/3 heat-into-gas, primitive u + c_s CFL.
+mode="hall"       Venus Ohm, E = −u×B + ηJ + (d_i/n) J×B. n=1 default. d_i=0 matches mhd.
+mode="twofluid"   Hall + −∇p_e/(n e). Te=0 matches hall. Te>0 bumps.
+Boris tracers     no back-reaction, no PIC deposit.
+zeta on cmhd      default off. Hive γ still 5/3.
+
 Patches 1–8 closed as bones on aethon/mhd-patches, not merged:
   Alfvén wave at v_A, e_glm in I_leak, cmhd tracer ρ, γ=5/3 heat-into-gas,
   primitive u + c_s CFL, three-bucket I_leak, Brio–Wu γ=2 test-local.
 
-DONE tonight (no more runs)
----------------------------
-G2  magnetosonic: v_phase / sqrt(c_s² + v_A²) = 1.0004
-A2  OT seed was matching u=B; fixed B_y = sin(2x). Then |J| peels off |ω|,
-    peak t ≈ 0.4
-F3  divB monitor was missing 1j (fixed). Qin wipes a divB kick. GLM is the
-    slow clean + e_glm already in I_leak
-E2  Harris forming sheet, Φ crosses, rec_rate_flux live
+G2   magnetosonic: v_phase / sqrt(c_s² + v_A²) = 1.0004
+F3   GLM + 1j divB fix. Qin wipes a divB kick. e_glm already in I_leak.
+A2   2D textbook OT peel. B_y = sin(2x). |J| peels off |ω|, peak t ≈ 0.4
+A2c  3D textbook-B seed (N≥16).
+     u = U0 (−sin y, sin x, 0.2 cos z)
+     B = B0 (−sin y, sin 2x, 0.2 cos z)
+     Watch max|ω| vs max|J|. Do not reopen 1–5.
+E2   Φ meter live (Harris forming sheet, rec_rate_flux).
+E2c  sech² small hall−twofluid peel. n = 0.25 + 0.75 sech²((y−L/2)/δ)
+     so ∇n ≠ 0. Te>0 then peels hall vs twofluid.
 
-Do not merge. Do not start a sim. No Crow, no OT, no Harris tonight.
+MISSING
+-------
+Aluie Π(ℓ)     filter / coarse-grain flux not in the JAX spectral driver.
+PIC deposit    Boris tracers have no charge/current deposit, no back-reaction.
+Clay proof     A1 is the theorem. The toy can only plot max|ω|, max|J|.
+WENO           Brio–Wu Gibbs is the scheme. Do not add WENO.
+
+Parked on purpose
+-----------------
+Crow/0%        scaling campaigns closed. Do not hunt I_leak ≡ 0 by pinning ρ.
+ρ-floor        hides a leak.
+Campaign A     cloning Scar-off is forbidden.
+
+Do not merge. Do not start a sim. No Crow.
 
 Can poke without a new campaign
 -------------------------------
 B1  Aluie σ proxies if a filter/structure-function diagnostic is added.
-B3  W conversion — already a hive sentence; leftover hunt closed.
+B3  W conversion — leftover hunt closed.
 C5  C_ε and viscous/Ohmic split — LBG17 is in Merge/09; Crow floor locked.
 F2  viscous disagreement on cmhd — already measured on the sound wave.
 G1  Brio–Wu Gibbs vs NaN — HAVE 8; do not add WENO.
+A4  hall on vs off: same max|ω|, max|J|. Engine is live; the blowup is not settled.
 
-Needs a new diagnostic, still cheap (not tonight)
--------------------------------------------------
-B2  Π_h(ℓ) and L^3 — Aluie layer is written in Merge/01 as Torch; not in the
-    JAX spectral driver.
+Needs a new diagnostic, still cheap
+-----------------------------------
+B2  Π_h(ℓ) and L³ — Aluie layer is in Merge/01 as Torch; not in the JAX driver.
 C2  sheet aspect ratio / D(k)/E_J(k) peak for hyper_kcut (Maron, parked).
 D1  kinematic dynamo on a frozen chaotic u — only if someone asks.
 G2b 3D magnetosonic (2D G2 is done).
-E2b Harris v_in / v_A vs S (meter is live; this scan is not tonight).
-A2c 3D textbook-B OT seed (analog of 2D By=sin 2x). HAVE (this commit). Watch max|w| vs max|J|. Do not reopen 1-5.
-E2c Harris n~sech^2 peel so nabla n != 0 (Te>0 then peels hall vs twofluid). HAVE (this commit).
+E2b Harris v_in / v_A vs S (meter is live; this scan is not a campaign).
 
 Cannot poke on this toy
 -----------------------
 A1  the theorem itself.
-A4  Hall / ES-LHDI (parked).
 B4  convex integration.
 D3  catastrophic α-quenching in a mean-field star.
 E3  MMS EDR statistics; electron-only reconnection.
-E4  ion/electron nonthermal partition (no particles).
+E4  ion/electron nonthermal partition (no PIC deposit).
 kinetic Debye-scale EDR turbulence.
 
 Do not
@@ -57,4 +75,7 @@ Re-audit 1–8.
 Hunt 0% I_leak on cmhd.
 Pin or floor ρ.
 Merge aethon/mhd-patches.
-Start a sim tonight.
+Start a sim unasked.
+Clone Campaign A.
+Section A script: worktree-mhd/ns/examples/run_section_A.py (3D textbook-B; mhd/hall matrix; BKM + peel).
+A2d N=64 Section A crank parked until asked (N=32 |J|_peak=95.21 unchanged; resolution open). Venus: Hall lower |J| is not a hotter sheet.
