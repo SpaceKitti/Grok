@@ -3,19 +3,20 @@
 3D anti-parallel Crow tubes. Same IC for three runs:
   1) hydro  mode="vorticity"  B=0  (magnetic off)
   2) mhd    mode="mhd"        Shen co-located flux  b_guide="flux"
-  3) hall   mode="hall"       same B IC, d_i = 0.25 * R_tube
+  3) hall   mode="hall"       same B IC, d_i = 0.25 * R_tube (or --d-i)
 
-Akitti runs locally. Default N=32, t_end=0.5. No campaign, no merge,
+Akitti runs locally. Default N=32, t_end=1.5. No campaign, no merge,
 no OT, no 0% I_leak hunt, no RHS smash.
 
 Re-run:
   cd C:\\Users\\Akitt\\Grok\\worktree-mhd\\ns
   $env:PYTHONPATH="C:\\Users\\Akitt\\Grok\\worktree-mhd\\ns"
   $env:JAX_PLATFORMS="cpu"
+  C:\\Users\\Akitt\\Grok\\.venv\\Scripts\\python.exe .\\examples\\run_crow_reconn.py --help
   C:\\Users\\Akitt\\Grok\\.venv\\Scripts\\python.exe .\\examples\\run_crow_reconn.py --dry-run
-  C:\\Users\\Akitt\\Grok\\.venv\\Scripts\\python.exe .\\examples\\run_crow_reconn.py
+  C:\\Users\\Akitt\\Grok\\.venv\\Scripts\\python.exe .\\examples\\run_crow_reconn.py --mode hydro --steps 8
 
-CLI: --N --t-end --steps --dry-run
+CLI: --N --t-end --d-i --gamma-m --mode --steps --dry-run
 
 ================================================================
 Notes vs filled (Crow/Hall notes + mill defaults)
@@ -42,8 +43,8 @@ FILLED (not in those note files as a number / choice):
                                      equal to circulation for co-located
   b_guide = "flux"                   Shen live path. NOT hive Crow B
                                      (x / z / tube uniform). B0 ignored.
-  d_i = 0.25 * R = 0.02              Aethon/Venus rule (not in the notes)
-  N=32, dim=3, t_end=0.5             short local default
+  d_i = 0.25 * R = 0.02              Aethon/Venus rule (override with --d-i)
+  N=32, dim=3, t_end=1.5             local default (was 0.5)
   nu = 5e-4                          driver dim=3 default
   force_on=False, viscoelastic=False
   core_sep definition                hive has no Crow core-distance diag
@@ -61,6 +62,13 @@ the symmetric Crow mode is at x = L/4 (axial_wave=1, sin(kx)=1).
 This script takes |omega| on that y-z cut and returns the min-image
 distance between the |omega| peak in y < L/2 and the peak in y >= L/2.
 That is "distance of the two |omega| peaks in a y-z cut."
+
+Mill hist has NO omega snapshots. core_sep is sampled in-script by
+chunking the existing scanned steppers (_run_vorticity_scanned /
+_run_mhd_scanned) in lengths of diag_every, computing core_sep from
+omega_hat after each chunk, and stitching one value per diagnostic
+row. Same cadence as max|w|/max|J|. No invented hist key, no mhd/cmhd
+smash.
 
 ================================================================
 Reconnects first (printed rule; fill after a real local run)
@@ -81,19 +89,24 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import jax
 jax.config.update("jax_enable_x64", True)
+import jax.numpy as jnp
 
 import numpy as np
 from chive_ns import (
+    DEFAULT_CLAY,
     DEFAULT_MHD,
     cfl_dt,
     cfl_dt_mhd,
     generate_antiparallel_tubes,
     generate_b_flux_tubes,
     make_grid,
-    run_framework,
+    project_div_free,
     split_guide_fields,
+    velocity_from_vorticity,
     vorticity_from_velocity,
+    zero_tau_hat,
 )
+from chive_ns.driver import _run_mhd_scanned, _run_vorticity_scanned
 
 
 # Hive mill Crow / Shen defaults (see header).
@@ -104,10 +117,10 @@ PERT = float(DEFAULT_MHD["tube_perturbation"])   # 0.04
 AXIAL = int(DEFAULT_MHD["tube_axial_wave"])      # 1
 ETA = float(DEFAULT_MHD["eta_mag"])              # 1e-3
 NU = 5.0e-4   # driver dim=3 default
-GAMMA_M = GAMMA   # FILLED: DEFAULT_MHD gamma_m is 0 -> empty B
-D_I = 0.25 * R_TUBE   # FILLED: 0.25 * R = 0.02
+GAMMA_M_DEF = GAMMA   # FILLED: DEFAULT_MHD gamma_m is 0 -> empty B
+D_I_DEF = 0.25 * R_TUBE   # FILLED: 0.25 * R = 0.02
 B_GUIDE = "flux"      # Shen co-located; NOT uniform x/z/tube
-T_END_DEF = 0.5
+T_END_DEF = 1.5
 N_DEF = 32
 CFL = 0.4
 L_BOX = 1.0
@@ -131,12 +144,13 @@ def ic_params():
     )
 
 
-def mhd_params_shen(d_i=0.0):
+def mhd_params_shen(d_i=0.0, gamma_m=None):
     """Shen co-located flux. Do not pass uniform B0 guide."""
+    gm = float(GAMMA_M_DEF if gamma_m is None else gamma_m)
     return dict(
         DEFAULT_MHD,
         b_guide=B_GUIDE,
-        gamma_m=GAMMA_M,
+        gamma_m=gm,
         B0=0.0,
         freeze_ext=0.0,
         eta_mag=ETA,
@@ -153,6 +167,16 @@ def mhd_params_shen(d_i=0.0):
         tube_separation=SEP0,
         tube_perturbation=PERT,
         tube_axial_wave=AXIAL,
+    )
+
+
+def _clay_off():
+    """Match run_framework viscoelastic=False clay zeroing."""
+    return dict(
+        DEFAULT_CLAY,
+        eta_p=0.0, stress_couple=0.0, clay_gain=0.0, gum_scale=0.0,
+        soft_J=0.0, high_de=0.0, alpha_LB=0.0, lam_kin_gain=0.0,
+        alpha_perp=0.0,
     )
 
 
@@ -227,23 +251,24 @@ def first_cross_or_min(t, sep, R):
     return float(t[imin]), "min_sep"
 
 
-def print_notes():
+def print_notes(d_i, gamma_m, t_end):
     log("=== Crow reconnection (HAVE script) ===")
     log("FROM NOTES / hive mill: Gamma=0.7 R=0.08 sep=0.24 pert=0.04 axial_wave=1 eta=1e-3")
     log("FROM NOTES / hive mill: gamma_m DEFAULT=0 (empty B); b_guide DEFAULT=z (unused)")
     log("FROM NOTES / hive mill: Shen flux LIVE at b_guide in (flux, flux_tubes, shen)")
-    log("FILLED: gamma_m=Gamma=0.7 (co-located); b_guide=flux (NOT uniform x/z/tube)")
-    log("FILLED: d_i = 0.25 * R_tube = %.4f  (R=%.4f)" % (D_I, R_TUBE))
-    log("FILLED: N=32 dim=3 t_end=%.2f nu=5e-4 force_on=False viscoelastic=False" % T_END_DEF)
+    log("FILLED: gamma_m=%.3f (co-located); b_guide=flux (NOT uniform x/z/tube)" % gamma_m)
+    log("FILLED: d_i = %.4f  (default 0.25*R=%.4f, R=%.4f)" % (d_i, D_I_DEF, R_TUBE))
+    log("FILLED: N=32 dim=3 t_end=%.2f nu=5e-4 force_on=False viscoelastic=False" % t_end)
     log("core_sep: two |omega| peaks in the y-z cut at x=L/4 (Crow closest approach)")
+    log("core_sep sampling: scanned chunks of diag_every; omega_hat after each dump")
     log("reconnects-first: earliest t with core_sep < R; else first clear min of sep")
     log("max|J| peak time is secondary. Phi=flux_x_half optional/live; not the crown.")
     log("hydro Phi is N/A (B=0). Crow is not Harris.")
 
 
-def check_shen_flux(grid):
-    """Confirm Shen co-located path is live (nonzero B at gamma_m=Gamma)."""
-    mp = mhd_params_shen(d_i=0.0)
+def check_shen_flux(grid, gamma_m):
+    """Confirm Shen co-located path is live (nonzero B at gamma_m)."""
+    mp = mhd_params_shen(d_i=0.0, gamma_m=gamma_m)
     B_hat = generate_b_flux_tubes(grid, mp, ic_params())
     B = np.fft.ifftn(np.asarray(B_hat), axes=(1, 2, 3)).real
     bmax = float(np.max(np.sqrt(np.sum(B ** 2, axis=0))))
@@ -254,7 +279,7 @@ def check_shen_flux(grid):
     log(
         "Shen flux path: generate_b_flux_tubes max|B|=%.6e  "
         "split_guide_fields max|B|=%.6e  live=%s  (b_guide=%s gamma_m=%.3f)"
-        % (bmax, bmax2, live, B_GUIDE, GAMMA_M)
+        % (bmax, bmax2, live, B_GUIDE, gamma_m)
     )
     if not live:
         raise SystemExit(
@@ -264,47 +289,119 @@ def check_shen_flux(grid):
     return bmax
 
 
-def _run_one(mode, N, steps, dt, diag_every, d_i=0.0):
-    """One Crow run via run_framework. Same tubes IC for all modes."""
-    magnetic = mode in ("mhd", "hall")
-    mp = mhd_params_shen(d_i=d_i) if magnetic else None
-    out = run_framework(
-        N=N, dim=3, steps=steps, dt=dt, diag_every=diag_every, scheme="rk2",
-        mode=mode, ic="tubes", force_on=False, viscoelastic=False, nu=NU,
-        ic_params=ic_params(),
-        mhd_params=mp,
-        magnetic=magnetic,
-        n_scars=1, force_amp=0.0,
-    )
-    return out
+def _ic_omega_B(grid, u0, magnetic, d_i, gamma_m):
+    """Match run_framework tubes IC (project_div_free + optional Shen B)."""
+    u_hat = project_div_free(
+        jnp.fft.fftn(jnp.asarray(u0), axes=(1, 2, 3)), grid)
+    omega_hat = vorticity_from_velocity(u_hat, grid)
+    omega_hat = project_div_free(omega_hat, grid)
+    B_hat = None
+    if magnetic:
+        mp = mhd_params_shen(d_i=d_i, gamma_m=gamma_m)
+        B_hat, _, _ = split_guide_fields(grid, mp, ic_params())
+    return omega_hat, B_hat
 
 
-def _sep_series_from_out(out, grid, u0):
-    """core_sep at t=0 (IC) and t=t_end (final omega). Mill has no omega hist.
+def _hist_tail_scalar(hist, key, default=float("nan")):
+    if key not in hist:
+        return float(default)
+    v = _arr(hist[key])
+    if v.size == 0:
+        return float(default)
+    return float(v[-1])
 
-    Intermediate mill times have max|omega|, max|J|, Phi from run_framework.
-    Mill hist has no omega snapshots, so core_sep is filled at t=0 (IC)
-    and t=t_end (final omega_hat) only; other rows print n/a.
-    Reconnects-first uses those two sampled sep points.
+
+def _run_chunked_with_core_sep(mode, N, steps, dt, diag_every, grid, u0,
+                               d_i=0.0, gamma_m=None):
+    """Advance in diag_every chunks; core_sep from omega_hat every dump.
+
+    Mill hist has no omega snapshots — do not invent a hist key. Uses the
+    existing driver scanned steppers so each chunk continues from the prior
+    state; after each chunk compute core_sep from omega_hat and stitch.
+    force_on=False / viscoelastic=False so chunk-local time index is fine.
     """
-    t = _arr(out["time"])
-    sep = np.full(t.shape, np.nan, dtype=float)
-    om0 = omega_real_from_u(u0, grid)
+    magnetic = mode in ("mhd", "hall")
+    omega_hat, B_hat = _ic_omega_B(grid, u0, magnetic, d_i, gamma_m)
+    tau_hat = zero_tau_hat(grid, dtype=omega_hat.dtype)
+    clay_use = _clay_off()
+    mp = mhd_params_shen(d_i=d_i, gamma_m=gamma_m) if magnetic else None
+
+    om0 = omega_real_from_hat(omega_hat)
     sep0 = core_separation(om0, grid, AXIAL)
-    om1 = omega_real_from_hat(out["omega_hat"])
-    sepend = core_separation(om1, grid, AXIAL)
-    if t.size:
-        sep[0] = sep0
-        sep[-1] = sepend
-    return sep, sep0, sepend
+
+    # t=0 scalars from a 0-step scanned call (snapshot only).
+    if magnetic:
+        state0, hist0 = _run_mhd_scanned(
+            omega_hat, tau_hat, B_hat, grid, NU, dt, 0, False, "rk2", 1,
+            clay_use, mp, n_scars=1, force_amp=0.0)
+        omega_hat, tau_hat, B_hat = state0[0], state0[1], state0[2]
+    else:
+        omega_hat, hist0 = _run_vorticity_scanned(
+            omega_hat, grid, NU, dt, 0, False, "rk2", 1,
+            n_scars=1, force_amp=0.0)
+
+    t_list = [0.0]
+    sep_list = [sep0]
+    maxw_list = [_hist_tail_scalar(hist0, "max_vort")]
+    maxj_list = [_hist_tail_scalar(hist0, "max_j", 0.0)]
+    phi_list = [_hist_tail_scalar(hist0, "flux_x_half", 0.0)]
+
+    steps = int(steps)
+    diag_every = max(1, int(diag_every))
+    n_chunks = steps // diag_every
+    rem = steps % diag_every
+    step_done = 0
+
+    def _append_from_state(omega_now, hist_chunk, step_now):
+        om = omega_real_from_hat(omega_now)
+        sep_list.append(core_separation(om, grid, AXIAL))
+        t_list.append(float(step_now) * float(dt))
+        maxw_list.append(_hist_tail_scalar(hist_chunk, "max_vort"))
+        maxj_list.append(_hist_tail_scalar(hist_chunk, "max_j", 0.0))
+        phi_list.append(_hist_tail_scalar(hist_chunk, "flux_x_half", 0.0))
+
+    for _ in range(n_chunks):
+        if magnetic:
+            state, hist = _run_mhd_scanned(
+                omega_hat, tau_hat, B_hat, grid, NU, dt, diag_every, False,
+                "rk2", diag_every, clay_use, mp, n_scars=1, force_amp=0.0)
+            omega_hat, tau_hat, B_hat = state[0], state[1], state[2]
+        else:
+            omega_hat, hist = _run_vorticity_scanned(
+                omega_hat, grid, NU, dt, diag_every, False, "rk2",
+                diag_every, n_scars=1, force_amp=0.0)
+        step_done += diag_every
+        _append_from_state(omega_hat, hist, step_done)
+
+    if rem:
+        if magnetic:
+            state, hist = _run_mhd_scanned(
+                omega_hat, tau_hat, B_hat, grid, NU, dt, rem, False,
+                "rk2", rem, clay_use, mp, n_scars=1, force_amp=0.0)
+            omega_hat, tau_hat, B_hat = state[0], state[1], state[2]
+        else:
+            omega_hat, hist = _run_vorticity_scanned(
+                omega_hat, grid, NU, dt, rem, False, "rk2", rem,
+                n_scars=1, force_amp=0.0)
+        step_done += rem
+        _append_from_state(omega_hat, hist, step_done)
+
+    return {
+        "t": _arr(t_list),
+        "sep": _arr(sep_list),
+        "maxw": _arr(maxw_list),
+        "maxj": _arr(maxj_list),
+        "phi": _arr(phi_list),
+        "sep0": float(sep_list[0]),
+        "sepend": float(sep_list[-1]),
+        "omega_hat": omega_hat,
+        "magnetic": magnetic,
+    }
 
 
 def print_table(label, t, sep, maxw, maxj, phi, magnetic):
     log("--- %s ---" % label)
-    if magnetic:
-        log("%10s %12s %14s %14s %14s" % ("t", "core_sep", "max|w|", "max|J|", "Phi"))
-    else:
-        log("%10s %12s %14s %14s %14s" % ("t", "core_sep", "max|w|", "max|J|", "Phi"))
+    log("%10s %12s %14s %14s %14s" % ("t", "core_sep", "max|w|", "max|J|", "Phi"))
     for i in range(t.size):
         s = sep[i]
         s_s = ("%12.6f" % s) if np.isfinite(s) else ("%12s" % "n/a")
@@ -320,6 +417,19 @@ def parse_args():
     ap = argparse.ArgumentParser(description="Crow reconnection hydro/mhd/hall")
     ap.add_argument("--N", type=int, default=N_DEF)
     ap.add_argument("--t-end", type=float, default=T_END_DEF, dest="t_end")
+    ap.add_argument(
+        "--d-i", type=float, default=None, dest="d_i",
+        help="Hall ion inertial length (default 0.25*R=%.4f)" % D_I_DEF,
+    )
+    ap.add_argument(
+        "--gamma-m", type=float, default=GAMMA_M_DEF, dest="gamma_m",
+        help="Magnetic circulation for Shen flux (default Gamma=%.3f)" % GAMMA_M_DEF,
+    )
+    ap.add_argument(
+        "--mode", type=str, default="all",
+        choices=("hydro", "mhd", "hall", "all"),
+        help="Run only one branch or all (default all)",
+    )
     ap.add_argument("--steps", type=int, default=None)
     ap.add_argument("--dry-run", action="store_true", dest="dry_run")
     return ap.parse_args()
@@ -331,14 +441,15 @@ def plan_one(dt, t_end, steps_cli):
         steps = max(1, int(np.ceil(float(t_end) / dt)))
     else:
         steps = int(steps_cli)
-    diag_every = max(1, steps // 8)
+    # Denser than endpoints-only so who-first is not a t_end tie.
+    diag_every = max(1, steps // 16)
     return steps, diag_every, steps * dt
 
 
-def plan_dts(grid, u0, B_mhd):
+def plan_dts(grid, u0, B_mhd, d_i):
     dt_h = float(cfl_dt(u0, float(grid["dx"]), NU, cfl=CFL))
     dt_m = float(cfl_dt_mhd(u0, B_mhd, float(grid["dx"]), NU, ETA, cfl=CFL, d_i=0.0))
-    dt_ha = float(cfl_dt_mhd(u0, B_mhd, float(grid["dx"]), NU, ETA, cfl=CFL, d_i=D_I))
+    dt_ha = float(cfl_dt_mhd(u0, B_mhd, float(grid["dx"]), NU, ETA, cfl=CFL, d_i=d_i))
     return dt_h, dt_m, dt_ha
 
 
@@ -357,7 +468,7 @@ def print_reconnects_rule(results=None):
         return
     hits = []
     for name, rec in results:
-        t_hit, kind = first_cross_or_min(rec["t_sep"], rec["sep_e"], R_TUBE)
+        t_hit, kind = first_cross_or_min(rec["t"], rec["sep"], R_TUBE)
         jpeak_t = rec.get("t_jpeak", float("nan"))
         log(
             "  %s: t_hit=%.4f (%s)  sep0=%.4f  sepend=%.4f  t_max|J|=%s"
@@ -371,7 +482,6 @@ def print_reconnects_rule(results=None):
     if not valid:
         log("RECONNECTS-FIRST: no finite t_hit (no data).")
         return
-    # Prefer any actual R-crossing over a min-only; among those, earliest t.
     crosses = [(th, n, k) for th, n, k in valid if k == "cross_R"]
     pool = crosses if crosses else valid
     pool.sort(key=lambda x: x[0])
@@ -385,15 +495,18 @@ def print_reconnects_rule(results=None):
 def main():
     args = parse_args()
     N = int(args.N)
-    print_notes()
-    log("d_i formula: d_i = 0.25 * R_tube = 0.25 * %.4f = %.4f" % (R_TUBE, D_I))
+    gamma_m = float(args.gamma_m)
+    d_i = float(D_I_DEF if args.d_i is None else args.d_i)
+    print_notes(d_i, gamma_m, args.t_end)
+    log("d_i formula: default 0.25 * R_tube = 0.25 * %.4f = %.4f; using d_i=%.4f"
+        % (R_TUBE, D_I_DEF, d_i))
 
     grid = make_grid(N, L=L_BOX, dim=3)
     u0 = np.asarray(generate_antiparallel_tubes(grid, **ic_params()))
     om0 = omega_real_from_u(u0, grid)
     sep0 = core_separation(om0, grid, AXIAL)
-    bmax = check_shen_flux(grid)
-    mp = mhd_params_shen(d_i=0.0)
+    bmax = check_shen_flux(grid, gamma_m)
+    mp = mhd_params_shen(d_i=0.0, gamma_m=gamma_m)
     B_hat, _, _ = split_guide_fields(grid, mp, ic_params())
     B0 = np.fft.ifftn(np.asarray(B_hat), axes=(1, 2, 3)).real
 
@@ -406,12 +519,11 @@ def main():
     log(
         "B IC: Shen flux b_guide=%s gamma_m=%.3f max|B|=%.6e  "
         "(NOT uniform hive Crow B x/z/tube)"
-        % (B_GUIDE, GAMMA_M, bmax)
+        % (B_GUIDE, gamma_m, bmax)
     )
-    log("Hall: d_i=0.25*R=%.4f   hydro B=0   force_on=False viscoelastic=False" % D_I)
+    log("Hall: d_i=%.4f   hydro B=0   force_on=False viscoelastic=False" % d_i)
 
-    dt_h, dt_m, dt_ha = plan_dts(grid, u0, B0)
-    # Per-mode CFL. Hall is tight: d_i * max|B| / dx (Shen |B| ~ Gamma_m / (pi R^2)).
+    dt_h, dt_m, dt_ha = plan_dts(grid, u0, B0, d_i)
     plans = {
         "hydro": (dt_h,) + plan_one(dt_h, args.t_end, args.steps),
         "mhd": (dt_m,) + plan_one(dt_m, args.t_end, args.steps),
@@ -427,11 +539,16 @@ def main():
         "Hall CFL is tight (d_i=%.4f, Shen max|B|~%.2f): local hall march "
         "is the slow one. Hydro/mhd use their own larger dt. "
         "Cap with --steps if you only want a short smoke."
-        % (D_I, float(np.max(np.sqrt(np.sum(B0 ** 2, axis=0)))))
+        % (d_i, float(np.max(np.sqrt(np.sum(B0 ** 2, axis=0)))))
+    )
+    log(
+        "core_sep: every dump via scanned chunks of length diag_every "
+        "(hydro plan diag_every=%d); mill has no omega hist."
+        % plans["hydro"][2]
     )
 
     if args.dry_run:
-        log("dry-run: IC params + Shen live check printed; no march.")
+        log("dry-run: IC params + Shen live check + plans printed; no march.")
         print_reconnects_rule(results=None)
         return
 
@@ -439,31 +556,37 @@ def main():
     jobs = (
         ("hydro", "vorticity", 0.0, False),
         ("mhd", "mhd", 0.0, True),
-        ("hall", "hall", D_I, True),
+        ("hall", "hall", d_i, True),
     )
-    for name, mode, d_i, magnetic in jobs:
+    mode_sel = str(args.mode).lower()
+    for name, mode, d_i_run, magnetic in jobs:
+        if mode_sel != "all" and mode_sel != name:
+            continue
         dt, steps, diag_every, t_act = plans[name]
-        log("RUN %s mode=%s d_i=%.4f magnetic=%s Shen=%s dt=%.6e steps=%d t_act=%.4f" % (
-            name, mode, d_i, magnetic, magnetic, dt, steps, t_act))
-        out = _run_one(mode, N, steps, dt, diag_every, d_i=d_i)
-        t = _arr(out["time"])
-        maxw = _arr(out["max_vort"])
-        maxj = _arr(out.get("max_j", np.zeros_like(t)))
-        phi = _arr(out.get("flux_x_half", np.zeros_like(t)))
-        sep, s0, s1 = _sep_series_from_out(out, grid, u0)
+        log("RUN %s mode=%s d_i=%.4f gamma_m=%.3f magnetic=%s Shen=%s "
+            "dt=%.6e steps=%d diag_every=%d t_act=%.4f (chunked core_sep)" % (
+                name, mode, d_i_run, gamma_m, magnetic, magnetic,
+                dt, steps, diag_every, t_act))
+        rec = _run_chunked_with_core_sep(
+            mode, N, steps, dt, diag_every, grid, u0,
+            d_i=d_i_run, gamma_m=gamma_m,
+        )
+        t = rec["t"]
+        sep = rec["sep"]
+        maxw = rec["maxw"]
+        maxj = rec["maxj"]
+        phi = rec["phi"]
         print_table(name, t, sep, maxw, maxj, phi, magnetic)
         t_jpeak = float("nan")
-        if magnetic and maxj.size:
-            t_jpeak = float(t[int(np.argmax(maxj))])
-        # reconnects-first uses the two sampled sep points (t=0, t_end)
-        t_sep = np.array([float(t[0]), float(t[-1])]) if t.size else np.array([])
-        sep_e = np.array([s0, s1]) if t.size else np.array([])
+        if magnetic and maxj.size and np.any(np.isfinite(maxj)):
+            t_jpeak = float(t[int(np.nanargmax(maxj))])
         results.append((name, dict(
-            t=t, sep=sep, t_sep=t_sep, sep_e=sep_e, sep0=s0, sepend=s1,
+            t=t, sep=sep, sep0=rec["sep0"], sepend=rec["sepend"],
             t_jpeak=t_jpeak,
         )))
-        log("%s sep(t=0)=%.6f sep(t_end)=%.6f max|w|_peak=%.6e" % (
-            name, s0, s1, float(np.max(maxw)) if maxw.size else float("nan")))
+        log("%s sep(t=0)=%.6f sep(t_end)=%.6f n_dumps=%d max|w|_peak=%.6e" % (
+            name, rec["sep0"], rec["sepend"], int(t.size),
+            float(np.nanmax(maxw)) if maxw.size else float("nan")))
 
     print_reconnects_rule(results)
     log("done. no merge, no Crow campaign, no OT, no 0% I_leak, mill RHS untouched.")
@@ -471,4 +594,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
