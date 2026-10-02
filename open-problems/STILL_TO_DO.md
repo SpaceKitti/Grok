@@ -2,7 +2,9 @@
 
 Kept by Helios. I update it every time a job lands, and Ledger pushes it with each job. A problem is marked "out of ideas" only once Venus, Aethon, Orion and Helios all agree.
 
-Last updated: 2026-10-02, 19:35 BST.
+**Common thread (from Akitti's link post, see `UNIFYING_THREAD.md`):** all four problems are read as a sphere carrying n units of flux ("strings"), where things break once n is too big for the sphere [assumed]. The link is firm for the SM (n = number of families) and membranes (fuzzy sphere), medium for vacuum selection, and weak for Stelle/LQC. Cheap test: Job U1, the fuzzy-sphere string count (not run yet).
+
+Last updated: 2026-10-02, 19:50 BST.
 
 Problems 1 and 2 don't have folders here yet. Their titles below are Helios's own grouping of Jobs One to Five, and Akitti can rename them.
 
@@ -42,7 +44,9 @@ Problems 1 and 2 don't have folders here yet. Their titles below are Helios's ow
 
 **Still to do or try**
 - Why 5b matters [identity, Helios]: brane tension just relabels the flux (n becomes n/alpha), so it keeps the same blind spot and can't pick n even in principle. The Casimir term falls off at a different power of the radius, so it breaks the blind spot. Casimir is the only part of 5b that could select n.
-- Job 5b (spec sent): lift the vacuum with brane tension (predicted to fail) or with the one-loop Casimir energy. The Casimir strength is taken as a constant and its log R piece is ignored [assumed input].
+- Job 5b (radion-5b-tension-casimir): done. Tension is PARTIAL (it can only relabel n, so it never reaches the band). Casimir is PARTIAL under the rule fixed beforehand: it makes three generations a dS survivor, and it is the first ingredient that actually tells n apart, but only with a Casimir strength about 2000 times its natural size [tuned]. The radius is the only thing allowed to move, and tunnelling through either barrier is not checked yet.
+- Next ideas: (a) work out the Casimir sign and size for real field content from Kantowski-Milton, to see what number of fields makes it natural; (b) scan every n at one fixed vacuum energy and Casimir strength, which is the real "one universe" selection test; (c) add the second field that the SLED models carry (the dilaton).
+- Superseded line from the 5b spec: lift the vacuum with brane tension (predicted to fail) or with the one-loop Casimir energy. The Casimir strength is taken as a constant and its log R piece is ignored [assumed input].
 - Job 5c (vacuum-flux-share): done. PARTIAL for the flux share (the widest dS stretch is about 2.8%, under the 5% bar) and FAIL for the curvature-inclusive share (an identity: it can never reach a band). Wall [identity]: the filter only sees the flux strength in 6D units, a single number, so every n survives somewhere if the 6D vacuum energy is rescaled to match. Three generations come out alone only for hand-picked stretches of vacuum energy [post-hoc].
   - Known before it lands [identity]: the flux share depends only on n divided by its largest allowed value, and that largest value moves with the 6D vacuum energy. Any number of generations can be made the survivor by shifting the 6D vacuum energy, so 5c can at best say "three generations for this vacuum energy". The only thing that could single out three is if Job Three's bands differ from one n to another. 5c checks that.
 - Next idea (not specced yet): fix the 6D vacuum energy from outside the model, for example from Job Two's KK gap or from the measured 4D vacuum energy.

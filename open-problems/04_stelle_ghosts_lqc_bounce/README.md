@@ -1,4 +1,4 @@
-# Open problem 4: Stelle ghosts / stability, and LQC bounces beyond minisuperspace
+﻿# Open problem 4: Stelle ghosts / stability, and LQC bounces beyond minisuperspace
 
 ## Problem
 Stelle's quadratic gravity ($R + R^2 + C_{\mu\nu\rho\sigma}C^{\mu\nu\rho\sigma}$) is renormalizable but carries a massive spin-2 ghost, so unitarity and classical/quantum stability are not settled (proposals: unstable ghosts, fakeons, Lee-Wick prescriptions). Separately, the loop quantum cosmology (LQC) singularity-resolving bounce comes from homogeneous minisuperspace models. Whether it survives with inhomogeneities, and how it relates to full LQG, is open. The main attempts are dressed-metric and hybrid quantization of perturbations, effective constraints, and GFT condensates.
@@ -40,4 +40,5 @@ Gap: nothing on the Stelle massive spin-2 ghost, its unitarity, or its stability
 - Cailleteau, Mielczarek, Barrau & Grain, CQG 29 (2012) 095010, arXiv:1111.3535 (cited only; Omega's first appearance, scalar sector).
 - Grain, Barrau, Cailleteau & Mielczarek, PRD 82 (2010) 123520, arXiv:1011.1811 (cited only; pre-deformed-algebra background).
 - Deffayet, Mukohyama & Vikman, "Ghosts without runaway instabilities", PRL 128 (2022) 041301, arXiv:2108.06294, doi:10.1103/PhysRevLett.128.041301. File: PRL128_041301_Deffayet_Mukohyama_Vikman_ghosts_without_runaway.pdf. Ghost model stable for all initial conditions (contrast with Smilga's island).
+- Itzhaki, Peleg & Steinhardt, "Instant Folded Strings, Dark Energy and a Cyclic Bouncing Universe", JCAP 05 (2026) 084, arXiv:2508.09745, doi:10.1088/1475-7516/2026/05/084. File: JCAP2605_084_Itzhaki_Peleg_Steinhardt_instant_folded_strings_cyclic_bounce.pdf. Ghost-free bounce: instant folded strings violate the NEC and are produced when g_s grows; perturbative control throughout (g_s << 1, T below string scale); predicts no primordial B-modes. Comparison bounce for Stelle and LQC (flagged by Akitti, x.com/Akitti/status/2105768214194168239).
 
