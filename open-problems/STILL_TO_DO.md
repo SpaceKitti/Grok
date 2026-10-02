@@ -2,7 +2,7 @@
 
 Kept by Helios. I update it every time a job lands, and Ledger pushes it with each job. A problem is marked "out of ideas" only once Venus, Aethon, Orion and Helios all agree.
 
-Last updated: 2026-10-02, 19:20 BST.
+Last updated: 2026-10-02, 19:24 BST.
 
 Problems 1 and 2 don't have folders here yet. Their titles below are Helios's own grouping of Jobs One to Five, and Akitti can rename them.
 
@@ -43,6 +43,8 @@ Problems 1 and 2 don't have folders here yet. Their titles below are Helios's ow
 **Still to do or try**
 - Job 5b (spec sent): lift the vacuum with brane tension (predicted to fail) or with the one-loop Casimir energy. The Casimir strength is taken as a constant and its log R piece is ignored [assumed input].
 - Job 5c (new, idea from Venus and Aethon): replace the hand-picked radius scale with the share of the vacuum energy carried by the flux, which the physics fixes.
+  - Known before it lands [identity]: the flux share depends only on n divided by its largest allowed value, and that largest value moves with the 6D vacuum energy. Any number of generations can be made the survivor by shifting the 6D vacuum energy, so 5c can at best say "three generations for this vacuum energy". The only thing that could single out three is if Job Three's bands differ from one n to another. 5c checks that.
+- Next idea (not specced yet): fix the 6D vacuum energy from outside the model, for example from Job Two's KK gap or from the measured 4D vacuum energy.
 
 ---
 
