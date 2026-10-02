@@ -4,9 +4,42 @@ Kept by Helios. I update it every time a job lands, and Ledger pushes it with ea
 
 **Common thread (from Akitti's link post, see `UNIFYING_THREAD.md`):** all four problems are read as a sphere carrying n units of flux ("strings"), where things break once n is too big for the sphere [assumed]. The link is firm for the SM on the physics side (n = number of families, by the index theorem), but that's Hive's mapping [assumed mapping]: Akitti's own SM posts use a warped throat instead. It's firm for membranes (fuzzy sphere, where the integer is the brane count N, not n), medium for vacuum selection, and weak for Stelle/LQC. Job U1 (fuzzy-sphere string count): done, maths PASS (Venus), physics PARTIAL (Helios). The n string zero modes are exact at every size [standard], but the "too many strings" collapse is a count, not a shift: the ladder stays exactly round with only N - n rungs, and the sector vanishes at n = N [computed]. The apparent level drift was just the radius convention [identity]. Reading: an N-state fuzzy sphere is the lowest Landau level of a charge N - 1 monopole, so strings use up the bubble's own flux budget [standard: Haldane 1983, body; tie is hive-interpretation]. Two more threads are now written up in `UNIFYING_THREAD.md`, negative modes (around Akitti's Aug 8 anchor article) and axions, each with a cheap test (Jobs N1 and A1 below) (axion thread: Hive's side-test, on hold; not Akitti's link).
 
-Last updated: 2026-10-02, 21:41 BST.
+Last updated: 2026-10-02, about 22:45 BST (LIFT section added on top; B0 graded). Previous update: 21:41 BST.
 
 Problems 1 and 2 don't have folders here yet. Their titles below are Helios's own grouping of Jobs One to Five, and Akitti can rename them.
+
+---
+
+## LIFT to 3D/4D quantum gravity (main goal; added 2026-10-02 about 22:30 BST)
+
+**Why it's on top [Akitti, via NanoRibbon]:** at 22:12 he said the toy was about lifting to 3D/4D quantum gravity. At 22:14 he said, in his words, "the whole issue is the r=0 basically and going from s^2->r^2 string to brane". At 22:16 he added that the lift can't be built until the four problems below are solved, because all four happen at that same string → brane step at r = 0 (Grok pointed this out to him). So the four problems are the **blockers** to the lift. Plan: `JOB_LIFT_SPEC.md` (also in `/workspace/lift/` on the box).
+
+**The lift's gravity is unknown quantum gravity [Akitti, 22:41].** Never substitute Einstein GR for it. L1–L3 (GR, Einstein–Maxwell, EYMH) and Stelle/LQC in L4 are labelled reference/control rows only. Only results that don't depend on which gravity theory is used (the flux and Landau counts on the S², the area-bound form, tip smoothness) count as unblocking. L1 and L2 have no gravity-independent part, so they are harness calibration only.
+
+**Theory-free lift requirements** (what any candidate quantum gravity must satisfy at the r = 0 S² → R² handoff; Venus 22:45)
+1. **Smooth cap at r = 0.** The Euclidean time period is 2π/κ, so the tip of the R² has no cone [kinematic; holds in any metric theory].
+2. **Flux is conserved through the handoff.** N = (1/2π)∫_{S²} F does not change from S² to R² [identity: the first Chern number].
+3. **Mode count on the S².** For the g = 2 spin-1 field, 2n − 1 modes (complex), from index counting on the S² [identity]. For the scalar, n + 1.
+4. **The crowding threshold, A against N_Φ, is the open test.** How the sphere's area A compares with the flux count N_Φ, and what the unknown quantum gravity does past that threshold, is the question the lift's gravity must answer. All four blockers sit at that threshold [open].
+
+
+**The four blockers [hive-interpretation for the mapping]**
+- 04 (Stelle/bounce): no finite, ghost-free treatment of the r = 0 bounce or the Euclidean negative mode. Unblocked by: the flux/Landau count and onset form (L3, B4; requirements 3 and 4). L1 and L2 are harness calibration only. Tests: B4/B4L, L1, L2.
+- 03 (membranes): the wrapped string → brane has no finite quantum theory. Unblocked by: to write. Tests: B3, L3.
+- 02 (vacuum): the vacuum energy at the handoff isn't fixed. Unblocked by: to write. Tests: B0, B2.
+- 01 (SM): families and zero modes on the bolt S² aren't derived. Unblocked by: to write. Tests: B1, U1.
+
+**Stages (tests at the blockers, not the lift itself; L1–L3 are GR/known-theory control rows)**
+- **L1 (next):** the Schwarzschild negative mode as a radial ODE. Target M²λ ≈ −0.192 (Prestidge); count locked at (Euclidean, Lorentzian) = (1, 0); conformal modes counted separately.
+- L2: magnetic RN. The Euclidean count goes 1 → 0 at C_Q = 0, and the Lorentzian count stays 0 (Monteiro–Santos 2009).
+- L3: broken SU(2) on the horizon (LNW, Ridgway–Weinberg). The Lorentzian count goes 0 → 2n − 1 (complex modes) for A below 4πn/(e²v²), opposite to the Bradlow toy (each side using its own n; per flux quantum the onsets differ by a factor of 2). A different theory from L1/L2, so the table is not one flow.
+- L4: report only (interior bounce, remnants [Grok-suggested], the two r = 0s).
+
+**Bradlow-cap jobs (`open-problems\Bradlow_cap\`)**
+- B0 (shared base, `Bradlow_cap\B0_taubes_base\`): done, RESULTS AE4E8FFB, README D0286065, one graded run on TrinityOrb (22:33). Build PASS (Aethon). Physics PASS as a reproduction (Helios, about 22:45; `B0_GRADE_HELIOS.md`): C1–C3 pass, and the amplitude-mode gap² over (A − A_B)/A_B extrapolates to 0.999, 0.998 and 0.996 for n = 1, 2, 3 (3% window). I re-ran it on the box: identical numbers, ratio → 1 down to ε = 0.001, and no solution below the cap [identity]. The next-order slope grows with n (−1.09, −1.60, −2.34), so B2 must use the measured gap table. Venus maths PASS (22:38).
+- B2 (folder 02 vacuum pressure): spec cleared by Venus at 3A069F08, pushed as 07c9d97; Aethon building.
+- B4 (folder 04): outline; its gravity version B4L is now LIFT L1, L2 and L4. B3 and B1: outlines.
+- A2 stays on hold (Akitti, 21:36).
 
 ---
 
