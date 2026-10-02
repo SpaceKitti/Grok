@@ -1,0 +1,61 @@
+{
+  "pair_A": {
+    "ep2_found": true,
+    "jordan": true,
+    "puiseux_half": true,
+    "mono_4pi": true,
+    "on_cut": true,
+    "passed": true,
+    "exponent": 0.5000384237449521,
+    "eps_ep": 0.5136807534996295,
+    "lam_ep": "(-0-0.30842513753404244j)",
+    "Gamma": [
+      -0.5136807534996295,
+      0.5136807534996295
+    ],
+    "notes": "derived 2\u00d72 of \u03b5x + i\u03b7\u2202xx on two Dirichlet sines; \u03b5_EP=0.513681, \u03bb_EP=(-0-0.30842513753404244j), \u0393=(-0.5136807534996295, 0.5136807534996295), geom_mult=1, rank(H-\u03bbI)=1",
+    "petermann": 2725725982641184.0,
+    "defect": 2.6513937723624728e-17
+  },
+  "pair_B1": {
+    "ep2_found": false,
+    "jordan": false,
+    "puiseux_half": false,
+    "mono_4pi": false,
+    "on_cut": false,
+    "passed": false,
+    "exponent": NaN,
+    "eps_ep": NaN,
+    "lam_ep": "-0.025j",
+    "Gamma": [
+      0.0,
+      0.0
+    ],
+    "notes": "B1: no real-\u03b5 EP2 (min|disc|=0.0025 at \u03b5=0). Ohmic (\u2212i\u03b7) and CS@0 miss each other on real shear; EP would need \u03b7=0 (gravity-only) or complex coupling.",
+    "petermann": 1.0,
+    "defect": 0.999999999999996
+  },
+  "pair_B2": {
+    "ep2_found": true,
+    "jordan": true,
+    "puiseux_half": true,
+    "mono_4pi": true,
+    "on_cut": true,
+    "passed": true,
+    "exponent": 0.500038423801657,
+    "eps_ep": 0.05,
+    "lam_ep": "(5.969091637317863e-18+0j)",
+    "Gamma": [
+      -0.05,
+      0.05
+    ],
+    "notes": "B2 GSG grading (shear vs cut-width)",
+    "petermann": 4.014215786530018e+24,
+    "defect": 4.906538933386792e-17
+  },
+  "NxN_min_gap": 0.05040573450763175,
+  "verdict": "one-sided",
+  "matrix_A": "H_A(\u03b5) = [[ -i \u03b7(\u03c0/2)^2,  \u03b5 v ], [ \u03b5 v,  -i \u03b7 \u03c0^2 ]]  with v=\u27e8\u03c61,x \u03c62\u27e9=-0.360253, \u03b7=0.05",
+  "matrix_B1": "H_B1(\u03b5) = [[ -i \u03b7, \u03b5 ], [ -\u03b5, 0 ]]",
+  "matrix_B2": "H_B2(\u03b5) = [[ \u03b5, \u03b7 ], [ -\u03b7, -\u03b5 ]]"
+}
