@@ -1,108 +1,114 @@
 # The common thread in the four open problems
 
-Written by Helios on 2026-10-02 at 19:50 BST, from Akitti's link post (https://x.com/Akitti/status/2105917997588365696) and the posts Orion collected in `AKITTI_LINK_POST.md`. Venus checked it for consistency at 19:53 (no maths errors), and her four notes plus Orion's sourcing note are folded in. Guesses are marked [assumed].
+Rebuilt 2026-10-02 from Akitti's link post file (`open-problems\AKITTI_LINK_POST.md`) only. Supersedes UNIFYING_THREAD.md version **CDE3C256**. "L" = line number in that file; all quotes are checked word for word in `AKITTI_QUOTES.md`.
 
-## Akitti's picture, in one line
+Tags:
+- [Akitti] his words.
+- [Akitti account] posted by @Akitti; the wording reads like a Grok-assisted draft he shared (see the note in AKITTI_QUOTES.md). Akitti can say which lines are his own.
+- [hive-interpretation] our reading.
+- [standard] textbook.
+- [computed] job result.
 
-> A bubble starts growing strings on its outside. The strings want to become a brane. Once too many strings form, infinities and gaps show up in four areas of physics.
+## Akitti's link, in his words
 
-## The shared ingredient: a sphere carrying n units of flux
+One idea: strings pile up on the skin of a bubble, and too many of them cause the breakdowns in all four problems.
 
-The simplest real-physics version of "a bubble with strings on its skin" is a **round sphere (S2) with n units of magnetic-style flux through it**. Each flux unit is one "string". That same object is already the backbone of Jobs Two, Four, Five, 5b and 5c (the RSS 1983 sphere) [standard]. "Too many strings" then becomes **n getting bigger than the sphere can hold** [assumed: this is Helios's reading of the post].
+> "Thinking about a bubble that starts forming strings on the outside, The strings want to turn into a brane.... and then once too many strings form on the outside of the bubble , mathematical divergences (infinities) and conceptual holes happen in 4 different topics of physics." [Akitti, L12, link post 2105917997588365696, 8:09 AM Oct 2]
 
-**Two integers, kept apart (Venus's note).** n is the number of strings, meaning flux units through the sphere. N is the bubble's resolution, the matrix size, which counts the D0-branes in problem 3. In Job U1, "too many strings" means n approaching N. In problem 2 it means n going past n_max.
+> "Strings live in the planar factor that terminates; the pentaflake / 0-brane defects wrap the \(S^{2}\) factor that remains writable. That is exactly “strings \(\to\) branes” read in 4-d." [Akitti account, L68, Oct 1 8:21 AM]
 
-### What each problem needs from it
+In plain words:
+- He writes "bubble". The day-before post makes the brane side a sphere (S²) [hive-interpretation].
+- Neither post says what "too many" means.
 
-1. **Standard Model from the sphere.** The number of strings decides how many families of particles there are. With n units of flux on a sphere, a charged particle has exactly |n| zero-energy modes, by the index theorem [standard]. So three generations means n = 3. Those |n| zero modes form one spin-j multiplet with j = (|n|-1)/2, so n = 3 gives j = 1. That's why a tilt acts on the generations through the spin-1 rotation matrix d^1(beta) in Jobs Four and 4b [identity, Venus], which ties this link to the mixing work.
-   **Where the link comes from.** "|n| zero modes on a sphere with n flux units" is [standard]. "That's how Akitti's families arise" is [assumed mapping]: it's Hive's mapping, not Akitti's. Akitti's own SM posts get the families and the Yukawa hierarchy from a warped throat instead. Those posts use Randall-Sundrum bulk fermions and a bulk Higgs, chiral zero modes localised along the throat, O(1) c values at kL = 35, and c-shifts from Brockett double-bracket flow whose misaligned singular vectors give the CKM matrix [hive-interpretation for the Brockett part]. The sphere link is the firmest on the physics side, but Akitti's warped picture is the one to test against it (see STILL_TO_DO, problem 1).
-2. **Choosing the vacuum.** The sphere's size settles into a stable value only while n^2 Lambda6 <= b^2/(3ac). So n_max is not a fixed capacity of the sphere. It moves with the 6D vacuum energy, which is exactly why 5c can't select n [identity, Venus]. Past it, V' < 0 everywhere and the sphere blows up (decompactifies). With 5b's attractive Casimir term (C < 0) there's a second way to fail, collapse towards zero size, so "blows up" covers only one of the two. That's "too many strings, then a divergence" in its most literal form [assumed mapping]. Jobs 5c and 5b show that the flux alone can't tell one n from another. The Casimir energy is the first ingredient that can, though only with a tuned strength [computed].
-3. **Membranes.** In matrix theory, a pile of N point-like branes sitting in a flux puffs up into a spherical membrane, a "fuzzy sphere" (Myers dielectric effect; Kabat-Taylor spherical membranes) [standard]. That's "the strings want to become a brane" made exact. The membrane's continuous spectrum comes from thin spikes leaking out of the sphere at no energy cost [standard: dWLN]. The integer here is N, the brane count, not the string count n (see the two-integers note). Reading N as "strings" was a loose fit and is dropped.
-4. **Stelle's ghost and the bounce.** The weakest link. "Too many strings" is read as the density on the bubble reaching the critical density, where LQC bounces. Akitti calls that point the "death face" [assumed]. Itzhaki-Peleg-Steinhardt (arXiv 2508.09745) have strings that are produced in the background, break the usual energy condition and drive a bounce without a ghost. That gives a concrete string-driven bounce to compare with Stelle and LQC [standard for the paper, assumed for the link]. Nothing in the Stelle ghost uses the sphere or n yet.
+## 01: Standard Model from the sphere
 
-### One family of pictures: sphere, throat, wormhole mouth, horizon (added 20:05 at NanoRibbon's request)
+> "The chiral zero modes that sit in the protected spectrum after Brockett alignment + \(\kappa\)-barrier live as wave-functions on the throat (or on the hierarchical GoldbergHexa shells)." [Akitti account, L1726, Aug 22]
 
-Akitti's posts switch between four pictures. Where possible they're read as one family: each has a round cross-section carrying flux, and the integer is the flux through it. The dimension count matters, though, and it breaks the family in one place.
+> "We deliberately group the modes into larger blocks (the shells or the three generations) using projectors \(P\)." [Akitti account, L1806, Aug 23]
 
-| Picture | Akitti's posts that use it (sections of `AKITTI_LINK_POST.md`) | Cross-section | Does the four-problem link survive? |
-|---|---|---|---|
-| Sphere (RSS/SLED) | the link post; Oct 1 8:21 AM ("R2 to S2 death face"); Sep 30 9:30 AM (black-brane probe that "may not fold S2 into R2") | S2 with n flux units [standard] | As above: SM firm on the physics side, membranes firm (with N, not n), vacuum medium, Stelle/LQC weak. |
-| Magnetic black-hole horizon | Sep 30 9:30 AM (black-brane stack that refuses a planar horizon); Sep 22 posts (Schwarzschild factor changing sign at the horizon in higher-derivative gravity); Sep 29 9:58 PM (horizon cut-offs in holographic bounces) | Near the horizon of an extremal magnetic black hole the geometry is AdS2 x S2, with n flux units through the S2 [standard: Bertotti-Robinson] | **Best match to the sphere.** A charged fermion on that S2 has exactly the same |n| zero modes (the lowest Landau level), so the SM link carries over unchanged [standard]. Stelle link gets stronger: quadratic gravity has non-Schwarzschild black holes, so the horizon is where the ghost mass matters [standard: Lu-Perkins-Pope-Stelle, PRL 114 (2015) 171601, arXiv:1502.01028, checked by Orion]. Vacuum and membrane links: [assumed], no better than for the sphere. |
-| Wormhole mouth | Oct 1 8:21 AM (necklace / wormhole / FLRW leaf); Sep 30 10:57 AM (Lin-Shiu axion wormhole fragmentation, Akitti's 3D Einstein-axion necklace at q = 0.4) | In 4D a Giddings-Strominger axion wormhole has an **S3** throat, not S2 [standard]. In Akitti's **3D** necklace the cross-section *is* S2, with axion flux q through it [standard dimension count]. | Survives only in Akitti's 3D version. There it gives the clearest "too many strings" threshold in Akitti's own work: the necklace action -k pi (1 - q^2)/(2G) changes sign at q = 1, and Lin-Shiu fragmentation lets a too-charged wormhole break up [Akitti's formula; reading it as "too many strings" is assumed]. SM link breaks: axion flux doesn't act on fermions the way a gauge flux does, so there's no index count [assumed]. |
-| Warped throat | Akitti's SM posts (status 2091110492701962645, 2091052601265525191, 2091453359412703421); the Aug RS profiles reused in the Sep 30 9:30 AM post | The RS throat (A = -ky) has **no sphere at all**: its slices are flat [standard]. The string-theory throat (Klebanov-Strassler) does have S2 x S3 slices, but the S2 shrinks to nothing at the tip and the flux sits on the S3 [standard]. | **The odd one out.** Families come from where zero modes sit along the throat, not from counting flux, so the index link breaks [standard: RS]. It's the right picture for flavour (Job 4c), not for the integer n. |
+- His particles live on a throat or on sphere-shaped shells, and the three generations are grouped by hand there [hive-interpretation].
+- None of his SM posts mentions strings, so how too many strings would cause an SM problem isn't stated.
 
-**What this changes.** The family is real for the sphere and the magnetic horizon, which share the same S2-with-flux object and the same |n| zero modes. The wormhole joins only in 3D, and the warped throat doesn't join, since it carries flavour rather than the integer. So "the integer is the flux through a round cross-section" holds for three of the four pictures [assumed].
+## 02: Vacuum selection
 
-**Cheap test.** No new job is needed. U1's round-sphere targets, k(k+|n|) with degeneracy |n|+2k, are exactly the charged-particle levels on the S2 of a magnetic black-hole horizon at unit radius [standard], so U1 tests the sphere and horizon pictures together.
+> "It's a Betti spike. The homology just refuses to contract." [Akitti, L1151, Oct 1 9:25 PM]
 
-**Job U1 result (20:30): the 'too many strings' limit is a count [computed].** The fuzzy sphere keeps the n zero modes exactly at every size, but its excited ladder, which is still exactly round, has only N - n rungs, and the sector disappears at n = N. Reading [standard: Haldane 1983, body; the tie to Akitti's bubble is hive-interpretation]: a fuzzy sphere with N states is the lowest Landau level of a monopole of charge N - 1, so the strings use up the bubble's own flux budget and n is at most N - 1. Stage B's apparent level drift was only the radius convention [identity].
+> "At critical occupancy the homology changes: new independent cycles appear and the Betti numbers jump. Those jumps are the spikes." [Akitti account, L1155]
 
-### The negative-modes thread (added 20:30, around Akitti's anchor article)
+- The vacuum gets picked when a network fills up past a critical point and new loops lock flux in [hive-interpretation].
+- "Critical occupancy" is his nearest word to "too many". The post never says the occupants are strings. It only quotes the strings-to-brane "deathface" post (L1175–L1183).
 
-**Akitti's anchor article** (Aug 8, https://x.com/Akitti/status/2086142235129610328, "On the Road to a Theory of Everything") says that in every field Akitti looks at, the Hessian (the matrix of second derivatives of an energy) has a "pancake" spectrum: a few large positive eigenvalues and a big set of near-zero and negative ones. Negative means unstable, near-zero means flat. Akitti then proposes a Brockett flow, dH/dt = [H,[H,N]], to organise them, plus containment of the negative modes to protect unitarity.
+## 03: Membrane renormalization
 
-**The common language is real [standard].** Every step of Akitti's chain decides stability from the spectrum of a second-variation operator:
-- **Deep learning:** saddles of the loss landscape. Gradient descent slows near them, and the negative directions are the escape routes [standard: Dauphin et al. 2014, Orion to verify]. Flat basins are the near-zero part. Posts: chain Step 1 (Aug 6 "flat basins ... 100k mini black holes"; Aug 7 and Aug 18, pancake Hessian with a weak negative direction).
-- **Cavitation:** the Rayleigh-Plesset radial mode. Below the Blake threshold the bubble has no stable radius and grows without bound [standard: Blake], and non-spherical shape modes go unstable during collapse [standard: Plesset]. Posts: Step 2 (Jul 18 "Death of Symmetry"; Jul 18 unified bubble framework).
-- **Navier-Stokes:** eigenvalues of the linearised flow crossing into growth (Rayleigh, Orr-Sommerfeld) [standard]. One caution: flow operators are not symmetric, so flows can grow for a while even when every eigenvalue is stable [standard: non-normal transient growth]. Posts: Step 3 (Jul 18 "Rayleigh-Plesset is a spherical reduction of Navier-Stokes", which is right [standard]; Jul 20 compiled framework; Aug 11, full text pending).
-- **MHD:** the ideal-MHD energy principle. The plasma is unstable exactly when the force operator has a negative direction, delta W < 0 (kinks, interchanges) [standard: Bernstein-Frieman-Kruskal-Kulsrud 1958]. Here the operator is symmetric, so the Hessian picture is exact. Posts: Step 4 links only to the Sep 20-21 Alfven-spectrum posts (new MHD posts: X posts pending).
-- **Quantum gravity:** Euclidean saddles. A tunnelling bounce has exactly one negative mode [standard: Callan-Coleman]. Whether axion wormholes have extra ones is disputed [standard: Hertog-Truijen-Van Riet, PRL 2019 vs Loges-Shiu-Sudhir 2022, Orion to verify]. Posts: Step 5 (links only); axion thread, Jul 22 ("multiple negative modes").
+> "The strings want to turn into a brane...." [Akitti, L12]
 
-**Where our jobs sit in it [computed, from the jobs].**
-- **Jobs 5, 5b, 5c (radion):** a dS vacuum needs positive stiffness (V'' > 0) at the minimum. Past n_max the minimum disappears because the stiffness passes through zero. 5b's two barriers are the edges of the stable region.
-- **Job Six (membrane):** the valleys of x^2 y^2 are flat directions, zero modes of the classical Hessian. Supersymmetry cancels the zero-point energy along them, so the spectrum becomes a continuum.
-- **Job 6b:** the zero-energy state along the valley exists but can't be normalised.
-- **Job U1:** the Dirac operator's zero modes are protected by topology, with exactly n of them at every resolution.
-- **Job Seven (ghost) is a different thing.** A ghost has the wrong sign of kinetic energy (negative norm). A tachyon has negative stiffness (a negative Hessian eigenvalue). The anchor article's "containment ... avoid negative-norm ghost states" blurs the two [standard distinction]. Job Seven's no-ghost control showed the difference in practice: a potential that's unbounded below (the quartic with negative coupling, whose stiffness at the origin is zero, not negative) runs away with no ghost at all.
+> "The \(S^{2}\) bolt is then the wrapping cycle of a D2 / Euclidean instanton / charged 0-brane that the Lin–Shiu fragmentation already licenses." [Akitti account, L82]
 
-**What the thread can and can't do.**
-- It's a shared **language**, not yet a shared **mechanism**. Using the same diagnostic in five fields doesn't mean the same physics causes each instability [assumed].
-- **A limit on the anchor article's flow [identity].** The Brockett flow keeps the spectrum exactly, so it can never change how many negative eigenvalues there are. It only turns the directions they point in. Any "containment" has to come from a projection or barrier added on top (Akitti's kappa-barrier), not from the flow itself. That's a sharp, checkable statement about Akitti's framework. It's stronger than the Brockett case: any flow of the form dH/dt = [H,B] keeps the eigenvalues, and for symmetric H the count of negative ones is fixed exactly (Sylvester's law of inertia) [identity, Venus]. Two cautions: a code that steps the flow with a plain explicit step is not exactly isospectral and can fake "containment", so any run of this kind uses a Cayley or matrix-exponential step or prints the eigenvalue drift; and if N changes in time, or H is re-read as the Hessian of a changing energy, the flow is no longer isospectral. So the precise claim is "the flow alone can't contain anything".
-- **Strength:** strong as the common language across all four problems and the whole chain [standard]; untested as a unifying mechanism [assumed].
+- The brane the strings turn into is a membrane wrapped on the sphere. A D2-brane is a membrane [standard]; that this is his problem-03 membrane is [hive-interpretation].
+- Correction (22:00): one saved post does tie membrane divergences to string density [Akitti account; Orion's `03_membrane_renormalization\X_NOTES.md` line 7, post 2105747522497261789, Oct 1]: "The concrete divergences (continuous spectrum + counterterm tower + UV blow-up) appear when the string density on the sphere is high enough that the discrete sum cannot be absorbed into a finite planar chart." It is not in the link-post file, which is why the first pass missed it.
 
-**Cheap test: Job N1, "bubble vs radion".** The cavitation bubble and our radion are each one radius in a potential made of a few power laws. For the bubble those are ambient pressure, surface tension and gas pressure; for the radion, vacuum energy, curvature, flux and Casimir. Each has a threshold where the stable radius disappears (Blake for the bubble, n_max for the radion).
-- Map the two potentials term by term.
-- Ask whether the Blake threshold lands on the radion's no-minimum boundary under the map [prediction], and whether 5b's attractive Casimir term plays the part of the bubble's collapse side.
-- Grades: PASS if the map exists with matching signs and the thresholds coincide; PARTIAL if the powers match but the thresholds don't; FAIL if the powers don't match.
-- Rules fixed in advance (Venus): the only allowed maps are a monotone change of variable R = c r^alpha and a positive rescaling of the energy, which carry fold thresholds across exactly; no multiplying by powers of r (a frame change), which moves the extrema. The gas index is pinned to a physical value, 1 (isothermal, where the gas term is a logarithm) or 1.4 (adiabatic air); a match that needs it chosen by hand is [tuned]. The Blake threshold needs the liquid under tension (negative ambient pressure), so the spec names which radion term carries that sign.
-- Cost: algebra and a few roots, with no time-stepping. It's the most direct test of Akitti's "cavitation looks like vacuum selection".
+## 04: Stelle ghosts and the LQC bounce
 
-### The axion thread (added 20:30)
+> "The LQC bounce, the Euclidean necklace throat and the Stelle wall are already 4-d. Their symmetry-reduced 2-d sections are the \(\mathbb{R}^{2}\leftrightarrow S^{2}\) deathface you already have." [Akitti account, L71, Oct 1 8:21 AM]
 
-Akitti says axions are the main reason it all looks the same. The posts are in the "Axion thread" section of `AKITTI_LINK_POST.md`: Jul 22 (axion wormholes with negative modes); Aug 2, two posts (string axion C = phi/f_a with V = m^2 C^2/2, dilaton-axion mixing, a theta^2 F^2 portal); Sep 6, two posts (Mallik-Neha-Narain axionic-wormhole boundary conditions, arXiv 2609.04137); Sep 27 (3D Einstein-axion lapse contour, Blommaert et al.); Oct 1 ("onto something with this axion wormhole thing"); plus the Sep 30 Lin-Shiu post under problem 2.
+> "Instant Folded Strings, Dark Energy / and a Cyclic Bouncing Universe" [Akitti, L30–L31: a paper title he posted, 10:14 PM Oct 1]
 
-**How strong each link is:**
-1. **Axions from forms on the sphere: strong [standard].** A 2-form field integrated over the S2 is a 4D axion, which is how string axions arise (Svrcek-Witten, Orion to verify). Fluxes can give it a potential that winds around, called monodromy [standard: McAllister-Silverstein-Westphal, Orion to verify]. That sits directly on our RSS sphere, so the axion and the strings share one object [assumed for our model, since no job has the 2-form yet].
-2. **Axion wormholes and vacuum selection: strong in Akitti's own work.** Akitti's necklace action flips sign at q = 1, and Lin-Shiu fragmentation lets an over-charged wormhole break up. That's the clearest "too many strings" threshold in Akitti's posts [Akitti's formula; the link to problem 2 is assumed]. It's also where the axion and negative-modes threads meet, because whether those wormholes count depends on their negative modes, which is disputed.
-3. **The relaxion and vacuum selection: medium [standard idea: Graham-Kaplan-Rajendran 2015, Orion to verify].** A slowly rolling axion picks the Higgs mass dynamically. It selects the electroweak scale, not n or the vacuum energy, so it's a cousin of problem 2 rather than an answer [assumed]. No Akitti relaxion posts were captured (X posts pending).
-4. **Axion couplings and flavour: medium.** In "axiflavon" or "flaxion" models, the phase of the field that sets the quark-mass hierarchy is the QCD axion [standard: Calibbi et al. 2017, Ema et al. 2017, Orion to verify]. That would tie an axion to problem 1 and to Job 4c's warped c values [assumed].
-5. **Membranes: medium [standard].** Wrapped membranes (M2-brane instantons) generate axion potentials. The link runs through instantons, not through Job Six's quantum membrane [assumed].
-6. **Axions in the bounce: weak [standard reason].** A real-time axion is an ordinary scalar with positive energy, so it can't break the energy condition and can't drive a bounce by itself. Axions only get negative energy in the Euclidean picture, which is wormholes, not the LQC bounce.
+- The bounce and the Stelle wall sit at the same "deathface" where the strings stop and the sphere takes over. He also flagged a paper where strings drive a bounce [hive-interpretation].
+- No quote says "ghost", or that the string count sets the bounce.
 
-**Verdict.** The axion is a strong thread for the geometry (a form on the S2) and for vacuum selection (wormholes and fragmentation), medium for flavour and membranes, and weak for the bounce. It meets the negative-modes thread at one sharp point, the axion wormhole's negative modes [assumed].
+**Wormhole:** the same post names the "Euclidean necklace throat" (an axion wormhole, per L1201) as having that same S² deathface as its slice (L71). The link post itself doesn't mention wormholes.
 
-**Cheap test: Job A1, "does an S2 axion see n?"** Problem 2's wall is that every filter so far only sees the flux strength times n^2, so rescaling n by k, with the vacuum energy and size adjusted, changes nothing (Job 5c's k-family). Only Casimir broke it, and only with tuning.
-- Add the axion from the 2-form on the S2 to the radion potential. Aethon derives its form from a 6D action and Venus checks it [assumed input].
-- Run 5b's Part K k-family test on the new term: does it scale like everything else (blind) or not (it sees n)?
-- Grades: PASS if it breaks the k-family with a natural-sized coefficient; PARTIAL if only when tuned; FAIL if it's blind.
-- Rules fixed in advance (Venus): "natural-sized" means a coefficient within a factor of 10 of 1, in the units where 5b's terms are of order 1. The spec states which axion vacuum is used, since an axion sitting at its own minimum drops out and gives an empty FAIL. Seeing n has to come from something the rescaling can't copy (the axion's periodicity, the integer step of the monodromy, or a term linear in n with its sign); a term in n^2 is blind by construction.
-- Cost: sympy plus one Part K rerun.
+## What our jobs already showed about the string count (grades unchanged)
 
-**X posts pending** (X paused tonight): new MHD and MHD/QG chain posts, the from:Akitti "saddle" search, any relaxion posts, and the full text of 2087197160769028183 with its source 2052215194617610377.
+- **U1 fuzzy-sphere strings:** PARTIAL. The strings use up the sphere's own budget, so n is at most N−1 [computed].
+- **5b radion:** Casimir picks n = 3, but only [tuned].
+- **5d branes:** FAIL [tuned].
+- **A1 axion:** generic conditional PASS; FAIL for Salam–Sezgin + Green–Schwarz.
+- **N1 bubble–radion:** FAIL.
+- **4c warped-throat flavour anarchy:** PASS as a reproduction. It explains the hierarchy, not the count of three.
+- **6b/6c membranes:** PASS (toy / reproduction).
+- **Job Seven ghost:** PASS (toy).
+- Only U1 actually tested a string-count limit [hive-interpretation].
 
-**Citations for Orion to verify:** Dauphin et al. 2014 (arXiv 1406.2572); Bernstein-Frieman-Kruskal-Kulsrud 1958; Hertog-Truijen-Van Riet (arXiv 1811.12690); Loges-Shiu-Sudhir (arXiv 2203.01956); Svrcek-Witten (hep-th/0605206); McAllister-Silverstein-Westphal (arXiv 0808.0706); Graham-Kaplan-Rajendran (arXiv 1504.07551); Calibbi et al. (arXiv 1612.08040); Ema et al. (arXiv 1612.05492); Haldane, PRL 51 (1983) 605.
+## Ours, not Akitti's
 
-### Weaker candidate threads (considered, not chosen)
-- **The perfect square H = Q^2 from supersymmetry.** It ties together the membrane continuum (Job Six) and the sphere models (SLED), but not Stelle or LQC.
-- **The Betti/Berry structure.** Akitti's Oct 1 post makes it the vacuum filter, and Job Three tested it. It doesn't reach the membrane or ghost problems.
+- "Strings = n units of flux through a sphere" and "too many = n > n_max": Helios's reading (old file and L1981), not in his posts.
+- "n counts the families" (index theorem): ours. His SM posts never say it.
+- The two integers n vs N (Venus), and "the fuzzy sphere is the membrane" (Myers): ours.
+- "Death face = string density reaching LQC critical density": our reading.
+- Warped-throat-has-no-sphere point: ours. His own SM post allows "the throat (or … GoldbergHexa shells)" (L1726).
+- The one-family table (sphere / horizon / wormhole mouth / throat) and the magnetic-horizon match: ours.
+- The negative-modes thread built on the anchor article: ours, not part of his link.
+- The axion thread and Jobs A1/A2: our side-test. Akitti (21:36) says axions were never his link hunch.
+- Job N1, "cavitation looks like vacuum selection": that phrase isn't in his link post file.
 
-## A cheap job to test the link: Job U1, "fuzzy-sphere string count"
+## Gaps
 
-The aim is to see whether one matrix object carries both the generation count (problem 1) and the strings-to-membrane step (problem 3).
+- **What "too many" is:** no limit, number or mechanism is given anywhere in the file.
+- **Bubble vs sphere:** the link post says "bubble". The sphere comes only from the AI-drafted Oct 1 post.
+- **01:** no post ties strings to the SM or to three generations.
+- **02:** no post says the "critical occupancy" occupants are strings.
+- **03:** only one saved post (Oct 1, [Akitti account], quoted above) ties membrane divergences to string density on the sphere.
+- **04:** no post mentions ghosts, or says that string count drives the bounce.
+- **Which four topics:** the link post doesn't name them. Orion's sorting of posts into problems is his own, and his numbering differs from the folders.
+- **Voice:** most posts read AI-drafted. Akitti may want to say which lines are his.
+- **For Orion to fetch later** (when X is open to him):
+  - any Akitti replies under 2105917997588365696;
+  - the truncated quoted posts at L1859 and L1924;
+  - the items Orion lists under "Still to open" (L6153–L6158).
+- Negative eigenvalues: Akitti's open maybe (21:41), not yet part of his link; not being chased.
 
-- **Setup:** an N x N fuzzy sphere (spin-(N-1)/2 matrices) with monopole charge n, using the standard fuzzy-monopole construction (Grosse-Klimcik-Presnajder, CMP 178 (1996) 507, hep-th/9510083; Balachandran-Kurkcuoglu-Vaidya lectures, hep-th/0511114; both checked by Orion). Folder: `open-problems\U1_fuzzy_sphere_strings\`.
-- **Stage A [standard check]:** count the Dirac zero modes for n = 0 to 6 at several N, using the Ginsparg-Wilson fuzzy Dirac operator, whose index is exactly n at finite N (Aoki-Iso-Nagao, NPB 684 (2004) 162, hep-th/0312199, checked by Orion). Other fuzzy Dirac operators don't give exactly |n|, so a wrong count with them would grade the operator, not the idea. Expect exactly |n|, and print that the zero modes form one spin-(|n|-1)/2 multiplet.
-- **Stage B [prediction]:** compare the lowest non-zero levels with the round-sphere monopole values, lambda_k^2 = k(k+|n|) for k >= 1 at unit radius, each with degeneracy |n|+2k per sign [standard, Wu-Yang]. Aethon prints these as the sympy target and Venus checks them. Print how far they drift as n approaches N. That drift is a concrete version of "too many strings for the bubble".
-- **Grades:** PASS if Stage A gives |n| and Stage B shows a clean drift scale. PARTIAL if the count holds but there's no clear drift scale. FAIL if the count is wrong.
-- **Cost:** small matrices only (N up to about 20) and no time-stepping.
-- **What it would and wouldn't show.** A PASS links problems 1 and 3 through one object. It says nothing yet about problem 4.
+## Next jobs (Helios, revised 2026-10-02 about 22:00 after Venus's check)
+
+All four use one picture [hive-interpretation]: strings ending on the bubble show up as vortices on its skin, and only so many fit. The Bradlow bound, locked for this Lagrangian [identity; Venus; Manton–Nasir hep-th/9807017 eq. (2.10)]:
+$$A \;\ge\; A_B=\frac{4\pi n}{e^2 v^2}.$$
+What it means: each string needs its own patch of skin. At the cap the vortices dissolve into one smooth flux layer ("the strings want to turn into a brane" [hive-interpretation]). Specs are in `open-problems\Bradlow_cap\`.
+
+- **B0, shared base (full spec).** n coincident vortices at a pole solved as a radial ODE. Pre-registered check (Venus): the amplitude gap squared divided by \((A-A_B)/A_B\) tends to 1 (with e = v = 1) as A nears the cap.
+- **B2, folder 02 vacuum (full spec).** The vortex-gas pressure \(P=nT/(A-4\pi n)\) blows up at the cap [standard: Manton 1993; restated in MN eq. (4.7), with the moduli volume in MN eq. (3.23)], but that is exactly where the gas picture fails. B2 asks what really happens there, using Manton–Wang 2212.06016 and Manton 2204.01389. Prediction: the infinity is softened in the full theory, and the strings melt rather than jam.
+- **B4, folder 04 (outline).** Built on the negative-eigenvalue and tachyon posts, quoted in `NEGEIG_QUOTES.md`; most of those are [Akitti account]. Around the smooth layer, the n+1 lowest-Landau-level Higgs modes have mass² \(\mu^2=\tfrac{e^2v^2}{2}(A_B/A-1)\) [computed, Venus]. They are tachyonic when there is room (A above the cap), zero at the cap, and stable past it. Caveat (Venus): these tachyons belong only to the smooth layer (φ = 0), which is a saddle sitting above the vortex state whenever A > A_B. The true ground state has no negative modes on either side of the cap: above it, the ground state is the vortex solution, whose fluctuation operator is D†D ≥ 0 [standard]; past it, the ground state is the smooth layer, which is stable there. So this does not say that too few strings make the vacuum unstable. It says only that the smooth layer breaks up into vortices whenever they fit. Prediction: tachyons, not ghosts. This toy cannot make a ghost, so it is a reproduction. The old bounce-at-the-cap claim is dropped, since at zero temperature the energy has a smooth minimum there and no wall.
+- **B3, folder 03 (outline).** The flat-mode count goes from n (vortex positions) to n+1 at the cap. Reproduction [standard: Bradlow / García-Prada]; consistent with U1.
+- **B1, folder 01 (outline).** "n zero modes per flux n" is ours. At the cap the φ-masses go to zero, so the test tracks the zero-mode count and how spread out the modes are, not masses.
+
+Order: B0, then B2, then B4, B3 and B1 once Venus clears the outlines.
