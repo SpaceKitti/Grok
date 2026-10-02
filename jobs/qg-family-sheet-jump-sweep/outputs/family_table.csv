@@ -1,0 +1,6 @@
+family,defined_without_mhd_jump,S1,S2,S3,S4,verdict
+F1 CS,1,0,0,0,0,misses Γ
+F2 foam,1,0,0,0,0,misses Γ
+F3 holo,1,0,0,0,0,misses Γ
+F4 hybrid,1,0,0,0,0,misses Γ
+F5 uniform U(1) control,1,0,0,0,0,global junk

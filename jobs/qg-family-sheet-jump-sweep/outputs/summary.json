@@ -1,0 +1,70 @@
+{
+  "sentence": "no family jumps with the MHD sheet",
+  "table": [
+    {
+      "family": "F1 CS",
+      "defined_without_mhd": true,
+      "S1": false,
+      "S2": false,
+      "S3": false,
+      "S4": false,
+      "verdict": "misses \u0393",
+      "s1": "on/off=0.0000 (on=0, off=0)",
+      "s2": "U(2\u03c0)=1.0000+0.0000j |U+1|=2.000; U(4\u03c0)=1.0000+0.0000j |U-1|=0.000",
+      "s3": "|\u0394U|_at n-jump / |\u0394U|_quiet = 0.0000",
+      "s4": "drop=0.0000  |U-1|_on=0.0000 |_off=0.0000"
+    },
+    {
+      "family": "F2 foam",
+      "defined_without_mhd": true,
+      "S1": false,
+      "S2": false,
+      "S3": false,
+      "S4": false,
+      "verdict": "misses \u0393",
+      "s1": "on/off=0.0000 (on=0, off=0.02221)",
+      "s2": "U(2\u03c0)=1.0000+0.0000j |U+1|=2.000; U(4\u03c0)=1.0000+0.0000j |U-1|=0.000",
+      "s3": "|\u0394U|_at n-jump / |\u0394U|_quiet = 1.2106",
+      "s4": "drop=0.0000  |U-1|_on=0.0000 |_off=0.0000"
+    },
+    {
+      "family": "F3 holo",
+      "defined_without_mhd": true,
+      "S1": false,
+      "S2": false,
+      "S3": false,
+      "S4": false,
+      "verdict": "misses \u0393",
+      "s1": "on/off=0.0000 (on=0, off=0)",
+      "s2": "U(2\u03c0)=1.0000+0.0000j |U+1|=2.000; U(4\u03c0)=1.0000+0.0000j |U-1|=0.000",
+      "s3": "|\u0394U|_at n-jump / |\u0394U|_quiet = 0.0271",
+      "s4": "drop=0.0000  |U-1|_on=0.0000 |_off=0.0000"
+    },
+    {
+      "family": "F4 hybrid",
+      "defined_without_mhd": true,
+      "S1": false,
+      "S2": false,
+      "S3": false,
+      "S4": false,
+      "verdict": "misses \u0393",
+      "s1": "on/off=0.0000 (on=0, off=0)",
+      "s2": "U(2\u03c0)=1.0000+0.0000j |U+1|=2.000; U(4\u03c0)=1.0000+0.0000j |U-1|=0.000",
+      "s3": "|\u0394U|_at n-jump / |\u0394U|_quiet = 0.0271",
+      "s4": "drop=0.0000  |U-1|_on=0.0000 |_off=0.0000"
+    },
+    {
+      "family": "F5 uniform U(1) control",
+      "defined_without_mhd": true,
+      "S1": false,
+      "S2": false,
+      "S3": false,
+      "S4": false,
+      "verdict": "global junk",
+      "s1": "on/off=1.0000 (on=0.0003979, off=0.0003979)",
+      "s2": "U(2\u03c0)=0.9987+0.0518j |U+1|=1.999; U(4\u03c0)=0.9946+0.1034j |U-1|=0.104",
+      "s3": "|\u0394U|_at n-jump / |\u0394U|_quiet = 1.9229",
+      "s4": "drop=1.0000  |U-1|_on=0.0518 |_off=0.0518"
+    }
+  ]
+}
