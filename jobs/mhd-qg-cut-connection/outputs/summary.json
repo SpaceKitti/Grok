@@ -1,0 +1,37 @@
+{
+  "passed": [
+    "C1",
+    "C2",
+    "C3",
+    "C4"
+  ],
+  "sentence": "connection type found: C1 shared support + C2 shared sheet jump + C3 jump map + C4 residual lock",
+  "eps_ep": 0.5136807534996295,
+  "eps_slit": 0.5136807534996295,
+  "rows": [
+    {
+      "name": "C1 shared support",
+      "passed": true,
+      "number": "overlap=1.000000, Hausdorff=0.0e+00, \u0393=[-0.5137,0.5137]",
+      "formula": "1_\u0393^{MHD}(s)=1_\u0393^{QG}(s),\\ \\mathrm{supp}(da)=\\Gamma=[\u2212|\u03b5|,|\u03b5|]"
+    },
+    {
+      "name": "C2 shared sheet jump",
+      "passed": true,
+      "number": "\u0394n_MHD(2\u03c0,4\u03c0)=(1,2), \u0394n_QG(2\u03c0,4\u03c0)=(1,2), U_G(2\u03c0)=-1.000+0.000j, U_G(4\u03c0)=1.000-0.000j",
+      "formula": "\\Delta n_{\\mathrm{MHD}}(\\gamma)=\\Delta n_{\\mathrm{QG}}(\\gamma),\\ \\gamma: |\u03b5\u2212\u03b5_{\\mathrm{EP}}|=r"
+    },
+    {
+      "name": "C3 map, not fusion",
+      "passed": true,
+      "number": "\u03a6(n) vs U_G at (0,2\u03c0,4\u03c0) = (1, -1, 1) vs (1, -1, 1); n_jumps_on_loop=2",
+      "formula": "\\Phi(n)=e^{i\\pi n}=U_G,\\quad \\Phi(\\text{label swap})=\u22121"
+    },
+    {
+      "name": "C4 residual lock",
+      "passed": true,
+      "number": "same_support=True, corr=1.000000, R_MHD/R_QG on \u0393=2.0000 (expect 2), s-window=[-1.03,1.03], \u0393=[-0.5137,0.5137]",
+      "formula": "R_{\\mathrm{MHD}}(s)=1_{s\\in\\Gamma}/|\\Gamma|,\\ R_{\\mathrm{QG}}(s)=\\tfrac12 1_{s\\in\\Gamma}/|\\Gamma|"
+    }
+  ]
+}

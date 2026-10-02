@@ -1,0 +1,5 @@
+test,passed,number,formula
+C1 shared support,1,overlap=1.000000; Hausdorff=0.0e+00; Γ=[-0.5137;0.5137],1_Γ^{MHD}(s)=1_Γ^{QG}(s),\ \mathrm{supp}(da)=\Gamma=[−|ε|,|ε|]
+C2 shared sheet jump,1,Δn_MHD(2π;4π)=(1;2); Δn_QG(2π;4π)=(1;2); U_G(2π)=-1.000+0.000j; U_G(4π)=1.000-0.000j,\Delta n_{\mathrm{MHD}}(\gamma)=\Delta n_{\mathrm{QG}}(\gamma),\ \gamma: |ε−ε_{\mathrm{EP}}|=r
+C3 map, not fusion,1,Φ(n) vs U_G at (0;2π;4π) = (1; -1; 1) vs (1; -1; 1); n_jumps_on_loop=2,\Phi(n)=e^{i\pi n}=U_G,\quad \Phi(\text{label swap})=−1
+C4 residual lock,1,same_support=True; corr=1.000000; R_MHD/R_QG on Γ=2.0000 (expect 2); s-window=[-1.03;1.03]; Γ=[-0.5137;0.5137],R_{\mathrm{MHD}}(s)=1_{s\in\Gamma}/|\Gamma|,\ R_{\mathrm{QG}}(s)=\tfrac12 1_{s\in\Gamma}/|\Gamma|
