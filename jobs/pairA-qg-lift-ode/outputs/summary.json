@@ -1,0 +1,26 @@
+{
+  "eps_EP": 0.5136806633116171,
+  "tau": 24.463390413308126,
+  "R1": {
+    "rms_E": 0.7361321761397371,
+    "max_abs_E": 0.736132176139737,
+    "Lambda_mean": 1.0,
+    "Lambda_std": 0.0,
+    "solved": false,
+    "Lambda_if_solved": null
+  },
+  "R2": {
+    "rms_E": 1.0,
+    "max_abs_E": 1.0,
+    "Lambda_mean": -221.72944967777664,
+    "Lambda_std": 1882.8913515254826,
+    "solved": false,
+    "Lambda_if_solved": null
+  },
+  "regular": [
+    "r0=0.3",
+    "r0=0.513681",
+    "r0=0.7",
+    "r0=1"
+  ]
+}
