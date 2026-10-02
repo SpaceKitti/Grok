@@ -8,6 +8,16 @@ Tags:
 - [hive-interpretation] our reading.
 - [standard] textbook.
 - [computed] job result.
+- [Akitti, via NanoRibbon] his words relayed by NanoRibbon.
+- [Grok-suggested] an idea Grok gave him.
+
+## Why the four problems: they block the lift (added 2026-10-02 about 22:30)
+
+> "the whole issue is the r=0 basically and going from s^2->r^2 string to brane" [Akitti, via NanoRibbon, 22:14]
+
+- The lift to 3D/4D quantum gravity is the main goal. It can't be built until the four problems are solved, because all four happen at the same step: the string → brane handoff at r = 0, where R² meets S² [Akitti, via NanoRibbon, 22:16; Grok pointed this out to him].
+- His remnant idea: Planck bounces at that r = 0 might leave quantum-gravity remnants [Grok-suggested].
+- The plan, the tests at each blocker and the blocker table are in `JOB_LIFT_SPEC.md`. The tests there (L1–L4) are checks at the blockers, not the lift itself.
 
 ## Akitti's link, in his words
 
@@ -23,6 +33,8 @@ In plain words:
 
 ## 01: Standard Model from the sphere
 
+**Blocks the lift [hive-interpretation]:** the families and zero modes on the bolt S² aren't derived, so nothing matches the SM. **Would unblock it:** the zero-mode count on a bolt with flux n (to write). Tests: B1, U1.
+
 > "The chiral zero modes that sit in the protected spectrum after Brockett alignment + \(\kappa\)-barrier live as wave-functions on the throat (or on the hierarchical GoldbergHexa shells)." [Akitti account, L1726, Aug 22]
 
 > "We deliberately group the modes into larger blocks (the shells or the three generations) using projectors \(P\)." [Akitti account, L1806, Aug 23]
@@ -31,6 +43,8 @@ In plain words:
 - None of his SM posts mentions strings, so how too many strings would cause an SM problem isn't stated.
 
 ## 02: Vacuum selection
+
+**Blocks the lift [hive-interpretation]:** the vacuum energy at the handoff isn't fixed, so the Euclidean action and entropy can't predict anything. **Would unblock it:** a fixed vacuum term at the bolt (to write). Tests: B0, B2.
 
 > "It's a Betti spike. The homology just refuses to contract." [Akitti, L1151, Oct 1 9:25 PM]
 
@@ -41,6 +55,8 @@ In plain words:
 
 ## 03: Membrane renormalization
 
+**Blocks the lift [hive-interpretation]:** the wrapped string → brane has no finite quantum theory. **Would unblock it:** a finite count of the modes of the brane wrapped on the bolt (to write). Tests: B3, L3.
+
 > "The strings want to turn into a brane...." [Akitti, L12]
 
 > "The \(S^{2}\) bolt is then the wrapping cycle of a D2 / Euclidean instanton / charged 0-brane that the Lin–Shiu fragmentation already licenses." [Akitti account, L82]
@@ -49,6 +65,8 @@ In plain words:
 - Correction (22:00): one saved post does tie membrane divergences to string density [Akitti account; Orion's `03_membrane_renormalization\X_NOTES.md` line 7, post 2105747522497261789, Oct 1]: "The concrete divergences (continuous spectrum + counterterm tower + UV blow-up) appear when the string density on the sphere is high enough that the discrete sum cannot be absorbed into a finite planar chart." It is not in the link-post file, which is why the first pass missed it.
 
 ## 04: Stelle ghosts and the LQC bounce
+
+**Blocks the lift [hive-interpretation]:** there is no finite, ghost-free treatment of the r = 0 bounce or the Euclidean negative mode, so the lift's path integral isn't defined. **Would unblock it:** the L1–L3 count table in `JOB_LIFT_SPEC.md`. Tests: B4/B4L, L1, L2.
 
 > "The LQC bounce, the Euclidean necklace throat and the Stelle wall are already 4-d. Their symmetry-reduced 2-d sections are the \(\mathbb{R}^{2}\leftrightarrow S^{2}\) deathface you already have." [Akitti account, L71, Oct 1 8:21 AM]
 
@@ -70,6 +88,12 @@ In plain words:
 - **6b/6c membranes:** PASS (toy / reproduction).
 - **Job Seven ghost:** PASS (toy).
 - Only U1 actually tested a string-count limit [hive-interpretation].
+
+## Fluid-side cap (Akitti-found note, 22:26; Grok-sourced, unverified)
+
+Akitti found a Grok-sourced note: on a real fluid sphere the number of vortices is capped too. Topology alone allows any number (vortices minus saddles = 2, [standard] Poincaré–Hopf). In real fluids the cap is roughly the sphere's area divided by one vortex's area (the Rhines or Rossby-deformation scale), and once viscous cores overlap, same-sign vortices merge and opposite-sign ones annihilate. [Grok-suggested, unverified]
+
+Why it matters: it is the MHD/fluid version of the Bradlow cap (most vortices = area / core area), so it may bridge the MHD toy and the string picture [hive-interpretation]. Possible cheap MHD-side test, low priority after LIFT: seed N vortices on a viscous sphere, raise N, and check whether merging and annihilation start near area/core-area. Refs to find (Orion): Rhines 1975 and the point-vortex-on-sphere and sphere-turbulence literature.
 
 ## Ours, not Akitti's
 
