@@ -9,6 +9,8 @@ Run:  set PYTHONIOENCODING=utf-8;  python -B run.py      (a few minutes)
 Every number in RESULTS.md is printed from a variable; no computed number is typed into prose.
 Fold-in pass (after the Venus/Helios PASS): G5a, G5b and the Part L [standard] fall-off line were added, with their
 thresholds fixed before the fold-in run; the G1–G4 and L1–L4 thresholds are unchanged.
+Follow-up (Venus review request): G5b also prints the conditional ghost share S and the A ranges where each sign
+of λ has the larger Δ and S [post-hoc]; no threshold, grade or verdict changed.
 """
 import os, time, platform, math
 import numpy as np
@@ -565,10 +567,64 @@ def report_g(ok_sym, S0, P0):
         out("| Δ(λ>0) = ghost − control | " + " | ".join(f"{v:+.3f}" for v in dp) + " |")
         out("| Δ(λ<0) = ghost − control | " + " | ".join(f"{v:+.3f}" for v in dm) + " |")
         out("| abs(Δ(λ>0) − Δ(λ<0)) | " + " | ".join(f"{abs(v):.3f}" for v in dp - dm) + " |")
+        # Venus review request [post-hoc]: conditional ghost share S = (f_ghost − f_ctrl)/(1 − f_ctrl); n/a if f_ctrl = 1
+        sp_ = [None if fc >= 1.0 else d / (1.0 - fc) for d, fc in zip(dp, rows[(1.0, 1.0)])]
+        sm_ = [None if fc >= 1.0 else d / (1.0 - fc) for d, fc in zip(dm, rows[(1.0, -1.0)])]
+        f3n = lambda v: "n/a" if v is None else f"{v:.3f}"
+        out("| S(λ>0) = Δ/(1 − f_control) [post-hoc] | " + " | ".join(f3n(v) for v in sp_) + " |")
+        out("| S(λ<0) = Δ/(1 − f_control) [post-hoc] | " + " | ".join(f3n(v) for v in sm_) + " |")
+        out("| S(λ>0) − S(λ<0) [post-hoc] | " + " | ".join("n/a" if (a_ is None or b_ is None) else f"{a_ - b_:+.3f}" for a_, b_ in zip(sp_, sm_)) + " |")
+        out("| control survivors, λ < 0 (S denominator, of " + f"{N_SAMPLE}) | " + " | ".join(f"{int(round((1.0 - fc) * N_SAMPLE))}" for fc in rows[(1.0, -1.0)]) + " |")
         out("")
-        return rows, dp, dm
-    rows3, dp3, dm3 = table(T_MAIN)
-    rows6, dp6, dm6 = table(T_LONG)
+        return rows, dp, dm, sp_, sm_
+    out(f"S [post-hoc; Venus review request, not a grade]: the share of the control's survivors that the ghost adds to the runaway, "
+        f"S = (f_ghost − f_control)/(1 − f_control), printed as n/a where f_control = 1. For λ > 0 the control never runs away, so S(λ>0) = Δ(λ>0).")
+    out("")
+    rows3, dp3, dm3, sp3, sm3 = table(T_MAIN)
+    rows6, dp6, dm6, sp6, sm6 = table(T_LONG)
+
+    def side_runs(vp, vm, tol=1e-12):
+        lab = []
+        for a_, b_ in zip(vp, vm):
+            if a_ is None or b_ is None:
+                lab.append("n/a")
+            elif a_ - b_ > tol:
+                lab.append("λ>0")
+            elif b_ - a_ > tol:
+                lab.append("λ<0")
+            else:
+                lab.append("equal")
+        runs = []
+        for A, l_ in zip(A_SIGN, lab):
+            if runs and runs[-1][0] == l_:
+                runs[-1][2] = A
+            else:
+                runs.append([l_, A, A])
+        return runs
+
+    def run_txt(runs):
+        parts = []
+        for l_, lo, hi in runs:
+            if l_ in ("λ>0", "λ<0"):
+                where = (f"A ≥ {lo:g} (to the grid maximum A = {A_SIGN[-1]:g})" if hi == A_SIGN[-1] and lo != A_SIGN[0]
+                         else (f"A = {lo:g}" if lo == hi else f"A in [{lo:g}, {hi:g}]"))
+                parts.append(f"larger for {l_} at {where}")
+            elif l_ == "equal":
+                parts.append(f"equal at A in [{lo:g}, {hi:g}]" if lo != hi else f"equal at A = {lo:g}")
+            else:
+                parts.append(f"n/a at A in [{lo:g}, {hi:g}]")
+        return "; ".join(parts)
+
+    out(f"Which sign has the larger ghost excess, at the sampled A only [post-hoc; computed from the tables above]:")
+    sr = {}
+    for T, dp_, dm_, sp_, sm_ in ((T_MAIN, dp3, dm3, sp3, sm3), (T_LONG, dp6, dm6, sp6, sm6)):
+        sr[("Δ", T)] = side_runs(list(dp_), list(dm_))
+        sr[("S", T)] = side_runs(sp_, sm_)
+        out(f"- t ≤ {T:g}, raw Δ: {run_txt(sr[('Δ', T)])}.")
+        out(f"- t ≤ {T:g}, share S: {run_txt(sr[('S', T)])}.")
+    out(f"Same ranges at t ≤ {T_MAIN:g} and t ≤ {T_LONG:g}: raw Δ {sr[('Δ', T_MAIN)] == sr[('Δ', T_LONG)]}; S {sr[('S', T_MAIN)] == sr[('S', T_LONG)]}. "
+        f"Both statements are limited to the sampled grid {A_SIGN}: a crossover lies between neighbouring grid points [finite-size].")
+    out("")
     dd = np.abs(dp3 - dm3); im = int(np.argmax(dd))
     sign_matters = bool(dd[im] >= SIGN_DIFF)
     dd6 = np.abs(dp6 - dm6)

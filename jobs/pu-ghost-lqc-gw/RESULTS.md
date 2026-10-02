@@ -36,7 +36,7 @@ Sampling and threshold [assumed input]:
 - q_* = ω₁ω₂/√|λ| (the only nonlinear scale). Normalised state u = (q, q̇/ω̄, q̈/ω̄², q⃛/ω̄³), ω̄ = √(ω₁ω₂).
 - 200 starts per amplitude, directions uniform on the 3-sphere (seed 7), |u| = A·q_*; A ∈ [0.02, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0]. The same directions are reused for every group.
 - Runaway: R(t) = |u(t)| ≥ 10 q_* before t_max = 300 (also reported at 600; R ≥ 100 q_* recorded as a threshold check). RK4, dt = 0.01.
-- Integration cost: main batch 70 s, dt/2 batch 11 s [computed].
+- Integration cost: main batch 70 s, dt/2 batch 9 s [computed].
 
 | A = |u|/q_* | runaway fraction t ≤ 300 | t ≤ 600 | R ≥ 100 q_* by t ≤ 600 |
 |---|---|---|---|
@@ -113,7 +113,9 @@ Runaway criterion (fixed before the run, as in G3): |u| ≥ 10 q_* by t ≤ 300 
 For λ > 0 the control H is bounded below, so it cannot run away [identity]. For λ < 0 the quartic is unbounded below even
 without a ghost, so only runaway beyond the matching control, Δ = f_ghost − f_control, counts as ghost runaway.
 Sign rule (fixed before the run): the sign of λ matters if max over A ≤ 0.5 of |Δ(λ>0) − Δ(λ<0)| ≥ 0.25 at t ≤ 300.
-Map checks at t = 0 [identity]: round trip u → (X, P) → u, max rel. error 3.6e-16; |H_normal-mode − H_Ostrogradsky| / max E_abs = 4.5e-16. Batch: 8000 trajectories to t = 600 in 100 s.
+Map checks at t = 0 [identity]: round trip u → (X, P) → u, max rel. error 3.6e-16; |H_normal-mode − H_Ostrogradsky| / max E_abs = 4.5e-16. Batch: 8000 trajectories to t = 600 in 94 s.
+
+S [post-hoc; Venus review request, not a grade]: the share of the control's survivors that the ghost adds to the runaway, S = (f_ghost − f_control)/(1 − f_control), printed as n/a where f_control = 1. For λ > 0 the control never runs away, so S(λ>0) = Δ(λ>0).
 
 Runaway fraction by t ≤ 300 against the scaled amplitude A = |u|√|λ|/(ω₁ω₂):
 
@@ -126,6 +128,10 @@ Runaway fraction by t ≤ 300 against the scaled amplitude A = |u|√|λ|/(ω₁
 | Δ(λ>0) = ghost − control | +0.000 | +0.000 | +0.000 | +0.000 | +0.000 | +0.040 | +0.235 | +0.455 | +0.570 | +0.655 |
 | Δ(λ<0) = ghost − control | +0.000 | +0.000 | +0.180 | +0.165 | +0.175 | +0.090 | +0.065 | +0.055 | +0.035 | +0.020 |
 | abs(Δ(λ>0) − Δ(λ<0)) | 0.000 | 0.000 | 0.180 | 0.165 | 0.175 | 0.050 | 0.170 | 0.400 | 0.535 | 0.635 |
+| S(λ>0) = Δ/(1 − f_control) [post-hoc] | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.040 | 0.235 | 0.455 | 0.570 | 0.655 |
+| S(λ<0) = Δ/(1 − f_control) [post-hoc] | 0.000 | 0.000 | 0.183 | 0.266 | 0.412 | 0.340 | 0.342 | 0.440 | 0.389 | 0.308 |
+| S(λ>0) − S(λ<0) [post-hoc] | +0.000 | +0.000 | -0.183 | -0.266 | -0.412 | -0.300 | -0.107 | +0.015 | +0.181 | +0.347 |
+| control survivors, λ < 0 (S denominator, of 200) | 200 | 200 | 197 | 124 | 85 | 53 | 38 | 25 | 18 | 13 |
 
 Runaway fraction by t ≤ 600 against the scaled amplitude A = |u|√|λ|/(ω₁ω₂):
 
@@ -138,6 +144,17 @@ Runaway fraction by t ≤ 600 against the scaled amplitude A = |u|√|λ|/(ω₁
 | Δ(λ>0) = ghost − control | +0.000 | +0.000 | +0.000 | +0.000 | +0.000 | +0.045 | +0.285 | +0.480 | +0.605 | +0.670 |
 | Δ(λ<0) = ghost − control | +0.000 | +0.000 | +0.180 | +0.165 | +0.175 | +0.090 | +0.065 | +0.050 | +0.035 | +0.020 |
 | abs(Δ(λ>0) − Δ(λ<0)) | 0.000 | 0.000 | 0.180 | 0.165 | 0.175 | 0.045 | 0.220 | 0.430 | 0.570 | 0.650 |
+| S(λ>0) = Δ/(1 − f_control) [post-hoc] | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.045 | 0.285 | 0.480 | 0.605 | 0.670 |
+| S(λ<0) = Δ/(1 − f_control) [post-hoc] | 0.000 | 0.000 | 0.183 | 0.266 | 0.412 | 0.340 | 0.342 | 0.417 | 0.389 | 0.308 |
+| S(λ>0) − S(λ<0) [post-hoc] | +0.000 | +0.000 | -0.183 | -0.266 | -0.412 | -0.295 | -0.057 | +0.063 | +0.216 | +0.362 |
+| control survivors, λ < 0 (S denominator, of 200) | 200 | 200 | 197 | 124 | 85 | 53 | 38 | 24 | 18 | 13 |
+
+Which sign has the larger ghost excess, at the sampled A only [post-hoc; computed from the tables above]:
+- t ≤ 300, raw Δ: equal at A in [0.05, 0.1]; larger for λ<0 at A in [0.15, 0.3]; larger for λ>0 at A ≥ 0.35 (to the grid maximum A = 0.5).
+- t ≤ 300, share S: equal at A in [0.05, 0.1]; larger for λ<0 at A in [0.15, 0.35]; larger for λ>0 at A ≥ 0.4 (to the grid maximum A = 0.5).
+- t ≤ 600, raw Δ: equal at A in [0.05, 0.1]; larger for λ<0 at A in [0.15, 0.3]; larger for λ>0 at A ≥ 0.35 (to the grid maximum A = 0.5).
+- t ≤ 600, share S: equal at A in [0.05, 0.1]; larger for λ<0 at A in [0.15, 0.35]; larger for λ>0 at A ≥ 0.4 (to the grid maximum A = 0.5).
+Same ranges at t ≤ 300 and t ≤ 600: raw Δ True; S True. Both statements are limited to the sampled grid [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]: a crossover lies between neighbouring grid points [finite-size].
 
 Max |Δ(λ>0) − Δ(λ<0)| at t ≤ 300: 0.635 at A = 0.5 (Δ(λ>0) = +0.655, Δ(λ<0) = +0.020); at t ≤ 600: 0.650 at A = 0.5. Uncorrected max |f_ghost(λ>0) − f_ghost(λ<0)| = 0.785 at A = 0.3.
 Controls: no-ghost λ > 0 never runs away up to t = 600: True. Ghost in normal-mode vs q variables (same starts, overlapping A, t ≤ 300): max |Δf| = 0.000 over 10 pairs (threshold 0.03).
@@ -191,7 +208,7 @@ end at η_f = +X/k and project on the same late-time adiabatic modes. X = 200; c
 | 7.943 | 1.761515e-09 | 1.761523e-09 | 4.7e-06 | -3.4e-12 | -6.6e-12 |
 | 10 | 8.499395e-12 | 8.499959e-12 | 6.6e-05 | -3.3e-12 | -6.6e-12 |
 
-Mode integrations: 42 in 44 s [computed].
+Mode integrations: 42 in 33 s [computed].
 L2 PASS: max ||α|²−|β|²−1| = 8.1e-12 (threshold 1e-08).
 L3 PASS: max rel. change X = 200 → 400 over the 20 k with |β|² > 1e-10: 4.7e-06 (threshold 0.001); otherwise [finite-size].
 
@@ -215,4 +232,4 @@ Plots: pu_runaway.png (runaway fraction vs A, with the λ-table rescaled onto it
 - Part L (LQC tensor mode): PASS
 - Review fold-ins (G5, reported separately): G5a PASS; G5b controls PASS; sign test PASS (the sign of λ matters beyond the no-ghost control)
 
-Runtime: 234 s [computed].
+Runtime: 215 s [computed].

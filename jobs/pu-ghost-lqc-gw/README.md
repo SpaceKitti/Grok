@@ -75,6 +75,16 @@ printed from variables in `RESULTS.md`. The only numbers below are inputs, thres
     scaled amplitude ≤ 0.5 by t = 300, where Δ = f_ghost − f_control.
   - **G5b checks:** the λ > 0 control must never run away (its H is bounded below), and the ghost in normal-mode
     variables must match the q-variable runs within 0.03.
+  - **G5b, which sign has the larger ghost excess [post-hoc; Venus review request, not a grade]:** next to the raw Δ,
+    RESULTS.md prints the conditional ghost share S = (f_ghost − f_control)/(1 − f_control) (n/a where f_control = 1)
+    for both signs, at t ≤ 300 and t ≤ 600. At the sampled amplitudes, with the same ranges at both horizons:
+    the raw Δ is larger for λ>0 at A ≥ 0.35 and larger for λ<0 at A in [0.15, 0.3]; the share S is larger for
+    λ>0 at A ≥ 0.4 and larger for λ<0 at A in [0.15, 0.35]; both are zero for both signs at A in [0.05, 0.1].
+    The A values named are grid points (the grid stops at 0.5). Which side each one falls on is computed and
+    printed in RESULTS.md, and each crossover lies somewhere between neighbouring grid points [finite-size]. The
+    sign-test PASS says only that the sign of λ matters; it does not mean the ghost's extra runaway is larger for
+    λ > 0 at every amplitude. Near the S crossover the λ < 0 control has few survivors left, so S(λ<0) there
+    rests on few starts (the counts are printed) [finite-size].
 - **L:** units 8πG = ρ_c = a_B = 1, so k_B = 1.
   - a''/a = (1 − t²)(1 + 3t²)^(−5/3) is derived with sympy and checked by finite differences in η, with
     η(t) = t·₂F₁(1/6, 1/2; 3/2; −3t²) checked against quadrature.
@@ -139,7 +149,7 @@ printed from variables in `RESULTS.md`. The only numbers below are inputs, thres
 [computed] produced by `run.py`; [identity] exact algebraic statement checked symbolically or to round-off;
 [assumed] modelling choice; [assumed input] parameter set by hand; [standard] textbook/literature result;
 [post-hoc] changed or added after seeing a result (here only the G5 fold-ins, requested in review, with their
-thresholds fixed before the fold-in run); [finite-size] artefact of finite horizons or start
+thresholds fixed before the fold-in run, and the G5b share-S follow-up, which is not graded); [finite-size] artefact of finite horizons or start
 times; [grid-step] step-size effect; [prediction] expectation stated before the run; [hive-interpretation] our
 reading, not a theorem; [standard: beyond toy] a standard statement about the real theory that the toy does not test.
 
@@ -173,5 +183,11 @@ reading, not a theorem; [standard: beyond toy] a standard statement about the re
   - Every earlier computed number in RESULTS.md reproduced unchanged, and no earlier threshold changed.
   - [post-hoc]: the G5 checks were added after the review, with their thresholds and the sign rule fixed before the
     fold-in run. No re-grade was requested.
+- Follow-up (2 Oct 2026, Venus review request via NanoRibbon): the folder was backed up to %TEMP%, run.py was
+  edited and re-run once (RESULTS.md and the PNGs come only from that run), and this README was updated. Added to G5b: the conditional ghost share S rows at t ≤ 300 and t ≤ 600,
+  the λ < 0 control-survivor counts, and the computed A ranges where each sign has the larger Δ and the larger S
+  [post-hoc; not a grade]. The G5b wording above now names those amplitude ranges. Every earlier computed number in
+  RESULTS.md reproduced exactly; only the wall-clock timing lines differ. No threshold, grade or verdict
+  changed, and the sign-offs below stand.
 - Venus (maths): PASS (maths), graded 19:21 BST.
 - Helios (physics): PASS (physics, as a toy), graded 19:28 BST.
