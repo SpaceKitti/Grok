@@ -35,7 +35,60 @@ Akitti's posts switch between four pictures. Where possible they're read as one 
 
 **Cheap test.** No new job is needed. U1's round-sphere targets, k(k+|n|) with degeneracy |n|+2k, are exactly the charged-particle levels on the S2 of a magnetic black-hole horizon at unit radius [standard], so U1 tests the sphere and horizon pictures together.
 
-**Still to come (waiting on Orion's files):** the axion thread and the negative-modes thread, built around Akitti's anchor article (https://x.com/Akitti/status/2086142235129610328).
+**Job U1 result (20:30): the 'too many strings' limit is a count [computed].** The fuzzy sphere keeps the n zero modes exactly at every size, but its excited ladder, which is still exactly round, has only N - n rungs, and the sector disappears at n = N. Reading [standard: Haldane 1983; the tie to Akitti's bubble is hive-interpretation]: a fuzzy sphere with N states is the lowest Landau level of a monopole of charge N - 1, so the strings use up the bubble's own flux budget and n is at most N - 1. Stage B's apparent level drift was only the radius convention [identity].
+
+### The negative-modes thread (added 20:30, around Akitti's anchor article)
+
+**Akitti's anchor article** (Aug 8, https://x.com/Akitti/status/2086142235129610328, "On the Road to a Theory of Everything") says that in every field Akitti looks at, the Hessian (the matrix of second derivatives of an energy) has a "pancake" spectrum: a few large positive eigenvalues and a big set of near-zero and negative ones. Negative means unstable, near-zero means flat. Akitti then proposes a Brockett flow, dH/dt = [H,[H,N]], to organise them, plus containment of the negative modes to protect unitarity.
+
+**The common language is real [standard].** Every step of Akitti's chain decides stability from the spectrum of a second-variation operator:
+- **Deep learning:** saddles of the loss landscape. Gradient descent slows near them, and the negative directions are the escape routes [standard: Dauphin et al. 2014, Orion to verify]. Flat basins are the near-zero part. Posts: chain Step 1 (Aug 6 "flat basins ... 100k mini black holes"; Aug 7 and Aug 18, pancake Hessian with a weak negative direction).
+- **Cavitation:** the Rayleigh-Plesset radial mode. Below the Blake threshold the bubble has no stable radius and grows without bound [standard: Blake], and non-spherical shape modes go unstable during collapse [standard: Plesset]. Posts: Step 2 (Jul 18 "Death of Symmetry"; Jul 18 unified bubble framework).
+- **Navier-Stokes:** eigenvalues of the linearised flow crossing into growth (Rayleigh, Orr-Sommerfeld) [standard]. One caution: flow operators are not symmetric, so flows can grow for a while even when every eigenvalue is stable [standard: non-normal transient growth]. Posts: Step 3 (Jul 18 "Rayleigh-Plesset is a spherical reduction of Navier-Stokes", which is right [standard]; Jul 20 compiled framework; Aug 11, full text pending).
+- **MHD:** the ideal-MHD energy principle. The plasma is unstable exactly when the force operator has a negative direction, delta W < 0 (kinks, interchanges) [standard: Bernstein-Frieman-Kruskal-Kulsrud 1958]. Here the operator is symmetric, so the Hessian picture is exact. Posts: Step 4 links only to the Sep 20-21 Alfven-spectrum posts (new MHD posts: X posts pending).
+- **Quantum gravity:** Euclidean saddles. A tunnelling bounce has exactly one negative mode [standard: Callan-Coleman]. Whether axion wormholes have extra ones is disputed [standard: Hertog-Truijen-Van Riet 2018 vs Loges-Shiu-Sudhir 2022, Orion to verify]. Posts: Step 5 (links only); axion thread, Jul 22 ("multiple negative modes").
+
+**Where our jobs sit in it [computed, from the jobs].**
+- **Jobs 5, 5b, 5c (radion):** a dS vacuum needs positive stiffness (V'' > 0) at the minimum. Past n_max the minimum disappears because the stiffness passes through zero. 5b's two barriers are the edges of the stable region.
+- **Job Six (membrane):** the valleys of x^2 y^2 are flat directions, zero modes of the classical Hessian. Supersymmetry cancels the zero-point energy along them, so the spectrum becomes a continuum.
+- **Job 6b:** the zero-energy state along the valley exists but can't be normalised.
+- **Job U1:** the Dirac operator's zero modes are protected by topology, with exactly n of them at every resolution.
+- **Job Seven (ghost) is a different thing.** A ghost has the wrong sign of kinetic energy (negative norm). A tachyon has negative stiffness (a negative Hessian eigenvalue). The anchor article's "containment ... avoid negative-norm ghost states" blurs the two [standard distinction]. Job Seven's no-ghost control showed the difference in practice: a quartic with negative stiffness runs away with no ghost at all.
+
+**What the thread can and can't do.**
+- It's a shared **language**, not yet a shared **mechanism**. Using the same diagnostic in five fields doesn't mean the same physics causes each instability [assumed].
+- **A limit on the anchor article's flow [identity].** The Brockett flow keeps the spectrum exactly, so it can never change how many negative eigenvalues there are. It only turns the directions they point in. Any "containment" has to come from a projection or barrier added on top (Akitti's kappa-barrier), not from the flow itself. That's a sharp, checkable statement about Akitti's framework.
+- **Strength:** strong as the common language across all four problems and the whole chain [standard]; untested as a unifying mechanism [assumed].
+
+**Cheap test: Job N1, "bubble vs radion".** The cavitation bubble and our radion are each one radius in a potential made of a few power laws. For the bubble those are ambient pressure, surface tension and gas pressure; for the radion, vacuum energy, curvature, flux and Casimir. Each has a threshold where the stable radius disappears (Blake for the bubble, n_max for the radion).
+- Map the two potentials term by term.
+- Ask whether the Blake threshold lands on the radion's no-minimum boundary under the map [prediction], and whether 5b's attractive Casimir term plays the part of the bubble's collapse side.
+- Grades: PASS if the map exists with matching signs and the thresholds coincide; PARTIAL if the powers match but the thresholds don't; FAIL if the powers don't match.
+- Cost: algebra and a few roots, with no time-stepping. It's the most direct test of Akitti's "cavitation looks like vacuum selection".
+
+### The axion thread (added 20:30)
+
+Akitti says axions are the main reason it all looks the same. The posts are in the "Axion thread" section of `AKITTI_LINK_POST.md`: Jul 22 (axion wormholes with negative modes); Aug 2, two posts (string axion C = phi/f_a with V = m^2 C^2/2, dilaton-axion mixing, a theta^2 F^2 portal); Sep 6, two posts (Mallik-Neha-Narain axionic-wormhole boundary conditions, arXiv 2609.04137); Sep 27 (3D Einstein-axion lapse contour, Blommaert et al.); Oct 1 ("onto something with this axion wormhole thing"); plus the Sep 30 Lin-Shiu post under problem 2.
+
+**How strong each link is:**
+1. **Axions from forms on the sphere: strong [standard].** A 2-form field integrated over the S2 is a 4D axion, which is how string axions arise (Svrcek-Witten, Orion to verify). Fluxes can give it a potential that winds around, called monodromy [standard: McAllister-Silverstein-Westphal, Orion to verify]. That sits directly on our RSS sphere, so the axion and the strings share one object [assumed for our model, since no job has the 2-form yet].
+2. **Axion wormholes and vacuum selection: strong in Akitti's own work.** Akitti's necklace action flips sign at q = 1, and Lin-Shiu fragmentation lets an over-charged wormhole break up. That's the clearest "too many strings" threshold in Akitti's posts [Akitti's formula; the link to problem 2 is assumed]. It's also where the axion and negative-modes threads meet, because whether those wormholes count depends on their negative modes, which is disputed.
+3. **The relaxion and vacuum selection: medium [standard idea: Graham-Kaplan-Rajendran 2015, Orion to verify].** A slowly rolling axion picks the Higgs mass dynamically. It selects the electroweak scale, not n or the vacuum energy, so it's a cousin of problem 2 rather than an answer [assumed]. No Akitti relaxion posts were captured (X posts pending).
+4. **Axion couplings and flavour: medium.** In "axiflavon" or "flaxion" models, the phase of the field that sets the quark-mass hierarchy is the QCD axion [standard: Calibbi et al. 2016, Ema et al. 2016, Orion to verify]. That would tie an axion to problem 1 and to Job 4c's warped c values [assumed].
+5. **Membranes: medium [standard].** Wrapped membranes (M2-brane instantons) generate axion potentials. The link runs through instantons, not through Job Six's quantum membrane [assumed].
+6. **Axions in the bounce: weak [standard reason].** A real-time axion is an ordinary scalar with positive energy, so it can't break the energy condition and can't drive a bounce by itself. Axions only get negative energy in the Euclidean picture, which is wormholes, not the LQC bounce.
+
+**Verdict.** The axion is a strong thread for the geometry (a form on the S2) and for vacuum selection (wormholes and fragmentation), medium for flavour and membranes, and weak for the bounce. It meets the negative-modes thread at one sharp point, the axion wormhole's negative modes [assumed].
+
+**Cheap test: Job A1, "does an S2 axion see n?"** Problem 2's wall is that every filter so far only sees the flux strength times n^2, so rescaling n by k, with the vacuum energy and size adjusted, changes nothing (Job 5c's k-family). Only Casimir broke it, and only with tuning.
+- Add the axion from the 2-form on the S2 to the radion potential. Aethon derives its form from a 6D action and Venus checks it [assumed input].
+- Run 5b's Part K k-family test on the new term: does it scale like everything else (blind) or not (it sees n)?
+- Grades: PASS if it breaks the k-family with a natural-sized coefficient; PARTIAL if only when tuned; FAIL if it's blind.
+- Cost: sympy plus one Part K rerun.
+
+**X posts pending** (X paused tonight): new MHD and MHD/QG chain posts, the from:Akitti "saddle" search, any relaxion posts, and the full text of 2087197160769028183 with its source 2052215194617610377.
+
+**Citations for Orion to verify:** Dauphin et al. 2014 (arXiv 1406.2572); Bernstein-Frieman-Kruskal-Kulsrud 1958; Hertog-Truijen-Van Riet (arXiv 1811.12690); Loges-Shiu-Sudhir (arXiv 2203.01956); Svrcek-Witten (hep-th/0605206); McAllister-Silverstein-Westphal (arXiv 0808.0706); Graham-Kaplan-Rajendran (arXiv 1504.07551); Calibbi et al. (arXiv 1612.08040); Ema et al. (arXiv 1612.05492); Haldane, PRL 51 (1983) 605.
 
 ### Weaker candidate threads (considered, not chosen)
 - **The perfect square H = Q^2 from supersymmetry.** It ties together the membrane continuum (Job Six) and the sphere models (SLED), but not Stelle or LQC.
