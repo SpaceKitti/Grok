@@ -1,0 +1,23 @@
+{
+  "object0_passed": true,
+  "object0_puiseux_p": 0.5000816498671602,
+  "object0_ep2_monodromy": true,
+  "object1_selfcheck": true,
+  "object1_verdict": "spectral decoration, not dictionary",
+  "object1_lock": false,
+  "object1_lock_reason": [
+    "no defective coalescence in the (S, k) grid",
+    "Puiseux N/A (no discrete EP2 to expand about)",
+    "no 4\u03c0 EP2 monodromy around candidate"
+  ],
+  "object1_n_defective": 0,
+  "object1_min_gap": 9.411858231408087e-06,
+  "object1_R_EP": NaN,
+  "object1_puiseux": {
+    "exponent": NaN,
+    "residual": NaN,
+    "passed": false,
+    "c": NaN
+  },
+  "object2_run": false
+}
