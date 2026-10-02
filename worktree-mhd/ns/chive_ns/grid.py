@@ -72,9 +72,13 @@ def vorticity_from_velocity(u_hat, grid):
     return _vort_from_u_3d(u_hat, grid)
 
 
+# Snapshot patched 2026-10-02 per 2D_SIGN_AUDIT.md (same fix as chive_ns/grid.py).
+# 2D vorticity inversion sign fixed: the old code returned −u from ω, which reversed the 2D velocity whenever it was rebuilt from vorticity (and anti-aligned 2D induction against the Lorentz force in MHD); 3D was unaffected.
 @jit
 def _u_from_vort_2d(vort_hat, grid):
-    psi_hat = -vort_hat / grid["k2"]
+    # ω = ∂x v - ∂y u = -∇²ψ  ⇒  ψ̂ = ω̂ / k²,  (u, v) = (∂y ψ, -∂x ψ).
+    # The previous minus recovered u → -u and anti-aligned 2D induction vs Lorentz.
+    psi_hat = vort_hat / grid["k2"]
     return jnp.stack([
         1j * grid["k"][1] * psi_hat,
         -1j * grid["k"][0] * psi_hat,
