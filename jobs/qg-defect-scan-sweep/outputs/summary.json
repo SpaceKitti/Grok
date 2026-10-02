@@ -1,0 +1,77 @@
+{
+  "sentence": "no scan prefers \u0393 without insertion",
+  "table": [
+    {
+      "family": "T1 CS puncture",
+      "P_site": "0.5000+0.0000j",
+      "P_site_off": "0.0000+1.2000j",
+      "defined_without_mhd": true,
+      "S1": false,
+      "S2": false,
+      "S3": false,
+      "S4": true,
+      "verdict": "misses \u0393",
+      "s1": "P=0.5000+0.0000j, n_tie=5, max_on/max_off=1.0000"
+    },
+    {
+      "family": "T2 foam",
+      "P_site": "0.5000+0.0000j",
+      "P_site_off": "0.0000+1.2000j",
+      "defined_without_mhd": true,
+      "S1": false,
+      "S2": false,
+      "S3": false,
+      "S4": true,
+      "verdict": "misses \u0393",
+      "s1": "P=0.5000+0.0000j, n_tie=5, max_on/max_off=1.0000"
+    },
+    {
+      "family": "T3 holo",
+      "P_site": "0.5000+0.0000j",
+      "P_site_off": "0.0000+0.0000j",
+      "defined_without_mhd": true,
+      "S1": false,
+      "S2": false,
+      "S3": false,
+      "S4": true,
+      "verdict": "misses \u0393",
+      "s1": "P=0.5000+0.0000j, n_tie=3, max_on/max_off=1.0000"
+    },
+    {
+      "family": "T4 worldsheet",
+      "P_site": "0.5000+0.0000j",
+      "P_site_off": "0.0000+1.2000j",
+      "defined_without_mhd": true,
+      "S1": false,
+      "S2": false,
+      "S3": false,
+      "S4": true,
+      "verdict": "misses \u0393",
+      "s1": "P=0.5000+0.0000j, n_tie=1, max_on/max_off=1.8700"
+    },
+    {
+      "family": "T5 hybrid",
+      "P_site": "0.5000+0.0000j",
+      "P_site_off": "0.0000+0.0000j",
+      "defined_without_mhd": true,
+      "S1": false,
+      "S2": false,
+      "S3": false,
+      "S4": true,
+      "verdict": "misses \u0393",
+      "s1": "P=0.5000+0.0000j, n_tie=3, max_on/max_off=1.0000"
+    },
+    {
+      "family": "T6 uniform U(1) control",
+      "P_site": "uniform / none",
+      "P_site_off": "uniform / none",
+      "defined_without_mhd": true,
+      "S1": false,
+      "S2": false,
+      "S3": false,
+      "S4": false,
+      "verdict": "global junk",
+      "s1": "P=uniform, max_on/max_off=1.0000 (flat)"
+    }
+  ]
+}
