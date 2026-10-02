@@ -366,10 +366,22 @@ def main():
     except Exception as exc:  # matplotlib missing etc.
         w("Picture: not made (%s)." % exc)
     w("")
+    all_paths = [row[0] for row in rows]
+    swap_paths = [row[0] for row in rows if row[3]]
+    w("Why the final line reads as it does [identity: on-Gamma is a function of eps; closed loops return to eps(0)]; "
+      "the loop list and the flipping loops are read from the per-path table above [computed].")
+    w("")
+    # Exactly one plain verdict line, and it is the last line of the file.
     if verdict_yes:
-        w("lambda restored onto Gamma: YES (path %s)" % ", ".join(verdict_yes))
+        w("\u03bb restored onto \u0393: YES \u2014 path %s" % ", ".join(verdict_yes))
     else:
-        w("lambda restored onto Gamma: NO [identity: on-Gamma is a function of eps; closed loops return to eps(0)]; SWAP and SAME-POINT carry the flip (P3, P3b: 2pi swap, 4pi return).")
+        if swap_paths:
+            flip = ("; %s %s flip branches (after one lap, back after two), but that flip shows only in SWAP / SAME-POINT"
+                    % (" and ".join(swap_paths), "does" if len(swap_paths) == 1 else "do"))
+        else:
+            flip = "; no loop swaps branches"
+        w("\u03bb restored onto \u0393: NO \u2014 no path does it: all %d loops (%s) come back to the \u03b5 they started from, "
+          "so each ends on \u0393 only if it began there%s." % (len(all_paths), ", ".join(all_paths), flip))
     with open(os.path.join(HERE, "RESULTS.md"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(L) + "\n")
     print("\n".join(L))

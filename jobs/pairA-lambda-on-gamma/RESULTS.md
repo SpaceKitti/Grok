@@ -2,7 +2,7 @@
 
 **Signed off 2026-10-02:** Venus (maths) and Helios (physics).
 
-Generated: 2026-10-02 15:35:36 (local time, UTC+01:00)
+Generated: 2026-10-02 17:17:51 (local time, UTC+01:00)
 Python 3.14.7, numpy 2.5.2
 
 No quantum-gravity result is claimed. This is a 2x2 matrix test.
@@ -159,4 +159,6 @@ eps-versus-lambda cross-check across the reported start, 2 pi, and 4 pi states: 
 
 Picture: paths.png (the four paths, Gamma in red, the two EPs as black crosses).
 
-lambda restored onto Gamma: NO [identity: on-Gamma is a function of eps; closed loops return to eps(0)]; SWAP and SAME-POINT carry the flip (P3, P3b: 2pi swap, 4pi return).
+Why the final line reads as it does [identity: on-Gamma is a function of eps; closed loops return to eps(0)]; the loop list and the flipping loops are read from the per-path table above [computed].
+
+λ restored onto Γ: NO — no path does it: all 4 loops (P1, P2, P3, P3b) come back to the ε they started from, so each ends on Γ only if it began there; P3 and P3b do flip branches (after one lap, back after two), but that flip shows only in SWAP / SAME-POINT.
