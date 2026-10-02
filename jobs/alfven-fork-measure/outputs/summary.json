@@ -1,0 +1,18 @@
+{
+  "N": 128,
+  "eta": 0.05,
+  "n_eps": 87,
+  "n_arm": 74,
+  "n_ep": 10,
+  "n_junc": 0,
+  "has_fork": true,
+  "eps_star": 0.62,
+  "gap_p": 0.5220969260025637,
+  "arm_L_class": "rigid-track",
+  "arm_R_class": "rigid-track",
+  "verdict": {
+    "letter": "C",
+    "have": "UNDERPOWERED",
+    "why": "arms are a rigid 1-D \u03b5-track (\u27e8r\u27e9\u21921), not GUE; EP window underpowered. Local 2\u00d72 germ at most"
+  }
+}
