@@ -115,6 +115,42 @@ def generate_taylor_green(grid, scale=1.0):
     return jnp.stack([u, v, w])
 
 
+def antiparallel_tube_vector(grid, flux=0.7, radius=0.08, separation=0.24,
+                            perturbation=0.04, axial_wave=1):
+    """Solenoidal anti-parallel Gaussian tubes (Shen et al. 2025 co-location).
+
+    Same Crow centerlines as generate_antiparallel_tubes. `flux` is
+    ∫ F·n dA of one core (circulation Γ for vorticity, Γ_m for B).
+    Profile exp(−r²/R²) with amp = flux/(π R²) so the integral is flux.
+    Paper Gaussian is exp(−r²/(2 σ_c²)) with σ_c = R/√2.
+    """
+    N, L = int(grid["N"]), float(grid["L"])
+    flux = float(flux)
+    if flux == 0.0:
+        return jnp.zeros((3,) + (N, N, N), dtype=jnp.complex128)
+    x = jnp.linspace(0.0, L, N, endpoint=False)
+    X, Y, Z = jnp.meshgrid(x, x, x, indexing="ij")
+    k = 2.0 * jnp.pi * axial_wave / L
+    y1 = 0.5 * L - 0.5 * separation
+    y2 = 0.5 * L + 0.5 * separation
+    z0 = 0.5 * L
+    s, c = jnp.sin(k * X), jnp.cos(k * X)
+    y1c = y1 + perturbation * s
+    y2c = y2 - perturbation * s
+    z1c = z0 + perturbation * c
+    z2c = z0 + perturbation * c
+    ty, tz = perturbation * k * c, -perturbation * k * s
+    inv = 1.0 / jnp.sqrt(1.0 + ty**2 + tz**2)
+    t1 = jnp.stack([inv, ty * inv, tz * inv])
+    t2 = jnp.stack([inv, -ty * inv, tz * inv])
+    amp = flux / (jnp.pi * radius**2)
+    a1 = amp * jnp.exp(-((Y - y1c)**2 + (Z - z1c)**2) / radius**2)
+    a2 = amp * jnp.exp(-((Y - y2c)**2 + (Z - z2c)**2) / radius**2)
+    field = t1 * a1 - t2 * a2
+    return project_div_free(
+        jnp.fft.fftn(field, axes=(1, 2, 3)) * grid["dealias"], grid)
+
+
 def generate_antiparallel_tubes(grid, circulation=0.7, radius=0.08,
                                separation=0.24, perturbation=0.04,
                                axial_wave=1):
@@ -150,6 +186,17 @@ def generate_antiparallel_tubes(grid, circulation=0.7, radius=0.08,
         jnp.fft.fftn(omega, axes=(1, 2, 3)) * grid["dealias"], grid)
     u_hat = velocity_from_vorticity(omega_hat, grid)
     return jnp.fft.ifftn(u_hat, axes=(1, 2, 3)).real
+
+
+def paper_sigma_c(radius):
+    """Shen et al. tube thickness: our exp(−r²/R²) ≡ their exp(−r²/(2σ_c²))."""
+    return float(radius) / (2.0 ** 0.5)
+
+
+def paper_ni_ic(gamma, gamma_m, eta, radius):
+    """Shen et al. (2025) eq. (2.11): Ni = Γ_m² / (Γ η σ_c²), σ_c = R/√2."""
+    sig = paper_sigma_c(radius)
+    return float(gamma_m)**2 / (float(gamma) * float(eta) * sig * sig + 1e-30)
 
 
 def cfl_dt(u, dx, nu, cfl=0.4):
