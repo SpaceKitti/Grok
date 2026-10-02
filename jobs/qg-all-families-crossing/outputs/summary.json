@@ -1,0 +1,173 @@
+{
+  "sentence": "no named theory prefers the MHD wall",
+  "table": [
+    {
+      "family": "1 Chern\u2013Simons / 3d gravity",
+      "J_on": 0.0,
+      "J_off": 0.0,
+      "ratio": 0.0,
+      "wall_site": "vacuum A=0",
+      "verdict": "misses \u0393"
+    },
+    {
+      "family": "2 Ashtekar\u2013Barbero / canonical LQG",
+      "J_on": NaN,
+      "J_off": NaN,
+      "ratio": NaN,
+      "wall_site": "n/a",
+      "verdict": "could not define"
+    },
+    {
+      "family": "3 Spin foam",
+      "J_on": 0.0,
+      "J_off": 0.0,
+      "ratio": 0.0,
+      "wall_site": "flat foam",
+      "verdict": "misses \u0393"
+    },
+    {
+      "family": "4 BF theory",
+      "J_on": 0.0,
+      "J_off": 0.0,
+      "ratio": 0.0,
+      "wall_site": "F=0",
+      "verdict": "misses \u0393"
+    },
+    {
+      "family": "5 Group field theory",
+      "J_on": NaN,
+      "J_off": NaN,
+      "ratio": NaN,
+      "wall_site": "n/a",
+      "verdict": "could not define"
+    },
+    {
+      "family": "6 Causal dynamical triangulations",
+      "J_on": 8.0,
+      "J_off": 8.0,
+      "ratio": 1.0,
+      "wall_site": "uniform ladder",
+      "verdict": "global junk"
+    },
+    {
+      "family": "7 Euclidean dynamical triangulations",
+      "J_on": 8.0,
+      "J_off": 8.0,
+      "ratio": 1.0,
+      "wall_site": "uniform triangulation",
+      "verdict": "global junk"
+    },
+    {
+      "family": "8 Causal sets",
+      "J_on": 195.83333333333334,
+      "J_off": 115.75,
+      "ratio": 1.6918646508279338,
+      "wall_site": "mean of 12 sprinklings",
+      "verdict": "misses \u0393"
+    },
+    {
+      "family": "9 Worldsheet string",
+      "J_on": 0.1,
+      "J_off": 0.1,
+      "ratio": 0.999999999999999,
+      "wall_site": "equal length",
+      "verdict": "global junk"
+    },
+    {
+      "family": "10 String field theory",
+      "J_on": NaN,
+      "J_off": NaN,
+      "ratio": NaN,
+      "wall_site": "n/a",
+      "verdict": "could not define"
+    },
+    {
+      "family": "11 Supergravity / M-theory reduction",
+      "J_on": NaN,
+      "J_off": NaN,
+      "ratio": NaN,
+      "wall_site": "n/a",
+      "verdict": "could not define"
+    },
+    {
+      "family": "12 AdS/CFT holographic defect",
+      "J_on": 0.0,
+      "J_off": 0.0,
+      "ratio": 0.0,
+      "wall_site": "smooth \u03c7=\u03b2x",
+      "verdict": "misses \u0393"
+    },
+    {
+      "family": "13 Asymptotic safety (truncation)",
+      "J_on": NaN,
+      "J_off": NaN,
+      "ratio": NaN,
+      "wall_site": "n/a",
+      "verdict": "could not define"
+    },
+    {
+      "family": "14 Ho\u0159ava\u2013Lifshitz",
+      "J_on": NaN,
+      "J_off": NaN,
+      "ratio": NaN,
+      "wall_site": "n/a",
+      "verdict": "could not define"
+    },
+    {
+      "family": "15 Twistor / ambitwistor",
+      "J_on": NaN,
+      "J_off": NaN,
+      "ratio": NaN,
+      "wall_site": "n/a",
+      "verdict": "could not define"
+    },
+    {
+      "family": "16 Shape dynamics",
+      "J_on": NaN,
+      "J_off": NaN,
+      "ratio": NaN,
+      "wall_site": "n/a",
+      "verdict": "could not define"
+    },
+    {
+      "family": "17 Noncommutative geometry",
+      "J_on": NaN,
+      "J_off": NaN,
+      "ratio": NaN,
+      "wall_site": "n/a",
+      "verdict": "could not define"
+    },
+    {
+      "family": "18 Teleparallel / gauge gravity",
+      "J_on": 0.0,
+      "J_off": 0.0,
+      "ratio": 0.0,
+      "wall_site": "T=0",
+      "verdict": "misses \u0393"
+    },
+    {
+      "family": "19 Loop quantum cosmology letter on this slit",
+      "J_on": NaN,
+      "J_off": NaN,
+      "ratio": NaN,
+      "wall_site": "n/a",
+      "verdict": "could not define"
+    },
+    {
+      "family": "20 Akitti hybrid (CS + holo)",
+      "J_on": 0.0,
+      "J_off": 0.0,
+      "ratio": 0.0,
+      "wall_site": "hypot(1,12)",
+      "verdict": "misses \u0393"
+    },
+    {
+      "family": "21 Uniform U(1) control",
+      "J_on": 0.0125,
+      "J_off": 0.06,
+      "ratio": 0.208333333333333,
+      "wall_site": "x=0.25 vs 1.2",
+      "verdict": "global junk"
+    }
+  ]
+}

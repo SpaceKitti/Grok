@@ -1,0 +1,22 @@
+family,J_on,J_off,ratio,wall_site,verdict
+1 Chern–Simons / 3d gravity,0.0,0.0,0.0,vacuum A=0,misses Γ
+2 Ashtekar–Barbero / canonical LQG,nan,nan,nan,n/a,could not define
+3 Spin foam,0.0,0.0,0.0,flat foam,misses Γ
+4 BF theory,0.0,0.0,0.0,F=0,misses Γ
+5 Group field theory,nan,nan,nan,n/a,could not define
+6 Causal dynamical triangulations,8.0,8.0,1.0,uniform ladder,global junk
+7 Euclidean dynamical triangulations,8.0,8.0,1.0,uniform triangulation,global junk
+8 Causal sets,195.83333333333334,115.75,1.6918646508279338,mean of 12 sprinklings,misses Γ
+9 Worldsheet string,0.1,0.1,0.999999999999999,equal length,global junk
+10 String field theory,nan,nan,nan,n/a,could not define
+11 Supergravity / M-theory reduction,nan,nan,nan,n/a,could not define
+12 AdS/CFT holographic defect,0.0,0.0,0.0,smooth χ=βx,misses Γ
+13 Asymptotic safety (truncation),nan,nan,nan,n/a,could not define
+14 Hořava–Lifshitz,nan,nan,nan,n/a,could not define
+15 Twistor / ambitwistor,nan,nan,nan,n/a,could not define
+16 Shape dynamics,nan,nan,nan,n/a,could not define
+17 Noncommutative geometry,nan,nan,nan,n/a,could not define
+18 Teleparallel / gauge gravity,0.0,0.0,0.0,T=0,misses Γ
+19 Loop quantum cosmology letter on this slit,nan,nan,nan,n/a,could not define
+20 Akitti hybrid (CS + holo),0.0,0.0,0.0,hypot(1,12),misses Γ
+21 Uniform U(1) control,0.0125,0.06,0.208333333333333,x=0.25 vs 1.2,global junk
