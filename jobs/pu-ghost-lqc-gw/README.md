@@ -100,7 +100,7 @@ printed from variables in `RESULTS.md`. The only numbers below are inputs, thres
 
 - **Smilga, NPB 706 (2005) 598, §2** (read via arXiv hep-th/0407231). For eq. (6) he states that the eq. (7)
   "admits benign regular orbits in the vicinity of the stationary point" and that "Only fluctuations of large
-  enough amplitude go astray". For q(0) = c he finds "the threshold amplitude is c_crit ≈ 0.3 Ω²/√α". He also
+  enough amplitude go astray". For q(0) = c he finds "the threshold amplitude is c_crit ≈ 0.3 Ω²/√α" [standard: Smilga NPB 706 (2005) 598, §2, eqs. (6)–(7)]. He also
   says "the positive sign of α is crucial for such a restricted stability", and that for the opposite sign "the
   vacuum is always unstable with respect to small fluctuations". G4 tests the threshold directly. The λ = −1
   report lines test the sign statement in both the equal-frequency and the unequal-frequency cases. G5b extends
@@ -189,5 +189,15 @@ reading, not a theorem; [standard: beyond toy] a standard statement about the re
   [post-hoc; not a grade]. The G5b wording above now names those amplitude ranges. Every earlier computed number in
   RESULTS.md reproduced exactly; only the wall-clock timing lines differ. No threshold, grade or verdict
   changed, and the sign-offs below stand.
+- Smilga c_crit check (Venus) [computed]: DOP853 at rtol 1e-10, escape counted as |q|>50, Ω=α=1. Up to t=600, nothing
+  escapes for c≤0.299 and c=0.300 escapes at t≈202, so c_crit = 0.300±0.001, inside G4's (0.25, 0.35) window, and G4's PASS
+  stands. Scaling [identity]: t=τ/Ω and q=QΩ²/√α give (d_τ²+1)²Q=Q³, so only the 0.3 is numerical. Caveat: the edge drops
+  over time and isn't sharp below 0.3. c=0.295 escapes at t≈1570 and c=0.285 at t≈1800, while 0.27, 0.28 and 0.29 survive
+  to t=10⁴ [computed; a chaotic separatrix edge goes beyond what Smilga says]. The 'no escape within t=600' island wording
+  keeps its time limit.
+  - These numbers come from Venus's own check. They were not computed by run.py and are not in RESULTS.md, so they are a
+    stated exception to this README's no-computed-numbers rule. No rerun was done, and RESULTS.md and run.py are untouched.
+  - Still pending: Venus's optional ± binomial column on S. It would need a rerun, so it has not been added.
+- Venus (maths), Smilga c_crit check: PASS. Smilga NPB 706 eq. (7) gives c_crit ≈ 0.3 Ω²/√α, and an independent DOP853 run puts it at 0.300 ± 0.001 up to t = 600. The edge is ragged and creeps down at longer times. 21:02 BST.
 - Venus (maths): PASS (maths), graded 19:21 BST.
 - Helios (physics): PASS (physics, as a toy), graded 19:28 BST.
