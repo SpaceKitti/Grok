@@ -1,0 +1,12 @@
+{
+  "eps_EP": 0.5136806633116171,
+  "tau": 24.463390413308126,
+  "F_plus": 0.0,
+  "F_minus": 0.0,
+  "R1_bolt": "PASS",
+  "R2_bolt": "PASS",
+  "A_lifted": true,
+  "B_lifted": true,
+  "C_held": true,
+  "jhat_path": "C:\\Users\\Akitt\\pairA-qg-handoff\\outputs\\Jhat.npz"
+}
