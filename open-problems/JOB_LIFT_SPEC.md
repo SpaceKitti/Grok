@@ -123,6 +123,22 @@ Full review: `OLD_LIFT_REVIEW.md`. The old line lifted "Pair A", a 2×2 MHD matr
 - **L4, Stelle item:** the point where the non-Schwarzschild branch meets Schwarzschild, m₂r_h ≈ 0.876 (Lü–Perkins–Pope–Stelle, PRL 114 (2015) 171601, arXiv 1502.01028, eq. 9, with m₂ = 1; verified by Orion. LPPS is cited for the 0.876 only. It does not mention GL, GPY or negative modes, so the identity reasoning is Venus's), is set by L1's eigenvalue, as an exact identity (the same Lichnerowicz operator, m₂² = −λ) [identity, Venus 22:40; Reall §1 for the GPY–GL side]. L4 reports the numerical agreement as a check on code, not as evidence.
 - Nothing else changes. L3 is untouched by the old work.
 
+## Local Grok Build lift checks (TrinityOrb, Sep 25–Oct 2)
+Full review: `LOCAL_LIFT_CHECKS_REVIEW.md`.
+- **The local copies match GitHub `jobs/`.** The local `pairA-*` folders on TrinityOrb hold the same files as `jobs/`; the only differences are line endings and BOMs, and no file exists only locally.
+- **Grok Build's own lift session ended 09-23.** It covered handoff, lift-4d, lift-ode and vortices-return.
+- **Gravity used:** none of the checks below uses a gravity theory. They are 2×2 MHD-matrix tests with gravity words as labels, so none quietly used GR as the lift's gravity. The only unlabelled GR use was lift-ode on 09-23 (Einstein + Λ), which is already listed above.
+
+| check (local dates) | result, quoted | status | use in the rework |
+|---|---|---|---|
+| qg-operator (09-25) | "with τ_E = 4π/ε_EP the P2 geometry is **not** a smooth Euclidean horizon"; smooth period 2π/ε_EP; the curve is a genus-0 double cover branched at ±ε_EP | signed off; P1+P2 itself is [hive-interpretation], built to match the spec | **Requirement 1 harness test** [kinematic, no gravity theory]: the old 4π/ε_EP period fails requirement 1 (a 4π cone; Gauss–Bonnet balances with χ = 2 [computed]). Nothing else used |
+| qg-probe-surface (09-25) | "SURFACE READY — QG probe may use D1–D7" | signed off; D1, D5 by definition/construction; D4 the same fact as the 2π swap | not used. Its Z₂ cover sign is not a Chern number, so it does not test requirement 2 |
+| drive-return, drive-sweep (09-25) | "**missing mechanism: NO**" (start 0.75) and "… (start 1.25 ε_EP): YES"; "REGION MAP NO under the pre-fixed w ≥ 0.9 at γT = 40 rule" | signed off; standard lossy-EP effect | not used. The ε = ±ε_EP threshold is an MHD box number, not requirement 4's A against N_Φ |
+| qg-loss, qg-loss-sz (09-25/26) | "**GRADE: PARTIAL**"; "HAVE, single grid point; … PARTIAL, D6 inherited" | [tuned] / [post-hoc]; D6 inherited from H_A | not used |
+| vortices-return (09-23/25), lambda-on-gamma (10-02) | "**vortices return to real axis: YES**"; "λ restored onto Γ: NO" | ε return and NO hold by construction | not used |
+
+**Requirements 2, 3 and 4 have no local result.** The local checks carry no U(1) flux, no mode count on S² and no area threshold, so those requirements still need L3/B4.
+
 ## Weak evidence, kept as weak
 Above A_B, the vortex amplitude and the gap both scale as √(A − A_B). That fits L1924's "square-root vanishing". But 1/2 is the exponent of any pitchfork, so it is [hive-interpretation], weak. Also, the branch point is in the area A, not in the frequency.
 
