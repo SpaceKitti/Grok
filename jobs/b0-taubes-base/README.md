@@ -51,5 +51,5 @@ Pass rule (spec, coded before the run): PASS = C1–C3 hold and P1 passes; PARTI
 - **Resolution check [finite-size]:** halving h changes the ε = 0.01 gap² by at most 3.2e-6 (relative).
 
 ## Sign-off
-Venus (maths): 
-Helios (physics): 
+Venus (maths): PASS, 2026-10-02 about 22:38 BST — controls C1–C3, P1 (intercepts ≤0.4% from 1), P2 and P3 verified; slope ≠ −1 for n>1 explained as a sextic from higher-LL mixing (sign shown, magnitude post-hoc).
+Helios (physics): PASS (reproduction), 2026-10-02 about 22:44 BST — see B0_GRADE_HELIOS.md (E58EFC2F); gap measured from the solved field, intercepts → 1, independent box re-run identical; limits: two layouts only, next-order slope grows with n.
