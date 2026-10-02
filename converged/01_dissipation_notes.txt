@@ -1,0 +1,174 @@
+Source folder: C:\Users\Akitt\Grok\dissipation\
+Compiled: Orion draft + Helios physics-check folded, 2026-09-06
+Purpose: notes only; originals untouched; no code dump
+
+## Helios physics pass (folded 2026-09-06)
+Status: FINAL after Helios check. Weird/synesthesia content retained; flagged not deleted.
+
+### CROSS-CUTTING (all finals)
+1) Units: state Alfvén (μ₀=ρ=1) vs cgs (4π) wherever W_L / W_ℓ / e_m appear.
+2) Oldroyd solvent: lim De→∞ constitutive map ≠ viscosity-free ideal MHD unless μ→0 too; name β / η_s.
+3) Lorentz work ≠ Ohmic heat: W_L is reversible K↔M; sink is ∫(εν+εη). Polymer work ↔ W_L is stretching-control analogy only, never η|J|².
+4) Before Hall-toy: prefer MHD4 §06 ten-moment LHDI over MHD2 polymer↔LHDI dual-role; odd/Berry monitors OK beside Crow, not as Hall Ohm drop-ins.
+5) Symbol pile-up: subscript β (Oldroyd / MD / plasma) and ω (vorticity vs Hieber weight).
+
+### CORRECTIONS
+- Hybrid enstrophy: stress term is ⟨ω · curl(div τ_reg)⟩, not a bare curl(div τ) addend.
+- Almost-Newtonian ω in ε=τ−2ω D is Hieber’s scalar weight — rename ω_* / η_N (≠ vorticity).
+- Demote T_* / ratio power from [standard] → [hive-interpretation] (or unfixable-for-now until C,θ pinned).
+- Split three BKM lines by regime (inertial NS–Oldroyd / Stokes–Maxwell / critical Besov); don’t OR them as one theorem.
+- σ=τ−D ≠ ε=τ−2ω_*D — different monitors.
+- Liu–Wang Voigt restoration is 2-D inviscid Oldroyd-B — not a 3-D Crow existence certificate.
+
+### FLAGS
+- Late-time Newtonian split existence [standard]; T_* formula [hive-interpretation].
+- λ as MD ε_pot shadow [hive-interpretation] + Re regime gap.
+- Weighted BKM+δ_p [hive-interpretation].
+- Vanishing-damping “only a‖τ‖²” [standard] only in Cheng–Luo… inviscid/critical setting; viscous Crow still has ν‖∇u‖².
+- VGT R_ω=(1/4)ω·S·ω is that experiment’s factor — classical production lacks 1/4.
+- Keep ΔF/Mpemba/GoldbergHexa [speculative].
+
+### TOY
+- [toy-ready?] Ostilla Crow + W=τ:S, ψ, M6, reconnection-time monitors (solvent floor on).
+- [careful] dynamical λ / R_ω → offline calibrate; polymer↔Lorentz = conversion only; hybrid ASGS+LB+Voigt campaign ≠ theorem (parts unfixable-for-now).
+
+### ORION KNOWN — CONFIRMED
+- set3 body labeled “Set 4”; set4≡set5 byte-identical — one digest, don’t double-count.
+
+
+## File inventory
+- 00_final_unified_synthesis.md.txt (25411 bytes)
+- set1_kinematic_filaments.md.txt (29758 bytes)
+- set2_stress_diffusion_ASGS.md.txt (13921 bytes)
+- set3_Voigt_VGT_highDe.md.txt (11842 bytes) [NOTE: body header says "Set 4"; Set-3 VGT/high-De physics also recovered from 00 synthesis]  Helios fix: set3 mislabel confirmed.
+- set4_LB_BKM_vanishing_damping.md.txt (7896 bytes) [NOTE: body is "Final Unified Compilation Sets 1-5"; near-duplicate of set5]  Helios fix: set4≡set5 — one digest.
+- set5_Tstar_ensembles_holographic.md.txt (7896 bytes) [NOTE: same final-compilation body as set4]
+
+## Converged notes
+
+### 00_final_unified_synthesis.md.txt
+Topic/shape: Master synthesis of E-brane Clay / C*Hive Sets 1–5 for 3-D incompressible Oldroyd-B (rate-type) viscoelasticity; analytic–numeric–experimental–asymptotic laboratory aimed at controlling vortex stretching and excess numerical dissipation down to the solvent floor.
+
+Physics objects:
+- Fields: velocity u, pressure p, conformation B = exp(chi) (log-conf), extra stress tau
+- Residual trio: R_mom, R_con, R_const (Saramito log-conf + hybrid regularisations)
+- Regularisers (interchangeable/hybridisable): stress diffusion kappa, Fréchet matrix-exp diffusion, anisotropic Voigt (alpha_par/alpha_perp), velocity mollification J, high-De core kernel, fluctuating-LB second-moment force
+- Monitors: polymer work W = tau:S, active energy E_act, free energy psi(B), weighted/discrete BKM I(t), sheet-order s, M6 = < |omega|^6 >^{1/3}, almost-Newtonian ratio ||eps||/||tau|| (eps=tau-2 omega_* D), T_*  Helios fix: Hieber weight ω_*.
+
+What it claims:
+- [standard] Hybrid enstrophy: (1/2) d/dt ||omega||_2^2 = (1-lambda)<omega_i omega_j S_ij> + <omega · curl(div tau_reg)> - nu ||grad omega||_2^2  Helios fix: stress term is ⟨ω·curl(div τ_reg)⟩, not bare curl(div τ) addend.
+- [standard] Weighted BKM / creeping-flow / critical Besov: int ||omega||_inf / (1+alpha|W|+...) or int ||sigma||_inf dt < infinity => regularity (sigma = tau - D(u); Gamma = omega - R tau)
+- [standard] Almost-Newtonian asymptote: ||eps||/||tau|| ~ (1+t)^{-(beta-alpha)/2}; [hive-interpretation] T_* = max{0, (C/theta)^{2/(beta-alpha)} - 1}  Helios fix: demote T_* formula to [hive-interpretation].
+- [standard] Experimental VGT sheet-order: R_omega = (1/4) omega·S·omega -> 0; lambda1:lambda2:lambda3 ~ 1:0:-1; omega || e2
+- [standard] High-De plateau: normal-stress contribution to pressure drop vanishes; shear remains finite
+- [standard] Vanishing-damping energy identity: polymer work cancelled by upper-convected derivative; true dissipation is linear damping a||tau||^2
+- [hive-interpretation] Ensembles (32–64 Crow members), critical Wi–lambda surface for indefinite reconnection delay, sheet-weighted anisotropic Voigt in two-tier Liu–Wang energies
+- [speculative] Bidirectional holographic injection DeltaF, rho_neg, scar-floor, GoldbergHexa Brockett ranking, Mpemba fade after T_*
+
+MHD-toy / Hall / twofluid / sheets / dissipation / cascades:
+- Direct analog of Crow tube reconnection delay and sheet morphology for MHD Crow channel
+- Polymer regularisation of stretching <-> Lorentz / Maxwell-stress control of enstrophy in MHD
+- Excess-dissipation floor philosophy maps to viscoresistive floor (Merge Crow notes)
+- Sheet-order and high-De kernels are morphology cousins of current-sheet thinning
+
+Plottable diagnostics:
+- Reconnection delay vs (Wi, lambda, A_poly, beta); peak M6; W(t) vs enstrophy isosurfaces
+- Sheet-order s(t); ||eps||/||tau|| and T_*; I_bkm(t); spectra k^{-3.5} gates; survival probability on S_c(Wi,lambda)
+
+### set1_kinematic_filaments.md.txt
+Topic/shape: Set 1 backbone — kinematic stretching suppression + vortex-filament cascades/reconnection + pressure-quotient clocks + large-data stress-diffusive existence + 2-D diffusive strong regularity.
+
+Physics objects / paper strips:
+1. Bos–Shao–Wu–Fang (arXiv:2508.15349) — kinematic lambda multiplies stretching by (1-lambda); wall-unit profiles U^+(y^+); lambda ~ (Wi-0.5)/10 maps drag reduction. [standard]
+2. Ostilla-Mónico et al. (arXiv:2102.11133) — angled Gaussian Crow tubes; Crow/sheet vs elliptical cascade at Re_Gamma~4000; beta*~67.4° / 53.1°; peak dissipation Re-independent once sheets form; M6 diagnostic. [standard]
+3. Sai Peng (arXiv:2606.25258) — pressure-quotient active channel; E_act; velocity clocks in Besov B^0_{infty,1}. [standard]
+4. Bathory–Bulíček–Málek (arXiv:2002.11224) — large-data 3-D weak solutions with stress diffusion; free energy psi(B). [standard]
+5. 2-D Oldroyd-B + kappa Delta sigma (arXiv:1204.3503) — global strong solutions; positivity max principle. [standard]
+
+Claims:
+- Two-parameter manifold (lambda, kappa) or (lambda, eta_p) dials excess dissipation toward solvent floor while retaining reconnection delay. [hive-interpretation]
+- Hybrid residual keeps full conformation for energy fidelity; lambda only in diagnostic production. [hive-interpretation]
+- Gaps: lambda not self-consistent with conformation; weak solutions lack quantitative reconnection theorems. [standard/caveat]
+
+Relation to MHD toy: Crow filament geometry is the shared free-space unit test for NS and MHD tube reconnection; polymer work W <-> Lorentz work W_L as conversion (not global sink).
+
+Plottable: beta–lambda–kappa matrix: reconnection time (centroid + bridge), peak M6, integrated W, free-energy residual, weighted BKM.
+
+### set2_stress_diffusion_ASGS.md.txt
+Topic/shape: Set 2 — pure-stress-diffusion large-stress existence + Saramito log-conf ASGS + Yukawa MD elastic turbulence + almost-Newtonian asymptotics; locks onto Set 1.
+
+Physics objects:
+1. Liang–Li–Zhai (arXiv:2504.12986) — global strong solutions in critical Besov for large tau_0 under exponential-smallness on u_0; P/Q split; effective viscous flux G. [standard]
+2. Wittschieber–Demkowicz–Behr (arXiv:2112.06829) — Saramito log-conf + ASGS/GLS; high-Wi equal-order FE. [standard]
+3–4. Wani–Tiwari (arXiv:2509.18616) — 3-D Yukawa MD elastic turbulence Re~12, Wi~2.5; spectra ~k^{-3.5}; zeta_p deficits delta_p = p/2 - zeta_p; elastic work dominates viscous by ~10^3. [standard]
+5. Hieber–Nguyen–Niche–Perusato (arXiv:2603.04700) — almost-Newtonian: eps = tau - 2 omega_* D(u) decays one power faster; late-time T_* switch. [standard]  Helios fix: ω→ω_* (Hieber scalar weight ≠ vorticity).
+
+Claims:
+- [hive-interpretation] Kinematic lambda as continuum shadow of MD elastic-work epsilon_pot
+- [standard] MD-informed weighted BKM: int ||omega||_inf / (1 + alpha|W| + beta sum delta_p) dt < infinity
+- [hive-interpretation] Exponential filter keeps Crow IC inside large-stress existence window
+
+Relation: Elastic cascade steepening and intermittency deficits parallel MHD inertial-range intermittency / sheet packing; T_* freeze of expensive monitors mirrors decaying-MHD late-time bookkeeping.
+
+Plottable: E(k), Phi_tau(k) vs k^{-3.5}; zeta_p / delta_p; eps/tau ratio vs t; reconnection under exponential filter.
+
+### set3_Voigt_VGT_highDe.md.txt
+Topic/shape: FILENAME targets Set 3 (Voigt / VGT / high-De); BODY HEADER is "Unified Compilation of Set 4" (Voigt reinforced + vanishing-damping + fluctuating LB + creeping-flow BKM + Crow production). Set-3 physics (experimental VGT sheet topology, anisotropic Voigt, Jaracz–Lee velocity mollification J, high-De plateaus) is referenced in the convergence map and fully stated in 00_synthesis.
+
+Physics objects (from this body's Set-4 strips + referenced Set-3):
+1. Liu–Wang (arXiv:2602.21921) — Voigt on stress restores classical solutions on T ~ eps^{-2/3}; two-tier energies; sigma = tau - D(u). [standard]
+2. Cheng–Luo–Yang–Yuan (arXiv:2410.09340) — critical Besov existence independent of damping a; Gamma = omega - R tau; vanishing-damping rates a^{d/4}; only true dissipation is linear damping. [standard]
+3. Wang–Liu–Wang–Yu–Ji (arXiv:2506.13072) — fluctuating LB D3Q19 second-moment force recovers div tau_p; low artificial dissipation. [standard]
+4. Creeping-flow BKM (arXiv:0709.1455) — int ||sigma||_inf dt = infinity at blowup; sigma plays role of vorticity. [standard]
+5–6. GPU Crow under exponential filter + anisotropic Voigt upgrades. [hive-interpretation]
+- [standard, from Set-3 refs / 00] VGT: R_omega -> 0, sheet eigenvalues 1:0:-1; high-De normal-stress plateau; Jaracz–Lee J mollification for H^2 existence
+
+Claims:
+- Polymer control of stretching embodied by Gamma and creeping-flow BKM. [standard]
+- Hybrid residual: continuum ASGS + LB force only where residual large. [hive-interpretation]
+- Twin campaigns a vs a/2 certify a^{d/4} rates. [standard methodology]
+
+Relation to sheets / dissipation: Voigt / LB / J are minimal-floor regularisers analogous to sheet-aware eta in MHD (Merge MM09); creeping-flow sigma_inf <-> current-density L^inf monitors.
+
+Plottable: I_sigma(t); ||Gamma||; reconnection / M6 vs A_poly; sheet-order; high-De plateau diagnostics; discrete BKM from LB second moments.
+
+### set4_LB_BKM_vanishing_damping.md.txt
+Topic/shape: Despite filename, body is "Final Unified Compilation of Sets 1–5" — closed laboratory summary (near-identical to set5). Treat as closure digest, not a distinct LB paper strip.
+
+Physics objects: Same hybrid residual suite as 00/set5; all regularisers interchangeable; all diagnostics inject into one feedback loop.
+
+Claims:
+- [hive-interpretation] Production readiness under simultaneous hard gates (MD spectra, delta_p, BKM, high-De plateau, constriction regression, exponential filter, two-tier energies)
+- [hive-interpretation] Late-time T_* freezes elastic monitors; fades Mpemba/holographic kernels to Newtonian  Helios fix: T_* demoted from [standard].
+- [speculative] Closed loops: W <-> DeltaF <-> (lambda, eta_p); reconnection delay <-> Mpemba memory; Voigt scale <-> scar-floor; discrete BKM <-> free-energy jumps
+
+Relation: Template for how MHD Merge residuals should share one scar/holographic bus after T_*.
+
+Plottable: Gate-pass boolean timelines; T_* marker; mode switch Newtonian_asymptote.
+
+### set5_Tstar_ensembles_holographic.md.txt
+Topic/shape: Same final Sets 1–5 compilation as set4 (byte-identical class). Emphasizes T_* extraction, constriction regression, multi-GPU 10^8 locking, Fréchet diffusion, bidirectional holographic feedback as the Set-5 layer named in the filename.
+
+Physics objects / claims: As set4/00; additionally [hive-interpretation] ensemble variance control, critical Wi–lambda surface S_c, sheet-weighted Voigt energies (detailed in 00).
+
+Note for Helios: Treat set4 and set5 as duplicate closures; do not double-count physics. Filename Set-5 themes (T_*, ensembles, holographic) are substantively in 00_synthesis upgrades §1–3.
+
+## Cross-cutting themes in this folder
+1. Core obstacle: omega·grad u / enstrophy cascade / ||omega||_inf — regularised by polymer stress, stress diffusion, Voigt, J, LB, high-De kernels, kinematic lambda.
+2. Shared geometry: Ostilla-Mónico Crow / elliptical tubes as unit test for reconnection delay and M6.
+3. Energy bookkeeping: free energy psi, active energy E_act, polymer work W — excess numerical dissipation = residual of the energy inequality above solvent floor.
+4. Regularity monitors: classical BKM, weighted BKM (MD-aware), creeping-flow sigma_inf, critical Besov ||P tau||, Gamma = omega - R tau.
+5. Late-time: almost-Newtonian asymptote and computable T_* to freeze expensive monitors.
+6. Morphology: experimental VGT sheet-order (1:0:-1) couples to anisotropic Voigt (strengthen alpha_perp when s->1).
+7. Hive overlay: holographic DeltaF / rho_neg / scar-floor / GoldbergHexa — interpretation layer on top of paper-backed residuals.
+8. MHD bridge (Orion lane): Crow delay, sheet morphology, and dissipation-floor philosophy transfer directly to Merge Crow / Aluie / Zhdankin / HS21 / MM09 stack.
+
+## Speculative / careful-before-toy list
+- [speculative] Self-consistent lambda from int|W| / (int|W| + int nu|omega|^2) or from experimental R_omega map — calibrate before using as dynamical dial in MHD toy.
+- [speculative] Bidirectional holographic DeltaF / Mpemba / GoldbergHexa Brockett ranking — do not treat as continuum physics; OK as bookkeeping UI.
+- [speculative] Critical Wi–lambda surface for "indefinite" reconnection delay — ensemble target, not theorem.
+- [speculative] Sheet-order dynamic Voigt weights gamma_s residual-dependent — plausible LES idea; needs Helios check vs Liu–Wang window.
+- [careful] Filename/content mismatch on set3/set4/set5 — Helios should cite arXiv strips, not assume filename = set number.
+- [careful] set4 and set5 are duplicate final digests — one section of physics, not two independent frameworks.  Helios fix: set3 body labeled “Set 4”; set4≡set5 byte-identical — one digest, don’t double-count.
+- [standard but fragile] Kinematic lambda is phenomenological; keep conformation evolution for energy fidelity.
+- [careful for MHD map] Viscoelastic polymer work is not Ohmic; map only as "conversion/control of stretching," not as eta J^2.

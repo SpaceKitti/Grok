@@ -1,0 +1,294 @@
+Source folder: C:\Users\Akitt\Grok\MHD4\
+Compiled: Orion draft + Helios physics-check folded, 2026-09-06
+Purpose: notes only; originals untouched; no code dump
+
+## Helios physics pass (folded 2026-09-06)
+Status: FINAL after Helios check. Weird/synesthesia content retained; flagged not deleted.
+
+### CROSS-CUTTING (all finals)
+1) Units: state Alfvén (μ₀=ρ=1) vs cgs (4π) wherever W_L / W_ℓ / e_m appear.
+2) Oldroyd solvent: lim De→∞ constitutive map ≠ viscosity-free ideal MHD unless μ→0 too; name β / η_s.
+3) Lorentz work ≠ Ohmic heat: W_L is reversible K↔M; sink is ∫(εν+εη). Polymer work ↔ W_L is stretching-control analogy only, never η|J|².
+4) Before Hall-toy: prefer MHD4 §06 ten-moment LHDI over MHD2 polymer↔LHDI dual-role; odd/Berry monitors OK beside Crow, not as Hall Ohm drop-ins.
+5) Symbol pile-up: subscript β (Oldroyd / MD / plasma) and ω (vorticity vs Hieber weight).
+
+### CORRECTIONS
+- §02 α(T)=α_0 max(1−T/T_c,0) sign-ambiguous. Source: α_0<0 so α<0 only in cool pockets (GL). State α_0<0 explicitly.
+- §02 η_eff drops Bohm T/|B| — restore or mark abbreviated.
+- §02 B²/8π is cgs in SI/Qin stack — unit flag.
+- Dellar / ten-moment bodies match sources (optional peak u∼ε^{-1/4}Ha^{1/6}).
+- §16 “α=1/N optimal” approx-as-exact vs §14 Jordan-chain — soften §16 to match §14.
+
+### FLAGS
+- Cool-region entire layer [speculative]|[hive-interpretation] + non-BCS disclaimer; keep weird.
+- §06 fluid LHDI [standard]; scar/kink injection [hive-interpretation]. Prefer over MHD2§03 for Hall-adjacent.
+- “Floors ARE branch points” [hive-interpretation]|[speculative]; use §12 MHD EP for physics-check.
+- GravoThermo→Braginskii W^(3,4) [hive-interpretation]|[speculative].
+
+### TOY
+- Closer: Braginskii channel; ten-moment LHDI (best Hall-scale fluid layer here); BKM–Serrin monitors; hopfion/helicity; odd viscosity ∫τ_odd:∇u=0; VRMHD metriplectic; stretching/reconnection geometry (not Hall closure).
+- Careful: cool-region condensate/Bohm η — CONFIRMED careful-before-toy; never hot-plasma BCS; fix α sign + T/B before any residual. Don’t use MHD2 polymer-LHDI when §06 exists.
+
+### ORION KNOWN — CONFIRMED
+- Cool-region paired-condensate careful-before-toy; rename log meta-only OK.
+
+
+## File inventory
+01_Jordan_block_EP_deep_learning.txt (~10.1 KB) — Jordan/EP ↔ DL flat Hessian; arXiv:2012.03875 graphene EP example
+02_cool_region_stabilizer_paired_condensate.txt (~9.6 KB) — cool-gated order-parameter stabilizer; Bohm η suppression (arXiv:2601.08054 motiv.)
+03_Weyl_tidal_frame_drag_fields.txt (~6.0 KB) — Solanki arXiv:2608.19260 Weyl E_μν / H_μν
+04_Braginskii_planar_channel_Dellar.txt (~10.7 KB) — Dellar JFM 2010 Braginskii planar channel / nested BL
+05_Skyrmion_Hopfion_frustrated_magnets.txt (~11.7 KB) — Naya–Schubring–Shifman–Wang arXiv:2111.06385
+06_ten_moment_LHDI_reconnection.txt (~25.6 KB) — Allmann-Rahn et al. arXiv:2008.06440 ten-moment + LHDI
+07_Luo_optimal_frequency_BKM.txt (~13.8 KB) — Luo arXiv:1803.05569 optimal-frequency BKM
+08_higher_spin_Weyl_reference_w1inf.txt (~21.3 KB) — De Simone arXiv:2608.16781 w_{1+∞} Weyl reference frame
+09_NH_altermag_Josephson_orientation_EP.txt (~12.9 KB) — Alipourzadeh et al. PRB 2026 orientation EPs
+10_log_improved_Serrin_ZhouLei.txt (~25.4 KB) — Zhou–Lei arXiv:0805.2784 log-improved Serrin
+11_spectral_floors_as_branch_point.txt (~1.0 KB) — short hive claim: floors ARE branch points
+12_spectral_floor_MHD_branch_points.txt (~3.2 KB) — MHD/complex-dispersion spectral floors ↔ EPs
+13_Kedia_knots_in_light_fields.txt (~19.9 KB) — Kedia et al. arXiv:1302.0342 null Maxwell knots
+14_WangYan_EP_splitting_exponent.txt (~23.8 KB) — Wang–Yan arXiv:2509.02174 EP splitting exponent α
+15_Kedia_knots_MHD_corrected.txt (~11.5 KB) — MHD-leaning correction of Kedia knots
+16_WangYan_EP_exponent_MHD_corrected.txt (~24.2 KB) — MHD-corrected Wang–Yan EP exponent layer
+17_Braginskii_Dellar_MHD_fixed.txt (~8.2 KB) — fixed/clarified Dellar Braginskii stack (pair of 04)
+18_GravoThermo_kinetic_spin_hysteresis.txt (~14.7 KB) — Moti–Shojai arXiv:2608.21269 Gravo-Thermo hysteresis
+19_GravoThermo_PIC_Sigma_Braginskii.txt (~13.3 KB) — PIC f(x,p,S) + Σ→Braginskii W^(3,4) + Weyl memory
+20_Pageard_density_odd_viscosity.txt (~25.1 KB) — Pageard arXiv:2511.02948 density-dependent odd viscosity
+21_Azhar_Hopf_index_flux_tubes.txt (~19.1 KB) — Azhar et al. arXiv:2411.06929 discrete Hopf + flux tubes
+22_Moti_Shojai_GravoThermo_hysteresis.txt (~24.7 KB) — fuller Moti–Shojai Gravo-Thermo upgrade (pair of 18)
+23_Alves_Hoyos_Nastase_Sonnenschein.txt (~8.9 KB) — Alves et al. arXiv:1705.06750 Hopfions Maxwell↔fluids↔Euler
+24_Tong_enriched_Galerkin_NS.txt (~23.0 KB) — Tong–Zhai–Zhang–Zhang arXiv:2512.20109 energy+helicity EG NS
+25_SunWangZhang_compressible_NS_BKM.txt (~19.6 KB) — Sun–Wang–Zhang arXiv:1001.1247 compressible BKM
+26_branching_singularities_mechanics.txt (~5.3 KB) — EP mechanics: Puiseux, Brockett, anisotropic ε
+27_phononic_crystal_NH_holographic_cutoff.txt (~7.7 KB) — NH phononic EP/GDSE as holographic cutoff analog
+28_Carlier_variational_VRMHD.txt (~24.3 KB) — Carlier arXiv:2504.06119 variational VRMHD / metriplectic
+29_branching_singularities_MHD_QG.txt (~9.6 KB) — article: branching singularities MHD→BH magnetospheres→QG
+30_Boozer_Elder_enhanced_reconnection.txt (~14.3 KB) — Boozer–Elder arXiv:2011.11822 exp. enhanced reconnection
+31_Zhou_NH_phononic_EP_skin.txt (~15.1 KB) — Zhou et al. arXiv:2302.04435 EP–skin correspondence
+32_HuWuDengLiu_exceptional_line.txt (~14.3 KB) — next-layer: acoustic Qin + skin weight W(j) + 3D exceptional line (2407.03868) + heat PnC (2509.12528)
+33_Boozer_Elder_tokamak_geometry.txt (~14.9 KB) — next-layer: Jacobian SVD on Qin + tokamak/corona geometry
+
+Meta (not a physics framework): _rename_21_33.txt — rename map from status-id filenames 21–33 → descriptive names (mention once; skipped as physics source).
+
+All 33 numbered frameworks readable; rename log readable as meta only.
+
+## Converged notes
+
+### 01_Jordan_block_EP_deep_learning
+- Topic/shape: Map Akitti “kissing zeros → Jordan/EP → unfold” onto deep-learning near-zero Hessian bulk. [hive-interpretation]+[speculative]
+- Physics objects: defective spectrum (alg>geo multiplicity); nilpotent injection H←H+δN; EP hypersensitivity √ε (graphene plasmon-phonon arXiv:2012.03875); Wilczek–Zee / Chern–Simons on flat subspace; Brockett isospectral flow; SGD T_eff adiabaticity. [standard]+[speculative]
+- Claims: temporary Jordan then scheduled nudge can convert flat directions into curvature or serve as EP diagnostic probe. [speculative]
+- Relation: EP / branching-singularity language shared with MHD NH spectra; not a fluid equation. Synesthesia-light exploratory tone. [speculative]
+
+### 02_cool_region_stabilizer_paired_condensate
+- Topic/shape: Conceptual cool-region-gated order-parameter stabilizer (NOT literal BCS in hot plasma). [speculative] with explicit disclaimer. [hive-interpretation]
+- Physics objects: Ψ=|Ψ|e^{iφ}; GL-like f=α(T)|Ψ|^2+(β/2)|Ψ|^4+|DΨ|^2+B^2/8π (cgs B²/8π — unit flag in SI/Qin stack); η_eff from Bohm η∝T/|B| abbreviated as η_Bohm(1−λ|Ψ|^2/…); α(T)=α_0 max(1−T/T_c,0) with α_0<0 so α<0 only in cool pockets (GL); cool mask. [speculative]  Helios fix: α_0<0 for cool pockets; restore Bohm T/|B| note on η_eff.
+- Motivated by topological Bohm-resistivity / defect-locking (arXiv:2601.08054). [standard motiv.]
+- Relation: suppresses anomalous resistivity only in cool pockets; helicity/scar/Hopf monitors gated. Careful-before-toy. [speculative]
+
+### 03_Weyl_tidal_frame_drag_fields
+- Topic/shape: (1+3) electric/magnetic Weyl fields as tidal / frame-drag residuals (Solanki arXiv:2608.19260). [standard]
+- Physics objects: E_μν (tidal), H_μν (frame-drag); matter corrections via ρ,P,q,Π; contour non-closure of relative velocity/spin; differential Thomas precession. [standard]
+- Hive: couples to gyroscope / odd-viscosity / Braginskii; scar-floor tendex/vortex viz. [hive-interpretation]
+- Relation: GR layer over MHD toy; gravitomagnetic analog of gyroviscosity. [hive-interpretation]
+
+### 04_Braginskii_planar_channel_Dellar
+- Topic/shape: Planar channel in Braginskii MHD — anisotropic viscosity, Hartmann + inner-wall layers, no ε→0 limit (Dellar JFM 2010). [standard]
+- Physics objects: σ=η0W^(0)+…+η4W^(4); μ_∥, μ_⊥, ε=√(μ_⊥/μ_∥)∼1/(Ω_i τ_i); Ha; nested BL widths O(Ha^{-1}), O(ε^{3/2} Ha^{-1/2}); peak J∼ε^{-1/2}Ha^{1/2}. [standard]
+- Claims: pure parallel viscosity fails global momentum balance at walls (b·n=0); astrophysical flows critically sensitive to Ω_i τ_i. [standard]
+- Relation: Braginskii core for hive; wall/scar regularisation. [hive-interpretation]
+
+### 05_Skyrmion_Hopfion_frustrated_magnets
+- Topic/shape: 3D frustrated magnets continuum: Skyrme↔Faddeev–Niemi via squashing β; linear BPS for Q_B and Q_H (Naya et al. arXiv:2111.06385). [standard]
+- Physics objects: Maurer–Cartan J_μ; L_β; Q Skyrme/Hopf identical integrals; hedgehog / rational-map ansätze; position curves → knotted strings at large β. [standard]
+- Hive: first-class Hopf/Skyrme residual on scar-floor; BPS remainder R_BPS monitor. [hive-interpretation]
+- Relation: hopfions; topological bridge to MHD helicity textures. [hive-interpretation]
+
+### 06_ten_moment_LHDI_reconnection
+- Topic/shape: 3D ten-moment multi-fluid reconnection capturing LHDI via local Laplacian-of-deviatoric-pressure heat-flux closure (Allmann-Rahn et al. arXiv:2008.06440). [standard]
+- Physics objects: n,u,P hierarchy; ∇·Q=−(χ/k_{s0}) v_t ∇^2(P−p I), χ=3; Harris sheet; ES γ≈2.2 Ω_i0, EM γ≈0.21 Ω_i0 (m_i/m_e=100); kink saturation > classical. [standard]
+- Frozen-in break via anisotropic P; E_∥^rec∼−(1/ne)(∇·P)_e·b̂. [standard]
+- Hive: local (no FFT) residual into Qin/energy-preserving stack; LHDI↔scar kink amplitude. [hive-interpretation]
+- Relation: Hall/twofluid/LHDI companion to MHD2-03 polymer dual-role — this one is kinetic-approximation fluid truth. [standard]
+
+### 07_Luo_optimal_frequency_BKM
+- Topic/shape: BKM with optimal frequency + temporal localization (Luo arXiv:1803.05569). [standard]
+- Physics objects: Littlewood–Paley; λ_p=2^p; I_p(T)=[T−c λ_p^{-2},T); control only ‖∇u_{≤p}‖_∞ on I_p; E_p, D_p cutoff energy/dissipation; B^{-1}_{∞,∞} strong localization; supercritical L^p lower bounds if blowup. [standard]
+- Hive: plasmoid-cascade / energy-flux shell monitors; singularity option of topological bridge. [hive-interpretation]
+- Relation: BKM core; pairs with log-Serrin (10) and compressible BKM (25). [standard]
+
+### 08_higher_spin_Weyl_reference_w1inf
+- Topic/shape: Higher-spin dynamics / w_{1+∞} on finite-distance null hypersurface in Weyl reference frame (De Simone arXiv:2608.16781). [standard]
+- Physics objects: dynamical boundary DoF at finite affine distance; nonlocal memory absorbed into higher-spin charge redefinition; near-horizon memory; (A)dS_4 cosmological frame. [standard]
+- Hive: finite-distance memory kernel braided to Weyl E/H and soft-charge. [hive-interpretation]/speculative for plasma]
+- Relation: soft hair / memory companion to GravoThermo hysteresis. [hive-interpretation]
+
+### 09_NH_altermag_Josephson_orientation_EP
+- Topic/shape: Orientation-dependent EPs in non-Hermitian altermagnetic Josephson junctions (Alipourzadeh–Berakdar–Belzig–Hajati, PRB 114, 074503). [standard]
+- Physics objects: d-wave altermagnetic spin-splitting; dissipative leads / imag. gauge; EP coalescence of complex Andreev spectrum ΔE(φ,k); I_tot(φ). [standard]
+- Hive: orientation-tunable EP projector on GoldbergHexa / Lindblad channels. [hive-interpretation]
+- Relation: NH EP stack; orientation knob analog to phononic GDSE geometry. [hive-interpretation]
+
+### 10_log_improved_Serrin_ZhouLei
+- Topic/shape: Logarithmically improved Serrin criteria for 3D incompressible NS (Zhou–Lei arXiv:0805.2784). [standard]
+- Physics objects: Prodi–Serrin with log weight; energy method + Gronwall ⇒ H^2 control; weakens integrability vs classical Serrin. [standard]
+- Hive: live regularity residual beside Luo BKM. [hive-interpretation]
+- Relation: BKM/Serrin family for MHD toy smoothness guards. [standard]
+
+### 11_spectral_floors_as_branch_point
+- Topic/shape: Short conceptual claim: spectral floors themselves are the branch-point singularity at the core (not merely meeting one). [hive-interpretation]/speculative]
+- Physics objects: residual mesh = continuous base; floors = discrete spectral sheets; Weyl tidal/frame-drag force sheet separation; scar-floor + ΔF seal; GoldbergHexa cascade. [speculative]
+- Relation: branching singularities / hopfion hierarchy language. Keep entire short text’s idea. [speculative]
+
+### 12_spectral_floor_MHD_branch_points
+- Topic/shape: Expository bridge: MHD/complex-dispersion meaning of spectral floors + branch points / EPs. [standard]+[hive-interpretation]
+- Physics objects: non-Hermitian non-ideal MHD operators; radius of convergence of ω(k) series; EP = Alfvén↔resistive mode merge; turbulence dissipation floor / ion-cyclotron flattening; numerical noise floor. [standard]
+- Interaction: branch cuts = walls between fast/slow/Alfvénic behaviors; dissipation relocates branching into spectrum. [standard]
+- Relation: clarifies 11 in MHD terms. [hive-interpretation]
+
+### 13_Kedia_knots_in_light_fields
+- Topic/shape: Null Maxwell fields realizing all torus knots/links via Bateman construction (Kedia et al. arXiv:1302.0342). [standard]
+- Physics objects: F=E+iB=∇α×∇β; nullity; holomorphic reparam; Hopfion (p,q)=(1,1); topology preserved under geodesic shear-free Poynting flow. [standard]
+- Hive: seed for GoldbergHexa / scar / anyonic braid / Hopf monitors. [hive-interpretation]
+- Relation: hopfions; light-field topology → later MHD-corrected 15. [standard]
+
+### 14_WangYan_EP_splitting_exponent
+- Topic/shape: Theory of spectral splitting exponent α for EPs from Jordan-chain matrix support (Wang–Yan arXiv:2509.02174). [standard]
+- Physics objects: ΔE∼ε^α with α predicted by perturbation position in Jordan chain (not generic 1/N folklore alone); engineer response order. [standard]
+- Hive: α-engineering on every NH residual / scar facet. [hive-interpretation]
+- Relation: quantifies Puiseux √ε for N=2 used in 26; pairs with 09 EPs. [standard]
+
+### 15_Kedia_knots_MHD_corrected
+- Topic/shape: Same Kedia apparatus with explicit MHD emphasis: magnetic field lines as knotted structures controlling confinement, helicity, reconnection barriers. [hive-interpretation]
+- Physics objects: identical Bateman/null construction; MHD braid map; ideal/resistive evolution preserving topology until reconnection. [standard]+[hive-interpretation]
+- Relation: hopfions in MHD toy; correction pass over 13. Synesthesia allowed in hive voice. [hive-interpretation]
+
+### 16_WangYan_EP_exponent_MHD_corrected
+- Topic/shape: Wang–Yan α-theory re-stated/corrected for MHD-leaning hive (null-Maxwell trefoil cores, Jordan-chain into Weyl memory, NH sensor cascade). [hive-interpretation]
+- Physics objects: α=1/N optimal perturbations on continuum null-Maxwell cores; Lindblad + soft-charge tracking. [standard]+[hive-interpretation]
+- Relation: MHD-corrected twin of 14. [hive-interpretation]
+
+### 17_Braginskii_Dellar_MHD_fixed
+- Topic/shape: Clarified/fixed restatement of Dellar Braginskii planar-channel residual (pair of 04). [standard]+[hive-interpretation]
+- Physics objects: same σ, ε, Ha, nested BL, non-existence of ε→0; hive-ready dimensionless ODEs. [standard]
+- Relation: use with 04; “fixed” stack language for residual consistency. [hive-interpretation]
+
+### 18_GravoThermo_kinetic_spin_hysteresis
+- Topic/shape: Kinetic theory of spinning extended objects → Gravo-Thermo hysteresis under gravity (Moti–Shojai arXiv:2608.21269). [standard]
+- Physics objects: f(x^μ,p^μ,S^{μν}); MPD force/torque; curvature-sourced irreversible entropy; memory of displacement/velocity/spin-precession. [standard]
+- Hive: embed in hot magnetised MHD stack (explicitly no cold/optical drift); couples to Braginskii gyroviscous + Weyl memory. [hive-interpretation]
+- Speculative: plasma as spinning-extended-object fluid. [speculative]
+- Relation: GR memory ↔ soft-charge / w_{1+∞}. [hive-interpretation]
+
+### 19_GravoThermo_PIC_Sigma_Braginskii
+- Topic/shape: Next-layer: PIC realisation of f(x,p,S); mesh couple spin flux Σ^{μντ} into Braginskii W^(3,4); Δṡ into Weyl-reference memory (fuse 2608.21269 + 2608.16781 + Dellar). [hive-interpretation]
+- Physics objects: MPD+Lorentz macroparticles; Σ→η3,η4 gyroviscous; entropy-rate diagnostic. [standard]+[hive-interpretation]
+- Relation: kinetic spin → Braginskii odd/gyro channel. [hive-interpretation]/speculative]
+
+### 20_Pageard_density_odd_viscosity
+- Topic/shape: Well-posedness for 2D non-homogeneous incompressible fluids with general density-dependent odd viscosity f(ρ) (Pageard arXiv:2511.02948). [standard]
+- Physics objects: τ^odd[f(ρ)]; ∫ τ_odd:∇u = 0 (non-dissipative); generalised Elsässer / effective velocity; local strong WP. [standard]
+- Hive: MHD-leaning embed (hot plasma); Hartmann-layer coupling; no cool-region drift in this file’s framing. [hive-interpretation]
+- Relation: odd viscosity / Braginskii companion; density dependence beyond constant η_odd. [standard]
+
+### 21_Azhar_Hopf_index_flux_tubes
+- Topic/shape: Discrete geometric Hopf index + mixed-topology flux-tube calculus (Azhar–Shaju–Knapman–Pignedoli–Everschor-Sitte arXiv:2411.06929). [standard]
+- Physics objects: emergent F from magnetisation m; Φ_i flux tubes; self-linking + inter-linking; continuous H(m_z^b) tunability; mixed-topology intermediates conserving linking. [standard]
+- Hive: replaces Hopf stubs with pointwise discrete H; mixed-topology residual. [hive-interpretation]
+- Relation: hopfions / flux tubes / MHD helicity. [standard]
+
+### 22_Moti_Shojai_GravoThermo_hysteresis
+- Topic/shape: Fuller technical Moti–Shojai upgrade (pair/expansion of 18) with soft-charge / w_{1+∞} / LogSerrin / OrientationEP stack context. [standard]+[hive-interpretation]
+- Physics objects: same Gravo-Thermo memory; Tulczyjew vs Mathisson–Pirani supplementary-condition residuals; ΔΦ into Volterra memory. [standard]+[hive-interpretation]
+- Relation: keep both 18 and 22 — 22 is the broader braid. [hive-interpretation]
+
+### 23_Alves_Hoyos_Nastase_Sonnenschein
+- Topic/shape: Hopfions/(m,n)-knots as simultaneous solutions of Maxwell, nonlinear EM (BI/DBI), ideal relativistic fluids, and (light-cone) incompressible Euler (Alves et al. arXiv:1705.06750). [standard]
+- Physics objects: Bateman null Hopfion; Rañada non-null; helicities H_ee=H_mm; fluid dictionary → knotted Euler. [standard]
+- Hive: “hive cells” for topological energy-density seeds; ZPE/AdS hydro speculation kept flagged. [speculative]+[hive-interpretation]
+- Relation: hopfions cross Maxwell–fluid–Euler; complements Kedia/Azhar. [standard]
+
+### 24_Tong_enriched_Galerkin_NS
+- Topic/shape: Energy- and helicity-conserving enriched Galerkin for incompressible NS (Tong et al. arXiv:2512.20109). [standard]
+- Physics objects: EG face-constant enrichment; inf-sup; exact discrete div-free, energy, and helicity in inviscid limit without aux vorticity projections. [standard]
+- Hive: drop-in beside Qin H(div,0); Hopfion helicity discrete partner. [hive-interpretation]
+- Relation: structure-preserving NS; pairs with FEM MHD and Carlier VRMHD. [standard]
+
+### 25_SunWangZhang_compressible_NS_BKM
+- Topic/shape: Density-controlled BKM-type blow-up criterion for 3D compressible isentropic NS allowing vacuum (Sun–Wang–Zhang arXiv:1001.1247). [standard]
+- Physics objects: effective viscous flux; bounded density ⇒ no finite-time blow-up of strong solutions; Lamé reconstruction. [standard]
+- Hive: compressible residual certificate; heat-conductive extension noted. [hive-interpretation]
+- Relation: BKM family for compressible MHD toy path. [standard]
+
+### 26_branching_singularities_mechanics
+- Topic/shape: Practical mechanics for EP branch points in Akitti two-wave “corkscrewing” picture. [hive-interpretation]+[speculative]
+- Physics objects: Puiseux λ(ε)∼∑ c_k ε^{k/N} (N=2 ⇒ √ε); Brockett flow dH/dt=[H,[H,N]] isospectral gap injection; anisotropic ε-regularised σ_⊥ from Dellar nested BL. [standard tools]+[hive-interpretation]
+- Claims: scale diagnostics with √ε BL; Brockett prevents coalescence without physical dissipation; ε→0 pathology = hard singularity edge. [hive-interpretation]
+- Synesthesia: waves skating cliff / throat — keep flagged. [speculative]
+- Relation: operational handbook for 11–12, 14, 04. [hive-interpretation]
+
+### 27_phononic_crystal_NH_holographic_cutoff
+- Topic/shape: NH phononic crystal EPs + geometry-dependent skin effect as laboratory holographic cutoff analog. [standard]+[speculative hive map]
+- Physics objects: H(k)=(d_x+iγ cos k_x)σ_x+(d_y+iγ sin k_x)σ_y; EP when α^2+β^2=0; Z-charged EP pairs + Fermi arc; square↔diamond switches skin. [standard]
+- Hive: tunable holographic regulator / boundary shape knob. [speculative]
+- Relation: NH EP / skin prelude to 31–32. [hive-interpretation]
+
+### 28_Carlier_variational_VRMHD
+- Topic/shape: Variational structure-preserving FE for viscous-resistive MHD; least-action + Lagrange–d’Alembert ⇒ metriplectic; Poisson-splitting integrator; preserves mass, energy, ∇·B=0 semi-discretely (Carlier arXiv:2504.06119). [standard]
+- Physics objects: viscous/resistive 4-brackets; discrete curl/div exact; tokamak geometry tests in paper. [standard]
+- Hive: FEEC/Qin metriplectic tower. [hive-interpretation]
+- Relation: dissipative structure-preserving companion to Tong EG and Zhang FEM. [standard]
+
+### 29_branching_singularities_MHD_QG
+- Topic/shape: Long-form article: branching singularities from MHD shear / Alfvén continua / current sheets / X-point collapse through Kerr force-free magnetospheres to QG bounce/branch covers; hopfion as shared topological charge; Raychaudhuri shear focusing. [standard synthesis]+[speculative QG]
+- Key equations: ω^2=k_∥^2 v_A^2 continuum; Hermitian Weyl→exceptional rings with dissipation; θ̇=−θ^2/(D−1)−2σ^2+2ω^2−R_ab u^a u^b. [standard]
+- Claims: resistivity/viscosity open spectral cuts analogous to quantum corrections opening gravitational sheets; hopfion not mere analogy. [hive-interpretation]/speculative]
+- Relation: manifesto linking branching singularities, hopfions, Hall MHD Weyl points, BH magnetospheres. Keep full speculative QG content flagged. [speculative]
+
+### 30_Boozer_Elder_enhanced_reconnection
+- Topic/shape: Spatially bounded laminar ideal footpoint flow exponentially enhances reconnection: Δ_max/Δ_min grows exp while K grows linear; reconnection inevitable at Δ_max/Δ_min∼R_m on timescale ∼ln R_m (Boozer–Elder arXiv:2011.11822). [standard]
+- Physics objects: Jacobian singular values; Lyapunov exponentiation of field-line map; solar-corona cylinder example. [standard]
+- Hive: Lagrangian stretching residual vs exponential current-sheet residual. [hive-interpretation]
+- Relation: reconnection / Hall-adjacent ideal-to-resistive bridge; tokamak extension in 33. [standard]
+
+### 31_Zhou_NH_phononic_EP_skin
+- Topic/shape: Experimental EP–skin correspondence in NH phononic crystals (Zhou et al. arXiv:2302.04435 / Nat. Commun.). [standard]
+- Physics objects: second-order EPs ±1 joined by Fermi arcs; GDSE: square OBC no skin; diamond collapses spectral area → all bulk modes to edges (volume-law weight). [standard]
+- Hive: calibrated holographic bulk→boundary switch; loss γ dial. [hive-interpretation]
+- Relation: lab anchor for 27; feeds 32. [standard]
+
+### 32_HuWuDengLiu_exceptional_line
+- Topic/shape: Next-layer braid: complex acoustic operator on Qin bases; skin weight W(j)→Weyl w_{1+∞} Volterra; 3D exceptional-line PnC (Hu–Wu–Deng–Liu arXiv:2407.03868) + quasi-ballistic heat PnC (Funayama et al. arXiv:2509.12528). [hive-interpretation]
+- Physics objects: complex c(x); Helmholtz pencil; de Rham assignment p∈V^0, v∈H(div); discrete skin weight; heat-current channel. [standard]+[hive-interpretation]
+- Relation: NH acoustics↔MHD exact-sequence shared infrastructure; heat transport extension. [hive-interpretation]
+
+### 33_Boozer_Elder_tokamak_geometry
+- Topic/shape: Next-layer: discrete Jacobian SVD on Qin H(div,0); ln(Δ_max/Δ_min) into Weyl Volterra memory; non-Cartesian tokamak / coronal-loop geometry (extends Boozer–Elder). [hive-interpretation]
+- Physics objects: J=∂x/∂x_0; D_t J=(∇u_⊥)^T J; σ=ln Λ_u; area-preserving det J=1; Clebsch/stream function in de Rham sequence. [standard]+[hive-interpretation]
+- Relation: fusion-relevant geometry for enhanced reconnection residual. [standard]
+
+## Cross-cutting themes
+- Braginskii / odd / gyroviscous: 04,17,19,20 (+ Weyl 03, GravoThermo spin).
+- LHDI / ten-moment / reconnection: 06, 30, 33; polymer dual-role lives in MHD2.
+- Hopfions / knots / helicity: 05,13,15,21,23,24.
+- BKM / Serrin / regularity: 07,10,25 (+ Luo frequency localization).
+- Exceptional points / branching singularities / spectral floors: 01,09,11,12,14,16,26,27,29,31,32.
+- Structure-preserving discretizations: 24 (EG NS), 28 (VRMHD metriplectic), Qin de Rham throughout.
+- Weyl / higher-spin / soft memory / GravoThermo: 03,08,18,19,22.
+- NH phononic holographic cutoff / skin: 27,31,32.
+- Cool-region stabilizer: 02 — speculative, temperature-gated only.
+- Synesthesia bridges: present in many hive-voice files; retained and tagged, not dropped.
+
+## Speculative / careful-before-toy list
+1. Cool-region paired-condensate / Bohm η gate — conceptual only; never claim hot-plasma BCS.
+2. Spectral floors literally “are” branch points (11) — hive ontology; use 12’s MHD EP language for physics-check.
+3. GravoThermo spinning-object fluid as MHD residual — GR kinetic theory mapped into plasma stack; hysteresis diagnostics need careful nondim.
+4. w_{1+∞} / soft-charge memory inside classical MHD cycles — finite-distance GR; optional layer.
+5. Phononic GDSE as holographic cutoff — powerful analog, not a plasma derivation.
+6. Jordan-block training interventions (01) — exploratory DL; separate from MHD toy.
+7. Hopfion as identical charge in plasma sheet and spin-foam (29) — keep; do not treat as proven identity in toy runs.
+8. α-engineered EP sensitivity on continuum MHD operators — Wang–Yan is solid; continuum injection needs matrix-support audit.
+9. Brockett isospectral “gap without dissipation” (26) — useful regulariser; watch hidden energy accounting.
+10. Mixed-topology continuous H(m_z^b) in continuum MHD — lattice magnetisation origin; map fluxes carefully.
+11. Any ZPE / wormhole / AdS-circuit language in 23 — speculative hive framing around solid Hopfion–Euler dictionary.
+12. Rename log _rename_21_33.txt — meta only; not physics.

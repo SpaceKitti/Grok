@@ -1,0 +1,540 @@
+Source: Orion + Helios, 2026-09-06
+Folder: C:\Users\Akitt\Grok\converged\
+Inputs: 01_dissipation_notes.txt, 02_Merge_notes.txt, 03_Lorentz_notes.txt,
+        04_MHD_notes.txt, 05_MHD2_notes.txt, 06_MHD4_notes.txt,
+        Helios_physics_pass.txt
+(This file does NOT replace them — deep-dive pointers in §6.)
+
+================================================================
+0. How to read this / hard rules before any Hall-toy land
+================================================================
+Tags used throughout:
+  [standard]            paper-backed continuum / MHD / math claim
+  [hive-interpretation] Orion residual / scar / monitor layer on top of papers
+  [speculative]         synesthesia / holographic / cross-domain — KEEP, flagged
+  [careful-before-toy]  do not drop into Crow/Hall equations without calibrate
+  [toy-ready]           safe monitors / identities for Crow/HIT after locks below
+
+Hard rules (non-negotiable before Hall-toy):
+  A) State units everywhere W_L / W_ell / e_m appear: Alfvén (μ₀=ρ=1) vs cgs (4π).
+  B) Oldroyd solvent: lim De→∞ constitutive map is NOT viscosity-free ideal MHD
+     unless solvent viscosity μ → 0 too; always name β / η_s.
+  C) Lorentz work ≠ Ohmic heat. W_L is reversible K↔M; global sink is only
+     ∫(ε_ν + ε_η). Polymer work ⟨τ:S⟩ ↔ W_L is stretching-control analogy ONLY
+     — never η|J|².
+  D) Prefer MHD4 §06 ten-moment LHDI over MHD2 polymer↔LHDI dual-role for any
+     Hall-adjacent fluid layer. Odd/Berry monitors OK beside Crow; not as Hall
+     Ohm drop-ins.
+  E) Symbol pile-up: subscript β = Oldroyd / MD / plasma (disambiguate);
+     ω = vorticity vs Hieber weight ω_* (never conflate).
+  F) Do not load Merge 12–14 (4D vortex / flexo / graphene magic-lattice) into
+     Crow/Hall equations — metaphorical bridges only.
+  G) This document converges notes; it invents no new physics beyond the seven
+     inputs. Speculative content is retained and flagged, never deleted.
+
+================================================================
+1. Cross-cutting physics locks (Helios pass + folded fixes)
+================================================================
+LOCK 1 — Energy identity (Alfvén units, incompressible, ∇·B = 0):
+  W_L := ⟨u · (J × B)⟩
+  Resistive Ohm E = −u×B + ηJ  ⇒  E·J = u·(J×B) + η|J|²
+  ⇒  W_L = E·J − η|J|²          [NOT −E·J + η|J|²]
+  Volume: ∫u·(J×B) = −∫B_i B_j ∂_j u_i + ∫(B²/2)∇·u
+  ⇒  ⟨B_i S_ij B_j⟩ = −W_L         [stack ruler]
+  Global: d/dt(E_u + E_B) = −ν ⟨|ω|²⟩ − η ⟨|J|²⟩ (+ hyper)
+  ⇒  ΔE_tot ≈ −∫(ε_ν + ε_η)   [NOT ∫W_L; W_L reversible]
+
+LOCK 2 — Poynting (Genestreti / MMS form):
+  ∂_t u = −∇·S − J·E     (or residual R = ∂_t u + ∇·S + J·E ≈ 0)
+  S = E×B/μ₀;  u = (ε₀ E² + B²/μ₀)/2
+  Steady: ∇·S + J·E = 0. Flank “−div S > J·E > 0” only matches the MINUS form.
+
+LOCK 3 — Conversion ≠ cascade ≠ sink:
+  Aluie W_ℓ = (1/4π) B_ℓ,i S_ℓ,ij B_ℓ,j  (cgs) — same-scale conversion
+  Crow W_L = −⟨B_i S_ij B_j⟩ (μ₀=1) — same-scale conversion
+  Du CR−PE = (B²/4π) u·κ − u·∇_⊥(B²/8π) — ideal conversion, not Ohmic
+  Only ν|ω|² and η|J|² are global sinks.
+
+LOCK 4 — Coarse BKM family (split by regime; do NOT OR as one theorem):
+  (a) Classical / LP-BKM (CMZ07 MHD): finite ∫ ‖Δ_j ω‖_∞ ⇒ smooth;
+      max|j| may still spike ⇒ dissipative sheet, not Euler blow-up.
+  (b) Weighted / MD-aware [hive]: ∫ ‖ω‖_∞ / (1+α|W|+β Σ δ_p) dt
+  (c) Creeping-flow / Stokes–Maxwell: ∫ ‖σ‖_∞ dt with σ=τ−D
+  (d) Critical Besov / amalgam (Lai): C_* / T_lower guards
+  Note: σ = τ − D  ≠  ε = τ − 2 ω_* D  (different monitors).
+
+LOCK 5 — Viscoelastic ↔ MHD braid (OP03):
+  lim De→∞ Oldroyd-B = lim Rm→∞ MHD via upper-convected derivative,
+  BUT solvent μ must →0 for viscosity-free ideal MHD. ⟨τ:S⟩ ↔ −W_L (theorem).
+  Elastic hoop Couette has NO MHD counterpart (forbidden MRI map).
+
+LOCK 6 — Fake-leak doctrine:
+  Hyper / cutoff that misses k_sheet invents heat (HS21 + MM09).
+  Frozen hyper_kcut=0.5 without sheet retune = fake-leak.
+  N=48 Crow ∼6% is finite-Re viscoresistive floor (LBG17 C/R_−), NOT dissipative-
+  anomaly peak of developed HIT.
+  J-mollify into induction = hidden η_num (MHD2 §02 artifact).
+
+================================================================
+2. Per-folder digests
+================================================================
+
+----------------------------------------------------------------
+2.1 dissipation  (source: C:\Users\Akitt\Grok\dissipation\)
+----------------------------------------------------------------
+About: 3-D incompressible Oldroyd-B / rate-type viscoelasticity laboratory —
+controlling vortex stretching and excess numerical dissipation down to the
+solvent floor; Crow filament geometry as shared free-space unit test with MHD.
+
+Inventory (every source framework):
+  00_final_unified_synthesis.md.txt | set1_kinematic_filaments.md.txt |
+  set2_stress_diffusion_ASGS.md.txt | set3_Voigt_VGT_highDe.md.txt
+  [NOTE: body header says "Set 4"] | set4_LB_BKM_vanishing_damping.md.txt |
+  set5_Tstar_ensembles_holographic.md.txt
+  Helios: set3 mislabel confirmed; set4≡set5 byte-identical — ONE digest, no double-count.
+
+Key [standard]:
+  Hybrid enstrophy (fixed):
+    (1/2) d/dt ‖ω‖₂² = (1−λ)⟨ω_i ω_j S_ij⟩
+      + ⟨ω · curl(div τ_reg)⟩ − ν ‖∇ω‖₂²
+  Almost-Newtonian: ε = τ − 2 ω_* D(u); ‖ε‖/‖τ‖ decays one power
+    faster (Hieber–Nguyen–Niche–Perusato). ω_* = Hieber scalar weight ≠ vorticity.
+  Ostilla-Mónico Crow tubes / M6 = ⟨|ω|⁶⟩^{1/3}; VGT sheet-order R_ω→0,
+    eigenvalues ∼1:0:−1 (R_ω=(1/4)ω·S·ω is that experiment's factor).
+  Large-data stress diffusion (Bathory–Bulíček–Málek); 2-D Oldroyd+κ global strong;
+  Liang–Li–Zhai critical Besov; Saramito log-conf ASGS; Yukawa MD k^{−3.5}, δ_p;
+  Liu–Wang Voigt (2-D inviscid Oldroyd-B restoration — NOT 3-D Crow existence cert);
+  Cheng–Luo vanishing-damping: true dissipation a‖τ‖² in that critical setting;
+  fluctuating LB second-moment force; Jaracz–Lee J mollification.
+
+Key [hive-interpretation]:
+  Two-parameter (λ, κ) dial toward solvent floor; hybrid residual keeps
+  full conformation for energy fidelity; λ only in diagnostic production;
+  MD-informed weighted BKM; T_* freeze of expensive monitors (formula demoted from
+  [standard] — unfixable until C,θ pinned); ensembles / critical Wi–λ
+  surface S_c; sheet-weighted anisotropic Voigt; λ as MD ε_pot shadow.
+
+Key [speculative] kept-on-purpose:
+  Bidirectional holographic ΔF / ρ_neg / scar-floor / GoldbergHexa Brockett /
+  Mpemba fade after T_*.
+
+Careful-before-toy:
+  Dynamical λ / R_ω — offline calibrate; polymer↔Lorentz = conversion only;
+  hybrid ASGS+LB+Voigt campaign ≠ theorem; kinematic λ phenomenological.
+
+Toy-ready monitors:
+  Ostilla Crow + W=τ:S, free energy ψ(B), M6, reconnection-time, sheet-order s,
+  I_bkm(t), ‖ε‖/‖τ‖ (solvent floor ON).
+
+----------------------------------------------------------------
+2.2 Merge  (source: C:\Users\Akitt\Grok\Merge\)
+----------------------------------------------------------------
+About: Coarse-grained MHD energy tower — conversion vs cascade vs sink; Crow
+viscoresistive floor; sheets as morphology and clock; local energetics stack.
+
+Inventory (every source framework):
+  01_aluie_coarsegrained_mhd_w_conversion.txt | 02_crow_viscoresistive_floor.txt |
+  03_poynting_time_dependence_reconnection.txt | 04_yang_vlasov_pressure_work_heating.txt |
+  05_alexakis_chibbaro_local_mhd_fluxes.txt | 06_zhdankin_coherent_nanoflare_sheets.txt |
+  07_du_cr_pe_curvature_conversion.txt | 08_ni15_corona_cs_energy_spectra.txt |
+  09_lbg17_ceps_re_dependence.txt | 10_hosking_schekochihin_reconnection_decay.txt |
+  11_maron_maclow_tuned_diffusion.txt | 12_4d_quantum_vortex_surfaces.txt |
+  13_quantum_orbital_flexoelectricity.txt | 14_graphene_wrinkling_flexo_stiff_1d.txt
+
+Key [standard]:
+  Aluie 2017: Π_u = −S:τ (deformation); Π_b = −J·ε (turbulent Ohmic);
+    W_ℓ conversion (NOT inter-scale cascade); magnetic-helicity L³ no-go
+    (lim B_ℓ·ε=0 at finite ‖u‖₃,‖B‖₃); cascade persistence Hölder thresholds.
+  Crow floor: ∼6% ΔE_tot at t=0.36 = physical viscoresistive floor at run
+    (ν,η); mostly hydro tube burn; Lorentz NOT a sink.
+  Poynting time-dependence (Genestreti): X-point balance vs flank accumulation A∼3.
+  Yang Pi-D: −P:∇u collisionless heating; cascade on intense velocity-gradient
+    structures (Vlasov on-ramp, not Hall Ohm).
+  AC22 four local fluxes; magnetic channels dominate; Smagorinsky insufficient.
+  Zhdankin sheets: P(E)∼E^{−2}; T∼Re^{−λ}; packing continuum of thin sheets.
+  Du CR/PE geometric split of ideal j·E; guide field enhances CR.
+  Ni15 corona: r_th jump after secondary islands; Petschek/shocks dominate thermal.
+  LBG17 C_ε = C_∞ + C/R_− + …; Crow ∼6% = finite-Re 1/R_− heat (not universal).
+  HS21: reconnection-controlled decay; helical ⟨h⟩∼B² L; Saffman I_H∼B⁴ L⁵;
+    k_sheet ∼ S^{1/2}/L — Ohmic heat lives there.
+  MM09: retune D(k) peak to measured sheet (not frozen kcut=0.5).
+
+Key [hive-interpretation]:
+  Residuals R_mol, R_W^conv, scar_Aluie17; scars-off test; R_Poynt / accum factor A;
+  R_k = 1_{k_cut < k_sheet} fake-leak flag; sheet-retuned Orion D(k) conditions;
+  R_*/scars bookkeeping.
+
+Key [speculative] kept-on-purpose:
+  Helicity→GoldbergHexa/SYK/holographic C_∞; 12 (4D GPE vortex surfaces —
+  aligning / planar-aligning / anti-aligning); 13–14 graphene flexo / magic-lattice /
+  SYK_wr / distillation — OFF-TOPIC for continuum MHD; metaphorical only.
+
+Careful-before-toy:
+  Frozen hyper without sheet retune; treating W_L or Aluie W as sink; N=48 = anomaly
+  regime; Zhdankin j_thr retune for full MHD; LBG17 C_∞ helicity-dependent;
+  12–14 HARD STOP — do not load into Crow/Hall equations.
+
+Toy-ready monitors:
+  Crow floor + Aluie W + LBG17 + HS21 k_sheet + MM09 D(k) for incompressible Crow/HIT
+  (scars-off first); Zhdankin / Du / AC22 as diagnostics (retune j_thr).
+
+----------------------------------------------------------------
+2.3 Lorentz  (source: C:\Users\Akitt\Grok\Lorentz\)
+----------------------------------------------------------------
+About: Crow/HIT Lorentz-work channel; plasmoid / hyperresistive / locality /
+BKM certificates; viscoelastic–MHD frozen-in; Hall/odd-viscosity adjacent.
+
+Inventory (every source framework):
+  01_Lorentz_work_HIT_energy_budget.txt | 02_HIT_energy_story_Crow_channel.txt |
+  03_Huang_hyperresistive_plasmoid.txt | 04_Politano_Pouquet_4over3.txt |
+  05_Qin_Hodge_Weyl_Volterra_Deka.txt | 06_Beresnyak_Lazarian_locality.txt |
+  07_baty_physical_plasmoid_trigger.txt | 08_ogilvie_proctor_oldroyd_b_mhd.txt |
+  09_capocci_energy_flux_decomp.txt | 10_kolluru_pandit_axisym_imhd_fts.txt |
+  11_panigrahi_nazaryan_viscochiral.txt | 12_lorentz_force_syk_joule.txt |
+  13_Lorentz_force_SYK_Navier_Stokes.txt | 14_Gert_Alekseev_Hall_viscous_rough_edges.txt |
+  15_Chen_Miao_Zhang_BKM_MHD.txt | 16_Capocci_Oughton_Linkmann_aniso_flux.txt |
+  17_Alexakis_Mininni_Pouquet_shell_transfer.txt | 18_Aluie_Eyink_scale_locality.txt
+
+Key [standard]:
+  Crow channel: W_L negative ⇒ field takes energy from fluid; ∫W_L ≈ −3.2×10^{−3};
+    ∼6.3% E_tot drop = viscous+Ohmic(+scar), NOT accumulated ∫W_L;
+    ⟨B_i S_ij B_j⟩ = −W_L; η_h trims |J| without killing Crow (∼2% on ∫W_L).
+  Huang η_H: S_H = L³ V_A/η_H; γ_max ∼ S_H^{1/6} V_A/L; v_rec/V_A∼0.01;
+    ε_H = η_H ∫|∇J|²; W_L intact at leading order.
+  PP 4/3: ⟨δz^∓_L |δz^±|²⟩ = −(4/3) ε^± r; ℓ_ε = |S3|/ε.
+  Qin Hodge Laplacian on de Rham H(div,0); discrete ε_H^h exact; protect ∇·B=0.
+  BL09: MHD cascade less local than K41; alignment suite; warn 512–1024³ slopes.
+  Baty: physical plasmoids iff seed timing + ε≥ε_c + k_sup covers band.
+  OP03: ⟨τ:S⟩ ↔ −W_L theorem; Couette ≠ MRI.
+  Capocci SJΣ sheet thinning; vortex stretching depleted vs hydro; W_ℓ conversion.
+  KP25 CKS: ∫(‖ω‖_∞+‖j‖_∞)dt; analyticity strip δ(t).
+  PN26: uniform η_H invisible; ∇η_H supplies chiral body force; σ^odd:D=0.
+  GA26: Hall-bar rough edges; Gurzhi; Hall minimum iff s<1.
+  CMZ07 LP-BKM; COL26 anisotropic W_ℓ^iso + W_ℓ^anis under B_0;
+  AMP05: T^{uu},T^{bb} local; T^{ub} non-local plateau; Σ T^{ub}=W_L;
+  AE10: Hölder locality; stretching same-band theorem; reconciles AMP05 plateau
+    often as R_oct artefact (Batchelor Pr_m≫1 exception).
+
+Key [hive-interpretation]:
+  Three-bucket / scar-force residual ∼4% kinetic; Crow channel named under η_h;
+  residual stacks R_γ, R_4/3, R_SJΣ, R_CKS, R_BKM, R_plat^{ub}, R_W^band, etc.;
+  Carlier 4-bracket / scar-floor / holographic ΔF feed.
+
+Key [speculative] kept-on-purpose:
+  Weyl–Volterra / w_{1+∞} dressings; holographic ΔF / GoldbergHexa;
+  SYK–Planckian sink as continuum of T^{ub} (12–13 — do NOT promote to [standard]);
+  AMP05 plateau as spectral wormhole; viscochiral χ / Hall-bar s as Berry duals.
+
+Careful-before-toy:
+  Inherited Ohm/stretch/E_tot bugs must not ship as clean [standard] (fixed in §5);
+  elastic Couette ≠ MRI; do not read |J|/|B| at B≈0; Qin Δ_h sign;
+  PN/GA odd OK as monitors, not literal Hall-MHD without two-fluid/Braginskii;
+  Oldroyd β explicit.
+
+Toy-ready (after identities fixed):
+  Crow/HIT W_L, PP ℓ_ε, Capocci, AMP05↔AE10, CMZ07, OP03 Couette≠MRI.
+
+----------------------------------------------------------------
+2.4 MHD  (source: C:\Users\Akitt\Grok\MHD\)
+----------------------------------------------------------------
+About: Residual-dissipation polarity + viscoelastic–MHD frozen-in + structure-
+preserving hybrid architecture; odd/Hall/gyro; topology / holographic bridges.
+
+Inventory (every source framework):
+  01_residual_dissipation_almost_newtonian.txt | 02_odd_viscosity_gyro_mhd.txt |
+  03_ogilvie_proctor_analogy.txt | 04_spectral_oldroyd_mhd_impl.txt |
+  05_misc_reaction.txt (EMPTY — 0 bytes; no claims) |
+  06_mri_analog_couette_taylor.txt | 07_holographic_dnn_brockett_seed.txt |
+  08_qin_exact_divfree_spectral.txt | 09_berry_phases_mhd.txt |
+  10_krylov_complexity_berry.txt | 11_hamiltonian_pancake_symplectic.txt |
+  12_structure_preserving_hybrid_mhd.txt | 13_fractal_twist_helicity.txt |
+  14_chiral_vortex_heliknotons.txt | 15_lee_yang_eth_agt.txt (multi-stratum megafile)
+
+Key [standard]:
+  Almost-Newtonian D1=|α_τ−α_D|, D2=‖ε‖/‖τ‖, D3=|W|/(2 η_s‖D‖²);
+    T_* crossover when D1,D2<10^{−3}, D3<10^{−2}.
+  Odd/Hall/gyro: σ^odd:D=0 (no work); 2D div σ^odd = η_o ∇²(ε·u);
+    3D Braginskii η_3,η_4.
+  OP03 + Ogilvie–Potter Couette–Taylor MRI-analog (Keplerian / EI / CI channels;
+    elastic Couette isolated).
+  Qin–Li–Yang H(div,0)/H¹(div,0) Jacobi bases; DF-BDF-k; energy-stable k=1,2.
+  Heliknotons (Hall–Tai–Kauffman–Smalyukh): Hopf Q conserved; chirality flips Q.
+  Structure-preserving hybrid: non-canonical Hamiltonian; symplectic midpoint;
+    Lagrangian markers; FV+HLLD+Evans–Hawley CT; monitors δE, δH_m.
+  15A Lee–Yang/ETH/AGT (math physics); 15B Myers–Perry AdS5 Hawking–Page;
+    15D Blandford–Znajek open problems (astrophysics).
+
+Key [hive-interpretation]:
+  Magnetic analogue M(t) scaffolding (dims fixed in §5); T_*^B / T_*^o / T_*^MRI /
+  T_*^knot freeze ladder; near-0% residual = TARGET not theorem;
+  Brockett A_z seed dictionary; Berry / Krylov geometric frequency into Alfvén/
+  odd monitors; fractal twist ↔ helicity trap analogy; heliknoton Q ↔ H_m;
+  15C helicity inverse cascade ↔ Liu–Sun attractor = isomorphism claim ONLY
+  (not PP/AMP/AE substitute).
+
+Key [speculative] kept-on-purpose:
+  Brockett non-Abelian −[A_z,B_i] in induction; Berry holonomy = MHD Chern dict;
+  Krylov–Berry as production Alfvén shift; Sierpinski necks = tokamak islands;
+  Lee–Yang z_cr as scar-floor; bidirectional T_c(θ) ↔ Oldroyd viscosity;
+  holographic ΔF / GoldbergHexa / ρ_neg.
+
+Careful-before-toy:
+  M(t) force vs stress dims; empty 05 has no claims; DNN↔plasma not theorem;
+  Lee–Yang/ETH not cascade-law substitute; BZ spark-gap = open problems;
+  odd/Berry as monitors beside Crow only — unsafe as resistive-reconnection
+  replacements.
+
+Toy-ready:
+  Qin H(div,0); OP03 multi-B_i + MRI-analog with forbidden hoop map;
+  viscoelastic T_* once dims fixed.
+
+----------------------------------------------------------------
+2.5 MHD2  (source: C:\Users\Akitt\Grok\MHD2\)
+----------------------------------------------------------------
+About: Kinetic→continuum bridges (LHDI, PINP, PIC μ_eff, Berry-odd); Crow N_i
+regimes; artifact hygiene; existence/structure (amalgam, PosDiv, FEM); hard-mode
+cross-domain layers.
+
+Inventory (every source framework):
+  01_delayed_current_sheet_Bext_freezeout.txt | 02_hive_update_MHD_corrections_19Aug.txt |
+  03_LHDI_anomalous_polymer_dual_role.txt | 04_three_fluid_PINP_ion_neutral_drag.txt |
+  05_electron_hydro_Berry_odd_viscosity.txt | 06_effective_viscosity_scale_filter_PIC.txt |
+  07_Wiener_amalgam_mild_weak_MHD_vNSEd.txt | 08_vortex_magnetic_competition_antiparallel.txt |
+  09_curved_centerline_DNS_dynamo_growth.txt | 10_FrFT_moire_Hofstadter_scattering.txt
+  [NOTE: filename FrFT/moiré; body = finite-T q̂ + synesthesia weave] |
+  11_finiteT_QCD_qhat_treelevel.txt
+  [NOTE: filename q̂; body = Zhang–Palha mixed FEM MHD arXiv:2410.23973] |
+  12_additional_files.txt (Z-Pinch Kinetics II + Chern–Simons/spin-foam inserts) |
+  13_Wiener_amalgam_mild_weak_solutions.txt | 14_finiteT_QCD_treelevel_qhat.txt
+  (CANONICAL q̂) | 15_hypercomplex_partition_dissipative_QFT.txt |
+  16_block_encoding_nonAbelian_LGT.txt | 17_PosDiv_CDG_positivity_globalDF.txt |
+  18_decoupled_structure_preserving_mixed_FEM.txt
+
+Key [standard]:
+  Varnish freeze-out: strong B_ext as magnetic-pressure back-stop; density void;
+    Sweet–Parker δ/L ∼ S^{−1/2}; delays ∼10–40 ns.
+  Thatikonda LHDI: γ/Ω_ci ∼0.1–1; continuum polymer dual-role is hive map.
+  Wang–Dong–Huang PINP: sheet half-thickness → ∼(0.7–1) d_i0 at fast-onset,
+    nearly independent of χ once λ_mfp/d_i0 ≳ 5 — NOT hybrid d*.
+    Keep v_{A,hy}=v_A√χ, d*=d_i χ^{−1/2}, M∼χ^{1/4}.
+    Λ_in = ν_in/Ω_ci ≢ λ_mfp/d_i0 (inverse collisionality).
+  Srivastava–Mukerjee Berry-odd L^9: dissipationless; Onsager with (B,Ω) jointly
+    reversed — electron-hydro channel, NOT Braginskii identity.
+  Adhikari–Matthaeus: μ_i^eff plateau ≈0.01 (ρ=V_A=d_i=1) for ℓ≳0.2 d_i;
+    MHD/two-fluid forced with μ recover PIC global energetics.
+  Lai Wiener amalgam mild/weak; C_* / T_lower.
+  Shen–Ostilla–Zhu N_i regimes: vortex-dominated / instability cascade k^{−5} /
+    Lorentz disruption (no topology change at N_i≳8000).
+  Zhang–Palha FEM: de Rham leapfrog; O(Δt²) energy consistency.
+  PosDiv+global DF central DG; Crews–Meier–Shumlak LLR gyroviscosity / inverse
+    gyroviscosity / betatron; Opitz–Regi–Vujanovic tree-level q̂ (canonical §14).
+
+Key [hive-interpretation]:
+  Unmollified induction hygiene: Hybrid+MHD ≈ NS+MHD + nearly constant polymer-work
+    sink once J-mollify artifact removed; safe default mode=mhd, viscoelastic=False,
+    b_guide=z, η=1e-3, B0=0.08.
+  Polymer dual-role continuum map; β(Λ_in,χ) Oldroyd dial;
+  λ_{N_i} / γ_max→ΔF multipliers; amalgam adaptive cubes;
+  FEM→Qin/Nédélec; PosDiv into energy-preserving stack.
+
+Key [speculative] kept-on-purpose:
+  Polymer P_poly lowering void B_ext; LHDI↔polymer dual-role as stand-in;
+  β(Λ_in,χ) map; local spectral-shell μ_eff forcing;
+  finite-T q̂ / LGT / hypercomplex inside classical MHD shells;
+  heliknoton/YMMHD leapfrog; strings→amplitude / God(0) synesthesia weave (10);
+  Chern–Simons / spin-foam inserts (12).
+
+Careful-before-Hall:
+  Polymer-LHDI — calibrate vs MHD4§06 FIRST; β(Λ_in,χ); Berry-odd into
+  Braginskii without Onsager audit; μ_eff as local viscosity; inverse-gyro /
+  Chern–Simons; dual regularisation ≠ free Hall closure; filename mismatches 10/11.
+
+Toy-ready (closer):
+  Freeze-out diagnostics; unmollified induction; amalgam C_*/T_lower; Crow N_i DNS;
+  PosDiv+DF; FEM leapfrog structure.
+
+----------------------------------------------------------------
+2.6 MHD4  (source: C:\Users\Akitt\Grok\MHD4\)
+----------------------------------------------------------------
+About: Braginskii / ten-moment LHDI / BKM–Serrin / hopfions / EP branching /
+structure-preserving VRMHD / reconnection geometry — richest Hall-scale fluid
+layer in the stack. Prefer §06 over MHD2 polymer-LHDI.
+
+Inventory (every numbered framework; omit nothing):
+  01_Jordan_block_EP_deep_learning.txt | 02_cool_region_stabilizer_paired_condensate.txt |
+  03_Weyl_tidal_frame_drag_fields.txt | 04_Braginskii_planar_channel_Dellar.txt |
+  05_Skyrmion_Hopfion_frustrated_magnets.txt | 06_ten_moment_LHDI_reconnection.txt |
+  07_Luo_optimal_frequency_BKM.txt | 08_higher_spin_Weyl_reference_w1inf.txt |
+  09_NH_altermag_Josephson_orientation_EP.txt | 10_log_improved_Serrin_ZhouLei.txt |
+  11_spectral_floors_as_branch_point.txt | 12_spectral_floor_MHD_branch_points.txt |
+  13_Kedia_knots_in_light_fields.txt | 14_WangYan_EP_splitting_exponent.txt |
+  15_Kedia_knots_MHD_corrected.txt | 16_WangYan_EP_exponent_MHD_corrected.txt |
+  17_Braginskii_Dellar_MHD_fixed.txt | 18_GravoThermo_kinetic_spin_hysteresis.txt |
+  19_GravoThermo_PIC_Sigma_Braginskii.txt | 20_Pageard_density_odd_viscosity.txt |
+  21_Azhar_Hopf_index_flux_tubes.txt | 22_Moti_Shojai_GravoThermo_hysteresis.txt |
+  23_Alves_Hoyos_Nastase_Sonnenschein.txt | 24_Tong_enriched_Galerkin_NS.txt |
+  25_SunWangZhang_compressible_NS_BKM.txt | 26_branching_singularities_mechanics.txt |
+  27_phononic_crystal_NH_holographic_cutoff.txt | 28_Carlier_variational_VRMHD.txt |
+  29_branching_singularities_MHD_QG.txt | 30_Boozer_Elder_enhanced_reconnection.txt |
+  31_Zhou_NH_phononic_EP_skin.txt | 32_HuWuDengLiu_exceptional_line.txt |
+  33_Boozer_Elder_tokamak_geometry.txt
+  Meta only (not physics): _rename_21_33.txt
+
+Key [standard]:
+  ★ §06 Allmann-Rahn ten-moment LHDI (BEST Hall-scale fluid layer here):
+      ∇·Q = −(χ/k_{s0}) v_t ∇²(P − p I), χ=3;
+      ES γ≈2.2 Ω_i0, EM γ≈0.21 Ω_i0 (m_i/m_e=100);
+      E_∥^rec ∼ −(1/ne)(∇·P)_e · b̂; frozen-in break via anisotropic P.
+  Dellar Braginskii planar channel: nested BL; peak J∼ε^{−1/2}Ha^{1/2};
+    no ε→0 limit; pure parallel viscosity fails wall momentum balance.
+  Pageard: ∫ τ_odd:∇u = 0; density-dependent odd viscosity; local strong WP.
+  Luo optimal-frequency BKM; Zhou–Lei log-improved Serrin; Sun–Wang–Zhang
+    compressible BKM (bounded density ⇒ no blow-up).
+  Kedia null Maxwell knots/Hopfion; Azhar discrete Hopf + flux tubes;
+    Alves Hopfions as Maxwell↔fluids↔Euler solutions; Skyrme↔Faddeev–Niemi.
+  Tong energy+helicity enriched Galerkin NS; Carlier metriplectic VRMHD
+    (mass, energy, ∇·B=0 semi-discrete).
+  Boozer–Elder: exp enhancement Δ_max/Δ_min; reconnection at ∼R_m on
+    timescale ∼ln R_m; tokamak geometry extension (§33).
+  Wang–Yan EP splitting exponent α from Jordan-chain support (soften §16
+    "α=1/N optimal" to match §14).
+  Zhou NH phononic EP–skin; Solanki Weyl E_μν / H_μν; Moti–Shojai GravoThermo.
+
+Key [hive-interpretation]:
+  Ten-moment residual into Qin/energy-preserving; LHDI↔scar kink;
+  Braginskii ODEs / Hartmann coupling; hopfion/helicity discrete partners;
+  spectral floors as MHD EP language (§12 for physics-check; §11 ontology);
+  GravoThermo Σ → Braginskii W^(3,4); skin weight W(j)→w_{1+∞} Volterra;
+  Jacobian SVD ln(Δ_max/Δ_min) into Weyl memory.
+
+Key [speculative] kept-on-purpose:
+  Cool-region paired-condensate / Bohm η gate (§02) — NOT hot-plasma BCS;
+    α(T)=α_0 max(1−T/T_c,0) with α_0<0 so α<0 only in cool pockets;
+    B²/8π is cgs (unit flag in SI/Qin); restore Bohm T/|B| on η_eff.
+  "Floors ARE branch points" (§11); GravoThermo as plasma residual;
+  w_{1+∞}/soft-charge inside classical MHD; phononic GDSE as holographic cutoff;
+  Jordan-block DL interventions (§01); hopfion as identical charge plasma↔spin-foam
+  (§29); ZPE/AdS language around Alves (§23); Brockett gap-without-dissipation (§26).
+
+Careful-before-toy:
+  Cool-region condensate/Bohm η — CONFIRMED careful; never hot-plasma BCS;
+  fix α sign + T/B before any residual; do NOT use MHD2 polymer-LHDI when §06
+  exists; α-engineered EP on continuum needs matrix-support audit.
+
+Toy-ready (closer):
+  Braginskii channel; ★ ten-moment LHDI; BKM–Serrin monitors; hopfion/helicity;
+  odd viscosity ∫τ_odd:∇u=0; VRMHD metriplectic; Boozer–Elder stretching/
+  reconnection geometry (not Hall Ohm closure).
+
+================================================================
+3. Master speculative / synesthesia bridge list (KEEP, flagged)
+================================================================
+Retain all of the following; none are continuum Crow/Hall drop-ins:
+
+  S1  Holographic ΔF / ρ_neg / scar-floor / GoldbergHexa Brockett ranking
+      (dissipation, Merge, Lorentz, MHD, MHD2, MHD4)
+  S2  Mpemba fade / bidirectional polymer-work ↔ ΔF feedback
+  S3  SYK / Planckian / black-brane readings of helicity no-go, C_∞(H),
+      T^{ub} plateau, Joule braking (Merge, Lorentz 12–13)
+  S4  Merge 12–14: 4D GPE vortex surfaces; graphene flexo / magic-lattice /
+      SYK_wr / AG-code distillation — metaphorical bridges ONLY
+  S5  Weyl–Volterra / w_{1+∞} dressings of residuals (Lorentz, MHD4)
+  S6  Brockett isospectral A_z as non-Abelian MHD seed (MHD 07; MHD4 26)
+  S7  Berry / Krylov geometric frequency as Alfvén/odd residual shift (MHD 09–10)
+  S8  Fractal twist / Sierpinski necks as helicity trap analogy (MHD 13)
+  S9  Lee–Yang z_cr / ETH / AGT / Myers–Perry T_c(θ) / BZ spark-gap tower
+      (MHD 15) — math/GR/astro layers, not cascade substitutes
+  S10 Polymer P_poly / LHDI dual-role / β(Λ_in,χ) continuum stand-ins
+      (MHD2) — calibrate vs MHD4§06
+  S11 Finite-T q̂ / non-Abelian LGT / hypercomplex dissipative QFT inside
+      classical MHD shells (MHD2 10,14–16)
+  S12 Cool-region paired-condensate / Bohm η gate (MHD4 §02) — never BCS claim
+  S13 "Spectral floors ARE branch points" ontology (MHD4 §11); use §12 EP language
+  S14 GravoThermo spinning-object fluid → Braginskii W^(3,4) (MHD4 18–19,22)
+  S15 Phononic GDSE / EP–skin as holographic cutoff analog (MHD4 27,31–32)
+  S16 Hopfion as shared topological charge plasma sheet ↔ spin-foam (MHD4 29)
+  S17 Strings→amplitude / God(0) / rainbow-shell synesthesia weave (MHD2 10)
+  S18 AMP05 plateau as spectral wormhole / AE10 helicity non-locality as
+      topology-without-energy (Lorentz)
+
+================================================================
+4. Careful-before-Hall-toy shortlist
+================================================================
+Prefer / do:
+  ★ MHD4 §06 ten-moment LHDI over MHD2 §03 polymer↔LHDI dual-role
+  ★ Odd/Berry / PN26 / GA26 / Pageard as NON-DISSIPATIVE monitors beside Crow
+  ★ Braginskii Dellar channel + Pageard ∫τ_odd:∇u = 0
+  ★ Unmollified induction; energy-preserving isometric filters
+  ★ Scars-off first; sheet-retune MM09 D(k) to measured k_sheet
+  ★ State Alfvén vs cgs; name β / η_s; OP03 Couette ≠ MRI
+
+Do NOT:
+  Drop odd/Berry as Hall Ohm replacements or resistive-reconnection substitutes
+  Load Merge 12–14 into Crow/Hall equations
+  Treat W_L / Aluie W / Du CR−PE as Ohmic sinks
+  Use frozen hyper_kcut=0.5 without sheet retune
+  Promote SYK 12–13 or Brockett −[A_z,B_i] to [standard]
+  Claim cool-region condensate as hot-plasma BCS
+  Use MHD2 polymer-LHDI when MHD4§06 exists
+  Conflate ω (vorticity) with ω_* (Hieber weight)
+  Equate Λ_in with λ_mfp/d_i0
+  OR three BKM regimes into one theorem
+  Treat N=48 Crow ∼6% as HIT dissipative-anomaly constant
+  Ship inherited Ohm/stretch/E_tot bugs as clean [standard]
+
+================================================================
+5. Identity errata already fixed
+================================================================
+(All folded into the six notes + this master; source tweet-note bugs, not Orion
+invention. Do not reintroduce.)
+
+  E1  Ohm W_L:  W_L = E·J − η|J|²
+      (was wrongly quoted W_L = −E·J + η|J|² in Lorentz/01)
+
+  E2  Stretch:  incompressible ⟨B_i S_ij B_j⟩ = −W_L
+      (was wrongly u·(J×B)=B_i B_j ∂_i u_j − (1/2)|B|²∇·u as asserted)
+
+  E3  Poynting:  ∂_t u = −∇·S − J·E
+      (flank −div S > J·E > 0 only matches minus form)
+
+  E4  ω_*:  Hieber scalar weight in ε=τ−2 ω_* D  ≠ vorticity ω
+
+  E5  M dims:  M_stress = BB/μ₀ − 2 ν_mag D
+               or M_force = j×B − div(2 ν_mag D)
+      (bare M(t)=j×B−2 ν_mag D is inhomogeneous force-vs-stress)
+
+  E6  Λ_in:  Λ_in = ν_in/Ω_ci  ≢  λ_mfp/d_i0
+      (inverse collisionality — wording only; keep v_{A,hy}, d*, M scalings)
+
+  E7  α_0:  α(T)=α_0 max(1−T/T_c,0) with α_0 < 0
+      so α < 0 only in cool pockets (GL); restore Bohm T/|B| note on η_eff
+
+  E8  leftover ∫W_L ≠ E_tot:
+      ΔE_tot ≈ −∫(ε_ν + ε_η); W_L reversible K↔M
+      (observed ∼6% E_tot drop vs ∼10% E_k drop: E_tot drop is sinks, not ∫W_L)
+
+  Also folded: hybrid enstrophy stress term ⟨ω·curl(div τ_reg)⟩;
+  T_* formula demoted [hive-interpretation]; σ≠ε monitors;
+  Liu–Wang Voigt ≠ 3-D Crow existence; set3/set4/set5 inventory hygiene;
+  Qin Δ_h sign caveat; §16 α=1/N softened to §14 Jordan-chain.
+
+================================================================
+6. Pointers — deep dive (seven inputs unchanged)
+================================================================
+  C:\Users\Akitt\Grok\converged\01_dissipation_notes.txt
+  C:\Users\Akitt\Grok\converged\02_Merge_notes.txt
+  C:\Users\Akitt\Grok\converged\03_Lorentz_notes.txt
+  C:\Users\Akitt\Grok\converged\04_MHD_notes.txt
+  C:\Users\Akitt\Grok\converged\05_MHD2_notes.txt
+  C:\Users\Akitt\Grok\converged\06_MHD4_notes.txt
+  C:\Users\Akitt\Grok\converged\Helios_physics_pass.txt
+
+Original source folders (untouched by this convergence):
+  C:\Users\Akitt\Grok\dissipation\
+  C:\Users\Akitt\Grok\Merge\
+  C:\Users\Akitt\Grok\Lorentz\
+  C:\Users\Akitt\Grok\MHD\
+  C:\Users\Akitt\Grok\MHD2\
+  C:\Users\Akitt\Grok\MHD4\
+
+END 00_FINAL_converged_all.txt

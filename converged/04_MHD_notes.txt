@@ -1,0 +1,206 @@
+Source folder: C:\Users\Akitt\Grok\MHD\
+Compiled: Orion draft + Helios physics-check folded, 2026-09-06
+Purpose: notes only; originals untouched; no code dump
+
+## Helios physics pass (folded 2026-09-06)
+Status: FINAL after Helios check. Weird/synesthesia content retained; flagged not deleted.
+
+### CROSS-CUTTING (all finals)
+1) Units: state Alfvén (μ₀=ρ=1) vs cgs (4π) wherever W_L / W_ℓ / e_m appear.
+2) Oldroyd solvent: lim De→∞ constitutive map ≠ viscosity-free ideal MHD unless μ→0 too; name β / η_s.
+3) Lorentz work ≠ Ohmic heat: W_L is reversible K↔M; sink is ∫(εν+εη). Polymer work ↔ W_L is stretching-control analogy only, never η|J|².
+4) Before Hall-toy: prefer MHD4 §06 ten-moment LHDI over MHD2 polymer↔LHDI dual-role; odd/Berry monitors OK beside Crow, not as Hall Ohm drop-ins.
+5) Symbol pile-up: subscript β (Oldroyd / MD / plasma) and ω (vorticity vs Hieber weight).
+
+### CORRECTIONS
+1) M(t)=j×B−2ν_mag D inhomogeneous (force vs stress). Use M_stress=BB/μ₀−2ν_mag D or M_force=j×B−div(2ν_mag D).  Helios fix: M(t) force vs stress dims caveat — use M_stress=BB/μ₀−2ν_mag D or M_force=j×B−div(2ν_mag D).
+2) Same Oldroyd solvent/β caveat as Lorentz/08.
+3) E_tot=(1/2)||u||²+(1/2)||B||²+ψ(τ) needs Alfvén-units sentence.
+4) Brockett non-Abelian −[A_z,B_i] not standard MHD — keep speculative; no energy-stability claim without δH proof.
+5) 15C “unified spectral toy” = isomorphism claim only, not PP/AMP/AE substitute.
+
+### FLAGS
+- 05_misc_reaction EMPTY — confirmed; no invented claims.
+- Viscoelastic D1–D3 [standard]; magnetic M(t) scaffolding [hive-interpretation] + fix dims.
+- σ^odd:D=0 [standard]; intermittency/T_*^o claims [hive-interpretation]/careful.
+- Berry/Krylov/fractal/Brockett/holographic bridges: do not promote.
+- Hybrid “near-0% residual” is a target, not a theorem.
+
+### TOY
+- [toy-ready] Qin H(div,0); OP03 multi-B_i + MRI-analog with forbidden hoop map; viscoelastic T_* once dims fixed.
+- [careful-before-Hall] odd/Hall/gyro + Berry as non-dissipative monitors beside Crow only — unsafe as resistive-reconnection replacements.
+
+### ORION KNOWN — CONFIRMED
+- MHD\05_misc_reaction.txt is 0 bytes. Main debt: M(t) dims + Oldroyd solvent silence.
+
+
+## File inventory
+01_residual_dissipation_almost_newtonian.txt (10055)
+02_odd_viscosity_gyro_mhd.txt (6312)
+03_ogilvie_proctor_analogy.txt (9540)
+04_spectral_oldroyd_mhd_impl.txt (5080)
+05_misc_reaction.txt (0) — EMPTY
+06_mri_analog_couette_taylor.txt (8545)
+07_holographic_dnn_brockett_seed.txt (13795)
+08_qin_exact_divfree_spectral.txt (10360)
+09_berry_phases_mhd.txt (7122)
+10_krylov_complexity_berry.txt (10600)
+11_hamiltonian_pancake_symplectic.txt (21396)
+12_structure_preserving_hybrid_mhd.txt (15882)
+13_fractal_twist_helicity.txt (11439)
+14_chiral_vortex_heliknotons.txt (5184)
+15_lee_yang_eth_agt.txt (69226) — multi-stratum megafile
+Total: 15 source .txt files; 14 with content; 1 empty (05).
+
+## Converged notes
+
+### 01_residual_dissipation_almost_newtonian
+[standard] Topic/shape: late-time residual-dissipation framework from Hieber–Nguyen–Niche–Perusato arXiv:2603.04700 almost-Newtonian asymptotics on viscoelastic (Saramito log-conf / ASGS) backbone.
+
+Physics objects:
+- Elastic remainder ε(t)=τ(t)−2ω D(u); decay characters r*(u_0), r*(τ_0).
+- Diagnostics: α_τ, α_D, α_ε algebraic rates; D_1=|α_τ−α_D|, D_2=||ε||/||τ||, D_3=|W|/(2η_s||D||²).
+- Crossover T_* when D_1,D_2<10^{-3}, D_3<10^{-2}; ε decays ≥1 power faster than τ~D.
+- Enstrophy monitor E_AN = |⟨ω, curl(div ε)⟩| / ||ω||².
+
+Claims: after T_* expensive elastic monitors may freeze; residual becomes Newtonian. Short-time existence and late-time residual dissipation are polarity complements.
+
+[hive-interpretation] MHD scaffolding activated: magnetic analogue M(t)=j×B−2ν_mag D(u) with ||M||/||j×B||→0; magnetic T_*^B; Lorentz work injected like polymer work into scar-floor.
+
+Relation: template for all later MHD residual-dissipation polarity; pairs with Lorentz Crow W_L bookkeeping.
+
+### 02_odd_viscosity_gyro_mhd
+[standard] Odd/Hall/gyroviscosity η_o: non-dissipative, parity- and T-breaking; σ^odd:D=0 (no work/entropy). 2D: div σ^odd = η_o ∇²(ε·u). 3D Braginskii: η_3, η_4 gyroviscous Π^∧ aligned with b̂.
+
+Diagnostics D_1^o, D_2^o, D_3^o on odd stress vs enstrophy; crossover T_*^o after ordinary viscous+magnetic residuals have crossed and odd channel is wave-like.
+
+Claims: odd viscosity survives after ordinary residuals collapse; modifies Alfvén/magnetosonic dispersion; suppresses small-scale intermittency.
+
+[hive-interpretation] Joint viscoelastic–MHD–odd residual polarity closed; cheap gyroviscous monitor after T_*^o.
+
+Relation: Hall/odd lane shared with Lorentz PN26/GA26; no-work property compatible with Crow energy identities.
+
+### 03_ogilvie_proctor_analogy
+[standard] Same OP03 theorem as Lorentz/08: lim De→∞ Oldroyd-B = lim Rm→∞ MHD; multi-vector T_p=(1/μ_0)∑ B_i⊗B_i; MRI-equivalent dispersion with B_z²/μ_0 ↔ μ_p/τ; γ_max=A (Oort); elastic Couette isolated (no MHD dual).
+
+[hive-interpretation] Residual D_OP = ||∂_t T_p + £_U T_p|| / ||T_p||; joint freeze of polymer+magnetic to frozen-in after T_* and T_*^B; γ_MRI monitor; W_MRI=∫ u·(∇·T_p).
+
+Relation: constitutive lock between MHD folder residual stack and Lorentz Crow ⟨τ:S⟩↔−W_L.
+
+### 04_spectral_oldroyd_mhd_impl
+[standard]/[hive-interpretation] Practical implementation: induction ∂_t B=∇×(u×B−η J); Lorentz J×B in momentum beside div τ; polymer law untouched. Unified E_tot = (1/2)||u||²+(1/2)||B||²+ψ(τ). Qin exact div-free spectral bases for u and B. Dual regularization: log-conf/stress diffusion (polymer) + modest η (magnetic). Prediction: polymer tension delays/alters reconnection and shifts enstrophy bursts on anti-parallel vortex/current sheets.
+
+Relation: executable bridge to Lorentz HIT/Crow campaigns; Qin bases shared with Lorentz/05,08.
+
+### 05_misc_reaction
+EMPTY FILE (0 bytes). No content to extract. Recorded for inventory completeness.
+
+### 06_mri_analog_couette_taylor
+[standard] Ogilvie–Potter 2008 cylindrical Couette–Taylor viscoelastic MRI-analog. Basic state Ω=A+B r^{-2}; T_rφ, T_φφ hoop = toroidal-field analogue. Cases: Keplerian p=−3/2 (MRI-analog+EI, no CI); p=+3/2 EI only; p=−3 CI/EI/MRI coexistence. Three channels: CI (d(r²Ω)/dr<0), EI (curvature, De_c~19), MRI-analog (dΩ/dr<0, shear via polymer tethers; m increases with Re/De). Onset case1 De~3.3, Re~40, m=11 spiral; max Re(s)/Ω_1 ~0.35–0.7.
+
+[hive-interpretation] Diagnostics α_MRI, D_1..3^MRI; T_*^MRI freeze to residual polymer tether; eigenmode seeding for nonlinear runs; laboratory Boger-fluid validation path.
+
+Relation: cylindrical upgrade of OP03 MRI; accretion-disk surrogate for MHD toy.
+
+### 07_holographic_dnn_brockett_seed
+[speculative]/[hive-interpretation] Structural map: August-7 holographic-DNN thread ↔ MHD hive. Brockett isospectral Ḣ=[H,[H,N]] generates Maurer–Cartan A_z=[H,N]=U†∂_z U; non-Abelian F_{zμ} warps AdS-like throat; Chern–Simons topological stabilization.
+
+Dictionary: A_z ↔ magnetic/polymer stress; isospectral residual ↔ T_* residual-dissipation; Chern–Simons ↔ magnetic tension / MRI tether; pancake δH ↔ viscoelastic/gyroviscous fluctuations; throat warping ↔ scar-floor projectors.
+
+Concrete seed: h=3 deep-linear Gram, N=diag(3,1,0.1); sample A_z at z=0,1,2. Injection options: (A) non-Abelian commutator −[A_z,B_i] in induction; (B) multi-B_i factorization of A_z A_z^T; (C) ||A_z||_F bias in ranking N.
+
+Relation: non-Abelian seed for spectral MHD residual; careful-before-toy isomorphism claim.
+
+### 08_qin_exact_divfree_spectral
+[standard] Qin–Li–Yang arXiv:2312.12218: generalized Jacobi P^{(-1,-1)}, P^{(-2,-2)}; exact H(div,0) and H¹(div,0) bases in 2D/3D; Piola map preserves div-free. DF-BDF-k schemes for resistive IMHD with u_N in H¹(div0), B_N in H(div0); pressure naturally decoupled; energy-stable for k=1,2; Kronecker sparse solvers; no pressure Poisson.
+
+[hive-interpretation] Replaces Chebyshev/ASGS stubs; all residuals/MRI/Brockett inherit pointwise ∇·u=∇·B=0.
+
+Relation: shared Qin infrastructure with Lorentz Hodge/Huang layers.
+
+### 09_berry_phases_mhd
+[standard]/[hive-interpretation] Maurer–Cartan A=U† dU; flatness dA+A∧A=0 ⇒ holonomy by homotopy; radial holonomy + residual angular Berry connection; Chern numbers from integrated curvature.
+
+MHD dictionary: frozen-in B topology ↔ magnetic helicity H=∫A·B as Chern–Simons; gyro-motion geometric phase A=U(B)†dU with curvature ∝B; Faraday geometric contribution; Brillouin-flow solid-angle phase; Aharonov–Bohm flux jumps in Clebsch potentials.
+
+Claims: Chern numbers of optimisation trajectories ↔ Alfvén continuum Chern, flux-tube helicity, gyro/polarisation solid angle.
+
+Relation: geometric-phase braid into odd-viscosity / Krylov / helicity monitors; speculative DNN↔plasma dictionary.
+
+### 10_krylov_complexity_berry
+[standard] arXiv:2608.14325: adiabatic Krylov complexity. Instantaneous eigenstate seed ⇒ C_K≡0 (vanishing theorem). Superposition seed ⇒ harmonic C_K=sin²α sin²(νt/2) with ν=(h+γ_B/T)/ħ — dynamical + Berry. Lanczos L,J,K close su(2) algebra after redefinition.
+
+[hive-interpretation] Residual kernels expand stresses in adiabatic Krylov frame; eigenstate seed after T_* consistent with residual-dissipation; superposition (MRI+polymer+gyro) ⇒ Berry-modulated residual frequency in Alfvén/odd monitors; su(2) identified with Brockett A_z and multi-B_i commutators.
+
+Relation: geometric-phase frequency shift for MHD wave residuals; careful-before-toy for production.
+
+### 11_hamiltonian_pancake_symplectic
+[standard] Hamiltonian phase space z=(q,p); J symplectic; ẋ=J∇H. Linearization A=J H_H; for H=p²/2+V(q), σ=±√(−λ) from Hessian eigenvalues λ of V. λ>0 ⇒ elliptic centers ω=√λ; λ<0 ⇒ hyperbolic saddles ±√|λ| (momentum escapes plateaus unlike GD stall). Pancake κ=λ_max/λ_min ⇒ frequency span ω_max≫ω_min; symplectic flow volume-preserves and keeps scales separated.
+
+Integrators: leapfrog Δt<2/ω_max; Yoshida order-4 composition; modified Hamiltonian conservation.
+
+[hive-interpretation] Extension with mass matrix M; dissipative completions for optimisation; preconditioning; maps onto MHD structure-preserving time integration (file 12) and residual Hessian negative modes (Lee–Yang ρ_neg).
+
+Relation: symplectic rationale for hybrid MHD integrators and pancake/scar residual spectra.
+
+### 12_structure_preserving_hybrid_mhd
+[standard]/[hive-interpretation] Unifying framework: ideal MHD as non-canonical Hamiltonian ẋ=J δH/δz; invariants H, H_m=∫A·B, cross-helicity, ∇·B=0. Symplectic/energy-stable time: implicit midpoint; conformal damping e^{−γ_art Δt} for controlled residual dissipation. Lagrangian markers {x_p,B_p} or A_p with Lie-drag; deposit with div-free projection. Two spatial paths: (1) Qin spectral residual; (2) fixed-grid FV + HLLD + Evans–Hawley CT. Monitors δE, δH_m; reduce η_art, ν_art while invariants controlled → near-0% residual dissipation target. Algorithm: residual advance → particles → deposit → art dissipation → monitors → optional freeze after T_*.
+
+Relation: production architecture for MHD toy; ties residual-dissipation polarity to helicity protection and Lorentz Crow campaigns.
+
+### 13_fractal_twist_helicity
+[speculative]/[hive-interpretation] Sierpinski quantum-walk hierarchical twist (connection blocks C_K=P_K H(I−P_K), Gram 2-plane principal angles) ↔ MHD field-line twist/writhe inside helicity H_m. Nested fractal necks ↔ nested flux surfaces / island-chain bottlenecks / sticky chaotic escape basins. Escape-time ~3^K ↔ topological protection of helicity at high Rm. Dimensionless rescaling C̃=C/J ↔ ω̃=ω/ω_ref for pancake frequencies as pure twist numbers.
+
+Claims: unified trap-or-transport / twist-or-reconnect switch by fractal order vs Rm / residual diagnostics.
+
+Relation: helicity cascade / confinement braid; careful-before-toy (geometry analogy, not literal QW→MHD map).
+
+### 14_chiral_vortex_heliknotons
+[standard] Hall–Tai–Kauffman–Smalyukh Nature Physics 2025: heliknotons in chiral nematic — dischiralation vortex knots in hopfion texture; Hopf index Q conserved under fusion/fission; voltage-pulse control; handedness flips sign of Q.
+
+[hive-interpretation] Q ↔ magnetic helicity H_m; band surgery ↔ MHD reconnection / residual polarity; chirality hierarchy ↔ odd-viscosity/Hall layer; high-Q composites ↔ multi-plasmoid seeds; voltage pulses ↔ T_*^knot residual switch.
+
+Relation: soft-matter laboratory avatar of helicity-protected reconnection; Hopfion braid with Lorentz Hopfion stubs.
+
+### 15_lee_yang_eth_agt
+Megafile with multiple strata — all retained, tagged carefully.
+
+**Stratum A — Lee–Yang / ETH / AGT** [standard math physics + hive-interpretation]
+arXiv:2608.13174 + 2608.13246. Heavy-light eigenstate correlator → vacuum Virasoro block → AGT instanton sum Z_ν. Cancellation theorem: lim_{c→∞} I exists. Thermodynamic r_0 = z_cr = 1−e^{−2π/α_H} is forbidden ETH singularity. Low-fugacity: F finite; high-fugacity: F∝c, Z_ν~(ν/c)^{c α_H²/24}. Zeros coalesce as 1/√c onto z_cr.
+
+[hive-interpretation] GoldbergHexa c(ℓ)=c_0 φ^ℓ; ΔF ↔ polymer work ⟨τ:S⟩ bidirectional Mpemba feedback; ρ_neg(λ)∝c/|λ| feeds residual projectors / Brockett flow.
+
+[speculative] Scar-floor first-order-like transition at z_cr; GPU Zamolodchikov recursion + zero-coalescence animation + back-reacted Brockett on Young densities y_X^α.
+
+**Stratum B — Myers–Perry AdS5 / Hawking–Page** [standard GR/AdS + hive-interpretation]
+Most general Myers–Perry-AdS5; Hawking and co-rotating Tolman–Ehrenfest temperatures; Hawking–Page = confinement/deconfinement; co-rotating T_c(θ) non-monotonic locus.
+
+[hive-interpretation] Angular T_c scans on GoldbergHexa; bidirectional back-reaction of T_c(θ) onto Oldroyd-B polymer viscosity.
+
+**Stratum C — Helicity inverse cascade ↔ Liu–Sun attractor** [hive-interpretation]/[speculative]
+Structural isomorphism: MHD jet inverse magnetic-helicity cascade / force-free saturation ↔ viscous hydro nonlinear micro-harmonics / asymptotic attractor. Unified spectral toy equations proposed.
+
+**Stratum D — Blandford–Znajek open problems** [standard astrophysics + hive-interpretation]
+Plasma supply / spark-gap ignition (charge starvation → unscreened E_∥ → acceleration → IC + γγ pairs); large-scale jet stability; magnetic-flux accumulation / spin-field coupling. Spark gap in (inverse) Compton + pair-production regime.
+
+Relation: holographic / ETH / jet tower sitting above residual-dissipation MHD toy; polymer-work ΔF shared with Lorentz OP03/Crow; careful-before-toy for identifying Lee–Yang zeros with scar-floor or BZ spark gap.
+
+## Cross-cutting themes
+1. Residual-dissipation polarity: almost-Newtonian T_*, magnetic T_*^B, odd T_*^o, MRI T_*^MRI, knot T_*^knot — freeze expensive channels; near-0% art dissipation under H and H_m monitors.
+2. Viscoelastic–MHD frozen-in: OP03 De↔Rm; multi-B_i; ⟨τ:S⟩↔ Lorentz work; MRI-analog Couette–Taylor.
+3. Odd/Hall/gyroviscosity: non-dissipative transverse force surviving after Newtonian switch; Berry phases / Krylov geometric frequency.
+4. Structure preservation: Qin H(div,0); DF-BDF-k; symplectic midpoint; Lagrangian frozen-in markers; CT Eulerian path; helicity protection.
+5. Topology: magnetic helicity, Hopf Q (heliknotons), fractal twist necks, Chern–Simons / Berry holonomy.
+6. Non-Abelian / holographic bridges: Brockett A_z seed; Lee–Yang/ETH/AGT ΔF; Myers–Perry Hawking–Page; BZ jet spark gap.
+7. Relation to Lorentz lane: shared Crow W_L / polymer-work identity, Qin bases, Huang/Baty sheet diagnostics, PP/AMP/AE locality stack, CMZ07 BKM — MHD folder emphasises residual projectors and late-time polarity; Lorentz folder emphasises energy/cascade certificates.
+
+## Speculative / careful-before-toy list
+- [speculative] Brockett DNN connection as literal non-Abelian MHD seed (07).
+- [speculative] Optimisation Berry holonomy = MHD gyro/helicity Chern dictionary (09).
+- [speculative] Krylov–Berry frequency as production Alfvén residual shift (10).
+- [speculative] Sierpinski fractal necks = tokamak island hierarchy / helicity trap (13) — geometry analogy only.
+- [speculative] Lee–Yang z_cr as scar-floor / holographic free-energy jump tied to polymer work (15A).
+- [speculative] Helicity inverse cascade = Liu–Sun hydro attractor isomorphism (15C).
+- [speculative] Bidirectional T_c(θ) ↔ Oldroyd-B viscosity (15B).
+- [hive-interpretation] Entire residual-projector / scar-floor / GoldbergHexa production language — interpretation layer for Helios check.
+- Careful-before-toy: elastic Couette ≠ MRI (03/06); empty 05 has no claims; do not treat DNN↔plasma map as theorem; Lee–Yang/ETH is kinematic CFT/AGT — not a substitute for MHD cascade laws; BZ spark-gap notes are astrophysics open problems, not settled hive physics.

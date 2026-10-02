@@ -1,0 +1,8 @@
+Du, Li, Fu, Gan, Li (2022)
+Magnetic energy conversion in MHD: curvature relaxation and perpendicular expansion of magnetic fields
+arXiv: https://arxiv.org/abs/2112.02667
+PDF: C:\Users\Akitt\Grok\pdf\2112.02667_Du_curvature_expansion.pdf
+
+Why this leftover: j·E = (B^2/4pi) u·kappa - u·grad_perp(B^2/8pi) (CR + PE). PE is magnetic-pressure work — the term that becomes a surface flux on a sheet mask. CR and PE anti-correlate inside reconnection sheets. Current-weighted W_L (CR+PE, peaked on |J|) can run 15x while strain-weighted B:S (mostly CR) stays ~4x.
+
+JAX diagnostic: Output CR = B^2 u·kappa and PE = -u·grad_perp(B^2/2). Volume mean, |J|-mask mean, and |J|-weighted mean of CR, PE, and CR+PE. Compare PE_mask / PE_vol to the leftover.

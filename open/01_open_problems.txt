@@ -1,0 +1,335 @@
+Source: compiled by Orion, 2026-09-01
+Folder: C:\Users\Akitt\Grok\open\
+
+MHD open problems
+=================
+Not a ranking. Grouped by shape. Speculative hive readings are marked [speculative].
+A spectral toy (incompressible vorticity MHD, plus cmhd bones) can poke some of
+these and cannot poke others. That split is in 03_hive_map.txt.
+
+---------------------------------------------------------------------------
+A. Regularity / singularity  (the Navier–Stokes cousin)
+---------------------------------------------------------------------------
+
+A1. Global regularity of 3D incompressible MHD
+Concept: same Clay-shaped question as Navier–Stokes, with an extra field B.
+The viscous, resistive, incompressible system on T^3 or R^3 is locally well-posed
+in H^s (s > 1/2). Global smooth solutions exist in 2D (Sermange–Temam). In 3D
+it is open whether a smooth solution can blow up in finite time.
+
+  \partial_t u + (u·∇)u = −∇p + (B·∇)B + ν Δu
+  \partial_t B + (u·∇)B = (B·∇)u + η ΔB
+  ∇·u = ∇·B = 0
+
+Plot: max|ω|(t) and max|J|(t) on a forced HIT / Orszag–Tang run. If both stay
+bounded the solution is still smooth. That does not prove the theorem.
+
+A2. Ideal MHD / Euler–MHD finite-time current sheets
+Concept: with ν=η=0, can a smooth field fold into a true current sheet in finite time?
+Caflisch–Klapper–Steele extended Beale–Kato–Majda: the solution stays smooth on [0,T]
+if both vorticity and current stay integrable in time,
+
+  \int_0^T ( ‖ω(t)‖_∞ + ‖J(t)‖_∞ ) dt  <  ∞.
+
+Open whether a real blowup happens, and whether current can spike while vorticity
+stays mild (the hive BKM-sheet sentence: if vorticity BKM stays finite while max|J|
+spikes, the sheet is dissipative). 2D ideal MHD can form exponential current growth;
+3D is unsettled.
+
+Plot: log max|J| vs log max|ω| on decaying Orszag–Tang / Crow. A vertical climb
+in |J| at bounded |ω| is the sheet signature.
+
+A3. Velocity-only regularity criteria
+Concept: numerics keep saying the velocity, not B, is the dangerous field.
+Several papers give BKM/Serrin-type conditions that mention only u (or only ω),
+with no assumption on B. It is still open whether a true 3D MHD singularity can
+form from the magnetic field alone.
+
+Plot: ratio max|J| / max|ω| through a thinning event. If |J| leads and |ω| does
+not follow, that is the “magnetic-only” shape.
+
+A4. Hall-MHD and electron-MHD blowup
+Concept: adding the Hall term J×B / (ne) changes the stretching. There are
+explicit infinite-energy blowups in related models; they do not settle finite-energy
+3D Hall-MHD. Hive: mode="hall" is LIVE beside mhd (Venus Ohm,
+E = −u×B + ηJ + (d_i/n) J×B, n=1 default; d_i=0 matches mhd).
+ES-LHDI stays parked.
+
+Plot: same max|ω|, max|J| with hall on vs off.
+
+---------------------------------------------------------------------------
+B. Cascades, Onsager, helicity
+---------------------------------------------------------------------------
+
+B1. Onsager-type energy cascade in MHD
+Concept: energy can reach arbitrarily small scales only if the fields are rough
+enough. Aluie 2017 (1701.08692, already in Merge/01): for weak ideal MHD,
+
+  σ_u ≤ 1/3   or   σ_u + 2 σ_b ≤ 1
+
+is required for a persistent energy flux Π_u + Π_b as ℓ→0. Cross-helicity swaps
+the roles of σ_u and σ_b. Whether real MHD turbulence sits on the rough side
+of this threshold at every Re is open (and is a measurement, not a theorem).
+
+Plot: Hölder proxies σ_u(p), σ_b(p) from structure functions vs filter scale ℓ.
+Hive residual R_σ^E is exactly this certificate.
+
+B2. Magnetic-helicity forward-cascade no-go
+Concept: magnetic helicity cannot dump through a local inertial cascade if the
+fields stay in L^3. Aluie theorem: if ‖u‖_3 and ‖B‖_3 stay finite then
+
+  lim_{ℓ→0} B_ℓ · ε_ℓ  =  0.
+
+Helicity can still wormhole non-locally (AE10). A forward dissipative helicity
+cascade would require exploding third-order moments. Whether decaying HIT
+ever violates that is open at accessible Re.
+
+Plot: Π_h(ℓ) = −2 ⟨B_ℓ · ε_ℓ⟩ vs ℓ, together with discrete L^3 norms.
+Vanishing Π_h at finite L^3 is the topological certificate.
+
+B3. W is conversion, not a cascade across ℓ
+Concept: the resolved stretch
+
+  W_ℓ = (1/4π) B_{ℓ,i} S_{ℓ,ij} B_{ℓ,j}
+
+appears with opposite sign in the kinetic and magnetic large-scale budgets, so
+it swaps energy at the same filter scale. It is not an inter-scale flux.
+Locked by Aluie; the leftover hive mismatch was 15× vs 4× current-weighted
+⟨B:S⟩ pile-up (mask / Poynting / weighting), closed as a hunt not a new identity.
+
+Plot: Π_u, Π_b, and W_ℓ on the same ℓ. Stretch pieces should cancel.
+
+B4. Weak uniqueness / convex integration
+Concept: for Euler, convex integration built wild non-unique weak solutions
+below the Onsager exponent. MHD analogues exist in the literature; which
+exponent is sharp for MHD, and whether they describe any physical cascade,
+is open.
+
+Plot: none on the toy. Math paper, not a run.
+
+---------------------------------------------------------------------------
+C. Turbulence phenomenology
+---------------------------------------------------------------------------
+
+C1. Spectral slope: −5/3 vs −3/2
+Concept: Goldreich–Sridhar (critical balance) wants Kolmogorov k_⊥^{−5/3}.
+Boldyrev (dynamic alignment) wants k_⊥^{−3/2}. Beresnyak argued alignment
+saturates and the asymptotic slope is −5/3. Schekochihin 2020 review treats
+alignment as intermittency, not a slope changer, and then tearing takes over
+at small scales. A 2026 anisotropic-simulation paper claims critical balance
+and scale-dependent alignment are both violated at large mean field.
+Still not community-closed.
+
+Plot: E(k_⊥) compensated by k^{5/3} and k^{3/2} on a strong-B_0 run.
+Do not retune hyper_kcut to pick a slope.
+
+C2. Tearing-mediated cascade
+Concept: aligned current sheets in the inertial range become tearing-unstable
+before they hit viscous/resistive scales, so the cascade itself becomes a
+reconnection cascade (Mallet–Loureiro–Schekochihin). Whether this is the
+generic dissipation route at large Re, Rm, or only a strong-guide-field story,
+is open.
+
+Plot: sheet aspect ratio L/a vs local Lundquist; D(k)/E_J(k) peak (Maron
+hyper_kcut sits there, not at 0.5).
+
+C3. Imbalanced turbulence (cross-helicity)
+Concept: z^+ and z^− amplitudes unequal. The weaker Elsässer field is not
+a passive slave; how the cascade time and residual energy scale with imbalance
+is still argued. Decaying imbalanced MHD reconnects its way toward balance
+in some pictures (Hosking–Schekochihin).
+
+Plot: E^+(k)/E^−(k) and residual energy E_r = E_m − E_k vs k.
+
+C4. Residual energy
+Concept: magnetic energy often exceeds kinetic at small scales even in
+balanced MHD. Why, and whether it is a dynamo leftover, a sheet effect, or
+an alignment geometry, is open.
+
+Plot: E_b(k) − E_u(k) through the inertial range.
+
+C5. Decaying MHD: 1/Re heat vs leak
+Concept: Linkmann–Berera–Goldstraw (1701.01086, Merge/09): the dimensionless
+dissipation
+
+  C_ε = ε L_+ /(z_+^2 z_−) + ε L_− /(z_−^2 z_+)
+
+has a finite-Re expansion C_ε = C_{ε,∞} + C/R_− + D/R_−^2.
+A few-percent ΔE_tot at working Re is physical viscoresistive heat, not a
+fake leak, once ε is split viscous vs Ohmic. Hive locked the Crow ~6% floor
+this way. Open: how universal C_{ε,∞} really is once helicity and forcing
+change, and how the split sits on sheets vs tubes.
+
+Plot: C_ε vs R_−; f_visc = ε_kin/ε; co-location of Ohmic with high-|J|.
+
+---------------------------------------------------------------------------
+D. Dynamo
+---------------------------------------------------------------------------
+
+D1. Fast kinematic dynamo
+Concept: can a smooth flow grow magnetic energy at a rate independent of η
+as Rm→∞? Slow dynamos vanish as 1/log Rm or worse. Fast dynamo needs
+Lagrangian chaos plus a stretch-fold-shear geometry. Existence of a fast
+dynamo for a smooth, incompressible, 3D periodic flow at infinite Rm is a
+classical open problem (Childress–Gilbert). Numerical growth rates look
+fast; a proof does not exist.
+
+Plot: γ(Rm) = d log E_b / dt vs Rm on a prescribed chaotic u. Saturation
+is a different problem (D2).
+
+D2. Small-scale dynamo saturation
+Concept: Kazantsev kinematic growth at k_η, then Lorentz back-reaction
+stops the stretch. The saturated spectrum, the role of reconnection in
+setting the cutoff, and whether a large-scale field can be built from a
+small-scale dynamo (mean-field closure) are open. Schekochihin’s review
+ties the saturated state to tearing again.
+
+Plot: E_b(k) during kinematic growth vs after Lorentz saturates.
+Mean B vs fluctuation b_rms.
+
+D3. Large-scale / mean-field dynamo
+Concept: α-effect, inverse cascade of magnetic helicity, catastrophic
+quenching at large Rm. Whether a closed mean-field theory exists that
+does not cheat on magnetic helicity flux is still contested.
+[speculative hive braid: helicity no-go (B2) is the same topological
+protection that makes α-quenching hard.]
+
+Plot: large-scale |⟨B⟩| growth vs magnetic-helicity flux through the box.
+
+---------------------------------------------------------------------------
+E. Reconnection
+---------------------------------------------------------------------------
+
+E1. Onset
+Concept: energy builds in a thick sheet; release is sudden. What actually
+triggers? Electron tearing after external thinning, ion-scale B_z-hump
+flux-release, plasmoid-on-a-forming-sheet (least-time, not Sweet–Parker),
+kink of a flux rope, tether-cutting / breakout in flares. Magnetotail
+simulations still form X-lines too close to the box edge compared with
+spacecraft. Solar: is Alfvénic motion the cause or the result?
+
+Plot on the toy: thinning rate 1/τ vs tearing growth γ. Onset when γ > 1/τ.
+Do not start from a Sweet–Parker sheet; form it.
+
+E2. Rate: why ~0.1, and is it universal?
+Concept: Sweet–Parker is slow (~ S^{−1/2}) and is never reached at large S
+because plasmoids disrupt the sheet. Collisionless and plasmoid-mediated
+rates both sit near 0.1 v_A. Liu et al. argue a geometric maximum of that
+order. Whether 0.1 is a theorem, a 2D accident, or a 3D/turbulent number
+is open. LV99 stochastic reconnection is a competing 3D picture
+(turbulence sets thickness; plasmoids set length).
+
+Plot: reconnection rate v_in / v_A vs Lundquist S, and vs island number.
+Reconnected flux Φ(t) — Aethon was asked to add this; it is the live meter.
+
+E3. 3D plasmoid vs turbulent reconnection
+Concept: 2D plasmoid chains are understood. 3D: flux ropes kink, turbulence
+self-generates from the reconnection (2026 SGTR papers), EDRs come out
+laminar or turbulent with no clean switch. Outstanding (Nakamura et al.
+2407.09670): why some electron diffusion regions are laminar and others
+are not; whether electron-only reconnection is a finite-lifetime stage
+before ions couple, or a scale-limited turbulent object.
+
+Plot: none fully on a spectral periodic box without a Harris sheet.
+Orszag–Tang / Brio–Wu show the compressible cousin, not this.
+
+E4. Particle acceleration and energy partition
+Concept: where does the released magnetic energy go — ions vs electrons,
+thermal vs nonthermal? Magnetotail: ion enthalpy wins near the IDR;
+nonthermal tails exist even in quiet plasma sheet. Flares: nonthermal
+electrons can rival thermal. Relativistic reconnection can make hard
+power laws. No common closure. The fluid toy cannot do this; it is
+listed so it is not mistaken for an I_leak problem.
+
+Plot: not on the spectral MHD toy.
+
+E5. Compressible / shock-reconnection coupling
+Concept: reconnection outflows shock; shocks make reconnection; spectral
+MHD rings at discontinuities. Hive patch 8 (Brio–Wu) locked “waves exist,
+no NaN, Gibbs is the scheme, no WENO this week.” Open: when does ringing
+destroy the Riemann structure vs just decorate it; when must one leave
+spectral methods.
+
+Plot: min ρ, max |div B|, I_leak on Brio–Wu before wrap. Success is no NaN.
+
+---------------------------------------------------------------------------
+F. Sheets, dissipation, constraints
+---------------------------------------------------------------------------
+
+F1. Current-sheet morphology: sheets vs tubes vs nanoflares
+Concept: Zhdankin census — dissipation sits in coherent current sheets
+with a power-law size distribution (nanoflare language). Hive leftover
+after Crow: extra MHD−hydro heat was tube-scale current, not sitting in
+the high-|J| mask (only ~23% of Ohmic in the sheets). Open: is that
+resolution, a weighting, or the real partition at large Re?
+
+Plot: Ohmic fraction inside a high-|J| mask vs outside; Minkowski
+thickness of the mask.
+
+F2. Viscous heating vs Ohmic heating once ∇·u ≠ 0
+Concept: on cmhd, ⟨u · ν∇²u⟩ and ⟨2ν S:S⟩ disagree (HAVE 7: about a
+factor two on a 1D sound wave, which is the 1D identity, not a bug).
+Bulk viscosity flag exists on cmhd (default off). Open in 3D compressible turbulence: how much
+of Q is compressive vs solenoidal, and whether a bulk term is ever needed.
+
+Plot: the two viscous expressions vs time on a sound wave and on Brio–Wu.
+
+F3. Divergence-free B
+Concept: constrained transport / GLM (Dedner) vs spectral projection.
+Hive: e_glm is in I_leak when glm_ch ≠ 0; Dedner −αψ damping is a sink
+not in I_leak; OT does not exercise live ψ. Open: when does max|div B|
+stay bad enough to need CT, and is I_glm a real leak or a gauge wave.
+
+Plot: max|div B|(t), e_glm, I_glm (the parked one-liner) with glm on.
+
+F4. Magnetic Prandtl number
+Concept: Pm = ν/η. Dynamo, sheet thickness, and viscous/Ohmic split all
+change with Pm. Most hive runs sit near Pm=1. Astrophysical Pm spans
+10^{−5} to 10^{14}. Open: which qualitative pictures survive far from 1.
+
+Plot: f_visc vs Pm on otherwise identical decaying runs.
+
+---------------------------------------------------------------------------
+G. Compressible MHD
+---------------------------------------------------------------------------
+
+G1. Existence of shock solutions / uniqueness of MHD Riemann problems
+Concept: the MHD Riemann problem is not always unique; intermediate shocks
+and compound waves exist. Brio–Wu (γ=2) is the standard 1D test. Spectral
+schemes will Gibbs-ring and can go ρ<0. That is the scheme, not a
+continuity leak (Venus lock). Open mathematically: which weak solutions
+are physical (entropy, viscosity limits).
+
+Plot: ρ(x), B_y(x) at t < t_wrap against the exact Brio–Wu states.
+Do not demand a plot match.
+
+G2. Living acoustics on a spectral torus
+Concept: primitive u with −∇p/ρ, Qin off, CFL with c_s and v_A. HAVE 5+6
+got v_phase/c_s ≈ 1. Open: magnetoacoustic / fast-mode speeds in 3D, and
+whether a spectral code can carry a fast shock without a positivity fix.
+
+Plot: phase speed of a 1D magnetosonic wave vs √(c_s² + v_A²).
+
+---------------------------------------------------------------------------
+H. What is not an open MHD problem (on this hive)
+---------------------------------------------------------------------------
+
+- Crow/0%/B0 scaling campaigns. Closed.
+- Cloning Scar-off Campaign A. Forbidden.
+- Fake WENO to hide Gibbs. Parked.
+- Bulk viscosity: flag on cmhd, default off. Hive γ still 5/3.
+- Hall is LIVE (mode="hall"). ES-LHDI parked.
+- Proving I_leak is identically zero by pinning ρ or flooring ρ. That hides a leak.
+
+---------------------------------------------------------------------------
+I. Short list if you only keep seven
+---------------------------------------------------------------------------
+
+1. 3D MHD regularity / BKM sheet (A1–A2)
+2. Aluie roughness + helicity no-go (B1–B2)
+3. Slope vs tearing-mediated cascade (C1–C2)
+4. Fast dynamo + saturation (D1–D2)
+5. Reconnection onset and the ~0.1 rate (E1–E2)
+6. Viscous vs Ohmic partition at finite Re (C5, F1)
+7. Compressible MHD shocks without cheating the scheme (G1)
+

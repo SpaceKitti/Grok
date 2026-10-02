@@ -1,0 +1,8 @@
+Linkmann, Berera, Goldstraw (2017)
+Reynolds-number dependence of the dimensionless dissipation rate in homogeneous magnetohydrodynamic turbulence
+arXiv: https://arxiv.org/abs/1701.01086
+PDF: C:\Users\Akitt\Grok\pdf\1701.01086_Linkmann_dissipation_floor.pdf
+
+Why this leftover: Scar-off A closed with kin residual -0.35% but Delta E_tot still ~6%. This paper is the viscous-vs-Ohmic split plus the finite-dissipation floor: epsilon = epsilon_mag + epsilon_kin, and in freely decaying incompressible MHD at Pm=1 one always has epsilon_mag/epsilon > epsilon_kin/epsilon (~0.6 vs ~0.4, nonhelical; Ohmic still wins in helical). C_epsilon = C_epsilon,inf + C/R_- so at moderate Re (N=48, t=0.36) a few-percent total-energy drop is the 1/Re heat, not a fake leak. Do not scale A at 6%.
+
+JAX diagnostic: From spectral u,B output epsilon_kin = nu * sum k^2 |u_hat|^2, epsilon_mag = eta * sum k^2 |B_hat|^2, and C_eps = epsilon * L_pm / (z_pm^2 z_mp). Plot epsilon_mag/epsilon vs epsilon_kin/epsilon and cumulative int_0^t (epsilon_kin+epsilon_mag) dt against Delta E_tot; they should close if the 6% is physical heat.

@@ -1,0 +1,8 @@
+Zhdankin, Boldyrev, Perez, Tobias (2014)
+Energy dissipation in magnetohydrodynamic turbulence: coherent structures or nanoflares?
+arXiv: https://arxiv.org/abs/1409.3285
+PDF: C:\Users\Akitt\Grok\pdf\1409.3285_Zhdankin_coherent_structures.pdf
+
+Why this leftover: They mask eta j^2, not Lorentz work. The mask recipe is the point. Connected components with |j| > j_thr. Apply the same mask to W_L vs B:S instead of eta j^2.
+
+JAX diagnostic: Mask M(j_thr) with j_thr / j_rms in {2,3,4}. Output filling factor, ⟨W_L⟩_M / ⟨W_L⟩_V, ⟨B:S⟩_M / ⟨B:S⟩_V, and current-weighted ⟨W_L |J|⟩_M / ⟨W_L⟩_V vs threshold.

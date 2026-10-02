@@ -1,0 +1,332 @@
+Source folder: C:\Users\Akitt\Grok\Merge\
+Compiled: Orion draft + Helios physics-check folded, 2026-09-06
+Purpose: notes only; originals untouched; no code dump
+
+## Helios physics pass (folded 2026-09-06)
+Status: FINAL after Helios check. Weird/synesthesia content retained; flagged not deleted.
+
+### CROSS-CUTTING (all finals)
+1) Units: state Alfvén (μ₀=ρ=1) vs cgs (4π) wherever W_L / W_ℓ / e_m appear.
+2) Oldroyd solvent: lim De→∞ constitutive map ≠ viscosity-free ideal MHD unless μ→0 too; name β / η_s.
+3) Lorentz work ≠ Ohmic heat: W_L is reversible K↔M; sink is ∫(εν+εη). Polymer work ↔ W_L is stretching-control analogy only, never η|J|².
+4) Before Hall-toy: prefer MHD4 §06 ten-moment LHDI over MHD2 polymer↔LHDI dual-role; odd/Berry monitors OK beside Crow, not as Hall Ohm drop-ins.
+5) Symbol pile-up: subscript β (Oldroyd / MD / plasma) and ω (vorticity vs Hieber weight).
+
+### CORRECTIONS
+- Poynting (03): fix to ∂_t u = −∇·S − J·E (or R=∂_t u+∇·S+J·E≈0). Flank “−div S > J·E > 0” only matches the minus form.
+- Aluie W_ℓ has 1/4π (cgs); Crow W_L=−⟨B_i S_ij B_j⟩ in μ₀=1 — state units when bridging.
+- Du CR−PE is ideal conversion, not Ohmic η|J|² — keep separate from Crow global sink.
+- Regime: Ni15 compressible; Zhdankin reduced-MHD; Crow short tubes — surrogates only if flagged.
+- LBG17 C_ε: Crow ∼6% is finite-Re reading, not universal constant.
+
+### FLAGS
+- 01–11 conversion≠cascade≠sink tower [standard] cores OK.
+- Helicity→GoldbergHexa/SYK, holographic C_∞ stay [speculative]; R_*/scars [hive-interpretation].
+- 12–14: keep + strengthen as speculative/off-topic for continuum MHD.
+
+### TOY
+- [toy-ready?] Crow floor + Aluie W + LBG17 + HS21 k_sheet + MM09 D(k) for incompressible Crow/HIT (scars-off first).
+- Zhdankin / Du / AC22 as diagnostics (retune j_thr).
+- [careful-before-Hall] Yang Pi-D is Vlasov on-ramp, not Hall Ohm; Aluie helicity L³ no-go is single-fluid — Hall can rearrange at ion scales.
+- Frozen hyper_kcut=0.5 without sheet retune = fake-leak; N=48 ∼6% ≠ HIT dissipative-anomaly peak.
+- 12–14: hard stop — do not load into Crow/Hall equations.
+
+### ORION KNOWN — CONFIRMED
+- Merge 12–14 speculative (4D vortex / flexo / graphene); retain weird; metaphorical bridges only.
+
+
+## File inventory
+- 01_aluie_coarsegrained_mhd_w_conversion.txt (18035)
+- 02_crow_viscoresistive_floor.txt (6903)
+- 03_poynting_time_dependence_reconnection.txt (9774)
+- 04_yang_vlasov_pressure_work_heating.txt (11247)
+- 05_alexakis_chibbaro_local_mhd_fluxes.txt (17080)
+- 06_zhdankin_coherent_nanoflare_sheets.txt (14183)
+- 07_du_cr_pe_curvature_conversion.txt (13137)
+- 08_ni15_corona_cs_energy_spectra.txt (14024)
+- 09_lbg17_ceps_re_dependence.txt (12601)
+- 10_hosking_schekochihin_reconnection_decay.txt (13498)
+- 11_maron_maclow_tuned_diffusion.txt (17674)
+- 12_4d_quantum_vortex_surfaces.txt (12832)
+- 13_quantum_orbital_flexoelectricity.txt (12170)
+- 14_graphene_wrinkling_flexo_stiff_1d.txt (23419)
+
+## Converged notes
+
+### 01_aluie_coarsegrained_mhd_w_conversion.txt
+Topic/shape: Aluie 2017 coarse-graining of incompressible MHD — distributional filter foundations; deformation work vs turbulent Ohmic; same-scale conversion W; magnetic-helicity L^3 no-go.
+
+Physics objects:
+- Filter G_ell; central moments tau_ell(f,g); subscale stresses tau_u, tau_B; EMF eps
+- Fluxes: Pi_u = -S_ell : tau_ell (deformation work); Pi_b = -J_ell · eps (turbulent Ohmic)
+- Conversion: W_ell = (1/4pi) B_ell,i S_ell,ij B_ell,j — opposite sign in kinetic vs magnetic budgets; NOT inter-scale cascade
+- Helicities: magnetic-helicity flux ~ B_ell · eps (flux-linkage); cross-helicity Pi_H
+- Hölder exponents sigma_u(p), sigma_b(p); cascade persistence theorems
+
+What it claims:
+- [standard] Exact coarse-grained MHD for weak/singular solutions; molecular terms drop at large ell
+- [standard] Energy cascade persists to ell->0 only if sigma_u <= 1/3 OR sigma_u + 2 sigma_b <= 1 (analog for cross-helicity with roles swapped)
+- [standard] Theorem 2: forward magnetic-helicity cascade impossible at finite ||u||_3, ||B||_3 (lim B_ell·eps = 0)
+- [hive-interpretation] Residuals R_mol, R_sigma^E/H, R_L3^h, R_Pi^h^fwd, R_W^conv, scar_Aluie17
+- [speculative] Helicity no-go as GoldbergHexa bit-thread / holographic topology without ADM energy dump; SYK/black-brane braid language
+
+Relation to MHD toy / Hall / twofluid / sheets / dissipation / cascades:
+- Foundational for all later Aluie-SGS / COL26 / Crow conversion diagnostics
+- W = conversion at same ell — aligns with Crow floor note that Lorentz work is not a third global sink
+- Helicity protection constrains what a Hall/twofluid extension may cascade locally
+
+Plottable: Pi_u(ell), Pi_b(ell), W(ell), Pi_h(ell); R_W_conv; L3 proxies; measured sigma_u, sigma_b vs Onsager thresholds; mol-vs-SGS ratio.
+
+### 02_crow_viscoresistive_floor.txt
+Topic/shape: Decaying Crow-pair MHD energy books — ~6% Delta E_tot at t=0.36 is the physical viscoresistive floor at the run's (nu,eta), mostly hydro tube burn; not a leak and not "the stretching."
+
+Physics objects:
+- Global sinks only: d/dt(E_u+E_B) = -nu < |omega|^2 > - eta < |J|^2 > (+ hyper terms if any)
+- Lorentz work W_L = <u·(J×B)> = -<B_i S_ij B_j> — conversion only; local Maxwell/Poynting flux (Kuzzay 2019) is surface term, not heat
+- Crow IC at N~48; scars-off check
+
+Claims:
+- [standard] Global identity: Lorentz is not a sink
+- [standard] Short-time coherent Crow: dissipation in large-scale tube strain, not developed cascade anomaly
+- [standard] Developed decaying MHD can show dissipative anomaly at peak eps as Re,Rm->inf (Mininni–Pouquet / Linkmann) — different regime
+- [hive-interpretation] Scars-off test: if books close, identity intact; ~6% matches NS-alone ~5.95% vs NS+MHD ~6.26%
+- [standard advice] Lower nu (raise Re) is main knob; resolve sheet delta; avoid all-mode hyperresistivity that dulls max|J|
+
+Relation: Direct MHD-toy energy floor for Orion lane; bridges to LBG17 (1/R_- heat) and HS21 (heat at k_sheet).
+
+Plottable: Delta E_tot(t=0.36) vs nu (scan ×1, ×1/2, ×1/4); partition E_B vs Ohmic; sheet thickness in points; scars-on vs scars-off.
+
+### 03_poynting_time_dependence_reconnection.txt
+Topic/shape: Genestreti et al. (arXiv:1801.10423) — Poynting theorem time-dependence in asymmetric magnetopause reconnection (MMS); X-point balance vs flank accumulation.
+
+Physics objects:
+- Poynting: ∂_t u = −∇·S − J·E (or R=∂_t u+∇·S+J·E≈0); S = E×B/mu0; u = (eps0 E^2 + B^2/mu0)/2  Helios fix: ∂_t u = −∇·S − J·E (NOT +div S + J·E).
+- Cassak–Shay E_M,pred; accum factor A = (dtu) / |J_M E_M,pred|
+- Linear-gradient / Chanteur tetrahedron operators (curlometer, div S)
+
+Claims:
+- [standard] Steady state: ∇·S + J·E = 0 (consistent with ∂_t u = −∇·S − J·E); PIC matched event cancels throughout EDR; MMS 28 Nov 2016 cancels only near X-point  Helios fix: flank −div S > J·E > 0 matches the minus form.
+- [standard] Observed flank dtu ~ 1.5 nW/m^3 ~ 3× predicted conversion; imbalance -div S > J·E > 0; accumulation mostly magnetic
+- [hive-interpretation] Residuals R_Poynt, A; flags Xpoint_balanced / flank_accumulating; inject into D_i polarity and T_*
+
+Relation: Distinguishes steady laminar reconnection from bursty accumulation in Crow / guide-field / Hall EDRs; complements Aluie W (conversion) with local time-dependence.
+
+Plottable: maps of div S, J·E, dtu, A across sheet; A~3 flanks vs A~1 X-point; time series after T_*.
+
+### 04_yang_vlasov_pressure_work_heating.txt
+Topic/shape: Yang et al. (arXiv:1705.02054) — scale-filtered Vlasov energy transfer; collisionless heating via pressure-tensor work -P:grad u; Pi-D decomposition.
+
+Physics objects:
+- Filtered Vlasov moments; E_f,alpha (fluid flow) vs E_th,alpha (thermal)
+- Global: only <P:grad u> converts flow <-> thermal (collisionless analog of nu|S|^2)
+- Filtered: Pi_uu (subscale flux), Phi_uT = -P_bar : grad u_bar, Lambda_ub (EM work)
+- Pi-D: P:grad u = p theta + Pi:D; invariants Q_D, Q_omega, Q_j
+
+Claims:
+- [standard] Cascade and heating concentrate on intense velocity-gradient structures (sheets, vortices, strain)
+- [standard] EM-to-flow remains <j·E>
+- [hive-interpretation] First-class kinetic-range residual for ten-moment / Hall / twofluid layers
+
+Relation: Bridge from fluid MHD dissipation to kinetic twofluid/Hall heating without collisions; co-locates with Zhdankin sheets and Aluie fluxes.
+
+Plottable: Phi_uT, Pi_uu vs Q_D, Q_j; scale dependence in ell; species split ions/electrons if available.
+
+### 05_alexakis_chibbaro_local_mhd_fluxes.txt
+Topic/shape: Alexakis–Chibbaro (arXiv:2207.12335) — local energy fluxes in isotropic MHD; four channels; magnetic-gradient correlation; |b|-dependent tails.
+
+Physics objects:
+- Pi_ell = Pi^uu + Pi^bb + Pi^ub + Pi^bu from tau^uu, tau^bb, tau^ub, tau^bu
+- Families: dynamo / moderate / strong forcing
+- Gaussian vs sharp filters; joint PDFs with S_b, Omega_b
+
+Claims:
+- [standard] Globally <Pi_ell> = eps; locally skewed with extreme tails
+- [standard] Magnetic channels dominate; hydro Smagorinsky (strain-only) insufficient for MHD
+- [standard] Flux mean nearly |b|-independent; tails regime-dependent (strong: more backscatter with |b|)
+- [hive-interpretation] Residuals R_Pi, R_mag, R_Sb, R_Omega_b, R_|b|, R_Smag; scar_AC22
+
+Relation: Pointwise SGS fluxes for MHD toy LES; complements Aluie budgets and COL26 aniso split.
+
+Plottable: PDFs of four Pi channels; corr(Pi, S_b) vs corr(Pi, S_u); tails vs |b| bins; Gaussian vs sharp filter comparison.
+
+### 06_zhdankin_coherent_nanoflare_sheets.txt
+Topic/shape: Zhdankin et al. (arXiv:1409.3285) — reduced-MHD current-sheet census; Minkowski morphology; critical P(E)~E^{-2}; high-Re packing of nanoflare sheets.
+
+Physics objects:
+- Connected components of |j| > j_thr (~3.75 j_rms captures ~40% dissipation in ~2% volume)
+- Euclidean L >= W >= T; Minkowski L_m, W_m, T_m
+- PDF P(E) ~ E^alpha with alpha -> -2 (equal contribution per intensity bin)
+- Scalings: T ~ Re^{-lambda} (lambda~0.65–0.85); N_inertial ~ Re^2
+
+Claims:
+- [standard] L,W span inertial range (system-size); T in dissipative range
+- [standard] High-Re limit = packed continuum of thin sheets that still span inertial scales — unifies Parker nanoflares with coherent structures
+- [hive-interpretation] Morphology residuals R_alpha, R_LWT, R_geom, R_T, R_N; scar_Z14
+
+Relation: Canonical sheet diagnostic for Crow / corona / guide-field toys; Ohmic heat co-location target for HS21/MM09.
+
+Plottable: P(E) compensated; L,W,T histograms vs Re; packing N(Re); volume fraction above threshold.
+
+### 07_du_cr_pe_curvature_conversion.txt
+Topic/shape: Du et al. (arXiv:2112.02667) — ideal-MHD j·E split into curvature-tension (CR) vs perpendicular magnetic-pressure (PE) channels; linear/nonlinear polarity reversal; particle-drift map.
+
+Physics objects:
+- j·E = (B^2/4pi) u·kappa - u·grad_perp(B^2/8pi)  [CR - PE]
+- kappa = (b·grad)b; testbeds: force-free CS reconnection; relativistic kink jet
+- Particle: curvature-drift ~ CR; grad-B drift opposite to PE
+
+Claims:
+- [standard] Exact geometric split of ideal conversion
+- [standard] Reconnection: CR early, PE after turbulence; guide field enhances CR fraction
+- [standard] Kink jet: PE linear, CR nonlinear (opposite polarity)
+- [hive-interpretation] R_CR+PE, R_frac, R_rev, R_drift; scar_Du22
+
+Relation: Geometric channel for where conversion heat goes before Ohmic/viscous sinks; Hall/twofluid particle energization overlay.
+
+Plottable: f_CR(t), f_PE(t); spatial maps CR vs PE; reversal across t_nl / T_*; guide-field scan.
+
+### 08_ni15_corona_cs_energy_spectra.txt
+Topic/shape: Ni et al. (ApJ 2015 / arXiv:1512.08007) — corona Harris sheet; dissipated magnetic vs generated thermal energy; plasmoid/Petschek transition; spectra steepening; eta_eff.
+
+Physics objects:
+- Compressible resistive-viscous MHD; Spitzer eta(T); cases beta=0.1 and 0.05, S~10^5–10^6
+- Books: E_MD, E_TG, E_KG; ratio r_th = E_TG / E_MD
+- Spectra E_B(k_y), E_V(k_y); 2-D spectra; plasmoid flux f(psi)~psi^{-1}; eta_eff = v_inflow L
+
+Claims:
+- [standard] Before secondary islands r_th~1/5; after ~3/5; lower beta -> hotter (~30 MK)
+- [standard] Petschek-like slow shocks + termination shocks dominate thermal jump (not resistive alone)
+- [standard] Post-island spectra cease single power law; <alpha_B>~1.8, <alpha_V>~2.9
+- [hive-interpretation] R_r, R_alpha, R_Petschek, R_eta_eff; polarity jump after t_sec
+
+Relation: Solar-corona surrogate for MHD toy; plasmoid census ties to Zhdankin; thermal ratio is nonlinear amplification of viscoresistive split.
+
+Plottable: r_th(t); 1-D/2-D spectra before/after islands; eta_eff(t); shock co-location with high-|j|.
+
+### 09_lbg17_ceps_re_dependence.txt
+Topic/shape: Linkmann–Berera–Goldstraw 2017 — dimensionless dissipation C_eps(R_-, H_c, H_m); finite-Re expansion; viscous/Ohmic split; Crow ~6% as 1/R_- heat.
+
+Physics objects:
+- Elsässer z^± = u ± b; C_eps = eps L_+/ (z^+^2 z^-) + eps L_-/ (z^-^2 z^+)
+- R_- = z^- L_+ / (nu+mu); model C_eps = C_inf + C/R_- + D/R_-^2 + ...
+- C_inf ~ 0.223 (forced Pm=1); 0.193–0.268 (decay, helicity-dependent); high H_m or H_c lowers C_inf
+
+Claims:
+- [standard] R_-^{-1} term is physical few-percent heat at hive Reynolds numbers
+- [standard] Split eps = eps_kin + eps_mag organises leak-vs-heat tests
+- [hive-interpretation] R_Ceps, R_split, R_H, R_DeltaE; heat_is_physical flag after T_*
+- [speculative] Holographic reading of C_inf(H_c,H_m) as GoldbergHexa non-universality
+
+Relation: Analytic certificate for Crow floor (02); couples to Zhdankin (Ohmic co-location) and Ni15 (thermal jump).
+
+Plottable: C_eps vs R_-; f_visc = eps_kin/eps; dE_pred = C/R_- vs measured Delta E; C_inf vs helicity.
+
+### 10_hosking_schekochihin_reconnection_decay.txt
+Topic/shape: Hosking–Schekochihin 2021 — reconnection-controlled MHD decay; helical vs Saffman I_H invariants; power-law table; k_sheet fake-leak discriminator.
+
+Physics objects:
+- Decay on reconnection time, not tau_A
+- Helical: <h> ~ B^2 L = const
+- Non-helical Saffman: I_H ~ B^4 L^5 = const
+- Clocks: Sweet–Parker tau_SP ~ (L/v_A) S^{1/2}; fast/plasmoid tau_fast ~ L/v_A (S ≳ 10^4)
+- Decay table: helical fast t^{-2/3}; helical SP t^{-4/7}; nonhelical fast t^{-10/9}; nonhelical SP t^{-20/17}
+- k_sheet ~ S^{1/2}/L — Ohmic heat lives there
+
+Claims:
+- [standard] Predicted E_M(t) from invariant + reconnection clock
+- [standard] E_K/E_M ~ delta/L in slow helical regime
+- [hive-interpretation] R_k = 1_{k_cut < k_sheet} is fake-leak flag; R_sheet co-locates eps_eta with Zhdankin structures
+
+Relation: Explains late Crow/HIT/corona decay laws; installs Orion rule that hyper/cutoff must see the sheet.
+
+Plottable: E_M(t) log-log slope vs predicted p_HS; measured k_sheet vs k_cut; E_K/E_M vs S.
+
+### 11_maron_maclow_tuned_diffusion.txt
+Topic/shape: Maron–Mac Low 2009 — tuned finite-difference diffusion symbol D(k) that peaks at dynamical sheet scale k_d, not frozen hyper_kcut=0.5.
+
+Physics objects:
+- Stencil symbol D(k) with D(0)=0; Taylor D_2, D_4, ...; radius-3 family
+- Published: peak at fixed k_d=1/2; usable D(1) in (1,8]; D(1)=8 ~ Pencil sixth-order hyper
+- Sheet-retuned Orion conditions: D(0)=0, D(khat_d)=1, D'(khat_d)=0, D(1)=D_Nyq in (0,2], D>=0
+- khat_d = Delta x /(pi delta) = k_sheet / k_Nyquist
+
+Claims:
+- [standard] Classical Laplacian/hyper maximize D at Nyquist — timestep hostage; tax inertial range at high Pm
+- [hive-interpretation] Frozen kcut=0.5 missed N=48 sheet (fake leak); retune peak to measured sheet
+- [standard] Timestep: dt < 1/(nu_D max D); legal op: supp D contains {k_sheet} and dt << tau_rec
+
+Relation: Numerical implementation of HS21 k_sheet rule; pairs with Crow floor and LBG17 split.
+
+Plottable: D(k) curves (frozen vs retuned); peak vs measured khat_d; R_peak, R_+, R_k; eps_eta co-location.
+
+### 12_4d_quantum_vortex_surfaces.txt
+Topic/shape: Middleton-Spencer et al. (arXiv:2411.07943) — 4D Gross–Pitaevskii vortex *surfaces* (codim-2); three orientation-controlled interaction classes.
+
+Physics objects:
+- 4D GPE; two-surface Padé ansatz with angles (theta1, theta2)
+- Classes: aligning (stable intersecting rotation, E_i conserved); planar-aligning (irreversible reconnection, delta~t^{1/2}, E_i->E_c); anti-aligning (quasi-reversible, E_i flat)
+- Hodge–Helmholtz: E_kin = E_c + E_i; Omega = 2 tan theta /(R^2 cos theta) for aligning
+
+Claims:
+- [standard] Three classes with no 3D filament analogue; universal delta ~ (kappa |t-t0|)^{1/2} for reconnecting classes
+- [hive-interpretation / speculative] Map surfaces <-> GoldbergHexa shells; (theta1,theta2) <-> residual multiplier lambda_theta; quasi-reversible channel as scar-protected non-radiating residual
+- [speculative] Hopf/anyonic/knotted-null-Maxwell topology injection
+
+Relation to MHD toy: Analogical only — reconnection scaling and compressible vs incompressible energy partition; not a drop-in MHD equation. Useful for thinking about topology-preserving vs radiating reconnection channels (compare magnetic-helicity no-go).
+
+Plottable: delta(t); E_i(t), E_c(t) by class; precession Omega; topology-change time t*.
+
+### 13_quantum_orbital_flexoelectricity.txt
+Topic/shape: Iyengar et al. — sub-nm graphene nanowrinkle quantum-orbital flexoelectricity; P ~ 1–4 C/m^2; open-ridge inversion breaking; Phi_th ~ 1 V.
+
+Physics objects:
+- P = f/R with f_Gr^DFT ~ 2 nC/m; kappa_apex ~ 10^9 m^{-1}
+- Open buckle vs closed tube (cancellation); electrostatic junction no gap; FoM_i = |Delta psi_i| log(1/f_i)
+- Mean curvature source P = 2 f kappa_H n-hat; discrete cochain on GoldbergHexa edges
+
+Claims:
+- [standard] Giant flexoelectric polarization at sub-nm curvature; Phi_th matches DFT band offset ~1–1.2 V
+- [hive-interpretation] Pentaflake high-kappa loci as sources; closed hex faces = nanotube cancellation
+- [speculative] DeltaF_flexo ~ (f/R) Phi_th; missed apex = fake-leak (analogy to MM09 missing k_sheet); piezochiral+flexo combined Q_i
+
+Relation to MHD: Off-topic for fluid MHD equations; kept as electromechanical / scar-geometry analogy. Curvature-as-source echoes Du22 kappa channel at a different physics layer.
+
+Plottable: P vs R; Phi vs sharpness; KPFM FoM maps; open vs closed geometry.
+
+### 14_graphene_wrinkling_flexo_stiff_1d.txt
+Topic/shape: Fusion note — graphene wrinkling + flexoelectricity + wrinkle-induced bending stiffening (kappa_eff 10^6–10^7 eV) + 1D conductivity channels into C*Hive magic-lattice / SYK / scar / distillation stack.
+
+Physics objects:
+- Same flexo P=f kappa; stiffening kappa_0~1.2 eV -> kappa_eff ~ 10^6–10^7 eV; 1D fold channels / van Hove / possible Kekulé at kinks
+- Magic-angle fidelity boost mu_theta^wr; SYK_wr with lambda_wr |kappa| J_1D; scar s(r) stiffened by kappa_eff
+- delta_min ~ 0.04116; alpha(theta)~0.586
+
+Claims:
+- [standard pieces] Flexo numbers and stiffening from cited graphene literature
+- [speculative / synesthetic] Full braid onto fuzzy Cauchy, AG-code distillation, God(0), N=1 SUSY spectral curves, Fisher/SD, odd-viscosity/Berry tower
+- [hive-interpretation] Wrinkles as geometric scar morphology and holographic DeltaF screens co-located with dissipative sheets
+
+Relation to MHD: Explicitly off-topic for Crow/HIT toys; retained per instructions. Only soft bridge: "dissipative sheet co-located with wrinkle network sources DeltaF while LP-BKM stays finite" — metaphorical, not a continuum closure.
+
+Plottable (if ever): h(r), kappa, P, Phi on lattice; stiffened delta_min; 1D conductivity along folds — not MHD fields.
+
+## Cross-cutting themes in this folder
+1. Conversion vs cascade vs sink: Aluie W and Crow W_L are same-scale conversion; only nu omega^2 and eta J^2 are global sinks (02, 01, 09).
+2. Viscoresistive floor: Crow ~6% certified by LBG17 C/R_-; not a numerical leak if books close (02, 09).
+3. Sheets as morphology and clock: Zhdankin census + HS21 reconnection time + MM09 D(k) peak at k_sheet (06, 10, 11).
+4. Local energetics tower: Aluie budgets → AC22 four fluxes → Yang Phi_uT → Du22 CR/PE → Poynting time-dependence → Ni15 r_th (01,05,04,07,03,08).
+5. Fake-leak doctrine: cutoff/hyper that misses k_sheet (or oversmoothes apex curvature in graphene analogy) invents heat (10, 11, 13).
+6. Helicity / topology protection: Aluie L^3 magnetic-helicity no-go; HS21 helical and I_H invariants; 4D quasi-reversible vortex channel as speculative cousin (01, 10, 12).
+7. Kinetic / Hall / twofluid on-ramp: Yang pressure work and Du particle-drift overlays sit above fluid MHD without replacing it (04, 07).
+8. Speculative periphery: 12–14 (4D GPE, flexo, graphene magic-lattice) kept and flagged — not required for MHD toy physics-check.
+
+## Speculative / careful-before-toy list
+- [speculative] Holographic DeltaF / GoldbergHexa / SYK / black-brane readings of helicity no-go, C_inf(H), flexo Phi — UI/metaphor only until Helios demotes or promotes.
+- [speculative] 4D vortex-surface classes as MHD reconnection residual generators — analogy, not equations of motion.
+- [speculative] Entire 13–14 graphene/flexo/magic-angle/distillation braid — out of MHD continuum scope; do not load into Crow toy.
+- [careful] Hyperresistivity / hyper_kcut without sheet retune — known fake-leak path (02, 10, 11).
+- [careful] Treating Lorentz work or Aluie W as a dissipative sink — contradicts global identities.
+- [careful] Assuming N=48 Crow is in dissipative-anomaly regime — short-time coherent tubes ≠ peak-eps decaying HIT (02).
+- [standard but calibrate] Cassak–Shay / accum-factor thresholds from one MMS event — use as polarity, not universal constant.
+- [careful] Zhdankin reduced-MHD thresholds (j_thr/j_rms~3.75) — retune for full MHD Crow guide-field runs.
+- [careful] LBG17 coefficients C, D time- and helicity-dependent — do not hard-code single C_inf for all runs.

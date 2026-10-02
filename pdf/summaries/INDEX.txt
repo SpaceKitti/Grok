@@ -1,0 +1,12 @@
+Leftover-PDF summaries (no new hunt). Goal: 15x vs 4x in the high-|J| mask.
+Kuzzay 2019 is the identity residual. The rest are weighting / Poynting / mask recipes.
+Akitti does not need to research current sheets. Do not scale A at 6%.
+
+1812.06031_Kuzzay_local_energy_transfers
+1701.08692_Aluie_coarse_grained_MHD
+1801.10423_Genestreti_Poynting_theorem
+1705.02054_Yang_pressure_tensor_heating
+2207.12335_Alexakis_local_fluxes
+1409.3285_Zhdankin_coherent_structures
+2112.02667_Du_curvature_expansion
+1512.08007_Ni_corona_current_sheet

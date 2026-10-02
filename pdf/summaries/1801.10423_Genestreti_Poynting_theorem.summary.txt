@@ -1,0 +1,8 @@
+Genestreti, Cassak, Varsani, Burch, Nakamura, Wang (2018)
+Assessing the time dependence of reconnection with Poynting's theorem: MMS observations
+arXiv: https://arxiv.org/abs/1801.10423
+PDF: C:\Users\Akitt\Grok\pdf\1801.10423_Genestreti_Poynting_theorem.pdf
+
+Why this leftover: Poynting theorem on a reconnection subdomain: J·E balances -div S only at the X-point. Elsewhere -div S > J·E and magnetic energy piles up. Direct analogue of ∫_Ω W_L ≠ ∫_Ω B:S because of flux through the sheet boundary.
+
+JAX diagnostic: On the high-|J| mask, output S = E×B (ideal: E = -u×B) and div S. Compare ∫_M J·E, -∫_M div S, and the implied surface flux. Report the residual as a multiple of the volume-mean W_L.

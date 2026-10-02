@@ -1,0 +1,8 @@
+Hosking and Schekochihin (2021)
+Reconnection-controlled decay of magnetohydrodynamic turbulence and the role of invariants
+arXiv: https://arxiv.org/abs/2012.01393
+PDF: C:\Users\Akitt\Grok\pdf\2012.01393_Hosking_reconnection_decay.pdf
+
+Why this leftover: Spectral incompressible MHD (Snoopy). Decay is reconnection-controlled: Sweet-Parker balance of induction vs resistive dissipation sits IN the sheet, so the heat floor depends on the form of dissipation (Laplacian vs hyper-n) not on an ideal cascade. A high-k mask that misses the sheet (hyper_kcut=0.5 at N=48) is a fake leak; all-k eta_h that actually sits on the sheet is physical Ohmic. Few-percent Delta E_tot by t=0.36 is expected SP heat at this nu,eta. Not current-sheet 101.
+
+JAX diagnostic: Spectral dissipation D(k) = eta * k^2 (or eta_n * k^n) vs the sheet wavenumber k_sheet from the peak of k E_J(k) or k |J_hat|^2. Also E_K vs (delta/L) E_M with delta/L from the ratio of peak k of k E_K(k) and k E_M(k). If D(k) is zero at k_sheet, the regulariser missed the sheet.

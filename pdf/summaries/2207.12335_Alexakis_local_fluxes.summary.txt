@@ -1,0 +1,9 @@
+Alexakis and Chibbaro (2022)
+Local fluxes in MHD turbulence
+arXiv: https://arxiv.org/abs/2207.12335
+PDF: C:\Users\Akitt\Grok\pdf\2207.12335_Alexakis_local_fluxes.pdf
+Note: not Alexakis-Mininni-Pouquet 2005 (already in Lorentz/17).
+
+Why this leftover: Filtered KE/ME keep W_L as a separate conversion from the SGS fluxes. Joint PDFs of Pi vs |S_u|, |S_b|, |Omega_b|; magnetic strain correlates, velocity strain does not. Current-weighted vs strain-weighted averaging of Lorentz work, with spatial flux next to W_L.
+
+JAX diagnostic: Filter at one l. Joint histogram W_L vs |S| and vs |J|. Conditional mean ⟨W_L | |J|⟩ / ⟨W_L⟩ vs ⟨B:S | |J|⟩ / ⟨B:S⟩ on the same bins — that is the 15x vs 4x plot.

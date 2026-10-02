@@ -1,0 +1,8 @@
+Ni, Lin, Mei, Li (2015)
+Numerical experiments on the detailed energy conversion and spectrum studies in a corona current sheet
+arXiv: https://arxiv.org/abs/1512.08007
+PDF: C:\Users\Akitt\Grok\pdf\1512.08007_Ni_corona_current_sheet.pdf
+
+Why this leftover: Energy balance on a fixed sheet subdomain, including boundary fluxes. Heating sits on slow shocks at island edges (mask boundary), not at X-points. Joule heating inside the volume is not the main thermal source once shocks are in the control volume.
+
+JAX diagnostic: Same control-volume split: dissipated magnetic vs generated kinetic vs generated thermal inside the high-|J| mask, plus energy flux through dM. Output the boundary flux as a fraction of ∫_M W_L.

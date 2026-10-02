@@ -1,0 +1,162 @@
+Helios physics pass — 2026-09-06
+Orion drafts under C:\Users\Akitt\Grok\converged\
+Notes only; originals untouched; weird/synesthesia retained (flag, don’t delete).
+
+================================================================
+CROSS-CUTTING (fold into all finals)
+================================================================
+1) Units: state Alfvén (μ₀=ρ=1) vs cgs (4π) wherever W_L / W_ℓ / e_m appear.
+2) Oldroyd solvent: lim De→∞ constitutive map ≠ viscosity-free ideal MHD unless μ→0 too; name β / η_s.
+3) Lorentz work ≠ Ohmic heat: W_L is reversible K↔M; sink is ∫(εν+εη). Polymer work ↔ W_L is stretching-control analogy only, never η|J|².
+4) Before Hall-toy: prefer MHD4 §06 ten-moment LHDI over MHD2 polymer↔LHDI dual-role; odd/Berry monitors OK beside Crow, not as Hall Ohm drop-ins.
+5) Symbol pile-up: subscript β (Oldroyd / MD / plasma) and ω (vorticity vs Hieber weight).
+
+================================================================
+01_dissipation_notes.txt
+================================================================
+CORRECTIONS
+- Hybrid enstrophy: stress term is ⟨ω · curl(div τ_reg)⟩, not a bare curl(div τ) addend.
+- Almost-Newtonian ω in ε=τ−2ω D is Hieber’s scalar weight — rename ω_* / η_N (≠ vorticity).
+- Demote T_* / ratio power from [standard] → [hive-interpretation] (or unfixable-for-now until C,θ pinned).
+- Split three BKM lines by regime (inertial NS–Oldroyd / Stokes–Maxwell / critical Besov); don’t OR them as one theorem.
+- σ=τ−D ≠ ε=τ−2ω_*D — different monitors.
+- Liu–Wang Voigt restoration is 2-D inviscid Oldroyd-B — not a 3-D Crow existence certificate.
+
+FLAGS
+- Late-time Newtonian split existence [standard]; T_* formula [hive-interpretation].
+- λ as MD ε_pot shadow [hive-interpretation] + Re regime gap.
+- Weighted BKM+δ_p [hive-interpretation].
+- Vanishing-damping “only a‖τ‖²” [standard] only in Cheng–Luo… inviscid/critical setting; viscous Crow still has ν‖∇u‖².
+- VGT R_ω=(1/4)ω·S·ω is that experiment’s factor — classical production lacks 1/4.
+- Keep ΔF/Mpemba/GoldbergHexa [speculative].
+
+TOY
+- [toy-ready?] Ostilla Crow + W=τ:S, ψ, M6, reconnection-time monitors (solvent floor on).
+- [careful] dynamical λ / R_ω → offline calibrate; polymer↔Lorentz = conversion only; hybrid ASGS+LB+Voigt campaign ≠ theorem (parts unfixable-for-now).
+
+ORION KNOWN — CONFIRMED
+- set3 body labeled “Set 4”; set4≡set5 byte-identical — one digest, don’t double-count.
+
+================================================================
+02_Merge_notes.txt
+================================================================
+CORRECTIONS
+- Poynting (03): fix to ∂_t u = −∇·S − J·E (or R=∂_t u+∇·S+J·E≈0). Flank “−div S > J·E > 0” only matches the minus form.
+- Aluie W_ℓ has 1/4π (cgs); Crow W_L=−⟨B_i S_ij B_j⟩ in μ₀=1 — state units when bridging.
+- Du CR−PE is ideal conversion, not Ohmic η|J|² — keep separate from Crow global sink.
+- Regime: Ni15 compressible; Zhdankin reduced-MHD; Crow short tubes — surrogates only if flagged.
+- LBG17 C_ε: Crow ∼6% is finite-Re reading, not universal constant.
+
+FLAGS
+- 01–11 conversion≠cascade≠sink tower [standard] cores OK.
+- Helicity→GoldbergHexa/SYK, holographic C_∞ stay [speculative]; R_*/scars [hive-interpretation].
+- 12–14: keep + strengthen as speculative/off-topic for continuum MHD.
+
+TOY
+- [toy-ready?] Crow floor + Aluie W + LBG17 + HS21 k_sheet + MM09 D(k) for incompressible Crow/HIT (scars-off first).
+- Zhdankin / Du / AC22 as diagnostics (retune j_thr).
+- [careful-before-Hall] Yang Pi-D is Vlasov on-ramp, not Hall Ohm; Aluie helicity L³ no-go is single-fluid — Hall can rearrange at ion scales.
+- Frozen hyper_kcut=0.5 without sheet retune = fake-leak; N=48 ∼6% ≠ HIT dissipative-anomaly peak.
+- 12–14: hard stop — do not load into Crow/Hall equations.
+
+ORION KNOWN — CONFIRMED
+- Merge 12–14 speculative (4D vortex / flexo / graphene); retain weird; metaphorical bridges only.
+
+================================================================
+03_Lorentz_notes.txt
+================================================================
+CORRECTIONS (highest priority — inherited from originals)
+1) Ohm identity WRONG in 01: quote W_L = −E·J + η|J|².
+   Resistive Ohm E=−u×B+ηJ ⇒ E·J = u·(J×B)+η|J|² ⇒ W_L = E·J − η|J|².
+2) Stretch WRONG in 01: u·(J×B)=B_i B_j ∂_i u_j − (1/2)|B|²∇·u.
+   Volume (μ₀=1,∇·B=0): ∫u·(J×B)=−∫B_i B_j ∂_j u_i + ∫(B²/2)∇·u ⇒ incompressible ⟨B_i S_ij B_j⟩=−W_L.
+   Fix 01 to match 02 + Cross-cutting #1 (already correct).
+3) “E_tot drop is ∫W_L” WRONG: W_L is reversible; ΔE_tot≈−∫(εν+εη). Use 02’s bookkeeping.
+4) μ₀: e_m=|B|²/(2μ₀) then stretch drops μ₀ — flag Alfvén units or restore 1/μ₀.
+5) Qin hyperresistive (05): if Δ_h is positive Hodge Laplacian, damping needs minus (or define Δ_h negative).
+
+FLAGS
+- 01 Ohm+stretch: [standard] with known errata until fixed (source tweet-note bugs, not Orion invention).
+- Confirm Cross-cutting #1 ⟨B_i S_ij B_j⟩=−W_L as stack ruler after 01 fix.
+- OP03: state solvent μ remains in momentum.
+- SYK 12–13: do not promote toward [standard].
+- Citation skeletons OK; residual/scar stacks [hive-interpretation]; Weyl–Volterra/holographic ΔF [speculative].
+
+TOY
+- [toy-ready] after identities fixed: Crow/HIT W_L, PP ℓ_ε, Capocci, AMP05↔AE10, CMZ07, OP03 Couette≠MRI.
+- [careful-before-Hall] PN/GA/viscochiral odd — σ^odd:D=0 OK; not literal Hall-MHD without two-fluid/Braginskii. Qin Δ_h sign. Oldroyd β explicit.
+
+ORION KNOWN
+- Faithful inventory; inherited Ohm/stretch/E_tot bugs must not ship as clean [standard].
+
+================================================================
+04_MHD_notes.txt
+================================================================
+CORRECTIONS
+1) M(t)=j×B−2ν_mag D inhomogeneous (force vs stress). Use M_stress=BB/μ₀−2ν_mag D or M_force=j×B−div(2ν_mag D).
+2) Same Oldroyd solvent/β caveat as Lorentz/08.
+3) E_tot=(1/2)||u||²+(1/2)||B||²+ψ(τ) needs Alfvén-units sentence.
+4) Brockett non-Abelian −[A_z,B_i] not standard MHD — keep speculative; no energy-stability claim without δH proof.
+5) 15C “unified spectral toy” = isomorphism claim only, not PP/AMP/AE substitute.
+
+FLAGS
+- 05_misc_reaction EMPTY — confirmed; no invented claims.
+- Viscoelastic D1–D3 [standard]; magnetic M(t) scaffolding [hive-interpretation] + fix dims.
+- σ^odd:D=0 [standard]; intermittency/T_*^o claims [hive-interpretation]/careful.
+- Berry/Krylov/fractal/Brockett/holographic bridges: do not promote.
+- Hybrid “near-0% residual” is a target, not a theorem.
+
+TOY
+- [toy-ready] Qin H(div,0); OP03 multi-B_i + MRI-analog with forbidden hoop map; viscoelastic T_* once dims fixed.
+- [careful-before-Hall] odd/Hall/gyro + Berry as non-dissipative monitors beside Crow only — unsafe as resistive-reconnection replacements.
+
+ORION KNOWN — CONFIRMED
+- MHD\05_misc_reaction.txt is 0 bytes. Main debt: M(t) dims + Oldroyd solvent silence.
+
+================================================================
+05_MHD2_notes.txt
+================================================================
+CORRECTIONS
+- §04 “Λ_in … or equivalently λ_mfp/d_i0” — NOT equivalent (inverse collisionality). Fix wording only; keep v_{A,hy}=v_A√χ, d^*=d_i χ^{-1/2}, M∼χ^{1/4}.
+- Prefer mass-weighted R_in=ν_in n_i m_i(u_n−u_i) with partner R_ni if nondimming.
+- Berry L^9 indices OK; keep electron-hydro odd channel, not Braginskii identity.
+- Sweet–Parker / freeze-out coherent with §01.
+
+FLAGS
+- Polymer P_poly lowering void B_ext [speculative]; LHDI↔polymer dual-role strengthen [hive-interpretation]|[speculative].
+- β(Λ_in,χ) Oldroyd map [speculative]|[hive-interpretation]; sheet→∼d_i0 [standard].
+- μ_eff plateau energetics [standard]; local spectral-shell forcing [speculative].
+- Hard-mode/QFT/LGT cross-domain [speculative]. Keep synesthesia flagged.
+
+TOY
+- Closer: freeze-out diagnostics; unmollified induction hygiene; amalgam C_*/T_lower; Crow N_i DNS; PosDiv+DF; FEM leapfrog structure.
+- Careful-before-Hall: polymer-LHDI (calibrate vs MHD4§06 first); β(Λ_in,χ); Berry-odd into Braginskii without Onsager audit; μ_eff as local viscosity; inverse-gyro / Chern–Simons. Dual regularisation ≠ free Hall closure.
+
+ORION KNOWN — CONFIRMED
+- 10/11 filename↔body mismatches; draft followed bodies. Canonical q̂ = §14.
+
+================================================================
+06_MHD4_notes.txt
+================================================================
+CORRECTIONS
+- §02 α(T)=α_0 max(1−T/T_c,0) sign-ambiguous. Source: α_0<0 so α<0 only in cool pockets (GL). State α_0<0 explicitly.
+- §02 η_eff drops Bohm T/|B| — restore or mark abbreviated.
+- §02 B²/8π is cgs in SI/Qin stack — unit flag.
+- Dellar / ten-moment bodies match sources (optional peak u∼ε^{-1/4}Ha^{1/6}).
+- §16 “α=1/N optimal” approx-as-exact vs §14 Jordan-chain — soften §16 to match §14.
+
+FLAGS
+- Cool-region entire layer [speculative]|[hive-interpretation] + non-BCS disclaimer; keep weird.
+- §06 fluid LHDI [standard]; scar/kink injection [hive-interpretation]. Prefer over MHD2§03 for Hall-adjacent.
+- “Floors ARE branch points” [hive-interpretation]|[speculative]; use §12 MHD EP for physics-check.
+- GravoThermo→Braginskii W^(3,4) [hive-interpretation]|[speculative].
+
+TOY
+- Closer: Braginskii channel; ten-moment LHDI (best Hall-scale fluid layer here); BKM–Serrin monitors; hopfion/helicity; odd viscosity ∫τ_odd:∇u=0; VRMHD metriplectic; stretching/reconnection geometry (not Hall closure).
+- Careful: cool-region condensate/Bohm η — CONFIRMED careful-before-toy; never hot-plasma BCS; fix α sign + T/B before any residual. Don’t use MHD2 polymer-LHDI when §06 exists.
+
+ORION KNOWN — CONFIRMED
+- Cool-region paired-condensate careful-before-toy; rename log meta-only OK.
+
+================================================================
+END Helios physics pass

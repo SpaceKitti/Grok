@@ -1,0 +1,79 @@
+Source: compiled by Orion, 2026-09-01
+Folder: C:\Users\Akitt\Grok\open\
+
+Pointers only. PDFs not dumped (usage tight). arXiv abs links.
+Papers already in Merge/ or pdf/ are marked.
+
+Regularity
+----------
+Sermange & Temam, Navier–Stokes equations and MHD (1983) — 2D global, 3D local.
+Caflisch, Klapper, Steele — BKM for ideal MHD.
+https://arxiv.org/abs/math/0509661  (related MHD regularity notes)
+Chen, Miao, Zhang — BKM for 3D MHD, CMP 2007.
+https://arxiv.org/abs/1907.00768  infinite-energy MHD blowup (does not settle finite energy)
+
+Cascades / filter
+-----------------
+Aluie 2017, Coarse-grained incompressible MHD
+https://arxiv.org/abs/1701.08692
+  already: Merge/01_aluie_coarsegrained_mhd_w_conversion.txt
+Aluie & Eyink 2010 (AE10) locality of MHD fluxes.
+Alexakis, Mininni, Pouquet 2005 (AMP05) shells.
+Linkmann, Berera, Goldstraw 2017, C_ε(Re)
+https://arxiv.org/abs/1701.01086
+  already: Merge/09_lbg17_ceps_re_dependence.txt
+
+Turbulence reviews
+------------------
+Schekochihin, MHD turbulence: a biased review (2020)
+https://arxiv.org/abs/2010.00699
+  GS95 → Boldyrev → alignment-as-intermittency → tearing-mediated cascade;
+  lists imbalanced, residual energy, dynamo saturation, plasma effects as open.
+Goldreich & Sridhar 1995; Boldyrev 2006; Beresnyak slope papers.
+Mallet, Loureiro, Schekochihin — tearing-mediated inertial range.
+Hosking & Schekochihin reconnection-controlled decay
+  already: Merge/10_hosking_schekochihin_reconnection_decay.txt
+Maron & Mac Low tuned diffusion
+  already: Merge/11_maron_maclow_tuned_diffusion.txt
+
+Dynamo
+------
+Childress & Gilbert, Stretch, Twist, Fold (book) — fast dynamo problem.
+Kazantsev 1968 kinematic small-scale dynamo.
+Vishniac, Brandenburg, Tobias — mean-field / helicity quenching reviews.
+
+Reconnection
+------------
+Loureiro, Schekochihin, Cowley 2007 plasmoid instability
+https://arxiv.org/abs/astro-ph/0703631
+Bhattacharjee, Huang, Yang, Rogers 2009
+Loureiro & Uzdensky 2016 review (Sweet–Parker → plasmoid chains)
+https://arxiv.org/abs/1507.07756
+Comisso, Lingam, Huang, Bhattacharjee — plasmoid in forming sheets
+https://arxiv.org/abs/1608.04392
+Ji et al. 2022, reconnection in the exascale era
+https://arxiv.org/abs/2208.04369
+Nakamura et al. 2024, Outstanding questions of magnetic reconnection
+https://arxiv.org/abs/2407.09670
+  EDR laminar vs turbulent; electron-only vs ion-coupled; onset; energetics.
+Heliophysics white paper (Ji et al. / NAS)
+https://doi.org/10.3847/25c2cfeb.e22a8d1f
+Brio & Wu 1988 — γ=2 Riemann test (test-local; hive default stays 5/3).
+Liu et al. reconnection rate ~0.1
+https://arxiv.org/abs/1611.07859
+
+Sheets / corona
+---------------
+Zhdankin, Uzdensky, Perez, Boldyrev — current sheets in MHD turbulence
+  already: Merge/06_zhdankin_coherent_nanoflare_sheets.txt
+Ni et al. 2015 corona current-sheet spectra
+  already: Merge/08_ni15_corona_cs_energy_spectra.txt
+Du et al. CR/PE curvature conversion
+  already: Merge/07_du_cr_pe_curvature_conversion.txt
+
+Compressible / pressure work
+----------------------------
+Yang et al. Vlasov pressure-work heating
+  already: Merge/04_yang_vlasov_pressure_work_heating.txt
+Poynting time-dependence / reconnection
+  already: Merge/03_poynting_time_dependence_reconnection.txt

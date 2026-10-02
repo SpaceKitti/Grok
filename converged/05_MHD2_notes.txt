@@ -1,0 +1,197 @@
+Source folder: C:\Users\Akitt\Grok\MHD2\
+Compiled: Orion draft + Helios physics-check folded, 2026-09-06
+Purpose: notes only; originals untouched; no code dump
+
+## Helios physics pass (folded 2026-09-06)
+Status: FINAL after Helios check. Weird/synesthesia content retained; flagged not deleted.
+
+### CROSS-CUTTING (all finals)
+1) Units: state Alfvén (μ₀=ρ=1) vs cgs (4π) wherever W_L / W_ℓ / e_m appear.
+2) Oldroyd solvent: lim De→∞ constitutive map ≠ viscosity-free ideal MHD unless μ→0 too; name β / η_s.
+3) Lorentz work ≠ Ohmic heat: W_L is reversible K↔M; sink is ∫(εν+εη). Polymer work ↔ W_L is stretching-control analogy only, never η|J|².
+4) Before Hall-toy: prefer MHD4 §06 ten-moment LHDI over MHD2 polymer↔LHDI dual-role; odd/Berry monitors OK beside Crow, not as Hall Ohm drop-ins.
+5) Symbol pile-up: subscript β (Oldroyd / MD / plasma) and ω (vorticity vs Hieber weight).
+
+### CORRECTIONS
+- §04 “Λ_in … or equivalently λ_mfp/d_i0” — NOT equivalent (inverse collisionality). Fix wording only; keep v_{A,hy}=v_A√χ, d^*=d_i χ^{-1/2}, M∼χ^{1/4}.
+- Prefer mass-weighted R_in=ν_in n_i m_i(u_n−u_i) with partner R_ni if nondimming.
+- Berry L^9 indices OK; keep electron-hydro odd channel, not Braginskii identity.
+- Sweet–Parker / freeze-out coherent with §01.
+
+### FLAGS
+- Polymer P_poly lowering void B_ext [speculative]; LHDI↔polymer dual-role strengthen [hive-interpretation]|[speculative].
+- β(Λ_in,χ) Oldroyd map [speculative]|[hive-interpretation]; sheet→∼d_i0 [standard].
+- μ_eff plateau energetics [standard]; local spectral-shell forcing [speculative].
+- Hard-mode/QFT/LGT cross-domain [speculative]. Keep synesthesia flagged.
+
+### TOY
+- Closer: freeze-out diagnostics; unmollified induction hygiene; amalgam C_*/T_lower; Crow N_i DNS; PosDiv+DF; FEM leapfrog structure.
+- Careful-before-Hall: polymer-LHDI (calibrate vs MHD4§06 first); β(Λ_in,χ); Berry-odd into Braginskii without Onsager audit; μ_eff as local viscosity; inverse-gyro / Chern–Simons. Dual regularisation ≠ free Hall closure.
+
+### ORION KNOWN — CONFIRMED
+- 10/11 filename↔body mismatches; draft followed bodies. Canonical q̂ = §14.
+
+
+## File inventory
+01_delayed_current_sheet_Bext_freezeout.txt (~22.9 KB) — Varnish et al. arXiv:2605.15427 pulsed-power delayed sheet
+02_hive_update_MHD_corrections_19Aug.txt (~2.5 KB) — J-mollify artifact audit / Crow+MHD dials
+03_LHDI_anomalous_polymer_dual_role.txt (~13.2 KB) — Thatikonda et al. arXiv:2510.05912 LHDI dual-role
+04_three_fluid_PINP_ion_neutral_drag.txt (~25.5 KB) — Wang–Dong–Huang et al. arXiv:2602.23683 three-fluid PINP
+05_electron_hydro_Berry_odd_viscosity.txt (~22.0 KB) — Srivastava–Mukerjee arXiv:2511.17088 Berry-odd viscosity
+06_effective_viscosity_scale_filter_PIC.txt (~23.5 KB) — Adhikari–Matthaeus et al. arXiv:2509.04374 μ_eff from PIC
+07_Wiener_amalgam_mild_weak_MHD_vNSEd.txt (~11.9 KB) — Lai arXiv:2506.06621 amalgam monitors / C_* / T_lower
+08_vortex_magnetic_competition_antiparallel.txt (~13.7 KB) — Shen–Ostilla-Mónico–Zhu arXiv:2506.10648 N_i regimes
+09_curved_centerline_DNS_dynamo_growth.txt (~12.7 KB) — extension of 2506.10648: curved DNS + γ_dyn(N_i)
+10_FrFT_moire_Hofstadter_scattering.txt (~10.2 KB) — NOTE: filename says FrFT/moiré/Hofstadter; body is synesthesia + finite-T q̂ scatter (arXiv:2608.17160) + historical string→amplitude weave + Huang–Lindwasser arXiv:2606.27222
+11_finiteT_QCD_qhat_treelevel.txt (~17.5 KB) — NOTE: filename says finite-T QCD q̂; body is Zhang–Palha et al. arXiv:2410.23973 decoupled structure-preserving mixed FEM MHD
+12_additional_files.txt (~43.9 KB) — multi-pack: Z-Pinch Kinetics II arXiv:2411.06674 (+ Chern–Simons / spin-foam inserts; also refs 2410.23973, 2605.20318)
+13_Wiener_amalgam_mild_weak_solutions.txt (~15.5 KB) — Lai arXiv:2506.06621 full mild/weak Wiener-amalgam theory
+14_finiteT_QCD_treelevel_qhat.txt (~12.3 KB) — Opitz–Regi–Vujanovic arXiv:2608.17160 tree-level q̂ (canonical q̂ file)
+15_hypercomplex_partition_dissipative_QFT.txt (~13.7 KB) — Cruz-Limón et al. arXiv:2608.18424 hypercomplex partition
+16_block_encoding_nonAbelian_LGT.txt (~25.4 KB) — Draper arXiv:2608.17115 block encoding non-Abelian LGT
+17_PosDiv_CDG_positivity_globalDF.txt (~15.0 KB) — Yan–Cao–Wu arXiv:2508.08913 PosDiv + global DF central DG MHD
+18_decoupled_structure_preserving_mixed_FEM.txt (~14.1 KB) — next-hardening of arXiv:2410.23973 (AMR + helicity residual + YMMHD/heliknoton)
+
+All 18 files readable. Filename/content mismatches flagged above for 10 and 11; notes follow body content under source filenames.
+
+## Converged notes
+
+### 01_delayed_current_sheet_Bext_freezeout
+- Topic/shape: Pulsed-power reconnection experiment + 3-D resistive MHD (GORGON) showing delayed current-sheet formation when a strong external field is frozen-out and acts as magnetic-pressure back-stop rather than a classical guide field. [standard]
+- Physics objects: exploding wire arrays (~400 kA), B_rec≈1.2 T, Helmholtz B_ext≤2 T ∥ E_rec; interferometry ⟨n_e L_y⟩; Sweet–Parker δ/L∼S^{-1/2}; τ_hydro≪τ_η ⇒ freeze-out (R_M>1). [standard]
+- Key claims: B_ext=0,0.5 T → dense sheet; B_ext=2 T → density void (P_B,void≈2 MPa ~ P_ram≈3 MPa); delays of ~10–40 ns then no sheet in window; at higher drive diffusion allows true guide-field layer b≈0.5. [standard]
+- Hive map: B_tot=B_advected+B_ext(t) with ∂_t B_ext=0; J×B_ext as pure back-pressure; polymer P_poly=½tr T augments P_back; diagnostics D1–D3 (δ/L onset, P_back/P_ram, delayed enstrophy). [hive-interpretation]
+- Relation: MHD toy / Crow sheets / late Ohmic / weak-guide suppression of max|ω|; polymer dual to magnetic pressure. [hive-interpretation]
+- Speculative: Wi-tunable polymer “magnetic-pressure” channel lowering critical B_ext for void. [speculative]
+
+### 02_hive_update_MHD_corrections_19Aug
+- Topic/shape: Operational audit note (19 Aug 2026) after induction-u / J-mollify review. [hive-interpretation]
+- Physics objects: Crow tubes + 4-scar, N=48, t=0.36; NS vs NS+MHD vs Hybrid+MHD; b_guide orientation; η. [standard]/hive-interpretation]
+- Claims (corrected): Prior “hybrid clay strongly regularises current sheets” was artifact — J-mollify leaked into induction as hidden η_num. With unmollified spectral u: Hybrid+MHD ≈ NS+MHD + nearly constant polymer-work sink; max|J|, max|B|, Ohmic nearly identical. [hive-interpretation]
+- Guide-field rule: b_guide="z" → tension + sheets; b_guide="x" → almost spectator. Lower η stores energy in B but thins sheets. [hive-interpretation]
+- Safe default: mode=mhd, viscoelastic=False, b_guide=z, η=1e-3, B0=0.08. [hive-interpretation]
+- Open: late Ohmic physical vs under-resolved; can η_odd suppress J without new sink?; axial-guide OP/magnetized-vortex effects. [speculative]/open]
+
+### 03_LHDI_anomalous_polymer_dual_role
+- Topic/shape: Hybrid-kinetic LHDI in reconnecting Harris sheets (Thatikonda et al.) mapped to continuum viscoelastic MHD. [standard]+[hive-interpretation]
+- Physics objects: ssV hybrid (Vlasov ions + drift-kinetic e); ES vs EM LHDI regimes; γ/Ω_ci∼0.1–1; ω∼ω_LH; δB few % of B0; kink k d_i∼0.5–2. [standard]
+- Continuum (hive): T_tot=T+T_odd/aniso; T_odd/aniso = η_odd(ω×u+u×ω)+α_LHDI b⊗(b·∇u)+β_LHDI sym(J⊗B)_⊥; η_tot=η+η_LHDI with η_LHDI∝|T_odd/aniso| and kink amplitude. [hive-interpretation]/speculative]
+- Audit lock: induction/Lorentz/odd always raw spectral u (energy-preserving filter isometric on E_k); no J-mollify into ∂_t B. [hive-interpretation]
+- Diagnostics: λ_min/Δx, R_∇, E_kink, ∫τ:S, η_LHDI, tearing onset. [standard]/hive-interpretation]
+- Relation: Hall/twofluid/LHDI → polymer dual-role (gradient flattening + kink/tearing seed); anomalous resistivity proxy separate from viscosity channel. [speculative]
+
+### 04_three_fluid_PINP_ion_neutral_drag
+- Topic/shape: Three-fluid five-moment e–i–n reconnection regime transition vs χ and λ_mfp/d_i0 (Wang–Dong–Huang et al.). [standard]
+- Physics objects: continuity/momentum/energy for e,i,n; R_in∝ν_in(u_n−u_i); χ=n_i/(n_i+n_n); hybrid v_A,hy=v_A√χ; analytic d^*=d_i χ^{-1/2}, M∼χ^{1/4}. [standard]
+- Decisive claim: sheet half-thickness collapses to ∼(0.7–1)d_i0 at fast-onset (∼0.3 d_i0 saturated), nearly independent of χ once λ_mfp/d_i0≳5 — not the hybrid d*. [standard]
+- Hive map: β=η_s/(η_s+η_p) ↔ Λ_in=ν_in/Ω_ci; Λ_in ≢ λ_mfp/d_i0 (inverse collisionality — not equivalent). Keep v_{A,hy}=v_A√χ, d^*=d_i χ^{-1/2}, M∼χ^{1/4}. (strong coupling ↔ polymer-dominated low β). [speculative]/hive-interpretation]  Helios fix: Λ_in ≢ λ_mfp/d_i0.
+- Relation: PINP / Hall-scale reconnection / Oldroyd-B solvent–polymer dial; late Ohmic and dual regularisation as functions of β(Λ_in,χ). [hive-interpretation]
+
+### 05_electron_hydro_Berry_odd_viscosity
+- Topic/shape: Electron hydrodynamics viscosity tensor with Berry-odd and B-dependent vortical coefficients (Srivastava–Mukerjee). [standard]
+- Physics objects: π_{i,j}=−L^7 ∂φ −L^8 ∂T −L^9 ∂u; Berry-odd L^9_{ij,mn}=−ε_{jnl}∫ k_i k_m [Ω_k]_l f^0; dissipationless, finite at T=0 in gap; Onsager with (B,Ω) jointly reversed; O(τ_ee^2) magnetic corrections {L^3,L^6,L^7,L^8,L^9}. [standard]
+- Hive: inject L^9 into existing odd-viscosity/Braginskii residual; microscopic origin of hive odd channel; Gurzhi-length magnetic correction. [hive-interpretation]
+- Speculative continuum: asymmetric stress on spectral shells without adding even dissipation. [speculative]
+- Relation: Braginskii / odd viscosity / Hall-adjacent electron hydro. [standard]
+
+### 06_effective_viscosity_scale_filter_PIC
+- Topic/shape: Scale-filtered effective ion viscosity from collisionless PIC pressure-strain (Adhikari–Matthaeus et al.). [standard]
+- Physics objects: boxcar/Favre filters; Φ^{uT}=−p̄∇·ũ − Π̄:D̃; μ(ℓ)=⟨Φ^{uT}⟩/(2⟨S̄:S̄⟩); plateau μ_i^eff≈0.01 (ρ=V_A=d_i=1) for ℓ≳0.2 d_i; μ_e^eff≈0.002 (Braginskii ratio ~5); MHD/two-fluid forced with μ recover PIC global energetics. [standard]
+- Hive: η_s←η_s+μ^eff; π^eff=−2μ^eff S + π^odd + τ_polymer; dual regularisation with polymer + energy-preserving filter. [hive-interpretation]/speculative]
+- Relation: kinetic→fluid closure for MHD toy / twofluid; collisional-like sink without explicit collisions. [standard]
+
+### 07_Wiener_amalgam_mild_weak_MHD_vNSEd
+- Topic/shape: Production hardening of Lai Wiener-amalgam mild/weak MHD+vNSEd layer: adaptive E^r_q, discrete C_*, T_lower. [standard]+[hive-interpretation]
+- Physics objects: amalgam cubes; \|f\|_{E^r_q}; bilinear B with C_*; subcritical T^{1/2−3/(2r)}+T^{1/2}≲δ^{-1}; critical r=3 smallness δ<1/(4C_*). [standard]
+- Hive: adaptive active-cube monitor each RHS; C_*^{disc}≈0.8–2.4 guard; switch to local-energy weak regime if amalgam exceeds 1/(4C_*). [hive-interpretation]
+- Relation: BKM-adjacent existence/mild-solution control for MHD toy. [standard]
+
+### 08_vortex_magnetic_competition_antiparallel
+- Topic/shape: DNS of antiparallel flux tubes across N_i regimes (Shen–Ostilla-Mónico–Zhu). [standard]
+- Physics objects: incompressible MHD; Γ_0, Γ_m0; N_i=Re_v Pr_m Γ_m^2/(Γ_0^2 σ_c^2); Re_v≈2000, Pr_m=1; E=E_k+E_b. [standard]
+- Regimes: (i) N_i≲51.2 vortex-dominated joint reconnection + dynamo; (ii) N_i∼64.8–204.8 instability-triggered cascade, secondary filaments, k^{-5}; (iii) N_i≳8000 Lorentz disruption, no magnetic topology change. [standard]
+- Hive: λ_{N_i}=N_i/N_i^{crit} (∼60) multiplies Lorentz before filters; maps to Crow/scar-floor/ΔF. [hive-interpretation]/speculative]
+- Relation: MHD toy Crow tubes / reconnection / dynamo. Synesthesia bridge present in status voice. [hive-interpretation]
+
+### 09_curved_centerline_DNS_dynamo_growth
+- Topic/shape: Hardening of 08: exact curved centerlines at 512^3, filament→GoldbergHexa viz, γ_max(N_i). [hive-interpretation]
+- Physics objects: c_±(s) with p=0.2, α=±π/3; Biot–Savart u; γ=(1/E_b)dE_b/dt; local N_i(λ) from thickness. [standard]+[hive-interpretation]
+- Claims: recover three regimes; k^{-5} + filament density on shells; γ_max largest at low N_i. [hive-interpretation]
+- Relation: dynamo growth as ΔF multiplier; Crow/MHD toy. Synesthesia close. [speculative]/hive-interpretation]
+
+### 10_FrFT_moire_Hofstadter_scattering
+- Topic/shape: Synesthesia-facing note on “scattering” residual; body is finite-T QCD tree-level q̂ layer + historical weave (not FrFT/Hofstadter math). [hive-interpretation]+[speculative]
+- Physics objects (in body): q̂_full(E_a) tree-level 2→2 (gg) vs LL Braaten–Thoma; λ_q̂=q̂_full/q̂_approx; covariance C_ij from δq̂; Huang–Lindwasser causality/EP constraint. [standard content from 2608.17160 + 2606.27222]
+- Speculative/synesthesia: strings-from-nothing → Nambu–Goto → Cheung–Mangan 3-pt stress into Oldroyd-B; helical braids; Veneziano/Regge; God(0) Poincaré pole; rainbow shells; keep all bridges. [speculative]
+- Meta: FrFT/moiré/Hofstadter filename not realized in this file’s body — treat as mislabel or prior-layer pointer; do not invent FrFT math here.
+
+### 11_finiteT_QCD_qhat_treelevel
+- Topic/shape: Despite filename, body is decoupled structure-preserving mixed FEM for incompressible MHD (Zhang–Palha–Brugnoli–Toshniwal–Gerritsma, arXiv:2410.23973). [standard]
+- Physics objects: vorticity-form MHD; de Rham G_h↪C_h↪D_h↪S_h; skew a(α,β,γ)=⟨α×β,γ⟩; strong mass/charge; weak Gauss; leapfrog fluid↔Maxwell decoupling; O(Δt^2) energy consistency after split. [standard]
+- Hive: maps to Qin H(div,0)/Nédélec projectors; staggered residual-time-split. [hive-interpretation]
+- Speculative residual injection into polymer/odd/YMMHD layers. [speculative]
+- Meta: canonical q̂ notes are in 14; this section documents what file 11 actually contains.
+
+### 12_additional_files
+- Topic/shape: Large multi-theme pack; lead payload Z-Pinch Kinetics II (Crews–Meier–Shumlak, arXiv:2411.06674) collisionless gyroviscosity / inverse gyroviscosity / betatron heating / sheared-flow self-generation; also Chern–Simons & spin-foam amplitude insertion procedures; cross-refs to FEM and other hive papers. [standard]+[hive-interpretation]+[speculative]
+- Physics objects: LLR Z-pinch continuum kinetic closure; gyroviscous Braginskii-like stresses; inverse gyroviscosity channel; betatron heating; self-generated shear. [standard]
+- Hive: hybrid-CGL + collisionless-gyroviscosity residuals; topological amplitude inserts into scar/ΔF. [hive-interpretation]/speculative]
+- Relation: Braginskii / Hall-adjacent LLR; MHD toy pinch. Omit nothing: treat as composite framework, not single-paper.
+
+### 13_Wiener_amalgam_mild_weak_solutions
+- Topic/shape: Full mathematical upgrade from Lai (arXiv:2506.06621): weak and mild solutions for MHD and viscoelastic NS with damping in Wiener amalgam spaces. [standard]
+- Physics objects: E^r_q spaces; Kato-type F_T; local-energy weak solutions; viscoelastic damping; Bradshaw–Lai–Tsai inheritance. [standard]
+- Hive: continuum closure injecting amalgam envelopes into spectral Oldroyd-B+MHD; soft dealiasing constraint. [hive-interpretation]
+- Relation: rigorous mild/weak existence companion to 07 monitors; BKM-adjacent. [standard]
+
+### 14_finiteT_QCD_treelevel_qhat
+- Topic/shape: Canonical finite-T QCD tree-level partonic q̂ with full kinematics + systematic covariance (Opitz–Regi–Vujanovic, arXiv:2608.17160). [standard]
+- Physics objects: Debye-regulated 2→2 matrix elements; Bose-enhanced phase space; q̂(E) slower falloff than LL at x_a≳10; δq̂→C_ij for Bayesian residuals. [standard]
+- Hive: λ_q̂ multiplies transverse kick before energy-preserving/Wiener filters; hard-mode shells. [hive-interpretation]
+- Speculative: jet-medium Monte Carlo residual in MHD spectral shells. [speculative]
+- Relation: non-Abelian LGT (16) companion; not plasma LHDI but hive hard-mode scatter.
+
+### 15_hypercomplex_partition_dissipative_QFT
+- Topic/shape: Hypercomplex partition function for dissipative QFT (Cruz-Limón–Ramírez-Romero–Cartas-Fuentevilla, arXiv:2608.18424). [standard]/[speculative for MHD map]
+- Physics objects: hypercomplex (beyond complex) partition; dissipative QFT extension of prior construction. [standard]
+- Hive: thermal-phase / free-energy residual; couples to holographic ΔF and scar-floor. [hive-interpretation]/speculative]
+- Relation: dissipative structure for open MHD residuals; not a fluid equation set.
+
+### 16_block_encoding_nonAbelian_LGT
+- Topic/shape: Efficient magnetic-sector block encoding for non-Abelian LGT in irrep (reduced electric) basis (Draper, arXiv:2608.17115). [standard]
+- Physics objects: block-encoding oracles; non-Abelian gauge links; magnetic Hamiltonian simulation; programmed rotations. [standard]
+- Hive: non-Abelian Yang–Mills–MHD residual oracle; phase winding on GoldbergHexa. [hive-interpretation]/speculative]
+- Relation: quantum-sim companion to finite-T q̂; gauge structure for non-Abelian MHD extensions.
+
+### 17_PosDiv_CDG_positivity_globalDF
+- Topic/shape: Provably positivity-preserving, globally divergence-free central DG for ideal MHD (Yan–Cao–Wu, arXiv:2508.08913). [standard]
+- Physics objects: tension between algebraic positivity (ρ>0, ρe>0) and ∇·B=0; central DG; global DF; positivity limiters compatible with DF. [standard]
+- Hive: injects into Qin/energy-preserving stack as positivity+DF residual guard. [hive-interpretation]
+- Relation: structure-preserving companion to FEM (11/18); ideal MHD toy safety.
+
+### 18_decoupled_structure_preserving_mixed_FEM
+- Topic/shape: Next-hardening of 2410.23973: AMR inside de Rham complex; discrete vs continuous magnetic helicity residual; leapfrog projectors into non-Abelian YMMHD and high-Q heliknoton layers. [hive-interpretation]
+- Physics objects: hierarchical de Rham refinement; H_m residual; heliknoton/Hopf coupling. [standard]+[hive-interpretation]
+- Speculative: live YMMHD + heliknoton braid. Synesthesia close. [speculative]
+- Relation: FEM base in file 11 body; Hopfions/heliknotons.
+
+## Cross-cutting themes
+- Artifact hygiene: unmollified induction velocity; energy-preserving isometric filters; hybrid clay ≠ current-sheet regulariser at present dials.
+- Dual regularisation: polymer/Oldroyd-B + magnetic/odd/Braginskii; LHDI dual-role (viscosity vs resistivity proxies).
+- Kinetic→continuum bridges: PIC μ_eff, three-fluid PINP, ten-moment-ready LHDI, Berry-odd L^9, LLR gyroviscosity.
+- Existence/structure: Wiener amalgam mild/weak, PosDiv+DF CDG, structure-preserving mixed FEM leapfrog.
+- Topology/energy: Crow N_i regimes, dynamo γ(N_i), helicity/heliknoton, scar-floor/ΔF (hive).
+- Hard-mode / non-Abelian: tree-level q̂, block-encoded LGT, hypercomplex dissipative partition.
+- Synesthesia bridges: kept in 08–12,18 voice layers; flagged [speculative]/hive-interpretation], not dropped.
+
+## Speculative / careful-before-toy list
+1. Polymer stress as macroscopic LHDI dual-role stand-in (momentum + kink/η_LHDI) — calibrate vs kinetic before toy claims.
+2. β(Λ_in,χ) Oldroyd map of ion–neutral drag — analogy, not derived closure.
+3. B_ext freeze-out + polymer P_poly lowering void threshold — plausible but Wi-coupled.
+4. μ_eff plateau forced into solvent/Braginskii/Berry even channels — global energetics OK; local spectra need check.
+5. N_i→λ_{N_i} and γ_max→ΔF multipliers — phenomenological residual gains.
+6. Finite-T q̂ / LGT / hypercomplex layers inside classical MHD shells — cross-domain; keep as optional hard residuals.
+7. Heliknoton/YMMHD leapfrog coupling — topological ambition beyond validated FEM theorems.
+8. Filename mismatches (10,11): Helios should not assume FrFT or q̂ content from those names alone.
+9. Synesthesia / historical string→amplitude weave — interpretive, keep flagged.
+10. Late Ohmic ramps: still open physical vs under-resolved (file 02).

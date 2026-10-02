@@ -1,0 +1,8 @@
+Kuzzay, Alexandrova, Matteini (2019)
+A local approach to the study of energy transfers in incompressible magnetohydrodynamic turbulence
+arXiv: https://arxiv.org/abs/1812.06031
+PDF: C:\Users\Akitt\Grok\pdf\1812.06031_Kuzzay_local_energy_transfers.pdf
+
+Why this leftover: Local KHM budget is d_t e_l + div J_l = -Pi_l - D_nu + F. Globally div J vanishes. Locally it is a leading term and can reverse sign vs Pi. Appendix A splits KE/ME: Lorentz work and B:S differ by a divergence (the mask-boundary flux). This is the 15x vs 4x identity, not another stretching paper.
+
+JAX diagnostic: From u,B output W_L = u·(J×B), B:S, and R = W_L - B_i S_ij B_j (a divergence). Integrate W_L, B:S, and R over mask M: |J| > 3 sigma_J. The gap should sit in ∫_M R.

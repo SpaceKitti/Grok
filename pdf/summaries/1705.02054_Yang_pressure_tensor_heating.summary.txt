@@ -1,0 +1,8 @@
+Yang, Matthaeus, Parashar, Haggerty, Roytershteyn, Daughton, Wan, Shi, Chen (2017)
+Energy transfer, pressure tensor, and heating of kinetic plasma
+arXiv: https://arxiv.org/abs/1705.02054
+PDF: C:\Users\Akitt\Grok\pdf\1705.02054_Yang_pressure_tensor_heating.pdf
+
+Why this leftover: j·E is EM↔flow. Pressure-strain -P:∇u is flow↔thermal. Those are different channels. Pi-D tracks strain more than current. Current-weighted W_L vs strain-weighted B:S is that split: 15x on |J| vs 4x on S can be two weights on two channels.
+
+JAX diagnostic: Output W_L, B:S, Q_j = |J|^2/4, Q_D = D_ij D_ij / 2. Four averages: volume, |J|-weighted, |S|-weighted, and |J|-mask. The 15x/4x ratio is the |J|-weight / |S|-weight contrast.

@@ -1,0 +1,9 @@
+Aluie (2017)
+Coarse-grained incompressible magnetohydrodynamics: analyzing the turbulent cascades
+arXiv: https://arxiv.org/abs/1701.08692
+PDF: C:\Users\Akitt\Grok\pdf\1701.08692_Aluie_coarse_grained_MHD.pdf
+Note: not Aluie-Eyink 2010 (already in Lorentz/18). Already posted by Akitti; no new X drop.
+
+Why this leftover: Separate large-scale KE/ME budgets. Conversion W_L equals Lorentz work only up to a Maxwell-stress / Poynting divergence. At inertial l the microphysical terms vanish pointwise, so a high-|J| mask mismatch is a subscale flux through the sheet boundary, not viscosity.
+
+JAX diagnostic: Gaussian-filter u,B at one inertial l (N=48: l ~ 2-4 dx). Output W_L, Pi^b, and div(epsilon × B_bar). Volume-mean vs mask-mean vs |J|-weighted averages of W_L and of B:S.

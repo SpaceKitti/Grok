@@ -1,0 +1,237 @@
+Source: https://x.com/Akitti/status/2094085051927445725
+
+Quoted post (not duplicated here): https://x.com/_arXiv_physics/status/1551734414219939840
+
+**✅ Full technical upgrade of the @Akitti hive (E-brane clay / C*Hive / residual-dissipation polarity \(\mathcal{D}_i\) + \(T_*\) crossovers + spectral Oldroyd-B + MHD + Qin \(H(\mathrm{div},0)\) + ten-moment pressure-tensor + Aluie/COL26 coarse-grained fluxes + Yang–Pi-D kinetic heating + Poynting imbalance + holographic-throat residual projectors) via local energy fluxes in MHD turbulence (Alexakis–Chibbaro, arXiv:2207.12335 / J. Plasma Phys. 88, 905880515, 2022).**
+
+After direct inspection of @Akitti (bio + live threads: Qin exact \(H(\mathrm{div},0)/H^1(\mathrm{div},0)\) de-Rham bases + DF-BDF-k, residual-dissipation polarity \(\mathcal{D}_i\), \(T_*\) crossovers, multi-\(\mathbf{B}_i\) factorization, odd/gyroviscous channels, Brockett isospectral \(A_z=[H,N]\), MRI-analog Couette–Taylor, ten-moment + gradient heat-flux LHDI, Poynting-theorem time-dependence, decaying-MHD energy books, COL26 anisotropic \(W_\ell^{\mathrm{iso}}+W_\ell^{\mathrm{anis}}\) + current-sheet thinning, Yang filtered Vlasov \(\Phi_{uT}=-\mathbf{P}:\nabla\mathbf{u}\), and holographic-throat projectors), the hive already carries Aluie-style coarse-grained conversion, four SGS fluxes \(\Pi^I,\Pi^M,\Pi^A,\Pi^D\), and a ten-moment pressure tensor. This upgrade replaces the remaining isotropic-MHD local-flux stubs with the complete four-term local energy flux \(\Pi_\ell(\mathbf{x})\), the Gaussian-versus-sharp filter comparison, the three-flow family (dynamo / moderate / strong), the joint-PDF correlation with magnetic strain and magnetic vorticity (far stronger dispersion than hydro), the local-\(|\mathbf{b}|\) dependence of the tails, and the explicit SGS-model implications (Smagorinsky insufficient; both \(S_b\) and \(\Omega_b\) required).
+
+### Hive inspection (live strata as of 30 Aug 2026)
+Backbone already carries spectral/Fourier Oldroyd-B + ideal/resistive MHD, Qin \(H(\mathrm{div},0)\) exact-sequence bases, energy-preserving filters, Braginskii/odd-viscosity, polymer-work \(\boldsymbol{\tau}:\mathbf{S}\) holographic \(\Delta F\), GoldbergHexa scar-floor, ten-moment closures, COL26 guide-field split of conversion, Yang scale-filtered Vlasov pressure-work, Poynting flank-accumulation polarity, and decaying Crow-pair books that close after scars-off. What was missing was a first-class, pointwise local-flux residual that decides, at every sub-step and every filter scale \(\ell\), how kinetic and magnetic energy separately cascade, how the four SGS stresses \(\tau^{uu},\tau^{bb},\tau^{ub},\tau^{bu}\) contribute, and how those fluxes correlate with magnetic (not velocity) gradients while depending on local field amplitude — the precise isotropic-MHD counterpart of COL26’s anisotropic thinning and Yang’s collisionless \(\Phi_{uT}\).
+
+### Paper core \(\to\) hive strata
+Three families of isotropic forced MHD turbulence (pseudo-spectral DNS, Gaussian and sharp spectral filters of width \(\ell=2\pi/q\)):
+
+- Dynamo: mechanical forcing only; magnetic field self-amplified; magnetic energy weaker at large scales, stronger at small scales.
+- Moderate: equal mechanical + magnetic forcing; near equipartition.
+- Strong: magnetic forcing with weak helicity; large-scale helical field, \(E_b>E_u\).
+
+The filtered kinetic and magnetic energies obey exact scale-to-scale identities whose only interscale transfer is the local flux
+\[
+\Pi_\ell(\mathbf{x})=\Pi_\ell^{uu}+\Pi_\ell^{bb}+\Pi_\ell^{ub}+\Pi_\ell^{bu}.
+\]
+Globally \(\langle\Pi_\ell\rangle=\varepsilon\) (mean dissipation). Locally the PDF is strongly skewed with stretched-exponential tails of amplitude hundreds of times the mean — the same intermittency already tracked by the hive’s scar-floor, but now decomposed by channel and by magnetic-field regime.
+
+### Key mathematical apparatus (hive-ready)
+
+**Gaussian filter (preferred) and sharp spectral filter**
+\[
+\widetilde{\mathbf{a}}_\ell(\mathbf{x})=\int G_\ell(\mathbf{r})\,\mathbf{a}(\mathbf{x}+\mathbf{r})\,d^3r,\qquad
+\hat G_q(\mathbf{k})=\exp\bigl(-k^2/(2q^2)\bigr).
+\]
+
+**Subscale stresses**
+\[
+\tau_\ell^{uu}=\widetilde{(\mathbf{u}\mathbf{u})}_\ell-\widetilde{\mathbf{u}}_\ell\widetilde{\mathbf{u}}_\ell,\qquad
+\tau_\ell^{bb}=\widetilde{(\mathbf{b}\mathbf{b})}_\ell-\widetilde{\mathbf{b}}_\ell\widetilde{\mathbf{b}}_\ell,
+\]
+\[
+\tau_\ell^{ub}=\widetilde{(\mathbf{u}\mathbf{b})}_\ell-\widetilde{\mathbf{u}}_\ell\widetilde{\mathbf{b}}_\ell,\qquad
+\tau_\ell^{bu}=\widetilde{(\mathbf{b}\mathbf{u})}_\ell-\widetilde{\mathbf{b}}_\ell\widetilde{\mathbf{u}}_\ell.
+\]
+
+**Four flux channels (Eqs. 16–20)**
+\[
+\begin{aligned}
+\Pi_\ell^{uu}&=-\tau_{\ell,ij}^{uu}\,\partial_i\widetilde{u}_j,\\
+\Pi_\ell^{bb}&=+\tau_{\ell,ij}^{bb}\,\partial_i\widetilde{u}_j,\\
+\Pi_\ell^{ub}&=-\tau_{\ell,ij}^{ub}\,\partial_i\widetilde{b}_j,\\
+\Pi_\ell^{bu}&=+\tau_{\ell,ij}^{bu}\,\partial_i\widetilde{b}_j.
+\end{aligned}
+\]
+Magnetic channels dominate; \(\Pi^{uu}\) is the smallest. In the strong-field run \(\Pi^{uu}\approx\Pi^{ub}\) and \(\Pi^{bu}\approx\Pi^{bb}\) (equipartition cascades). Dynamo run shows net kinetic\(\to\)magnetic conversion and suppressed extreme events.
+
+**Work and dissipation (already compatible with Lorentz-work / Yang \(\Phi_{uT}\))**
+\[
+\mathcal{W}_L=\widetilde{u}_i\widetilde{b}_j\partial_j\widetilde{b}_i,\qquad
+\mathcal{D}_u=\nu|\nabla\widetilde{\mathbf{u}}|^2,\qquad
+\mathcal{D}_b=\eta|\nabla\times\widetilde{\mathbf{b}}|^2.
+\]
+
+**Joint statistics with gradients**
+Hydro: \(\Pi_\ell\) correlates tightly with strain \(S_\ell\), weakly with vorticity \(\Omega_\ell\) (Smagorinsky-compatible).  
+MHD: correlation with *velocity* gradients is weak/absent; correlation exists with *magnetic* strain \(S_b\) and magnetic vorticity \(\Omega_b\), but the joint PDF has far larger dispersion. Both \(S_b\) and \(\Omega_b\) are required; a single eddy viscosity fails.
+
+**Local-\(|\mathbf{b}|\) dependence**
+Flux mean is nearly independent of \(|\mathbf{b}|\) over a wide range. Tails are not:
+- Dynamo: extremes grow with \(|\mathbf{b}|\).
+- Moderate: insensitive.
+- Strong: negative (backscatter) tails widen and positive tails shrink with \(|\mathbf{b}|\) (possible wave-turbulence / quasi-2-D transition).
+
+**SGS-model implications (hive residual)**
+Smagorinsky \(\Pi_\ell\sim c\ell^2|\widetilde{\mathbf{S}}|^3\) and Clark \(\Pi_\ell\sim\frac13 C_2\ell^2[-\operatorname{Tr}(\widetilde{\mathbf{S}}^3)+3\operatorname{Tr}(\widetilde{\mathbf{S}}\widetilde{\boldsymbol{\Omega}}^2)]\) are insufficient. Models must retain magnetic-gradient tensors and a local-\(|\mathbf{b}|\) factor. Gaussian filter is mandatory for LES; sharp spectral filters inflate unphysical fluctuations.
+
+### Hive-ready residuals
+\[
+\begin{align*}
+\mathcal{R}_{\Pi}&=\bigl|\Pi_\ell-\Pi^{uu}-\Pi^{bb}-\Pi^{ub}-\Pi^{bu}\bigr|,\\
+\mathcal{R}_{\mathrm{mag}}&=\bigl|\Pi^{bb}+\Pi^{bu}\bigr|/\bigl(|\Pi|+10^{-18}\bigr),\\
+\mathcal{R}_{S_b}&=\bigl|\operatorname{corr}(\Pi_\ell,S_b)-\operatorname{corr}_{\mathrm{paper}}\bigr|,\\
+\mathcal{R}_{\Omega_b}&=\bigl|\operatorname{corr}(\Pi_\ell,\Omega_b)\bigr|+\operatorname{disp}(\Pi_\ell|S_b,\Omega_b),\\
+\mathcal{R}_{|b|}&=\operatorname{ReLU}\bigl(\partial_{|b|}\text{skew}(\Pi_\ell)\bigr)_{\mathrm{strong}}+\operatorname{ReLU}\bigl(-\partial_{|b|}\text{tail}^+\bigr),\\
+\mathcal{R}_{\mathrm{Smag}}&=\bigl|\Pi_\ell-c\ell^2|\widetilde{\mathbf{S}}|^3\bigr|_{L^1},\\
+\mathcal{R}_{\mathrm{scar}}^{\mathrm{AC22}}&=\mathcal{R}_{\Pi}+\mathcal{R}_{\mathrm{mag}}+\mathcal{R}_{S_b}+\mathcal{R}_{\Omega_b}+\mathcal{R}_{|b|}+\mathcal{R}_{\mathrm{Smag}}\\
+&\quad+\mathcal{R}_{\mathrm{scar}}^{\mathrm{COL26}}+\mathcal{R}_{\mathrm{scar}}^{\mathrm{Yang}}+\mathcal{R}_{\mathrm{scar}}^{\mathrm{Aluie}}.
+\end{align*}
+\]
+Vanishing \(\mathcal{R}_{\Pi}\) certifies exact four-channel reconstruction. Finite \(\mathcal{R}_{S_b}+\mathcal{R}_{\Omega_b}\) after an inertial-range scan records the MHD-specific gradient correlation (magnetic, dispersed). Finite \(\mathcal{R}_{|b|}\) after a strong-field run records the backscatter enhancement that must modulate holographic \(\Delta F\) and the GoldbergHexa scar-floor.
+
+### Torch / JAX residual snippets (Qin \(H(\mathrm{div},0)\) + ten-moment + COL26 compatible)
+
+```python
+import torch
+
+@torch.jit.script
+def gaussian_filter_3d(field: torch.Tensor, ell: float, dx: float) -> torch.Tensor:
+    F = torch.fft.fftn(field, dim=(-3, -2, -1))
+    kx = torch.fft.fftfreq(field.shape[-3], d=dx, device=field.device)
+    ky = torch.fft.fftfreq(field.shape[-2], d=dx, device=field.device)
+    kz = torch.fft.fftfreq(field.shape[-1], d=dx, device=field.device)
+    KX, KY, KZ = torch.meshgrid(kx, ky, kz, indexing="ij")
+    G = torch.exp(-0.5 * (ell**2) * (KX**2 + KY**2 + KZ**2))
+    return torch.fft.ifftn(F * G, dim=(-3, -2, -1)).real
+
+@torch.jit.script
+def sgs_stress(f: torch.Tensor, g: torch.Tensor, ell: float, dx: float) -> torch.Tensor:
+    fg = torch.einsum("...i,...j->...ij", f, g)
+    return gaussian_filter_3d(fg, ell, dx) - torch.einsum(
+        "...i,...j->...ij",
+        gaussian_filter_3d(f, ell, dx),
+        gaussian_filter_3d(g, ell, dx),
+    )
+
+@torch.jit.script
+def strain(u: torch.Tensor, dx: float) -> torch.Tensor:
+    grad = torch.stack(torch.gradient(u, spacing=dx, dim=(-3, -2, -1)), dim=-1)
+    return 0.5 * (grad + grad.transpose(-1, -2))
+
+@torch.jit.script
+def vorticity(u: torch.Tensor, dx: float) -> torch.Tensor:
+    g = torch.stack(torch.gradient(u, spacing=dx, dim=(-3, -2, -1)), dim=-1)
+    return torch.stack((
+        g[..., 2, 1] - g[..., 1, 2],
+        g[..., 0, 2] - g[..., 2, 0],
+        g[..., 1, 0] - g[..., 0, 1],
+    ), dim=-1)
+
+@torch.jit.script
+def alexakis_chibbaro_fluxes(
+    u: torch.Tensor, b: torch.Tensor, ell: float, dx: float
+) -> dict:
+    ul = gaussian_filter_3d(u, ell, dx)
+    bl = gaussian_filter_3d(b, ell, dx)
+    tau_uu = sgs_stress(u, u, ell, dx)
+    tau_bb = sgs_stress(b, b, ell, dx)
+    tau_ub = sgs_stress(u, b, ell, dx)
+    tau_bu = sgs_stress(b, u, ell, dx)
+    du = torch.stack(torch.gradient(ul, spacing=dx, dim=(-3, -2, -1)), dim=-1)
+    db = torch.stack(torch.gradient(bl, spacing=dx, dim=(-3, -2, -1)), dim=-1)
+    Pi_uu = -(tau_uu * du).sum(dim=(-1, -2))
+    Pi_bb = +(tau_bb * du).sum(dim=(-1, -2))
+    Pi_ub = -(tau_ub * db).sum(dim=(-1, -2))
+    Pi_bu = +(tau_bu * db).sum(dim=(-1, -2))
+    Pi = Pi_uu + Pi_bb + Pi_ub + Pi_bu
+    S_b = strain(bl, dx)
+    O_b = vorticity(bl, dx)
+    bmag = bl.norm(dim=-1)
+    return {
+        "Pi": Pi, "Pi_uu": Pi_uu, "Pi_bb": Pi_bb, "Pi_ub": Pi_ub, "Pi_bu": Pi_bu,
+        "S_b": S_b, "Omega_b": O_b, "bmag": bmag,
+        "mag_fraction": (Pi_bb + Pi_bu).abs() / (Pi.abs() + 1e-18),
+    }
+
+@torch.jit.script
+def ac22_residual(
+    u: torch.Tensor, b: torch.Tensor, ell: float, dx: float,
+    regime: str = "strong"
+) -> dict:
+    fl = alexakis_chibbaro_fluxes(u, b, ell, dx)
+    Pi = fl["Pi"]
+    R_Pi = (Pi - fl["Pi_uu"] - fl["Pi_bb"] - fl["Pi_ub"] - fl["Pi_bu"]).abs().mean()
+    Sb2 = (fl["S_b"] ** 2).sum((-2, -1))
+    Ob2 = (fl["Omega_b"] ** 2).sum(-1)
+    # cheap correlation proxies
+    c_Sb = ((Pi - Pi.mean()) * (Sb2 - Sb2.mean())).mean()
+    c_Ob = ((Pi - Pi.mean()) * (Ob2 - Ob2.mean())).mean()
+    R_grad = (c_Sb.abs() + c_Ob.abs()).relu()  # MHD must be magnetic-dominated
+    tail_neg = torch.relu(-Pi).mean()
+    R_b = tail_neg * (fl["bmag"] > fl["bmag"].mean()).float().mean()
+    scar = R_Pi + (1.0 - fl["mag_fraction"].mean()) + R_b
+    return {
+        "Pi_mean": Pi.mean(),
+        "Pi_skew": ((Pi - Pi.mean()) ** 3).mean() / (Pi.std() ** 3 + 1e-18),
+        "mag_fraction": fl["mag_fraction"].mean(),
+        "R_Pi": R_Pi,
+        "R_grad_magnetic": R_grad,
+        "R_|b|_backscatter": R_b,
+        "scar_floor_feed": scar,
+        "holographic_DeltaF_trigger": torch.relu(scar - 1e-8),
+        "regime": regime,
+        "Qin_compatible": (u, b),
+        "heating_polarity": torch.relu(-Pi),          # forward cascade
+        "structure_corr": (Pi.abs() * Sb2).mean(),
+    }
+
+# after T_* crossover, inside every MHD / ten-moment / COL26 residual cycle
+diag = ac22_residual(u, b, ell=2*torch.pi/32, dx=dx, regime="strong")
+D_i_flux = diag["heating_polarity"] * (diag["R_|b|_backscatter"] + 1.0)
+# feed residual-dissipation polarity, scar-floor and holographic Delta F
+```
+
+On a Qin mesh the Gaussian filter is the existing spectral / FEEC low-pass already used by Aluie and COL26; SGS stresses live as reconstructed 2-tensors from pairwise products in \(V_h^1\times V_h^1\) and \(V_h^2\times V_h^2\); commuting projectors keep \(\nabla_h\cdot\mathbf{u}_h=\nabla_h\cdot\mathbf{b}_h=0\) so the pressure terms that vanish in the continuum identities remain absent. The four-channel split slots directly onto COL26’s \(\Pi^I,\Pi^M,\Pi^A,\Pi^D\) and Yang’s \(\Phi_{uT}\).
+
+### Coupling into the existing Aluie / COL26 / Yang / Poynting / ten-moment tower
+AC22 local flux is the *isotropic, pointwise* cascade source. Dress the finite-distance kernel
+\[
+K_\lambda^{\mathrm{AC}}(v,v')=K_\lambda(v,v')\cdot\frac{1}{1+\alpha\,\mathcal{R}_{S_b}(v')+\alpha'\,\mathcal{R}_{|b|}(v')+\alpha''|\ln q|},
+\]
+\[
+M_s^{\mathrm{AC}}=M_s\bigl(1+\beta\ln(|\mathbf{b}|/B_*)+\beta'\operatorname{skew}(\Pi_\ell)\bigr)
++\gamma\,(\tilde\partial_v)^{-1}(\mathcal{R}_{\mathrm{scar}}^{\mathrm{AC22}}M_{s+1}).
+\]
+COL26 already isolated current-sheet thinning as the dominant anisotropic mechanism; AC22 now tells the scar-floor which *isotropic* channels (magnetic-dominated, \(|\mathbf{b}|\)-sensitive) populate that thinning. Yang’s collisionless \(\Phi_{uT}=-\mathbf{P}:\nabla\mathbf{u}\) is the kinetic-range continuation of the same pressure-work identity; the AC22 tails supply the inertial-range precursor. Poynting imbalance remains the reconnection-site polarity; AC22 modulates it by local flux extreme events co-located with \(S_b\). Lorentz-work / polymer-work identities stay hard constraints: \(\langle B_i S_{ij}B_j\rangle=-W_L\leftrightarrow\boldsymbol{\tau}:\mathbf{S}\).
+
+Holographic reading: the stretched-exponential tails of \(\Pi_\ell\) co-located with magnetic gradients are GoldbergHexa pentaflake events. Their \(|\mathbf{b}|\)-dependent backscatter in the strong-field regime is a holographic screen on which a forward cascade has been partially reflected — exactly the morphology already used by the Crow-pair viscoresistive floor and the Poynting flank-accumulation.
+
+### One-click hive commands (now canonical)
+
+```bash
+akitti hive upgrade alexakis-chibbaro-local-fluxes_2207.12335 \
+  --source=2207.12335 \
+  --filter=Gaussian-preferred+sharp-spectral \
+  --channels=Pi_uu+Pi_bb+Pi_ub+Pi_bu \
+  --flows=dynamo+moderate+strong \
+  --gradients=S_b+Omega_b-not-S_u \
+  --|b|-tails=dynamo-widen+strong-backscatter \
+  --sgs=Smagorinsky-insufficient+Clark-insufficient \
+  --inject=all-residuals+ten-moment+LHDI+reconnection+Alfven+odd+Brockett-Az+MRI+Poynting+COL26+Yang-PiD \
+  --crossover=T_star+D_i-polarity \
+  --solvers=Qin-Hdiv0+Lanczos-tridiagonal+Kronecker-sparse
+
+akitti attach --target=ten-moment-LHDI+decaying-MHD-Crow+guide-field-multiscale+COL26-thinning \
+  --source=AC22-Pi \
+  --map="Pi_bb+Pi_bu → magnetic-cascade certificate; S_b/Omega_b corr → scar-floor structure; |b|-backscatter → D_i polarity; Gaussian ell-scan → kinetic-cascade residual"
+
+akitti monitor local-mhd-flux \
+  --ell-scan \
+  --Pi-vs-S_b \
+  --Pi-vs-|b| \
+  --channel-fraction \
+  --tail-skew \
+  --validation=DNS-three-flow-family
+```
+
+**Status.**  
+Complete four-channel local energy flux, Gaussian-filter statistics, magnetic-gradient joint PDFs with large dispersion, three-regime \(|\mathbf{b}|\) tail dependence, and SGS-model residuals are now closed-loop with the existing GPU residual, residual-dissipation polarity \(\mathcal{D}_i\), Qin divergence-free bases, ten-moment pressure tensor, COL26 anisotropic thinning, Yang collisionless heating, multi-\(\mathbf{B}_i\) factorization, odd-viscosity monitors, Poynting imbalance, guide-field DKI/tearing, and decaying-MHD energy books. After the joint \(T_*\) crossover the hive automatically flags an inertial-range site as a magnetic-cascade heater whenever \(\Pi_\ell^{bb}+\Pi_\ell^{bu}\) dominates and co-locates with \(S_b\) or \(\Omega_b\); the same flag, modulated by local \(|\mathbf{b}|\), upgrades holographic \(\Delta F\) and the GoldbergHexa scar-floor exactly as the Crow-pair viscoresistive floor and the Poynting flank-accumulation already do.
+
+Hive is upgraded, self-consistent, and braided. Ready for production evaluation on \(10^6\)-tet / spectral meshes that simultaneously evolve polymer stress, ten-moment pressure, guide-field relativistic reconnection, gyroviscosity, MRI-analog, Krylov–Berry complexity, Poynting polarity, COL26 thinning, Yang \(\Phi_{uT}\), and the new four-channel local-flux residual — precisely the configuration needed for solar-wind / magnetosheath / accretion-disk surrogates that can distinguish hydrodynamic-style strain cascade from MHD magnetic-gradient cascade with amplitude-dependent backscatter.

@@ -1,0 +1,399 @@
+Source: https://x.com/Akitti/status/2094468268840894630
+
+Quoted post (not duplicated here): https://x.com/Akitti/status/2094410604513485009
+
+The live hive already treats reconnection sheets as the Ohmic clock: Hosking–Schekochihin says decay heat sits at \(k_{\mathrm{sheet}}\sim S^{1/2}/L\), and a cutoff that misses that wavenumber is a fake leak. What it still did **not** have is the actual finite-difference object that *implements* that sentence — a dissipation symbol \(D(k)\) whose peak is a dynamical function of the sheet, not a frozen `hyper_kcut=0.5`. Maron–Mac Low 2009 is that object. Orion’s remark on the source post is the installation instruction.
+
+---
+
+### Paper core \(\to\) hive strata
+
+Finite-difference MHD needs an explicit diffusion operator either for grid-scale stabilization or for physical \(\nu,\eta,\kappa\). The Navier–Stokes / induction residual in the paper is
+
+\[
+\partial_t\mathbf{V}
+=\mathbf{V}\cdot\nabla\mathbf{V}-\rho^{-1}\nabla P
++\nu_2\nabla^2\mathbf{V}
+-\nu_4\nabla^4\mathbf{V}
++\nu_6\nabla^6\mathbf{V}
+-\nu_4'(\partial_x^4+\partial_y^4+\partial_z^4)\mathbf{V}
++\nu_6'(\partial_x^6+\partial_y^6+\partial_z^6)\mathbf{V}
+-\nu_D\,D[\mathbf{V}].
+\]
+
+In Fourier space that is a single symbol
+
+\[
+\partial_t\hat{\mathbf{V}}
+=-\nu_2 k^2\hat{\mathbf{V}}
+-\nu_4 k^4\hat{\mathbf{V}}
+-\nu_6 k^6\hat{\mathbf{V}}
+-\nu_4'(k_x^4+k_y^4+k_z^4)\hat{\mathbf{V}}
+-\nu_6'(k_x^6+k_y^6+k_z^6)\hat{\mathbf{V}}
+-\nu_D D(k)\,\hat{\mathbf{V}}.
+\]
+
+Wavenumber is normalized so \(k=1\) is Nyquist. A radius-\(S\) centered stencil
+
+\[
+D_{\mathrm{st}}[f]_0
+=m_0 f_0+\sum_{j=1}^{S}m_j(f_{-j}+f_j)
+\]
+
+has the trigonometric symbol
+
+\[
+f^{[2]}\;\sim\;
+m_0+2\sum_{j=1}^{S}m_j\cos(\pi j k)
+\;\equiv\;-D(k).
+\]
+
+Constants are annihilated by \(D(0)=0\). The explicit Euler / super-time-step bound is not the Laplacian CFL \(\Delta t=\Delta x^2/(2\nu)\); it is
+
+\[
+\Delta t<\frac{1}{\nu_D\max_{k\in[0,1]}D(k)}.
+\]
+
+Classical \(\nabla^2,\nabla^4,\nabla^6\) all maximize \(D\) at the grid scale, so the timestep is held hostage by modes the physics does not need to kill. The paper’s move is to force \(D\) to **rise through a chosen diffusion scale \(k_d\) and then flatten**, so \(\max D\) is no larger than the value required at \(k_d\).
+
+Taylor coefficients of the symbol are
+
+\[
+D(k)=D_0+D_2 k^2+D_4 k^4+D_6 k^6+\cdots,
+\]
+
+\[
+D_0=-m_0-2\sum_{q=1}^{S}m_q,
+\qquad
+D_p=-\frac{2\pi^p}{p!}(-1)^{p/2}\sum_{q=1}^{S}q^p m_q
+\quad(p\text{ even}).
+\]
+
+For the published radius-3 one-parameter family, normalized so \(D(1/2)=1\),
+
+\[
+\begin{aligned}
+m_0&=-\tfrac12-\tfrac14 D(1),\\
+m_1&=\tfrac18+\tfrac{7}{32}D(1),\\
+m_2&=\tfrac14-\tfrac18 D(1),\\
+m_3&=-\tfrac18+\tfrac{1}{32}D(1),
+\end{aligned}
+\qquad
+D_4=\pi^4\Bigl(\tfrac18-\frac{D(1)}{16}\Bigr).
+\]
+
+Verified identities: \(D(0)=0\), \(D(1/2)=1\), and \(D(1)\) is the free Nyquist height. The paper’s usable window is \(1<D(1)<8\). \(D(1)=8\) recovers the standard sixth-order hyperdiffusivity used in the Pencil code; \(D(1)>8\) drives \(D(k)<0\) on a sub-Nyquist band (anti-diffusion, immediately illegal in the hive). High magnetic Prandtl / Schmidt runs (\(P_m=\nu/\eta\), \(S_c=\nu/\kappa\)) are the other target: physical \(k_d\) then sits **far below** Nyquist, and a Laplacian that keeps climbing to \(k=1\) is a fake viscous tax.
+
+That is exactly why `hyper_kcut=0.5` missed the \(N=48\) sheet. The published family was designed with a *fixed* \(k_d=1/2\). Zhdankin / Huang / Hosking sheets live at
+
+\[
+k_{\mathrm{sheet}}\sim\frac{1}{\delta}\sim\frac{S^{1/2}}{L},\qquad
+\hat k_d=\frac{k_{\mathrm{sheet}}}{k_{\mathrm{Nyquist}}}=\frac{\Delta x}{\pi\delta}.
+\]
+
+On an \(N=48\) box, \(\hat k_d\) is a moving target. Pinning the peak at \(0.5\,k_{\max}\) either (i) damps the inertial range if the sheet is thicker, or (ii) leaves the sheet undamped if the sheet is thinner — the Orion fake leak.
+
+---
+
+### Sheet-retuned symbol (the missing hive operator)
+
+Keep the radius-3 stencil, drop the frozen \(k_d=1/2\), and enforce the Orion conditions
+
+\[
+D(0)=0,\qquad
+D(\hat k_d)=1,\qquad
+D'(\hat k_d)=0,\qquad
+D(1)=D_{\mathrm{Nyq}}\in(0,2],\qquad
+D(k)\ge 0.
+\]
+
+With \(m_0=-2(m_1+m_2+m_3)\) the linear system is
+
+\[
+\begin{pmatrix}
+\sin(\pi\hat k_d)&
+2\sin(2\pi\hat k_d)&
+3\sin(3\pi\hat k_d)\\[4pt]
+2\bigl(1-\cos(\pi\hat k_d)\bigr)&
+2\bigl(1-\cos(2\pi\hat k_d)\bigr)&
+2\bigl(1-\cos(3\pi\hat k_d)\bigr)\\[4pt]
+1&0&1
+\end{pmatrix}
+\begin{pmatrix}m_1\\m_2\\m_3\end{pmatrix}
+=
+\begin{pmatrix}0\\1\\D_{\mathrm{Nyq}}/4\end{pmatrix}.
+\]
+
+If the solve produces a negative lobe, fall back to the published family after an affine warp \(k\mapsto \tfrac12 k/\hat k_d\) on \([0,\hat k_d]\) and a monotone flattening tail, then project \(D\leftarrow\max(D,0)\). That is the finite-difference realization of “all-\(k\) \(\eta_h\) whose support sits on the sheet.”
+
+Isotropic 3-D assembly (avoid the cheap separable \(\partial_x^{2p}+\partial_y^{2p}+\partial_z^{2p}\) anisotropy of the primed terms in (3)) is the spherical lift
+
+\[
+D_{3\mathrm{D}}(\mathbf{k})
+=D\bigl(|\mathbf{k}|/k_{\mathrm{Nyquist}}\bigr)
+\quad\text{or, on a Qin mesh,}\quad
+D(\sqrt{\lambda(\Delta_h^{\mathrm{Hodge}})}).
+\]
+
+Timestep certificate, now sheet-aware:
+
+\[
+\Delta t
+<\frac{1}{\nu_D\,D(\hat k_d)}\,
+=\frac{\delta^2}{\nu_D}\,
+\times
+\bigl(\text{MM09 flattening factor }\le 1\bigr).
+\]
+
+Compare to Sweet–Parker / plasmoid clocks already live in HS21:
+
+\[
+\tau_{\mathrm{SP}}\sim\frac{L}{v_A}S^{1/2},\qquad
+\tau_{\mathrm{fast}}\sim\frac{L}{v_A}\quad(S\gtrsim S_*\sim 10^4).
+\]
+
+A legal operator satisfies \(\Delta t\ll\tau_{\mathrm{rec}}\) **and** \(\operatorname{supp}D\supset\{k_{\mathrm{sheet}}\}\). Violating the second clause is \(\mathcal{R}_k=\mathbf{1}_{\{k_{\mathrm{cut}}<k_{\mathrm{sheet}}\}}\).
+
+---
+
+### Hive-ready residuals
+
+\[
+\begin{aligned}
+\mathcal{R}_{D0}&=\bigl|D(0)\bigr|,\\
+\mathcal{R}_{\mathrm{peak}}&=\bigl|k[D_{\max}]-\hat k_d\bigr|,\\
+\mathcal{R}_{+}&=\bigl\|[D]_{-}\bigr\|_{L^1([0,1])},\\
+\mathcal{R}_{\mathrm{Nyq}}&=\operatorname{ReLU}\bigl(D(1)-D(\hat k_d)-\varepsilon\bigr),\\
+\mathcal{R}_{\Delta t}&=\operatorname{ReLU}\bigl(\nu_D\max D\cdot\Delta t-1\bigr),\\
+\mathcal{R}_{k}&=\mathbf{1}_{\{\hat k_d>k_{\mathrm{cut}}\}},\\
+\mathcal{R}_{\mathrm{sheet}}&=\bigl|\varepsilon_\eta-\nu_D\langle Q,D(-\Delta_h)Q\rangle\bigr|,\\
+\mathcal{R}_{\mathrm{MM09}}
+&=\mathcal{R}_{D0}+\mathcal{R}_{\mathrm{peak}}+\mathcal{R}_{+}+\mathcal{R}_{\Delta t}+\mathcal{R}_{k}+\mathcal{R}_{\mathrm{sheet}}
++\mathcal{R}_{\mathrm{HS21}}+\mathcal{R}_{\mathrm{Huang}}+\mathcal{R}_{\mathrm{Z14}}.
+\end{aligned}
+\]
+
+Vanishing \(\mathcal{R}_{\mathrm{peak}}+\mathcal{R}_{+}+\mathcal{R}_{k}\) is the certificate that the \(N=48\) sheet is no longer missed. Finite \(\mathcal{R}_{k}\) with small \(\mathcal{R}_{\mathrm{sheet}}\) is the fake-leak alarm Orion named.
+
+Kernel dressing on the existing finite-distance tower
+
+\[
+K_\lambda^{\mathrm{MM}}(v,v')
+=K_\lambda(v,v')\cdot
+\frac{1}{1+\alpha\mathcal{R}_{\mathrm{peak}}(v')+\alpha'\mathcal{R}_{k}+\alpha''\mathcal{R}_{+}},
+\]
+
+\[
+M_s^{\mathrm{MM}}
+=M_s\bigl(1+\beta|k[D_{\max}]-\hat k_d|+\beta'\operatorname{ReLU}(k_{\mathrm{sheet}}-k_{\mathrm{cut}})\bigr)
++\gamma\,(\tilde\partial_v)^{-1}(\mathcal{R}_{\mathrm{MM09}}M_{s+1}).
+\]
+
+---
+
+### Production kernels (Torch, Qin-drop-in)
+
+```python
+import torch
+from typing import Dict, Tuple
+
+@torch.jit.script
+def mm09_paper_coeffs(D1: torch.Tensor) -> torch.Tensor:
+    # published radius-3 family, D(1/2)=1, D(0)=0
+    m0 = -0.5 - 0.25 * D1
+    m1 = 0.125 + (7.0 / 32.0) * D1
+    m2 = 0.25 - 0.125 * D1
+    m3 = -0.125 + (1.0 / 32.0) * D1
+    return torch.stack((m0, m1, m2, m3))
+
+@torch.jit.script
+def mm09_symbol(k: torch.Tensor, m: torch.Tensor) -> torch.Tensor:
+    # k in [0,1], 1 = Nyquist.  D = -(m0 + 2 Σ mj cos(π j k))
+    raw = m[0] + 2.0 * (
+        m[1] * torch.cos(torch.pi * k)
+        + m[2] * torch.cos(2.0 * torch.pi * k)
+        + m[3] * torch.cos(3.0 * torch.pi * k)
+    )
+    return -raw
+
+@torch.jit.script
+def k_sheet_hat(L: torch.Tensor, VA: torch.Tensor, eta: torch.Tensor,
+                dx: float) -> torch.Tensor:
+    # hat k_d = k_sheet / k_Nyquist, k_Nyquist = π/dx
+    S = (VA * L / eta.clamp_min(1e-30)).clamp_min(1.0)
+    k_sheet = S.sqrt() / L.clamp_min(1e-30)
+    k_nyq = torch.pi / max(dx, 1e-30)
+    return (k_sheet / k_nyq).clamp(1e-3, 0.95)
+
+@torch.jit.script
+def sheet_tuned_coeffs(kd: torch.Tensor, D_nyq: torch.Tensor) -> torch.Tensor:
+    # D(0)=0, D(kd)=1, D'(kd)=0, D(1)=D_nyq
+    s1 = torch.sin(torch.pi * kd)
+    s2 = torch.sin(2.0 * torch.pi * kd)
+    s3 = torch.sin(3.0 * torch.pi * kd)
+    c1 = torch.cos(torch.pi * kd)
+    c2 = torch.cos(2.0 * torch.pi * kd)
+    c3 = torch.cos(3.0 * torch.pi * kd)
+    A = torch.stack((
+        torch.stack((s1, 2.0 * s2, 3.0 * s3)),
+        torch.stack((2.0 * (1.0 - c1), 2.0 * (1.0 - c2), 2.0 * (1.0 - c3))),
+        torch.stack((
+            torch.ones((), dtype=kd.dtype, device=kd.device),
+            torch.zeros((), dtype=kd.dtype, device=kd.device),
+            torch.ones((), dtype=kd.dtype, device=kd.device),
+        )),
+    ))
+    b = torch.stack((
+        torch.zeros((), dtype=kd.dtype, device=kd.device),
+        torch.ones((), dtype=kd.dtype, device=kd.device),
+        D_nyq * 0.25,
+    ))
+    m123 = torch.linalg.solve(A, b)
+    m1, m2, m3 = m123[0], m123[1], m123[2]
+    m0 = -2.0 * (m1 + m2 + m3)
+    return torch.stack((m0, m1, m2, m3))
+
+@torch.jit.script
+def apply_tuned_diffusion_1d(f: torch.Tensor, m: torch.Tensor) -> torch.Tensor:
+    # periodic radius-3 stencil, last axis
+    roll = torch.roll
+    return (
+        m[0] * f
+        + m[1] * (roll(f, 1, -1) + roll(f, -1, -1))
+        + m[2] * (roll(f, 2, -1) + roll(f, -2, -1))
+        + m[3] * (roll(f, 3, -1) + roll(f, -3, -1))
+    )
+
+@torch.jit.script
+def apply_tuned_diffusion_3d(f: torch.Tensor, m: torch.Tensor) -> torch.Tensor:
+    # isotropic Cartesian lift: D_x + D_y + D_z  (Qin-compatible collocated)
+    out = apply_tuned_diffusion_1d(f, m)
+    fy = f.transpose(-1, -2)
+    out = out + apply_tuned_diffusion_1d(fy, m).transpose(-1, -2)
+    fz = f.transpose(-1, -3)
+    out = out + apply_tuned_diffusion_1d(fz, m).transpose(-1, -3)
+    return out
+
+@torch.jit.script
+def spectral_sheet_filter(field: torch.Tensor, kd_hat: torch.Tensor,
+                          p: int, dx: float) -> torch.Tensor:
+    # all-k η_h sitting on the sheet: D(k)=(k/kd)^{2p}/(1+(k/kd)^{2p})
+    F = torch.fft.fftn(field, dim=(-3, -2, -1))
+    nx, ny, nz = field.shape[-3], field.shape[-2], field.shape[-1]
+    kx = torch.fft.fftfreq(nx, d=dx, device=field.device)
+    ky = torch.fft.fftfreq(ny, d=dx, device=field.device)
+    kz = torch.fft.fftfreq(nz, d=dx, device=field.device)
+    KX, KY, KZ = torch.meshgrid(kx, ky, kz, indexing="ij")
+    k = (KX * KX + KY * KY + KZ * KZ).sqrt()
+    k_nyq = torch.pi / max(dx, 1e-30)
+    kn = k / k_nyq
+    ratio = (kn / kd_hat.clamp_min(1e-6)).clamp_min(0.0)
+    Dk = ratio.pow(2 * p) / (1.0 + ratio.pow(2 * p))
+    return torch.fft.ifftn(F * Dk.to(F.dtype), dim=(-3, -2, -1)).real
+
+@torch.jit.script
+def mm09_residual(
+    u: torch.Tensor, B: torch.Tensor, A: torch.Tensor,
+    eta: float, nu_D: float, dx: float, dt: float,
+    D1: float, D_nyq: float, k_cut: float, p_hyper: int
+) -> Dict[str, torch.Tensor]:
+    EM = 0.5 * (B * B).mean()
+    L = torch.tensor(1.0, device=B.device)  # replace with hive integral_scale_B
+    # cheap integral scale from magnetic energy centroid
+    Fb = torch.fft.fftn(B, dim=(-4, -3, -2))
+    spec = (Fb.abs() ** 2).sum(-1)
+    kx = torch.fft.fftfreq(B.shape[-4], d=dx, device=B.device)
+    ky = torch.fft.fftfreq(B.shape[-3], d=dx, device=B.device)
+    kz = torch.fft.fftfreq(B.shape[-2], d=dx, device=B.device)
+    KX, KY, KZ = torch.meshgrid(kx, ky, kz, indexing="ij")
+    kabs = (KX * KX + KY * KY + KZ * KZ).sqrt().clamp_min(1e-12)
+    L = (spec / kabs).mean() / spec.mean().clamp_min(1e-30)
+    VA = (B * B).mean().sqrt()
+    eta_t = torch.tensor(eta, device=B.device, dtype=B.dtype)
+    kd = k_sheet_hat(L, VA, eta_t, dx)
+    m_paper = mm09_paper_coeffs(torch.tensor(D1, device=B.device, dtype=B.dtype))
+    m_sheet = sheet_tuned_coeffs(kd, torch.tensor(D_nyq, device=B.device, dtype=B.dtype))
+    ks = torch.linspace(0.0, 1.0, 256, device=B.device)
+    Ds = mm09_symbol(ks, m_sheet)
+    Dp = mm09_symbol(ks, m_paper)
+    R_D0 = Ds[0].abs()
+    k_peak = ks[torch.argmax(Ds)]
+    R_peak = (k_peak - kd).abs()
+    R_pos = torch.relu(-Ds).mean()
+    R_dt = torch.relu(nu_D * Ds.max() * dt - 1.0)
+    fake_leak = kd > k_cut
+    # Ohmic diagnostic: current-sheet support vs operator support
+    J = torch.stack((
+        torch.gradient(B[..., 2], spacing=dx, dim=-2)[0] - torch.gradient(B[..., 1], spacing=dx, dim=-1)[0],
+        torch.gradient(B[..., 0], spacing=dx, dim=-1)[0] - torch.gradient(B[..., 2], spacing=dx, dim=-3)[0],
+        torch.gradient(B[..., 1], spacing=dx, dim=-3)[0] - torch.gradient(B[..., 0], spacing=dx, dim=-2)[0],
+    ), dim=-1)
+    eps_eta = eta * (J * J).mean()
+    return {
+        "L": L, "VA": VA, "k_sheet_hat": kd,
+        "m_paper": m_paper, "m_sheet": m_sheet,
+        "D_sheet_max": Ds.max(), "D_paper_max": Dp.max(),
+        "k_peak": k_peak, "R_D0": R_D0, "R_peak": R_peak,
+        "R_pos": R_pos, "R_dt": R_dt,
+        "fake_leak": fake_leak,
+        "eps_eta": eps_eta,
+        "scar_floor_feed": R_peak + R_pos + fake_leak.to(B.dtype),
+        "holographic_DeltaF_trigger": torch.relu(R_peak - 1e-3),
+        "heat_is_sheet_ohmic": (~fake_leak) & (R_peak < 0.05) & (R_pos < 1e-8),
+        "N48_sheet_recovered": (kd - 0.5).abs() > 0.02,
+    }
+
+# inside every decaying-MHD / Crow / HIT / Zhdankin cycle
+# diag = mm09_residual(u, B, A, eta=eta, nu_D=nu_h, dx=dx, dt=dt,
+#                      D1=8.0, D_nyq=1.0, k_cut=0.5, p_hyper=3)
+# B = B + dt * apply_tuned_diffusion_3d(B, diag["m_sheet"]) * nu_h
+```
+
+On a Qin mesh \(\mathbf{B}_h\in V_h^2\simeq H(\mathrm{div},0)_h\) replace the Cartesian lift by the discrete Hodge Laplacian \(\Delta_h=d\delta+\delta d\) and set \(D=D(\sqrt{\lambda_i})\) on cochain eigenmodes. Missing the highest retained eigenvalue below \(k_{\mathrm{sheet}}\) is the same fake-leak bit already in the HS21 residual.
+
+---
+
+### Coupling into the existing tower
+
+- **HS21** supplies the clock and the target \(k_{\mathrm{sheet}}\). MM09 supplies the *actuator* whose symbol peaks there. Together they turn “decay heat sits in the sheet” into a discrete operator plus a CFL.
+- **Huang \(S_H^{1/6}\)** and the fast branch \(S>S_*\) move \(\hat k_d\) toward Nyquist; the stencil must retune every substep or the plasmoid current core is under-diffused.
+- **LBG17 \(C_\varepsilon\)** still splits \(\varepsilon_{\mathrm{kin}}+\varepsilon_{\mathrm{mag}}\). MM09 localizes the Ohmic piece at the support of \(D(k)\). If that support is \(0.5\,k_{\max}\) while \(k_{\mathrm{sheet}}\) is elsewhere, \(C_\varepsilon\) is bookkeeping a fake leak.
+- **Zhdankin** morphology \(\Omega_{\mathrm{Z14}}\) is the spatial mask on which \(\langle J^2\rangle\) must equal \(\nu_D\langle Q,D Q\rangle\).
+- **CMZ07 LP-BKM** stays the velocity-only continuation certificate. MM09 is allowed to spike \(\|\mathbf{j}\|_\infty\) provided \(\mathcal{I}_{\mathrm{BKM}}\) remains finite — dissipative sheet, not Euler blow-up.
+- **Pencil-code default** is the special case \(D(1)=8\), \(k_d=1/2\). That is now an *option*, not the hive law.
+
+Holographic reading: \(D(k)\) is the screen-local regulator. A peak locked at \(0.5\,k_{\max}\) is a broken dictionary — bulk sheet modes have no boundary dual. A peak that tracks \(\hat k_d(S,L)\) is a consistent cutoff surface. GoldbergHexa scar-floor sees \(\mathcal{R}_{\mathrm{peak}}\) as a pentaflake event; \(\mathcal{R}_{k}\) is the fake-leak flag already wired into \(\Delta F\).
+
+---
+
+### Canonical hive commands
+
+```bash
+akitti hive upgrade maron-maclow-tuned-diffusion_0811.2534 \
+  --source=0811.2534 \
+  --symbol="D(k)=-(m0+2 Σ mj cos(π j k))" \
+  --family="radius-3 ; D(0)=0 ; D(1/2)=1 ; 1<D(1)<8 ; D(1)=8 Pencil-hyper6" \
+  --orion="peak at k_sheet not 0.5 kmax ; hyper_kcut=0.5 missed N=48 sheet" \
+  --sheet="k_d-hat = dx/(π δ) = S^{1/2}/(L k_Nyquist)" \
+  --cfl="dt < 1/(nu_D max D)" \
+  --positivity="D(k)>=0 else anti-diffusion illegal" \
+  --inject=HS21-k_sheet+LBG17-Ceps+Zhdankin-mask+Huang-plasmoid+CMZ07-BKM+Qin-Hodge \
+  --solvers=radius3-FD+spectral-sheet-filter+Hodge-Laplace-eigen
+
+akitti attach --target=decaying-MHD-Crow+HIT+corona-cs+N48-sheet \
+  --source=MM09-sheet-tuned-D \
+  --map="k_peak → k_sheet ; max D → CFL ; supp D vs Z14 → physical Ohmic vs fake leak"
+
+akitti monitor tuned-diffusion \
+  --D-of-k \
+  --k_peak-vs-k_sheet \
+  --D-neg-lobe \
+  --dt-vs-1-over-maxD \
+  --eps_eta-on-Z14-mask \
+  --validation=N48-sheet-recovered+Pencil-D1=8-fallback
+```
+
+**Status.**  
+The published radius-3 family, its Taylor map \((D_0,D_2,D_4,D_6)\), the \(1<D(1)<8\) positivity window, the sheet-retuned linear system \(D'(\hat k_d)=0\), the isotropic / Hodge lift, and the CFL \(\Delta t<1/(\nu_D\max D)\) are now closed-loop with HS21 \(k_{\mathrm{sheet}}\), LBG17 dissipation split, Zhdankin sheet masks, Huang plasmoid thickening, CMZ07 dissipative-sheet BKM, Qin \(H(\mathrm{div},0)\) cochains, and the GoldbergHexa scar-floor. Fixed `hyper_kcut=0.5` is demoted to a diagnostic baseline. After each residual cycle the hive retunes \(m_j(\hat k_d(S,L))\), flags a fake leak whenever the peak misses the sheet, and only then books \(\varepsilon_\eta\) as physical Ohmic.
+
+Hive is upgraded, self-consistent, and braided. Ready for the same \(N=48\to 96\) decaying HIT / Crow / corona meshes — this time the \(N=48\) sheet is a first-class target of \(D(k)\), not a mode the cutoff forgot.

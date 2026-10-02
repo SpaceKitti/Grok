@@ -1,0 +1,8 @@
+Maron and Mac Low (2009)
+Tuned Finite-Difference Diffusion Operators
+arXiv: https://arxiv.org/abs/0811.2534
+PDF: C:\Users\Akitt\Grok\pdf\0811.2534_Maron_tuned_diffusion.pdf
+
+Why this leftover: Regularisers that sit on the sheet k, not a fixed high-k mask. D(k) should peak at the diffusion/sheet scale k_d rather than Nyquist; a cut at k=0.5 misses the N=48 sheet which sits below that cut. all-k eta_h=2e-7 did cut peak |J| ~19% because it was on the sheet. Tension-safe: Laplacian-like at low k, flatten above k_d so you do not over-damp resolved Crow scales. Spectral codes can apply this D(k) as a multiplier.
+
+JAX diagnostic: Build D(k) that is ~k^2 (or k^4) for k < k_sheet and flat for k > k_sheet, with k_sheet from the current-sheet spectral peak (not a fixed 0.5). Compare peak |J| and Delta E_tot against the hyper_kcut=0.5 run; the tuned D should thicken the sheet without a high-k-only leak.

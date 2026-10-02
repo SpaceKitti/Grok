@@ -1,0 +1,265 @@
+Source folder: C:\Users\Akitt\Grok\Lorentz\
+Compiled: Orion draft + Helios physics-check folded, 2026-09-06
+Purpose: notes only; originals untouched; no code dump
+
+## Helios physics pass (folded 2026-09-06)
+Status: FINAL after Helios check. Weird/synesthesia content retained; flagged not deleted.
+
+### CROSS-CUTTING (all finals)
+1) Units: state Alfvén (μ₀=ρ=1) vs cgs (4π) wherever W_L / W_ℓ / e_m appear.
+2) Oldroyd solvent: lim De→∞ constitutive map ≠ viscosity-free ideal MHD unless μ→0 too; name β / η_s.
+3) Lorentz work ≠ Ohmic heat: W_L is reversible K↔M; sink is ∫(εν+εη). Polymer work ↔ W_L is stretching-control analogy only, never η|J|².
+4) Before Hall-toy: prefer MHD4 §06 ten-moment LHDI over MHD2 polymer↔LHDI dual-role; odd/Berry monitors OK beside Crow, not as Hall Ohm drop-ins.
+5) Symbol pile-up: subscript β (Oldroyd / MD / plasma) and ω (vorticity vs Hieber weight).
+
+### CORRECTIONS (highest priority — inherited from originals)
+1) Ohm identity WRONG in 01: quote W_L = −E·J + η|J|².
+   Resistive Ohm E=−u×B+ηJ ⇒ E·J = u·(J×B)+η|J|² ⇒ W_L = E·J − η|J|².
+2) Stretch WRONG in 01: u·(J×B)=B_i B_j ∂_i u_j − (1/2)|B|²∇·u.
+   Volume (μ₀=1,∇·B=0): ∫u·(J×B)=−∫B_i B_j ∂_j u_i + ∫(B²/2)∇·u ⇒ incompressible ⟨B_i S_ij B_j⟩=−W_L.
+   Fix 01 to match 02 + Cross-cutting #1 (already correct).
+- Observed ~6% E_tot drop vs ~10% E_k drop over t=0→0.36: E_tot drop ≠ ∫W_L; use εν+εη sink (W_L reversible).  Helios fix: ΔE_tot≈−∫(εν+εη), not ∫W_L.
+4) μ₀: e_m=|B|²/(2μ₀) then stretch drops μ₀ — flag Alfvén units or restore 1/μ₀.
+5) Qin hyperresistive (05): if Δ_h is positive Hodge Laplacian, damping needs minus (or define Δ_h negative).
+
+### FLAGS
+- 01 Ohm+stretch: [standard] with known errata until fixed (source tweet-note bugs, not Orion invention).
+- Confirm Cross-cutting #1 ⟨B_i S_ij B_j⟩=−W_L as stack ruler after 01 fix.
+- OP03: state solvent μ remains in momentum.
+- SYK 12–13: do not promote toward [standard].
+- Citation skeletons OK; residual/scar stacks [hive-interpretation]; Weyl–Volterra/holographic ΔF [speculative].
+
+### TOY
+- [toy-ready] after identities fixed: Crow/HIT W_L, PP ℓ_ε, Capocci, AMP05↔AE10, CMZ07, OP03 Couette≠MRI.
+- [careful-before-Hall] PN/GA/viscochiral odd — σ^odd:D=0 OK; not literal Hall-MHD without two-fluid/Braginskii. Qin Δ_h sign. Oldroyd β explicit.
+
+### ORION KNOWN
+- Faithful inventory; inherited Ohm/stretch/E_tot bugs must not ship as clean [standard].
+
+
+## File inventory
+01_Lorentz_work_HIT_energy_budget.txt (3941)
+02_HIT_energy_story_Crow_channel.txt (1579)
+03_Huang_hyperresistive_plasmoid.txt (15392)
+04_Politano_Pouquet_4over3.txt (21582)
+05_Qin_Hodge_Weyl_Volterra_Deka.txt (16820)
+06_Beresnyak_Lazarian_locality.txt (14709)
+07_baty_physical_plasmoid_trigger.txt (14068)
+08_ogilvie_proctor_oldroyd_b_mhd.txt (14056)
+09_capocci_energy_flux_decomp.txt (14332)
+10_kolluru_pandit_axisym_imhd_fts.txt (16215)
+11_panigrahi_nazaryan_viscochiral.txt (16966)
+12_lorentz_force_syk_joule.txt (3110)
+13_Lorentz_force_SYK_Navier_Stokes.txt (4448)
+14_Gert_Alekseev_Hall_viscous_rough_edges.txt (18298)
+15_Chen_Miao_Zhang_BKM_MHD.txt (16532)
+16_Capocci_Oughton_Linkmann_aniso_flux.txt (17246)
+17_Alexakis_Mininni_Pouquet_shell_transfer.txt (12963)
+18_Aluie_Eyink_scale_locality.txt (16760)
+Total: 18 source .txt files. All readable.
+
+## Converged notes
+
+### 01_Lorentz_work_HIT_energy_budget
+[standard] Topic/shape: practical energy-budget framework for N=48 decaying HIT MHD; isolate the single reversible exchange between kinetic and magnetic reservoirs.
+
+Physics objects:
+- Kinetic density e_k = (1/2) rho |u|^2; magnetic e_m = |B|^2/(2 mu_0).
+- Lorentz work W_L = u · (J × B) = E·J − η|J|^2 (MHD Ohm).  Helios fix: W_L = E·J − η|J|² (NOT −E·J + η|J|²).
+- Identity: volume (μ₀=1,∇·B=0) ∫u·(J×B)=−∫B_i B_j ∂_j u_i + ∫(B²/2)∇·u ⇒ incompressible ⟨B_i S_ij B_j⟩=−W_L.  Helios fix: stretch → ⟨B_i S_ij B_j⟩=−W_L (NOT u·(J×B)=B_i B_j ∂_i u_j − … as asserted).
+- Diagnostics: W_L(t), Ohmic sink ε_η = η ∫|J|^2, viscous sink ε_ν; running integrals ΔE_k^Lorentz, ΔE_m^ind = -ΔE_k^Lorentz.
+- Extra fields: stretching B_i B_j S_ij, compression -(1/2)B^2 ∇·u, sheet indicator |J|/B.
+
+Claims:
+- Only W_L moves energy between kinetic and magnetic without heat.
+- Observed ~6% E_tot drop vs ~10% E_k drop over t=0→0.36: ~6.3% E_tot drop is viscous+Ohmic(+scar), not accumulated ∫ W_L. W_L is reversible K↔M (§02 bookkeeping).  Helios leftover fix.
+- Net transfer likely lives in small volume fraction of intense current sheets thinned by large-scale strain.
+- Checklist: max|∇·B| at round-off; dual J reconstructions; three-bucket (kinetic/magnetic/internal).
+
+Relation: foundational Crow/HIT channel for all later Lorentz lane notes; feeds Huang η_H, PP 4/3, Capocci SJΣ, AMP05 T^{ub}, AE10 W locality.
+
+[hive-interpretation] Drop-on N=48 HIT post-processing; three-bucket output to place "missing" energy in magnetic bucket.
+
+### 02_HIT_energy_story_Crow_channel
+[standard] Topic/shape: closed energy story for the Crow-channel HIT run after adding W_L diagnostics.
+
+Physics objects / numbers:
+- W_L negative ⇒ field takes energy from fluid into B.
+- Kinetic drop ~ half viscous, half Lorentz transfer.
+- ∫ W_L ≈ -3.2×10^{-3} (both cases); magnetic identity residual <1%; kinetic residual ~4% labelled scar force (not Lorentz hole).
+- Hyperresistivity η_h: ∫W_L shrinks only ~2%; peak |J| 22.97→18.52; sheet thicker 2.12→2.62 dx; max|ω|~35.
+- ⟨B_i S_ij B_j⟩ = -W_L (incompressible identity); compression ~10^{-20}; ∇·B round-off.
+
+Claims:
+- Missing kinetic energy is not a mystery leak.
+- η_h trims late current/Ohmic without killing Crow channel.
+- Do not overread |J|/|B| where B≈0; use λ_min/dx.
+- Total ~6.3% energy loss = viscous+Ohmic + scar work outside this budget.
+
+Relation: empirical certificate that Crow channel = negative W_L into B; template for Huang "thicken without killing tension."
+
+[hive-interpretation] "Scar force" residual ~4% kinetic; Crow channel named as the intact Lorentz transfer under η_h.
+
+### 03_Huang_hyperresistive_plasmoid
+[standard] Source: Huang–Bhattacharjee–Forbes arXiv:1308.1871. Hyper-resistive Ohm E+u×B = -η_H ∇²J; S_H = L³ V_A / η_H; primary Sweet–Parker width δ_CS ~ L S_H^{-1/4}.
+
+Linear (reduced MHD Harris): constant-ψ γ ≃ (2/π)^{2/3} S_Ha^{-1/3}(1-(ka)²)^{2/3} V_A/a; nonconstant-ψ ~ S_Ha^{-1/5}(ka)^{4/5} V_A/a; with a=δ_CS ⇒ γ_max ~ S_H^{1/6} V_A/L (faster than resistive S^{1/4}).
+
+Nonlinear: n_p ~ S_H^{1/2}, l~δ~S_H^{-1/2}L, J~S_H^{1/2} B/L; v_rec/V_A ~ 0.01 independent of S_H; f(ψ)~ψ^{-1}.
+
+Energy: ε_H = η_H ∫|∇J|²; W_L intact at leading order.
+
+[hive-interpretation] Residuals R_γ, R_np, R_δ, R_rate, R_ψ, R_H^ohm, R_scar; Carlier 4-bracket upgrade η→η_H|∇J|²; scar-floor / holographic ΔF feed; Qin H(div,0) Hodge Laplacian for ∇_h² J_h.
+
+[speculative] Weyl–Volterra dressing K_λ^H with ε_H and ln S_H; Boozer–Elder ln R_m precursor; GoldbergHexa ψ^{-1} multiplicity prior; Hopfion helicity braid.
+
+Relation: fourth-order sheet thickener sitting on HIT Crow channel; pairs with Baty ordinary-resistive trigger and CMZ07 dissipative-sheet reading.
+
+### 04_Politano_Pouquet_4over3
+[standard] Politano–Pouquet GRL 1998 + PRE companion: Elsässer z^±=v±b; Yaglom ∇_r · ⟨δz^∓ |δz^±|²⟩ = -4 ε^±; longitudinal 4/3 law ⟨δz^∓_L |δz^±|²⟩ = -(4/3)ε^± r; mixed primitive ⟨δv_L(|δv|²+|δb|²)-2 δb_L(δv·δb)⟩ = -(4/3)ε r.
+
+Dynamical lengths ℓ_ε^± = |S3|/ε^± → (4/3)r in clean inertial range.
+
+Claims: exact third-order flux certificate (not phenomenological mixing length); does not force k^{-5/3}; Boldyrev alignment θ_r ~ r^{1/4} optional for k_⊥^{-3/2}.
+
+Bookkeeping: ε^± = (1/2)(ε_ν+ε_η+ε_H) ± (1/2)ε^C_diss; W_L reversible exchange between E^+ and E^- without creating ε^±.
+
+[hive-interpretation] Residuals R_∇^±, R_4/3^±, R_mix, R_ℓ, R_ε, optional R_θ; scar_floor^PP; hard constraint ⟨B_i S_ij B_j⟩=-W_L.
+
+[speculative] Volterra dressing by R_mix and ln(ℓ_ε/r); holographic ΔF on cascade history.
+
+Relation: inertial-range ruler between Huang dissipation and Crow W_L; solar-wind intermittency diagnostic.
+
+### 05_Qin_Hodge_Weyl_Volterra_Deka
+[standard]/[hive-interpretation] Spectral-element Hodge Laplacian Δ_h on Qin de Rham sequence V_h^0→V_h^1→V_h^2≃H(div,0)_h→V_h^3; B_h∈V_h^2, J_h=∇̃×B_h∈V_h^1; Δ_h = curl-curl + grad-div; discrete ε_H^h = η_H (Δ_h J_h, J_h)_{M1} exact; induction ∂_t B_h = ∇×Π¹(u×B) + η_H ∇×(Δ_h J).
+
+[hive-interpretation] Weyl w_{1+∞} Volterra kernel dressed by ε_H^h and Σ_H=ln S_H^h; charges Q_s^dressed = Q̃_{b,s}-M_s^H.
+
+[speculative] 3-D/guide-field lift vs Deka–Bacchini–Zhou–Granier arXiv:2605.20318 multiscale layer; finite-distance memory tower; scar-floor elevation at S_H>S_H^*.
+
+Relation: discrete geometric realisation of Huang operator; keeps ∇·B=0 exact while thickening sheets.
+
+### 06_Beresnyak_Lazarian_locality
+[standard] Beresnyak–Lazarian 2009 (0812.0812): 1024³ balanced MHD vs hydro, normal vs hyperviscosity. Differential bottleneck: hydro piles up under hyperviscosity; MHD spectra stay flatter ⇒ MHD cascade less local than K41. Alignment suite AA, AA2, PI, IM, IC, FC, DA; measured DA~k^{-0.207} etc.; alignment independent of δB/B_0 (contra Boldyrev field-line wandering limit). GS95 anisotropy r_∥/r_⊥∝λ^{2/3} as geometric diagnostic only. Warning: 512³–1024³ slopes untrustworthy even with normal viscosity.
+
+[hive-interpretation] Residuals R_BN, R_slope, R_AA, R_DA, R_loc, R_scar^BL09; R_4/3 mandatory, R_DA optional.
+
+[speculative] Volterra dressing by R_BN and ln(Re_eff/Re*).
+
+Relation: locality diagnostic between PP flux and Huang plasmoids; non-locality certificate for Crow/T^{ub} channels.
+
+### 07_baty_physical_plasmoid_trigger
+[standard] Baty arXiv:2604.02065 / PoP 2026: resistive Orszag–Tang at S~10^5. Physical plasmoids iff (1) seed near t(J_max)≳1.5 τ_A, (2) ε≥ε_c~10^{-5}, (3) k_sup covers unstable band. E_J(k)=k² E_B(k); convergence max E_J ≥ 10 E_J(k_max) valid AFTER islands (resolves García Morillo & Alexakis 2025 paradox). γ and N_p agree with Comisso et al. 2017; continuous noise lowers ε_c by 1–2 orders.
+
+[hive-interpretation] Residuals R_t, R_ε, R_k, R_γ, R_Np, R_EJ, R_Eω, R_phys, R_scar^Baty.
+
+Relation: ordinary-resistive trigger under Huang hyper layer; physical vs truncation certificate for Crow sheets.
+
+### 08_ogilvie_proctor_oldroyd_b_mhd
+[standard] Ogilvie & Proctor JFM 2003 / astro-ph/0212443: lim_{τ→∞} Oldroyd-B = lim_{η→0} MHD via upper-convected derivative. T_p = T+(μ_p/τ)1; T_m=BB/μ_0; three-field T_p=(1/μ_0)∑ B_i B_i. MRI-analog in rotating shear: γ_max=|A| when dΩ/dr<0; energy from shear not curvature. Map T_yy ↔ B_y²/μ_0. Elastic hoop Couette has NO MHD counterpart (forbidden).
+
+Work identity: ⟨τ:S⟩ ↔ -W_L (promoted from empirical to theorem).
+
+[hive-interpretation] Residuals R_De, R_Rm, R_UCM, R_map, R_MRI, R_{elastic↛MRI}, R_τS, R_scar^OP03.
+
+Relation: frozen-in braid between Lorentz Crow channel and viscoelastic toy; polymer-Maxwell identity for holographic ΔF.
+
+### 09_capocci_energy_flux_decomp
+[standard] Capocci–Johnson–Oughton–Biferale–Linkmann 2024/2025: Gaussian-filtered SGS fluxes Π_I, Π_M, Π_A, Π_D; W_ℓ conversion at scale ℓ (not cascade across ℓ). Maxwell flux dominated by SJΣ current-sheet thinning; vortex stretching SΩΩ strongly depleted vs hydro; Betchov kinematic constraints. Single-scale vs multi-scale split of every stress.
+
+Physical picture: large-scale strain thins sheets into magnetic shear → small-scale extensional flow; hive W_L<0 = back-reaction of thinning.
+
+[hive-interpretation] Residuals R_{W_ℓ}, R_SJΣ, R_VS, R_Betchov, R_s/m, R_scar^Cap.
+
+Relation: names Crow-sheet mechanism as SJΣ; upgrades BL09 locality and PP flux.
+
+### 10_kolluru_pandit_axisym_imhd_fts
+[standard] Kolluru & Pandit arXiv:2507.06842 / PRFluids 2026: axisymmetric ideal IMHD in cylinder; C=|b_0^θ|/|u_0^θ| selects morphology: C<1 square-wave shear FTS, C=1 exact Alfvénic stationarity, C>1 cusp FTS. CKS criterion ∫(||ω||_∞+||j||_∞)dt (MHD-BKM analog). Analyticity strip δ(t) from wall spectra S_T ~ |k|^{-n} e^{-k δ}; δ→0 singularity certificate. Pressure wall Neumann (u^θ)²-(b^θ)² drives morphology.
+
+[hive-interpretation] Residuals R_C, R_CKS, R_δ, R_sq, R_cusp, R_p, R_stat, R_scar^KP25.
+
+[speculative] Holographic reading: δ(t) = Euclidean distance of nearest complex singularity; GoldbergHexa pentaflake / ΔF.
+
+Relation: ideal wall blow-up under LogSerrin/BKM tower; precursor to Baty/Huang reconnection.
+
+### 11_panigrahi_nazaryan_viscochiral
+[standard] Panigrahi & Nazaryan arXiv:2608.26102: 2D electronic hydro with spatially inhomogeneous Hall viscosity η_H(y); uniform η_H invisible to incompressible bulk; ∇η_H supplies chiral body force ε_jl (∂_y η_H) ∇_l u. Enstrophy-transport identity across domain wall selects one vortex, extinguishes other. Control χ=Δη_H/μ, Γ=γρW/μ; viscochiral tongue χ_c~0.05. Predicted in valley-polarized Bernal bilayer graphene (χ≈0.33).
+
+[hive-interpretation] Residuals R_χ, R_Γ, R_H, R_ens, R_∇η, R_id, R_Ohm, R_scar^PN26; braids Srivastava–Mukerjee L^9 Berry-odd block and Pageard density-odd viscosity.
+
+[speculative] χ as spatially varying Berry connection; holographic chiral screen.
+
+Relation: Hall/odd-viscosity lane linking Lorentz Crow work (no net work of Hall gradient on incompressible field) to electron-hydro toys.
+
+### 12_lorentz_force_syk_joule
+[hive-interpretation]/[speculative] Narrative bridge: pure q v×B does no work on a point particle, but in strange-metal fluid Lorentz force drives (1) Joule/eddy braking, (2) magnetoresistance via cyclotron paths vs lattice, (3) SYK Planckian sink τ~ħ/k_B T as maximal chaos bound. Lorentz force = stirring rod; SYK = ultimate heat sink.
+
+Relation: speculative SYK–MHD energy-loss story feeding file 13 and AMP05 non-local T^{ub} reading.
+
+### 13_Lorentz_force_SYK_Navier_Stokes
+[hive-interpretation]/[speculative] Formalisation: MHD NS with J×B; Ohm J=σ_0(E+v×B) ⇒ magnetic braking -σ_0 B² v_⊥. SYK/Planckian bounds: τ^{-1}≈α k_B T/ħ; η/s ≥ ħ/(4π k_B) (KSS); ρ_e∝T. Dissipation function dE/dt = -η ∑(∂v_i/∂x_j)² - J²/σ_0. Magnetic field as macroscopic pump into quantum chaotic sink.
+
+Relation: continuum limit claimed for AMP05 plateau + Crow W_L; careful-before-toy for strange-metal MHD.
+
+### 14_Gert_Alekseev_Hall_viscous_rough_edges
+[standard] Gert & Alekseev arXiv:2608.26979: 2D electron Hall bar with edge roughness collapsed to speed a; Navier slip l_sl = l_ee ω_c/(1+β²); Gurzhi ξ=λW/2; contrast s=W/(2 τ_imp a). Exact V_x = V_D cosh(λy)/[cosh ξ (1+λ l_sl tanh ξ)]. ρ_xx Gurzhi formula; Hall correction δρ_xy = -2β ρ_D F/(1+(s-1)F); high-B saturation independent of a; Hall minimum iff s<1 (rough edges).
+
+[hive-interpretation] Residuals R_a, R_s, R_ξ, R_slip, R_V, R_xx, R_xy, R_sat, R_min, R_scar^GA26; boundary counterpart to PN26 bulk ∇η_H.
+
+Relation: Hall/edge roughness certificate for electron-hydro + odd-viscosity MHD residual stack.
+
+### 15_Chen_Miao_Zhang_BKM_MHD
+[standard] Chen–Miao–Zhang CMP 2007 / math/0701054: LP-BKM for 3D MHD — if sup_j ∫ ||Δ_j ω||_∞ dt < ∞ then smooth solution continues; current j may spike. Log Sobolev upgrades ||∇u||_∞. Physical reading: finite I_BKM + exploding max|j| ⇒ dissipative current sheet (not Euler blow-up).
+
+[hive-interpretation] Residuals R_BKM, R_j-spike, R_LP, R_log, R_sheet, R_scar^CMZ07; sharpens KP25 CKS; conditions Huang/Baty firing.
+
+[speculative] Holographic: I_BKM as boundary regularity; j-spike at finite I_BKM = reconnection on screen without gravitational catastrophe.
+
+Relation: core BKM certificate for Crow sheets vs true singularity.
+
+### 16_Capocci_Oughton_Linkmann_aniso_flux
+[standard] Capocci–Oughton–Linkmann arXiv:2607.06572: anisotropic extension with guide field B_0. W_ℓ = W_ℓ^iso + W_ℓ^anis = b_i S_ij^ℓ b_j + B_0 b_i ∂_z u_i^ℓ. Thinning Π^A_{ΣJS} and Lorentz feedback Π^M_{SJΣ} still dominant; vortex/strain self-amp suppressed; cyclic cancellations; enhanced scale invariance under strong B_0. W^anis: nonlinear dynamo (K→M at large/mid scales, M→K at dissipative scales).
+
+[hive-interpretation] Residuals R_W, R_anis, R_thin, R_supp, R_inv, R_cyc, R_scar^COL26.
+
+Relation: guide-field upgrade of Capocci09/Aluie conversion; Crow channel under strong B_0.
+
+### 17_Alexakis_Mininni_Pouquet_shell_transfer
+[standard] AMP05: shell transfers T^{uu}, T^{bb} local; T^{ub} non-local plateau — every magnetic shell K fed at nearly constant rate by all Q<K. Sum_{Q,K} T^{ub} = W_L. Forcing-scale velocity supplies ~60–75% of magnetic input; NL/L_K ~ 0.2 at small scales.
+
+Claims: LES/hyper-η that only damps local T^{bb} cannot kill Lorentz channel (matches η_h ~2% effect on ∫W_L).
+
+[hive-interpretation] Residuals R_loc^{uu/bb}, R_plat^{ub}, R_WL, R_τS, R_NL/L, R_scar^AMP05; partitions kinetic "scar force" into local cascade / plateau / numerical scar.
+
+[speculative] Plateau as spectral wormhole / throat injection for GoldbergHexa; SYK layer as continuum of non-local T^{ub}.
+
+Relation: spectral dictionary for Crow W_L; tension with AE10 (reconciled in 18).
+
+### 18_Aluie_Eyink_scale_locality
+[standard] Aluie–Eyink 2010: under Hölder 0<σ_u,σ_b<1 in inertial-inductive range, energy/cross/Elsässer fluxes are triad-local; magnetic helicity need not be. Stretching theorem: W converts only between comparable-scale u and B bands (band-pass identity W_u+W_b=0). Reconciles AMP05: linear-band "non-local conversion" often R_oct artefact; large-scale u can still do Lorentz work on small-scale current via EMF, but stretching itself does not dump k~2 velocity into k~200 magnetic. Batchelor Pr_m≫1 exception (σ_u→1) hands channel to Crow/hyper-resistivity.
+
+[hive-interpretation] Residuals R_σ, R_loc^Π, R_loc^±, R_W^band, R_W^scale, R_h^NL, R_oct, R_scar^AE10.
+
+[speculative] Local Π^± = bulk cascade; non-local Π^h + vanishing R_W^band = topology transfer without energy across scales (bit-thread analogue).
+
+Relation: closes locality/conversion braid with AMP05, COL26, CMZ07, Crow W_L.
+
+## Cross-cutting themes
+1. Crow / HIT Lorentz work: W_L = u·(J×B); incompressible ⟨B_i S_ij B_j⟩=−W_L hard constraint across stack; negative W_L stores energy in B.  Helios fix: stretch identity ⟨B_i S_ij B_j⟩=−W_L (not W_L=B_i B_j S_ij).
+2. Sheets & plasmoids: Capocci SJΣ thinning; Huang η_H thicken-without-killing-tension; Baty physical Ohmic trigger; CMZ07 dissipative sheet (finite LP-vorticity, spiked j).
+3. Cascades & locality: PP 4/3 exact flux; BL09 non-local MHD vs hydro bottleneck; AMP05 T^{ub} plateau; AE10 Hölder locality + stretching same-band theorem; COL26 anisotropic dynamo split.
+4. BKM / singularities: CMZ07 LP-BKM; KP25 CKS + δ(t) wall FTS; LogImprovedSerrin stubs.
+5. Hall / odd viscosity / two-fluid-adjacent: PN26 ∇η_H viscochiral; GA26 rough-edge Hall bar; Berry L^9; no net work of Hall gradient on incompressible flow.
+6. Viscoelastic–MHD: OP03 frozen-in De↔Rm; ⟨τ:S⟩↔-W_L; elastic Couette forbidden as MRI map.
+7. Qin / structure: H(div,0) exact sequence; Hodge Laplacian for η_H; commuting projectors protect ∇·B=0.
+8. SYK / strange-metal bridges (flagged): Lorentz as stirring rod into Planckian sink (12–13, AMP05 note 5).
+
+## Speculative / careful-before-toy list
+- [speculative] Weyl–Volterra / w_{1+∞} dressings of every residual (Huang, PP, BL09, OP03, Capocci, KP25, PN26, GA26, CMZ07, COL26).
+- [speculative] Holographic ΔF / GoldbergHexa scar-floor as production certificates for plasmoid/cascade/singularity events.
+- [speculative] SYK–Planckian identification of MHD Joule/eddy braking (12–13); maximal-chaos sink as continuum of T^{ub} plateau.
+- [speculative] δ(t) and I_BKM as holographic complex-singularity / screen regularity duals.
+- [speculative] AMP05 plateau as spectral wormhole / bit-thread; AE10 helicity non-locality as topology-without-energy-transfer.
+- [speculative] Viscochiral χ and Hall-bar s as Berry-connection domain-wall / edge roughness duals.
+- [hive-interpretation] Hive residual stack (Carlier 4-brackets, Boozer–Elder, Hopfion helicity, scar-floor) — keep as interpretation layer, not standard MHD theorem.
+- Careful-before-toy: do not map elastic hoop Couette to MRI (OP03); do not treat 1024³ slopes as asymptotic (BL09); do not read |J|/|B| at B≈0 (02); do not confuse W conversion with cascade across ℓ (Aluie/AE10/COL26); Batchelor-range σ_u→1 is outside AE10 hypotheses.
