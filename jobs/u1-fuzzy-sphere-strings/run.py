@@ -6,7 +6,8 @@ in the charge-n monopole sector of the fuzzy sphere (Aoki-Iso-Nagao hep-th/03121
 hep-th/9510083). Spec: Helios. Writes RESULTS.md (ONLY ever written by this script) next to itself.
 Run:  $env:PYTHONIOENCODING='utf-8'; python -B run.py
 Every number in RESULTS.md is printed from a variable. Thresholds are fixed in the parameter block below
-before the first run.
+before the first run. Fold-in (after Venus PASS / Helios PARTIAL): both-spin prefactor columns, rungs = N - n check,
+scope and Haldane lines; no threshold or Stage A code changed.
 """
 import os, sys, time, platform, hashlib
 import numpy as np
@@ -303,8 +304,15 @@ out(f"delta_k = |lambda_k^fuzzy / lambda_k^round - 1|, lambda_k^round = sqrt(k(k
     "degeneracy checked against n + 2k per sign. Rules (fixed before the run; Venus's additions agreed by Helios): the scan covers "
     f"n = 0..N-1 at each N; n* is found by linear interpolation in n between the neighbouring integers n0, n0+1 that bracket delta_1 = {DELTA_STAR:g} "
     "(first crossing), and x* = n*/N; the bracketing pair is printed; delta_1 at n = 0 is printed as the finite-N floor.")
+out("Fold-in (Venus): the last two columns use a prefactor built from both spins, the geometric mean of the base-spin and charge-sector "
+    "normalisations, a_gm = sqrt(a a_s) with a = 1/(L+1/2) and a_s = 1/(L'+1/2): D_gm = -a_gm^-1 Gamma^R (1 - Gamma^R Gamma^). "
+    "Gamma^R and Gamma^ are unchanged (Gamma^R keeps a, so (Gamma^R)^2 = 1); AIN's (A.1) allows any invertible O(a) prefactor. "
+    "The AIN-as-written columns, x* and the grade rule are unchanged.")
 out("")
 xstar = {}
+rungs = {}
+gm_max = 0.0
+gm_deg_ok = True
 closed_dev = 0.0
 ratio_dev = 0.0
 deg_ok = True
@@ -312,8 +320,8 @@ for N in N_B:
     L = (N - 1) / 2
     out(f"### N = {N}")
     out("")
-    out("| n | x = n/N | n/N^2 (printed only) | k | k/N (printed only) | lambda_k fuzzy | lambda_k round | degeneracy (fuzzy / n+2k) | delta_k |")
-    out("|---:|---:|---:|---:|---:|---:|---:|---|---:|")
+    out("| n | x = n/N | n/N^2 (printed only) | k | k/N (printed only) | lambda_k fuzzy | lambda_k round | degeneracy (fuzzy / n+2k) | delta_k | lambda_k both-spin prefactor | delta_k both-spin |")
+    out("|---:|---:|---:|---:|---:|---:|---:|---|---:|---:|---:|")
     d1s = []
     nmax_used = None
     n = 0
@@ -321,9 +329,13 @@ for N in N_B:
         o = module_ops(L, L - n / 2)
         w = specA[(N, n)] if (N, n) in specA else np.linalg.eigvalsh(o["D"])
         lv = levels(w)
+        a_gm = np.sqrt(o["a"] * (1.0 / ((L - n / 2) + 0.5)))
+        D_gm = -(1.0 / a_gm) * o["GR"] @ (np.eye(o["dim"]) - o["GR"] @ o["Gh"])
+        lv_gm = levels(np.linalg.eigvalsh(D_gm))
+        rungs[(N, n)] = len(lv)
         for k in range(1, K_LEVELS + 1):
             if k > len(lv):
-                out(f"| {n} | {n / N:.6f} | {n / N ** 2:.6f} | {k} | {k / N:.6f} | - | {lam_round(k, n):.6f} | level absent (only {len(lv)} positive levels) | - |")
+                out(f"| {n} | {n / N:.6f} | {n / N ** 2:.6f} | {k} | {k / N:.6f} | - | {lam_round(k, n):.6f} | level absent (only {len(lv)} positive levels) | - | - | - |")
                 continue
             lf, dg = lv[k - 1]
             lr_ = lam_round(k, n)
@@ -333,7 +345,11 @@ for N in N_B:
             ratio_dev = max(ratio_dev, abs((lf / lv[0][0]) / (lr_ / lam_round(1, n)) - 1))
             if k == 1:
                 d1s.append((n, dk))
-            out(f"| {n} | {n / N:.6f} | {n / N ** 2:.6f} | {k} | {k / N:.6f} | {lf:.6f} | {lr_:.6f} | {dg} / {deg_r(k, n)} | {dk:.6f} |")
+            lg = lv_gm[k - 1][0]
+            dgm = abs(lg / lr_ - 1)
+            gm_max = max(gm_max, dgm)
+            gm_deg_ok &= (lv_gm[k - 1][1] == deg_r(k, n))
+            out(f"| {n} | {n / N:.6f} | {n / N ** 2:.6f} | {k} | {k / N:.6f} | {lf:.6f} | {lr_:.6f} | {dg} / {deg_r(k, n)} | {dk:.6f} | {lg:.6f} | {dgm:.1e} |")
         nmax_used = n
         n += 1
     out("")
@@ -359,12 +375,33 @@ out(f"x* per N: " + "; ".join(f"N = {N}: {('%.6f' % v) if v is not None else 'no
 out(f"Degeneracy n + 2k per sign at every printed level: {deg_ok} [computed].")
 out(f"**Stage B: {'PASS' if B_ok else 'FAIL'}** (collapse in n/N) [computed].")
 out("")
+out(f"Both-spin prefactor column [identity: prefactor convention; computed]: max delta_k over all printed levels = {gm_max:.1e}; "
+    f"degeneracy n + 2k at every printed level: {gm_deg_ok}. With this prefactor the drift is zero, so delta_1 never reaches {DELTA_STAR:g} and x* does not exist.")
+out("")
 xc = 1 - 1 / (1 + DELTA_STAR) ** 2
-out("Reported only [post-hoc: pattern seen in a prototype before this run; verified here numerically, not proved]: every positive level "
+out("The drift is [identity: prefactor convention] (pattern first seen in a prototype before the graded run; verified numerically, not proved analytically): every positive level "
     f"of D_GW in the block is lambda_k = sqrt(k(k+n) N/(N-n)), k = 1..N-n. Max relative deviation over all printed levels = {closed_dev:.1e}; "
     f"level ratios lambda_k/lambda_1 equal the round ratios to max |rel. difference| = {ratio_dev:.1e}. So the drift is a uniform rescaling by "
     f"sqrt(N/(N-n)) = sqrt((2L+1)/(2L'+1)), the same for every k, and delta_1 = 1/sqrt(1 - n/N) - 1 reaches {DELTA_STAR:g} at "
     f"x = 1 - 1/(1+{DELTA_STAR:g})^2 = {xc:.6f}. The per-N spread in x* comes only from the linear interpolation on the integer-n grid.")
+out("")
+
+# Venus: positive levels (rungs) = N - n
+for N in N_A:
+    for n in N_CHARGE_A:
+        if n < N and (N, n) not in rungs:
+            rungs[(N, n)] = len(levels(specA[(N, n)]))
+rung_ok = all(v == N - n for (N, n), v in rungs.items())
+out("Rungs (Venus) [computed]: number of distinct positive levels of D_GW (AIN as written) per (N, n), checked against N - n. "
+    f"Sectors: all Stage A sectors plus the Stage B scans (n = 0..N-1 at N = {N_B}), {len(rungs)} in total.")
+out("")
+out("| N | rungs for n = 0, 1, 2, ... (n < N, sectors computed) | N - n | all equal |")
+out("|---:|---|---|---|")
+for N in sorted({k_[0] for k_ in rungs}):
+    ns = sorted(n for (NN, n) in rungs if NN == N)
+    out(f"| {N} | {', '.join(str(rungs[(N, n)]) for n in ns)} | {', '.join(str(N - n) for n in ns)} | {all(rungs[(N, n)] == N - n for n in ns)} |")
+out("")
+out(f"Rungs = N - n in every computed sector: {rung_ok} [computed].")
 out("")
 
 # ---------------- Stage C ----------------
@@ -407,13 +444,20 @@ out("")
 out("- Bonus [standard]: the Stage B targets lambda^2 = k(k+|n|), degeneracy |n|+2k, are also the angular levels of a charged spin-1/2 particle on the")
 out("  S^2 of a magnetically charged black-hole horizon (near-horizon AdS_2 x S^2), where the flux through S^2 plays the role of n (Wu-Yang monopole harmonics).")
 out(f"- Venus: N = brane count / resolution, n = number of strings; the n = 3 zero modes form j = 1 and rotate with d^1(beta) (checked above).")
+out("- Scope [standard]: the zero-mode count is topological (the index; it cannot change under small deformations), while the number and")
+out("  position of the excited levels depend on the cutoff and on the prefactor convention (rungs = N - n; drift = prefactor choice).")
+out("- Helios's reading [standard; Orion verifying]: an N-state fuzzy sphere is the lowest Landau level of a charge-(N-1) monopole")
+out("  (F. D. M. Haldane, Phys. Rev. Lett. 51 (1983) 605). Linking this to Akitti's bubble, where each string spends one unit of a fixed")
+out("  flux budget, is [assumed].")
 out("")
 grade = "PASS" if (A_ok and B_ok) else ("PARTIAL" if A_ok else "FAIL")
 out("## Summary")
 out("")
 out(f"- Stage A (zero modes = |n|, GW index): {'PASS' if A_ok else 'FAIL'}")
 out(f"- Stage B (collapse of x* in n/N): {'PASS' if B_ok else 'FAIL'} (x* spread {spread:.6f}, threshold {TH_SPREAD:g})")
-out(f"- **Overall grade: {grade}**")
+out(f"- **Overall grade under the fixed rule (mechanical): {grade}**")
+out("- Review (README sign-off): Venus maths PASS; Helios physics PARTIAL by his rule fixed beforehand - Stage A exact, Stage B void as a")
+out("  prediction because the drift is a prefactor convention [identity: prefactor convention].")
 out(f"- Runtime: {time.time() - T0:.0f} s [computed].")
 with open(os.path.join(HERE, "RESULTS.md"), "w", encoding="utf-8", newline="\n") as f:
     f.write("\n".join(OUT) + "\n")
