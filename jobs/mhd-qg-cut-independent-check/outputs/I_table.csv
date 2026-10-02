@@ -1,0 +1,5 @@
+test,passed,number
+I1 support,0,on=0.000397887; off=0.000397887; ratio=1.0000 (need >3 to peak on Γ)
+I2 sheet,0,U(2π)=0.9987+0.0518j  |U+1|=1.9993; U(4π)=0.9946+0.1034j  |U-1|=0.1036; enclosed flux Bπr²=0.0518 rad (not fitted)
+I3 map,0,max|U−Φ_hand|=1.9993 (need <0.2); corr(Arg U; n_MHD)=0.866; corr(Arg U; θ)=0.697
+I4 control,0,shift drop-ratio=1.0000 (need >3); |U-1|_on=0.0518; |U-1|_off=0.0518; scramble CS on/off=1.0368

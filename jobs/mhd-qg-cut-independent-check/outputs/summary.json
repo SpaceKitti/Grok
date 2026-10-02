@@ -1,0 +1,28 @@
+{
+  "option": "G1",
+  "B": 1.0,
+  "eps_ep": 0.5136808923740412,
+  "sentence": "independent gravity letter does not land on \u0393",
+  "rows": [
+    {
+      "name": "I1 support",
+      "passed": false,
+      "number": "on=0.000397887, off=0.000397887, ratio=1.0000 (need >3 to peak on \u0393)"
+    },
+    {
+      "name": "I2 sheet",
+      "passed": false,
+      "number": "U(2\u03c0)=0.9987+0.0518j  |U+1|=1.9993; U(4\u03c0)=0.9946+0.1034j  |U-1|=0.1036; enclosed flux B\u03c0r\u00b2=0.0518 rad (not fitted)"
+    },
+    {
+      "name": "I3 map",
+      "passed": false,
+      "number": "max|U\u2212\u03a6_hand|=1.9993 (need <0.2); corr(Arg U, n_MHD)=0.866, corr(Arg U, \u03b8)=0.697"
+    },
+    {
+      "name": "I4 control",
+      "passed": false,
+      "number": "shift drop-ratio=1.0000 (need >3); |U-1|_on=0.0518, |U-1|_off=0.0518; scramble CS on/off=1.0368"
+    }
+  ]
+}
