@@ -126,6 +126,25 @@ def stage_a():
     eqs = [sp.Eq(poly.coeff(y, 0), 0), sp.Eq(poly.coeff(y, 2), 0)]
     sol = sp.solve(eqs, [c, kap], dict=True)
     w(f"Independent route: the ansatz Ψ = x^(−κ)G·(c·y/x, 1) with Q Ψ = 0 in the lower component gives {sol} [computed].")
+    # [post-hoc, second pass] print the next-to-leading-order balance term by term, so γ can be checked from the page
+    nrm = lambda e: sp.expand(sp.simplify(e / (x**(-kap) * G)) * x)
+    lw_long = nrm(Qop(*a_ans, x, y, long=True, trans=False)[1])
+    lw_py = nrm(-sp.I * sp.diff(a_ans[0], y))
+    lw_xy = nrm(sp.I * x * y * a_ans[0])
+    lw_sum = sp.expand(lw_long + lw_py + lw_xy)
+    assert sp.simplify(lw_sum - poly) == 0
+    c2 = sp.solve(eqs[1], c)[0]
+    k2 = sp.solve(eqs[0].subs(c, c2), kap)[0]
+    assert k2 == sol[0][kap]
+    w("**Next-to-leading-order balance [computed, post-hoc print].** Lower component of QΨ = 0 for the ansatz above, at order "
+      "x^(−κ−1)·G (counting y² ~ 1/x in the valley). This is the order where the longitudinal term −σ₃p_x (p_x carries σ₃ in this Q, "
+      "as in FGHHY's Q_F = i·diag(∂x, −∂x) + …) enters as a 1/x correction. Each line is x·[QΨ]₂/(x^(−κ)G):")
+    w(f"- from −σ₃p_x acting on x^(−κ)G: {lw_long}")
+    w(f"- from σ₁p_y acting on the upper component c·y/x·x^(−κ)G: {lw_py}")
+    w(f"- from σ₂xy acting on the upper component: {lw_xy}")
+    w(f"- sum: {lw_sum} = 0 (equal to the ansatz polynomial above: True [identity])")
+    w(f"- coefficient of y⁰: {eqs[0].lhs} = 0; coefficient of y²: {eqs[1].lhs} = 0")
+    w(f"- y² fixes c = {c2}; then y⁰ gives **κ = {k2}**, so γ = κ = {k2} [computed].")
     kv = sol[0][kap]
     cv = sol[0][c]
     assert kv == ksol[0]
@@ -274,7 +293,7 @@ def stage_b0():
       f"and spec(Q_h) = spec(K₊) ∪ spec(K₋) to {d_union:.1e}; K₊ and K₋ are isospectral to {d_pm:.1e}; ± symmetry to {d_sym:.1e}; "
       f"M antisymmetric to {anti:.1e}.")
     w(f"- Dimension parity: a real antisymmetric matrix of odd size has an exact zero eigenvalue. On Job Six's vertex grid (n odd, "
-      f"here n = {gv.size}) the sector has min |λ| = {zv:.1e}, a forced lattice zero mode that is not physics. The cell-centred grid "
+      f"here n = {gv.size}) the sector has min |λ| = {zv:.1e}, a forced lattice zero mode that is not physics [lattice artefact: doubler index]. The cell-centred grid "
       f"(n even, n = {g.size}) has min |λ| = {zc:.3e}. All scans below therefore use cell-centred grids with n even.")
     w(f"Identity checks: {'PASS' if ok else 'FAIL'} (tolerance {ID_TOL:g}).")
     w("- Doublers (fermion doubling): the 4th-order central D also vanishes at k = π/h, with group speed 5/3. Each doubler "
@@ -444,7 +463,9 @@ def main():
     w(f"Generated {now.strftime('%Y-%m-%d %H:%M:%S')} local (UTC{z[:3]}:{z[3:]}). Python {platform.python_version()}, numpy {np.__version__}, "
       f"scipy {scipy.__version__}, sympy {sp.__version__}.")
     w("Tags: [identity] [computed] [assumed input] [prediction] [standard] [standard: beyond toy] [grid-step] [finite-size] "
-      "[hive-interpretation] [post-hoc]. Verdict rules fixed in run.py before the first run.")
+      "[hive-interpretation] [post-hoc] [lattice artefact: doubler index]. Verdict rules fixed in run.py before the first run.")
+    w("Second pass [post-hoc]: run.py rerun once to print the next-to-leading-order balance (Stage A) and to tag the odd-grid zero "
+      "(Stage B.0). Parameters, seeds and verdict rules are unchanged from the first run.")
     w("")
     A = stage_a()
     okb0 = stage_b0()
