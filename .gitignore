@@ -5,3 +5,20 @@ dist/
 build/
 *.log
 .DS_Store
+
+# added by Ledger 2026-10-02
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+*.egg-info/
+/ns/
+/pdf/*.pdf
+/hive-textbook/STFC_2023_MHD_Intro.pdf
+/hive-textbook/refs/ji-princeton-mhd-lecture-notes.pdf
+/bot info/
+*.err
+*.npy
+*.npz
+*.h5
+*.hdf5
