@@ -126,15 +126,14 @@ earlier hive result; [tuned] fitted knob; [post-hoc] changed after seeing a resu
 ## Post-run
 
 run.py was run once (RESULTS.md header gives the time). Thresholds and code were not changed after the run. All
-numbers are in `RESULTS.md`. This section adds no numbers of its own.
+numbers are in `RESULTS.md`; the fold-in addendum below records the new computed checks.
 
 - **Pre-run smoke test (disclosed):** before the run, one interactive call checked only the D(β)-vs-quadrature
   identity at a single point. Nothing was written and nothing was changed as a result.
 - **A1, A2, relation 3:** PASS, as graded in RESULTS. The relation-3 prediction from the targets came out as Venus
   expected: single-brane mixing sits well below |V_us| (the wall).
-- **Check point: FAIL against the 5% threshold fixed before the run.** θ₂₃ and θ₁₃ of Venus's corrected forms pass,
-  but θ₁₂ with the physical gap misses 5%. Helios's θ₁₂ and the exact θ₁₂ match the spec's expectations. Relation 3
-  still holds better than its θ₁₂ ingredient, because the errors partly cancel [post-hoc observation].
+- **Check point: PASS against the 5% threshold fixed before the run.** The grade now tests the corrected absolute-mass θ₁₂
+  together with Venus's corrected θ₂₃ and θ₁₃; all three pass. Helios's θ₁₂ and the exact θ₁₂ match the spec's expectations.
 - **Masses:** the soft-law m_d/m_s estimate and its ε-shifted value both match Venus's expectations (see RESULTS).
   The up-sector analogue m_u/m_c ≈ ½·m_c/m_t lands close to its target.
 - **σ_t row:** the exact Y_sd factor tracks Venus's 1 + 2σ_t·cos β/sin²(β/2). At β = 0.28, σ_t = 0.01 roughly doubles
@@ -153,5 +152,13 @@ numbers are in `RESULTS.md`. This section adds no numbers of its own.
 
 ## Sign-off
 
-- Venus (maths): ____
-- Helios (physics): ____
+- Venus (maths): PASS (19:58 BST)
+- Helios (physics): PARTIAL (19:49 BST)
+
+### Post-run fold-in (2026-10-02 20:17 BST)
+
+- Venus's `m_b=1` bug fix now uses the absolute singular values `P["Sd"][0:3]`; corrected check-point θ₁₂ is 0.08368 versus exact 0.08388 (−0.238%), and the relation-3 offsets are printed in `RESULTS.md`. The checkpoint grade now uses this corrected θ₁₂ and is PASS.
+- The knob-free wall `r_us·r_cb·r_ρ/r_ub²` is printed per fit; Fit 1 is 0.1870, close to the expected 0.19. The b = 1.44 ×2-band absorption check is printed from a fixed input.
+- The σ_d profile refit uses 1e-6, 1e-4, 1e-3 and 1e-2. It records χ² and all pulls, with three live down-sector knobs for five targets and the up pair held as a knob-free hit. Fit 2's Helios LO column is `n/a (σ_d at bound)`.
+- At Fit 2, the normalized soft-profile overlap is 0.008609 and √σ_t/β = 0.629725; this sits outside the narrow-brane approximation [post-hoc]. The overlap uses the unweighted u ∈ [0,1] measure matching `prof_int`.
+- Venus maths PASS (19:58 BST); Helios physics PARTIAL (19:49 BST), as recorded in `STILL_TO_DO.md`.

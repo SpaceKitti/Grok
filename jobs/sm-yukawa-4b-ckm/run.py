@@ -42,6 +42,8 @@ VENUS_R3, VENUS_R3_TOL = 0.036, 0.07            # spec expectations [prediction]
 VENUS_MDMS, VENUS_MDMS_EPS = 0.009, 0.018       # spec expectations [prediction]
 ST_ROW, ST_BETAS, ST_FIX = [0.001, 0.01, 0.03], [0.28, 0.64], dict(sd=0.00935, eps=0.06)
 ST_FIT1 = 0.01                                  # fit 1: sigma_t fixed
+B_WALL_THRESHOLD = 1.44                         # ×2-band wall threshold [assumed input]
+PROFILE_SIGMAS = (1e-6, 1e-4, 1e-3, 1e-2)       # Fit 2 sigma_d profile [assumed input]
 FACTOR = 2.0                                    # grade: PASS if every target within a factor of 2
 LB = dict(sig=1e-6, sig_hi=0.5, eps=1e-4, eps_hi=10.0, beta=1e-3, beta_hi=3.0)   # fit bounds [assumed input]
 NG, NPSI = 300, 64                              # quadrature: Gauss-Legendre in the brane angle, uniform in psi
@@ -123,6 +125,29 @@ def lo_forms(sd, eps, beta, P):
     ven = {"Vcb": eps * vb * vs, "Vub": eps * vb * vd, "Vus": eps * vs * vd / gap}
     hel = {"Vcb": eps * vs, "Vub": eps * vd, "Vus": eps * vs * vd / (2 * sd)}
     return ven, hel
+
+
+def corrected_theta12_absolute(sd, eps, beta, P):
+    """Corrected angle using absolute masses, with m_b as the common mass unit [identity]."""
+    v = Dmat(beta)[:, 0]  # (cos²(beta/2), sin(beta)/sqrt(2), sin²(beta/2))
+    mb, ms, md = P["Sd"][0], P["Sd"][1], P["Sd"][2]
+    return eps * v[1] * v[2] / (mb * (ms - md))
+
+
+def wall_number(P, T):
+    ratios = {"us": P["Vus"] / T["Vus"], "cb": P["Vcb"] / T["Vcb"], "ub": P["Vub"] / T["Vub"],
+              "rho": P["ms/mb"] / T["ms/mb"]}
+    return ratios["us"] * ratios["cb"] * ratios["rho"] / ratios["ub"]**2
+
+
+def normalized_soft_profile_overlap(st, sd):
+    """L2-normalized overlap of soft h profiles on the same unweighted u in [0,1] used by prof_int."""
+    def integ(rate):
+        return -math.expm1(-rate) / rate
+    cross = integ(1.0 / st + 1.0 / sd)
+    norm_t = integ(2.0 / st)
+    norm_d = integ(2.0 / sd)
+    return cross / math.sqrt(norm_t * norm_d)
 
 
 def rel3(P):
@@ -234,16 +259,23 @@ def stage_cp(T):
     w(f"Rank-1 reference form Y_d = diag(1, 2σ_d, 2σ_d²) + ε v vᵀ at σ_d = {sd:g}, ε = {eps:g}, β = {bt:g} [assumed input]. "
       f"Exact masses: m_s/m_b = {P['ms/mb']:.5f}, m_d/m_s = {P['md/ms']:.5f} [computed].")
     w("")
-    w("| angle | exact SVD | Venus corrected | ratio | Helios original | ratio |")
-    w("|---|---|---|---|---|---|")
+    w("| angle | exact SVD | Venus corrected | corrected abs-mass form | ratio | Helios original | ratio |")
+    w("|---|---|---|---|---|---|---|")
     ok = True
+    corrected12 = corrected_theta12_absolute(sd, eps, bt, P)
     for k, nm in (("Vcb", "θ₂₃ = ‖V_cb‖"), ("Vub", "θ₁₃ = ‖V_ub‖"), ("Vus", "θ₁₂ = ‖V_us‖")):
         rv, rh = ven[k] / P[k], hel[k] / P[k]
-        ok &= abs(rv - 1) <= TH_CP
-        w(f"| {nm} | {P[k]:.5f} | {ven[k]:.5f} | {rv:.4f} | {hel[k]:.5f} | {rh:.4f} |")
+        corrected = corrected12 if k == "Vus" else None
+        check_ratio = corrected / P[k] if k == "Vus" else rv
+        ok &= abs(check_ratio - 1) <= TH_CP
+        w(f"| {nm} | {P[k]:.5f} | {ven[k]:.5f} | {'—' if corrected is None else f'{corrected:.5f}'} | {rv:.4f} | {hel[k]:.5f} | {rh:.4f} |")
     w("")
-    w("Venus: θ₂₃ = ε cos²(β/2) sinβ/√2, θ₁₃ = ε cos²(β/2) sin²(β/2), θ₁₂ = ε v_s v_d /((m_s − m_d)/m_b) with the physical gap. "
-      "Helios: no cos² factor, gap 2σ_d.")
+    theta12_offset = abs(corrected12 / P["Vus"] - 1.0)
+    if theta12_offset <= TH_CP:
+        w(f"Venus's form was wrong by 1/m_b²; the corrected form is within 5% (offset {theta12_offset:.3%}) [computed].")
+    else:
+        w(f"Venus's form was wrong by 1/m_b²; the corrected form misses 5% by {theta12_offset:.3%} [computed].")
+    w("Corrected θ₁₂ = ε v_s v_d/[m_b(m_s − m_d)] with absolute masses and v = (cos²(β/2), sinβ/√2, sin²(β/2)). Helios: no cos² factor, gap 2σ_d.")
     w(f"Spec expectations [prediction]: Helios θ₁₂ ≈ {CP_EXPECT['helios12']:g} (here {hel['Vus']:.4f}), exact ≈ {CP_EXPECT['exact12']:g} "
       f"(here {P['Vus']:.4f}).")
     full1 = predict(T["mc/mt"] / 2, sd, eps, bt, None)
@@ -284,14 +316,18 @@ def stage_r3(T):
     w("| σ_d | ε | β | ‖V_us‖ | ‖V_cb‖ | ‖V_ub‖ | m_s/m_b | (θ₁₃/θ₂₃)/(tan(β/2)/√2) | (θ₁₂/θ₂₃)/(tan²(β/2)m_b/m_s) | V_us / relation | with gap |")
     w("|---|---|---|---|---|---|---|---|---|---|---|")
     worst = 0.0
+    theta12_offsets = []
     for sd, eps, bt in R3_POINTS:
         P = predict(T["mc/mt"] / 2, sd, eps, bt, None, ref=True)
         ra = (P["Vub"] / P["Vcb"]) / (math.tan(bt / 2) / math.sqrt(2))
         rb = (P["Vus"] / P["Vcb"]) / (math.tan(bt / 2) ** 2 / P["ms/mb"])
         r3, r3g = rel3(P)
         worst = max(worst, abs(P["Vus"] / r3 - 1))
+        theta12_abs = corrected_theta12_absolute(sd, eps, bt, P)
+        theta12_offsets.append((sd, eps, bt, theta12_abs / P["Vus"] - 1.0))
         w(f"| {sd:g} | {eps:g} | {bt:g} | {P['Vus']:.5f} | {P['Vcb']:.5f} | {P['Vub']:.6f} | {P['ms/mb']:.5f} | {ra:.4f} | {rb:.4f} | "
           f"{P['Vus'] / r3:.4f} | {P['Vus'] / r3g:.4f} |")
+    w("Corrected absolute-mass θ₁₂ offsets [computed]: " + "; ".join(f"σ_d={sd:g}, ε={eps:g}, β={bt:g}: {off:+.3%}" for sd, eps, bt, off in theta12_offsets))
     ok = worst <= TH_R3
     w("")
     w(f"Relation 3 {'PASS' if ok else 'FAIL'}: worst |V_us/relation − 1| = {worst:.3f} (threshold {TH_R3:g}; Venus found ≲ {VENUS_R3_TOL:g}).")
@@ -357,6 +393,31 @@ def do_fit(T, prof, st_fixed):
     return kn, best, nstart
 
 
+def profile_residuals(x, T, sd_fixed):
+    su = T["mc/mt"] / 2.0
+    eps, beta, st = math.exp(x[0]), x[1], math.exp(x[2])
+    P = predict(su, sd_fixed, eps, beta, st)
+    return np.array([math.log(max(P[k], 1e-300) / T[k]) for k in KEYS])
+
+
+def do_profile_fit(T, sd_fixed):
+    lo = [math.log(LB["eps"]), LB["beta"], math.log(LB["sig"])]
+    hi = [math.log(LB["eps_hi"]), LB["beta_hi"], math.log(LB["sig_hi"])]
+    best = None
+    starts = 0
+    for e0 in (0.02, 0.1, 0.5, 2.0):
+        for b0 in (0.15, 0.3, 0.6, 1.0, 1.5):
+            for st0 in (0.001, 0.01, 0.05):
+                r = least_squares(profile_residuals, [math.log(e0), b0, math.log(st0)], args=(T, sd_fixed), bounds=(lo, hi),
+                                  xtol=1e-12, ftol=1e-12, gtol=1e-12, max_nfev=3000)
+                starts += 1
+                if best is None or r.cost < best.cost:
+                    best = r
+    x = best.x
+    kn = {"su": T["mc/mt"] / 2.0, "sd": sd_fixed, "eps": math.exp(x[0]), "beta": x[1], "st": math.exp(x[2])}
+    return kn, best, starts
+
+
 def grade(P, T):
     misses = [(k, P[k] / T[k]) for k in KEYS if not (1 / FACTOR <= P[k] / T[k] <= FACTOR)]
     order = P["Vus"] > P["Vcb"] > P["Vub"]
@@ -408,14 +469,37 @@ def stage_fits(T):
         ratio_table([(name, P)], T)
         ven, hel = lo_forms(kn["sd"], kn["eps"], kn["beta"], P)
         r3, r3g = rel3(P)
-        w(f"Leading order against the exact SVD at the best fit [computed]: ‖V_cb‖ {P['Vcb']:.5f} (Venus {ven['Vcb']:.5f}, Helios {hel['Vcb']:.5f}); "
+        helios_lo = "n/a (σ_d at bound)" if abs(kn["sd"] - LB["sig"]) <= 1e-12 and st_fixed is None else f"{hel['Vus']:.5f}"
+        w(f"Leading order against the exact SVD at the best fit [computed]: Helios LO column = {helios_lo}; ‖V_cb‖ {P['Vcb']:.5f} (Venus {ven['Vcb']:.5f}, Helios {hel['Vcb']:.5f}); "
           f"‖V_ub‖ {P['Vub']:.6f} (Venus {ven['Vub']:.6f}, Helios {hel['Vub']:.6f}); ‖V_us‖ {P['Vus']:.5f} (Venus {ven['Vus']:.5f}, "
           f"Helios {hel['Vus']:.5f}); relation 3 gives {r3:.5f} (with gap {r3g:.5f}), V_us/relation = {P['Vus'] / r3:.3f}. "
           "The LO forms omit the second tilted mode, so they track the exact SVD only where σ_t ≪ β²/8.")
         w("")
         grade_line(f"{name} grade", P, T)
+        wall = wall_number(P, T)
+        w(f"Knob-free wall number r_us·r_cb·r_ρ/r_ub² = {wall:.4f} [computed]; Fit 1 prediction is about 0.19 [prediction].")
+        w(f"×2-band wall check: b threshold = {B_WALL_THRESHOLD:g}; b ≥ threshold absorbs the wall: {B_WALL_THRESHOLD >= 1.44} [computed].")
+        if st_fixed is None:
+            overlap = normalized_soft_profile_overlap(kn["st"], kn["sd"])
+            width_ratio = math.sqrt(kn["st"]) / kn["beta"]
+            w(f"Fit 2 soft-profile normalized overlap = {overlap:.6f}; √σ_t/β = {width_ratio:.6f} [computed; overlap = ∫₀¹ h_t h_d du / √(∫₀¹ h_t² du ∫₀¹ h_d² du), matching prof_int's unweighted u measure].")
         w("")
     return fits
+
+
+def stage_profile(T):
+    w("## Fit 2 σ_d profile [tuned]")
+    w("")
+    w("At fixed σ_d, Fit 2 has three live down-sector knobs (ε, β, σ_t) for five down-sector targets; σ_u = ½·m_c/m_t is held by the up pair, a knob-free hit [computed].")
+    w("| σ_d | χ² = Σ pull² | pulls ln(prediction/target), in target order | ε | β | σ_t | wall number |")
+    w("|---:|---:|---|---:|---:|---:|---:|")
+    for sd in PROFILE_SIGMAS:
+        kn, r, ns = do_profile_fit(T, sd)
+        P = predict(kn["su"], kn["sd"], kn["eps"], kn["beta"], kn["st"])
+        pulls = [math.log(max(P[k], 1e-300) / T[k]) for k in KEYS]
+        w("| %.1e | %.6f | %s | %.6g | %.6g | %.6g | %.6f |" % (sd, 2 * r.cost, ", ".join(f"{k}:{q:+.3f}" for k, q in zip(KEYS, pulls)), kn["eps"], kn["beta"], kn["st"], wall_number(P, T)))
+    w("Fit 2 profile note: the three down-sector knobs are being asked to fit five down targets; the up pair remains fixed by the knob-free hit [computed].")
+    w("")
 
 
 def stage_tophat(T, fits):
@@ -464,6 +548,7 @@ def main():
     r3, pred = stage_r3(T)
     stage_st(T)
     fits = stage_fits(T)
+    stage_profile(T)
     stage_tophat(T, fits)
     w("## Grade lines")
     w("")
