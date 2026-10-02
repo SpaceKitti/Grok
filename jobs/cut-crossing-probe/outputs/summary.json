@@ -1,0 +1,54 @@
+{
+  "sentence": "wall-probe works; no named letter sees the wall",
+  "table": [
+    {
+      "family": "P0 pair A labels",
+      "J_on": 0.32592973216179705,
+      "J_off": 0.03985268335730269,
+      "ratio": 8.178363530496679,
+      "verdict": "sees the wall"
+    },
+    {
+      "family": "P1 CS",
+      "J_on": 0.0,
+      "J_off": 0.0,
+      "ratio": 0.0,
+      "verdict": "misses the wall"
+    },
+    {
+      "family": "P2 foam",
+      "J_on": 1.7320508075688772,
+      "J_off": 0.0,
+      "ratio": 1.7320508075688772e+16,
+      "verdict": "inserted"
+    },
+    {
+      "family": "P3 holo",
+      "J_on": 0.0,
+      "J_off": 0.0,
+      "ratio": 0.0,
+      "verdict": "misses the wall"
+    },
+    {
+      "family": "P4 worldsheet",
+      "J_on": 0.1,
+      "J_off": 0.1,
+      "ratio": 0.999999999999999,
+      "verdict": "global junk"
+    },
+    {
+      "family": "P5 hybrid",
+      "J_on": 0.0,
+      "J_off": 0.0,
+      "ratio": 0.0,
+      "verdict": "misses the wall"
+    },
+    {
+      "family": "P6 uniform U(1) control",
+      "J_on": 0.0125,
+      "J_off": 0.06,
+      "ratio": 0.208333333333333,
+      "verdict": "global junk"
+    }
+  ]
+}
