@@ -199,4 +199,12 @@ Post-run (2026-10-02): Berry wording fix: each hole uses its real size A_c count
 
 Post-run (2026-10-02): NanoRibbon go accepted as Akitti approval. [post-hoc] run.py now prints a parameter scan over occupancy-map scale, window centre/half-width, and phi_0 starts; the fixed default remains 0 frozen vacua.
 Post-run (2026-10-02): [post-hoc] surviving_vacua(vacua, rho_window, spectrum_filter) plus --vacua-json is the Job Two spectrum hook; barriers select stops and the Betti/Berry filter only labels them.
-Post-run (2026-10-02): [post-hoc] Job Two RESULTS_final.md was not present, so no spectrum filtering was applied; the hook needs vacua carrying rho_res, field_content, and spectrum.
+Post-run (2026-10-02): [post-hoc] Job Two RESULTS_final.md was read in read-only mode; the hook needs vacua carrying rho_res, field_content, and spectrum, and the final grid applies the n=3/three-generation compatibility predicate.
+Post-run (2026-10-02): [post-hoc] Added an explicit assumed Job Two alt-model map p(n,R)=clip((|n|/3)(1/R)^2,0,1), with raw m=16 b1 and rho_res reported over a small (n,R) grid; no Job Two file was changed.
+Post-run (2026-10-02): [post-hoc] Empty-default diagnosis records barrier stopping, the phi_0 grid, extensive raw b1, and the negligible Berry term separately; future intensive b1/face or largest-cluster-share use remains an option rather than a default change.
+Post-run (2026-10-02): [post-hoc] Read-only Job Two RESULTS_final.md is now available: n=3 with x=+/-1 gives three generations; the Higgs is an unfluxed scalar with constant mode and l(l+1)/R^2 tower; KK, Yukawa, SO(3), and anomaly-scaling data are carried into the assumed (n,R) grid metadata.
+Post-run (2026-10-02): [post-hoc] Read-only X_WINDOW_DEFS.md confirms 0.010-0.030, clip(-phi/20), and phi_0 are assumed rather than Akitti-defined; borrowed p_c values 0.5/0.7055/0.38 and scar floor ~0.041 are cross-checked, and the optional CSK theta-lock is not used.
+Post-run (2026-10-02): [post-hoc] Bridge wording fix adds the p=n/(3R^2) [identity] degeneracy, code-derived analytic R-bands, and Venus band comparisons.
+Post-run (2026-10-02): [post-hoc] The Job Two rho-count is explicitly tagged [grid-step]; p_c=1/2 survivors are tagged [finite-size], and n=3 spectrum selection is marked [by construction].
+Post-run (2026-10-02): [post-hoc] Bridge wording now identifies n/R^2 with the assumed S2 magnetic-field-strength map, marks the R grid as an off-shell coupling scan, and records radion fixing/stability caveats.
+Post-run (2026-10-02): [post-hoc] Cosmetic wording: the computed n=3 narrow band supersedes Venus's hand estimate because the latter came from rounded rows.

@@ -18,7 +18,7 @@ import percolation as PC
 import potential as PT
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-FOREIGN = ["X_NOTES.md", "X_POSTS_verbatim.md"]
+FOREIGN = ["X_NOTES.md", "X_POSTS_verbatim.md", "X_WINDOW_DEFS.md"]
 
 # ---- assumed inputs (copied from README.md) ----
 EPS_V = 1.0
@@ -72,6 +72,15 @@ def surviving_vacua(vacua, rho_window=WINDOW, spectrum_filter=None):
 
 def format_vacua(vacua):
     return "[" + "; ".join(v.get("id", "<unnamed>") for v in vacua) + "]"
+
+
+def job_two_assumed_map(flux_n, radius_R):
+    """[assumed input] alt-model map from (flux n, radius R) to occupancy p.
+
+    The explicit toy choice is p = clip((|n|/3) * (1/R)^2, 0, 1); b1 is then
+    obtained from the m=16 percolation observable at that p in main().
+    """
+    return float(min(1.0, max(0.0, (abs(float(flux_n)) / 3.0) * (1.0 / float(radius_R)) ** 2)))
 
 
 def parse_args(argv=None):
@@ -411,6 +420,9 @@ def main(argv=None):
     w("Default surviving vacua [hook, computed]: %s" % format_vacua(surviving_vacua(default_records)))
     w("The default result remains 0 frozen vacua: barriers determine which stops are reached; the Betti/Berry filter only labels a reached stop by rho_res.")
     w("Hook: surviving_vacua(vacua, rho_window=WINDOW, spectrum_filter=None); --vacua-json PATH accepts a JSON list carrying rho_res, field_content, and spectrum [post-hoc].")
+    w("Input provenance [post-hoc]: Akitti's posts define qualitative scars/MBL and a narrow structure-formation window, but not these numeric window bounds, p(phi), phi_0, k, or a Berry formula. The numerical window, clip(-phi/20), starts, m=16 observable, and all scan maps below are [assumed input].")
+    w("Reference values [Akitti post, borrowed value; read-only X_WINDOW_DEFS.md]: p_c = 0.5 (site, this toy), 0.7055 (DK), and 0.38 (3D bond-DP); the source says \"Above p_c scars survive ... below it ... MBL\". Scar floor ~0.041 is also quoted there. These borrowed p_c values are not tied to V(phi).")
+    w("The optional CSK theta-lock term mentioned in X_WINDOW_DEFS.md is not used; V(phi) is unchanged [assumed input].")
     scan_scales = (15.0, 20.0, 25.0)
     scan_rhos = {}
     for scale in scan_scales:
@@ -447,10 +459,143 @@ def main(argv=None):
     w("Selected scan choice [post-hoc]: occupancy scale = 15, window = [%.3f, %.3f], starts = 0, -7, -14." % selected_window)
     w("Surviving vacua [hook, computed]: %s" % format_vacua(selected_survivors))
     selected_ids = {v["id"] for v in selected_survivors}
+    w("")
+    w("Scar-threshold cross-check on selected scan [post-hoc]: survivors require the rho window and p >= p_c.")
+    w("| reference | threshold | survivors | surviving-vacua list |")
+    w("|---|---:|---:|---|")
+    for label, threshold in (("site (ours), [Akitti post, borrowed value]", 0.5), ("DK, [Akitti post, borrowed value]", 0.7055), ("3D bond-DP, [Akitti post, borrowed value]", 0.38)):
+        ref_survivors = [v for v in selected_records if v["id"] in selected_ids and v["p"] >= threshold]
+        w("| %s | %.4f | %d | %s |" % (label, threshold, len(ref_survivors), format_vacua(ref_survivors)))
+    floor_survivors = [v for v in selected_records if v["rho_res"] >= 0.041 and v["rho_res"] <= WINDOW[1]]
+    w("| scar floor, [Akitti post, borrowed value] | rho_res >= 0.041 | %d | %s |" % (len(floor_survivors), format_vacua(floor_survivors)))
+    w("The ~0.041 scar floor is above the assumed rho upper edge 0.030, so that borrowed threshold and this window have no overlap; it cannot select a survivor without changing an assumed input.")
     for record in selected_records:
         why = "survives: rho_res is inside the scan window" if record["id"] in selected_ids else "filtered out: rho_res is outside the scan window"
         w("- %s: p=%.4f, rho_res=%.5f; %s." % (record["id"], record["p"], record["rho_res"], why))
-    w("Separation [post-hoc]: the barriers/dynamics select the reached stops; the Betti/Berry filter does not move the field and only labels them. No Job Two RESULTS_final.md is present, so no spectrum filtering was applied; the hook awaits a list of vacua with rho_res, field_content, and spectrum.")
+    w("Separation [post-hoc]: the barriers/dynamics select the reached stops; the Betti/Berry filter does not move the field and only labels them. Job Two RESULTS_final.md was read read-only and its spectrum is carried in the grid records; no Job Two file or table was changed.")
+    w("Four causes of the empty default [post-hoc diagnosis]: (1) first-barrier stopping is by construction, so the filter cannot make the field cross a barrier; (2) the phi_0 grid never reaches the in-window minima, while the scan shows that changing starts/map can discriminate; (3) raw b_1 is extensive, so an intensive b_1 per face or largest-cluster share is the appropriate future observable, not a silent default change; (4) the m=16 Berry term is about 6.9e-6 versus a 1e-2 window edge, so it cannot change selection at this precision.")
+
+    # Job Two remains read-only/absent; this is an explicit assumed alt-model grid,
+    # not a claim about the final model file.
+    w("")
+    w("### Job Two alt-model grid [post-hoc; assumed input, read-only]")
+    w("Model content [Job Two RESULTS_final.md, read-only]: scalar Higgs on S2; at n=3, x=+/-1 gives three generations; the Higgs has one constant mode plus l(l+1)/R^2 tower; lowest fermion KK level is sqrt(|n|+1)/R; Yukawas are diagonal 1/(2*sqrt(pi)) while SO(3) holds; U(1)_X anomaly totals scale with n.")
+    w("Explicit map [assumed input]: p(n,R) = clip((|n|/3)*(1/R)^2, 0, 1), using flux density n/R^2 normalized to the Job Two n=3,R=1 point; b_1(n,R) = mean raw m=16 b_1(C) at p(n,R); rho_res is then the same m=16 Betti+Berry estimator used above. This map is not supplied by Job Two.")
+    w("p(n,R) = n/(3R^2) [identity, unclipped range]: the map sees only n/R^2, so it cannot distinguish fluxes at fixed n/R^2. Therefore (n=1,R=0.8) and (n=4,R=1.6) must have identical p, b_1 and rho_res under this assumed map.")
+    w("n/R^2 is the flux density: on S^2, B is proportional to n/R^2, so this occupancy map is really a map of magnetic field strength on the sphere [assumed input].")
+    w("n and R are not independent in a real solution: in an RSS-type Einstein-Maxwell flux compactification, the field equations fix R once the flux and 6D couplings (gauge coupling, Lambda_6, Planck scale) are given. R is the radion set by the solution, not a free knob [standard, not computed].")
+    w("Therefore scanning R at fixed n scans 6D coupling choices, and the R-bands per n are bands of coupling choices. Radion stability remains [not checked] in Job Two; the R grid is an [assumed input: off-shell scan].")
+
+    def rho_crossing(a, b, target):
+        fa = rho_at(a)[3] - target
+        fb = rho_at(b)[3] - target
+        if fa == 0.0:
+            return a
+        if fb == 0.0:
+            return b
+        if fa * fb > 0.0:
+            return 0.5 * (a + b)
+        for _ in range(24):
+            mid = 0.5 * (a + b)
+            fm = rho_at(mid)[3] - target
+            if fa * fm <= 0.0:
+                b, fb = mid, fm
+            else:
+                a, fa = mid, fm
+        return 0.5 * (a + b)
+
+    def rho_window_bands():
+        # Coarse p probes locate each band; rho_crossing then refines its edges.
+        bands = []
+        for p_lo_probe, p_hi_probe, dp in ((0.45, 0.57, 0.002), (0.95, 0.999, 0.001)):
+            probes = list(np.arange(p_lo_probe, p_hi_probe + 0.5 * dp, dp))
+            vals = [rho_at(float(q))[3] for q in probes]
+            inside = [WINDOW[0] <= q <= WINDOW[1] for q in vals]
+            i = 0
+            while i < len(probes):
+                if not inside[i]:
+                    i += 1
+                    continue
+                j = i
+                while j + 1 < len(probes) and inside[j + 1]:
+                    j += 1
+                if i == 0:
+                    left = probes[i]
+                else:
+                    target = WINDOW[0] if vals[i - 1] < WINDOW[0] else WINDOW[1]
+                    left = rho_crossing(float(probes[i - 1]), float(probes[i]), target)
+                if j == len(probes) - 1:
+                    right = probes[j]
+                else:
+                    target = WINDOW[0] if vals[j + 1] < WINDOW[0] else WINDOW[1]
+                    right = rho_crossing(float(probes[j]), float(probes[j + 1]), target)
+                bands.append((left, right))
+                i = j + 1
+        return bands
+
+    rho_p_bands = rho_window_bands()
+    w("Analytic R-bands [computed from the map]: invert p = n/(3R^2) at the code-derived rho-window p edges.")
+    w("| band | p_lo from rho(p) | p_hi from rho(p) |")
+    w("|---|---:|---:|")
+    for ib, (plo, phi) in enumerate(rho_p_bands, 1):
+        w("| band %d | %.6f | %.6f |" % (ib, plo, phi))
+    w("| flux n | R interval for band 1 | R interval for band 2 |")
+    w("|---:|---|---|")
+    for flux_n in (1, 2, 3, 4):
+        intervals = ["[%.6f, %.6f]" % (math.sqrt(flux_n / (3.0 * phi)), math.sqrt(flux_n / (3.0 * plo))) for plo, phi in rho_p_bands]
+        w("| %d | %s | %s |" % (flux_n, intervals[0] if intervals else "-", intervals[1] if len(intervals) > 1 else "-"))
+    if rho_p_bands:
+        expected_n2 = (1.11, 1.17)
+        expected_n3 = (1.36, 1.43)
+        actual_n2 = (math.sqrt(2.0 / (3.0 * rho_p_bands[0][1])), math.sqrt(2.0 / (3.0 * rho_p_bands[0][0])))
+        actual_n3 = (math.sqrt(3.0 / (3.0 * rho_p_bands[0][1])), math.sqrt(3.0 / (3.0 * rho_p_bands[0][0])))
+        n2_ok = max(abs(actual_n2[0] - expected_n2[0]), abs(actual_n2[1] - expected_n2[1])) < 0.02
+        n3_ok = max(abs(actual_n3[0] - expected_n3[0]), abs(actual_n3[1] - expected_n3[1])) < 0.02
+        w("Venus band checks [computed comparison]: n=2 actual [%.6f, %.6f] vs estimate [1.11, 1.17] (%s); n=3 actual [%.6f, %.6f] vs estimate [1.36, 1.43] (%s)." % (actual_n2[0], actual_n2[1], "agrees" if n2_ok else "DISAGREES", actual_n3[0], actual_n3[1], "agrees" if n3_ok else "DISAGREES"))
+        if len(rho_p_bands) > 1:
+            actual_n3_narrow = (math.sqrt(3.0 / (3.0 * rho_p_bands[1][1])), math.sqrt(3.0 / (3.0 * rho_p_bands[1][0])))
+            narrow_ok = max(abs(actual_n3_narrow[0] - 1.009), abs(actual_n3_narrow[1] - 1.013)) < 0.002
+            w("n=3 narrow band [computed from the map]: %.6f–%.6f (supersedes the hand estimate ≈1.009–1.013 from rounded rows)." % (actual_n3_narrow[0], actual_n3_narrow[1]))
+    job2 = []
+    for flux_n in (1, 2, 3, 4):
+        for radius_R in (0.8, 1.0, 1.2, 1.4, 1.6):
+            p_job = job_two_assumed_map(flux_n, radius_R)
+            b1_job, _b1s_job, _berry_job, rho_job, _frac_job = rho_at(p_job)
+            job2.append({
+                "id": "n=%g R=%.1f" % (flux_n, radius_R),
+                "flux_n": flux_n, "radius_R": radius_R, "p": p_job,
+                "b1": float(b1_job), "rho_res": float(rho_job),
+                "field_content": {
+                    "scalar": "Higgs", "compactification": "S2", "flux_n": flux_n,
+                    "zero_modes_per_x1_fermion": abs(flux_n),
+                    "higgs_constant_mode": True,
+                    "higgs_tower_mass2_l1": "mu^2 + 2/R^2",
+                },
+                "spectrum": {
+                    "model": "Job Two alt", "scalar": "Higgs", "flux_n": flux_n,
+                    "radius_R": radius_R, "generations": abs(flux_n),
+                    "lowest_fermion_KK": "sqrt(|n|+1)/R",
+                    "yukawa_diagonal": "1/(2*sqrt(pi))", "SO3": True,
+                    "anomaly_totals_assumed_scale_with_n": True,
+                    "anomaly_SU2sqX": 4 * flux_n, "anomaly_YsqX": -2 * flux_n,
+                },
+            })
+    job2_rho_survivors = surviving_vacua(job2, WINDOW)
+    job2_survivors = surviving_vacua(job2, WINDOW, spectrum_filter=lambda _fc, sp, v: (
+        v["flux_n"] == 3 and sp.get("generations") == 3))
+    w("| flux n | R | p | raw b_1(C) | rho_res | rho window | n=3 spectrum |")
+    w("|---:|---:|---:|---:|---:|---|---|")
+    for v in job2:
+        w("| %g | %.1f | %.4f | %.2f | %.5f | %s | %s |" % (v["flux_n"], v["radius_R"], v["p"], v["b1"], v["rho_res"], yn(v in job2_rho_survivors), yn(v in job2_survivors)))
+    w("Rho-window survivors before spectrum compatibility [hook, computed]: %s" % format_vacua(job2_rho_survivors))
+    w("Rho-window count = %d [grid-step]: the R step of 0.2 skips n=2's analytic band entirely and n=3's second band." % len(job2_rho_survivors))
+    pc_half_survivors = [v for v in selected_records if v["id"] in selected_ids and 0.5 <= v["p"] < 0.6]
+    if pc_half_survivors:
+        p_survive = [v["p"] for v in pc_half_survivors]
+        w("p_c = 1/2 threshold calls [finite-size]: selected-scan rho survivors have p in [%.6f, %.6f], inside the finite-size smearing of the m=16 step." % (min(p_survive), max(p_survive)))
+    w("n = 3 is picked by the three-generation spectrum check, not by the filter [by construction]. R ~= 1.4 is just where the assumed normalisation puts p near 1/2 [assumed input].")
+    w("Final surviving vacua [Job Two alt grid + n=3/three-generation spectrum hook, computed]: %s" % format_vacua(job2_survivors))
+    w("These Job Two rows are assumed-input probes; RESULTS_final.md was read-only and no Job Two file or table was changed.")
     if args.vacua_json:
         with open(args.vacua_json, "r", encoding="utf-8") as fh:
             cli_vacua = json.load(fh)
@@ -472,6 +617,8 @@ def main(argv=None):
         yn(after == before), "; ".join("%s %s" % (f, h[:16].upper()) for f, h in after.items())))
     with open(os.path.join(HERE, "RESULTS.md"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(L) + "\n")
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     print("\n".join(L))
 
 

@@ -2,12 +2,12 @@
 
 **Signed off 2026-10-02:** Venus (maths PASS) and Helios (physics, PARTIAL: calculations sound; filter selects nothing; stopping by construction).
 
-Generated: 2026-10-02 16:22:57 (local time, UTC+01:00)
-Python 3.14.7, numpy 2.5.2, scipy 1.18.1
+Generated: 2026-10-02 18:14:43 (local time, UTC+01:00)
+Python 3.14.7, numpy 2.5.2, scipy 1.18.0
 
 Toy model. **Not a solution to vacuum selection**: which vacua survive depends entirely on the assumed inputs in README.md. No quantum-gravity claim.
 
-Foreign input files, read only (SHA-256 before the run): X_NOTES.md 58117031B7A6B39D; X_POSTS_verbatim.md D9915B9C81FAEEEA
+Foreign input files, read only (SHA-256 before the run): X_NOTES.md 58117031B7A6B39D; X_POSTS_verbatim.md D9915B9C81FAEEEA; X_WINDOW_DEFS.md 6686377096F02FF4
 
 ## 1. Stopping condition (printed before any rho_res)
 
@@ -419,9 +419,116 @@ Summary [computed]: 9 parameter sets can settle; 27 vacua reached; 186 local min
 In-window minima sit at p in [0.514, 0.540] (rising side of the b_1 curve, 8 minima) and p in [0.974, 0.982] (falling side near p = 1, where holes fill in, 9 minima) [computed].
 In-window minima exist near phi = -10.3 to -10.8 and -19.5 to -19.6 (p = 0.51-0.54 and 0.97-0.98), which starts at 0, -7 and -14 never reach [depends on phi0 choice].
 
-## 6. Plain statement
+## 6. Post-hoc parameter scan and surviving-vacua hook [post-hoc]
+
+Default surviving vacua [hook, computed]: []
+The default result remains 0 frozen vacua: barriers determine which stops are reached; the Betti/Berry filter only labels a reached stop by rho_res.
+Hook: surviving_vacua(vacua, rho_window=WINDOW, spectrum_filter=None); --vacua-json PATH accepts a JSON list carrying rho_res, field_content, and spectrum [post-hoc].
+Input provenance [post-hoc]: Akitti's posts define qualitative scars/MBL and a narrow structure-formation window, but not these numeric window bounds, p(phi), phi_0, k, or a Berry formula. The numerical window, clip(-phi/20), starts, m=16 observable, and all scan maps below are [assumed input].
+Reference values [Akitti post, borrowed value; read-only X_WINDOW_DEFS.md]: p_c = 0.5 (site, this toy), 0.7055 (DK), and 0.38 (3D bond-DP); the source says "Above p_c scars survive ... below it ... MBL". Scar floor ~0.041 is also quoted there. These borrowed p_c values are not tied to V(phi).
+The optional CSK theta-lock term mentioned in X_WINDOW_DEFS.md is not used; V(phi) is unchanged [assumed input].
+| scan | occupancy scale | centre | half-width | phi_0 starts | candidates | surviving | filtered |
+|---|---:|---:|---:|---|---:|---:|---:|
+| default | 20.0 | 0.020 | 0.010 | 0.0,-7.0,-14.0 | 27 | 0 | 27 |
+| scale-15 | 15.0 | 0.020 | 0.010 | 0.0,-7.0,-14.0 | 27 | 14 | 13 |
+| scale-15-narrow | 15.0 | 0.020 | 0.005 | 0.0,-7.0,-14.0 | 27 | 11 | 16 |
+| scale-15-high-centre | 15.0 | 0.025 | 0.010 | 0.0,-7.0,-14.0 | 27 | 14 | 13 |
+| scale-15-start-minus-7 | 15.0 | 0.020 | 0.010 | -7.0 | 9 | 8 | 1 |
+| scale-25 | 25.0 | 0.020 | 0.010 | 0.0,-7.0,-14.0 | 27 | 1 | 26 |
+
+Selected scan choice [post-hoc]: occupancy scale = 15, window = [0.010, 0.030], starts = 0, -7, -14.
+Surviving vacua [hook, computed]: [beta=0 g=1 phi0=-7 -> phi=-7.5254; beta=0 g=1 phi0=-14 -> phi=-14.5254; beta=0 g=5 phi0=-7 -> phi=-7.6465; beta=0 g=5 phi0=-14 -> phi=-14.6465; beta=0.5 g=1 phi0=-7 -> phi=-7.6407; beta=0.5 g=5 phi0=-7 -> phi=-7.7052; beta=0.5 g=5 phi0=-14 -> phi=-14.5703; beta=0.5 g=9 phi0=-7 -> phi=-7.7842; beta=0.5 g=9 phi0=-14 -> phi=-14.6288; beta=1 g=5 phi0=-7 -> phi=-7.7145; beta=1 g=9 phi0=-7 -> phi=-7.7520; beta=1 g=9 phi0=-14 -> phi=-14.5840; beta=1 g=12 phi0=-7 -> phi=-7.7861; beta=1 g=12 phi0=-14 -> phi=-14.6119]
+
+Scar-threshold cross-check on selected scan [post-hoc]: survivors require the rho window and p >= p_c.
+| reference | threshold | survivors | surviving-vacua list |
+|---|---:|---:|---|
+| site (ours), [Akitti post, borrowed value] | 0.5000 | 14 | [beta=0 g=1 phi0=-7 -> phi=-7.5254; beta=0 g=1 phi0=-14 -> phi=-14.5254; beta=0 g=5 phi0=-7 -> phi=-7.6465; beta=0 g=5 phi0=-14 -> phi=-14.6465; beta=0.5 g=1 phi0=-7 -> phi=-7.6407; beta=0.5 g=5 phi0=-7 -> phi=-7.7052; beta=0.5 g=5 phi0=-14 -> phi=-14.5703; beta=0.5 g=9 phi0=-7 -> phi=-7.7842; beta=0.5 g=9 phi0=-14 -> phi=-14.6288; beta=1 g=5 phi0=-7 -> phi=-7.7145; beta=1 g=9 phi0=-7 -> phi=-7.7520; beta=1 g=9 phi0=-14 -> phi=-14.5840; beta=1 g=12 phi0=-7 -> phi=-7.7861; beta=1 g=12 phi0=-14 -> phi=-14.6119] |
+| DK, [Akitti post, borrowed value] | 0.7055 | 6 | [beta=0 g=1 phi0=-14 -> phi=-14.5254; beta=0 g=5 phi0=-14 -> phi=-14.6465; beta=0.5 g=5 phi0=-14 -> phi=-14.5703; beta=0.5 g=9 phi0=-14 -> phi=-14.6288; beta=1 g=9 phi0=-14 -> phi=-14.5840; beta=1 g=12 phi0=-14 -> phi=-14.6119] |
+| 3D bond-DP, [Akitti post, borrowed value] | 0.3800 | 14 | [beta=0 g=1 phi0=-7 -> phi=-7.5254; beta=0 g=1 phi0=-14 -> phi=-14.5254; beta=0 g=5 phi0=-7 -> phi=-7.6465; beta=0 g=5 phi0=-14 -> phi=-14.6465; beta=0.5 g=1 phi0=-7 -> phi=-7.6407; beta=0.5 g=5 phi0=-7 -> phi=-7.7052; beta=0.5 g=5 phi0=-14 -> phi=-14.5703; beta=0.5 g=9 phi0=-7 -> phi=-7.7842; beta=0.5 g=9 phi0=-14 -> phi=-14.6288; beta=1 g=5 phi0=-7 -> phi=-7.7145; beta=1 g=9 phi0=-7 -> phi=-7.7520; beta=1 g=9 phi0=-14 -> phi=-14.5840; beta=1 g=12 phi0=-7 -> phi=-7.7861; beta=1 g=12 phi0=-14 -> phi=-14.6119] |
+| scar floor, [Akitti post, borrowed value] | rho_res >= 0.041 | 0 | [] |
+The ~0.041 scar floor is above the assumed rho upper edge 0.030, so that borrowed threshold and this window have no overlap; it cannot select a survivor without changing an assumed input.
+- beta=0 g=1 phi0=0 -> phi=-0.5254: p=0.0350, rho_res=0.00000; filtered out: rho_res is outside the scan window.
+- beta=0 g=1 phi0=-7 -> phi=-7.5254: p=0.5017, rho_res=0.01525; survives: rho_res is inside the scan window.
+- beta=0 g=1 phi0=-14 -> phi=-14.5254: p=0.9684, rho_res=0.02846; survives: rho_res is inside the scan window.
+- beta=0 g=5 phi0=0 -> phi=-0.6465: p=0.0431, rho_res=0.00000; filtered out: rho_res is outside the scan window.
+- beta=0 g=5 phi0=-7 -> phi=-7.6465: p=0.5098, rho_res=0.01842; survives: rho_res is inside the scan window.
+- beta=0 g=5 phi0=-14 -> phi=-14.6465: p=0.9764, rho_res=0.02172; survives: rho_res is inside the scan window.
+- beta=0.5 g=1 phi0=0 -> phi=-0.4103: p=0.0274, rho_res=0.00000; filtered out: rho_res is outside the scan window.
+- beta=0.5 g=1 phi0=-7 -> phi=-7.6407: p=0.5094, rho_res=0.01829; survives: rho_res is inside the scan window.
+- beta=0.5 g=1 phi0=-14 -> phi=-13.4013: p=0.8934, rho_res=0.07471; filtered out: rho_res is outside the scan window.
+- beta=0.5 g=5 phi0=0 -> phi=-0.5154: p=0.0344, rho_res=0.00000; filtered out: rho_res is outside the scan window.
+- beta=0.5 g=5 phi0=-7 -> phi=-7.7052: p=0.5137, rho_res=0.01963; survives: rho_res is inside the scan window.
+- beta=0.5 g=5 phi0=-14 -> phi=-14.5703: p=0.9714, rho_res=0.02606; survives: rho_res is inside the scan window.
+- beta=0.5 g=9 phi0=0 -> phi=-1.6396: p=0.1093, rho_res=0.00000; filtered out: rho_res is outside the scan window.
+- beta=0.5 g=9 phi0=-7 -> phi=-7.7842: p=0.5189, rho_res=0.02149; survives: rho_res is inside the scan window.
+- beta=0.5 g=9 phi0=-14 -> phi=-14.6288: p=0.9753, rho_res=0.02276; survives: rho_res is inside the scan window.
+- beta=1 g=1 phi0=0 -> phi=-0.3671: p=0.0245, rho_res=0.00000; filtered out: rho_res is outside the scan window.
+- beta=1 g=1 phi0=-7 -> phi=-7.1774: p=0.4785, rho_res=0.00813; filtered out: rho_res is outside the scan window.
+- beta=1 g=1 phi0=-14 -> phi=-13.8705: p=0.9247, rho_res=0.05881; filtered out: rho_res is outside the scan window.
+- beta=1 g=5 phi0=0 -> phi=-0.4062: p=0.0271, rho_res=0.00000; filtered out: rho_res is outside the scan window.
+- beta=1 g=5 phi0=-7 -> phi=-7.7145: p=0.5143, rho_res=0.01984; survives: rho_res is inside the scan window.
+- beta=1 g=5 phi0=-14 -> phi=-13.9276: p=0.9285, rho_res=0.05650; filtered out: rho_res is outside the scan window.
+- beta=1 g=9 phi0=0 -> phi=-0.4710: p=0.0314, rho_res=0.00000; filtered out: rho_res is outside the scan window.
+- beta=1 g=9 phi0=-7 -> phi=-7.7520: p=0.5168, rho_res=0.02080; survives: rho_res is inside the scan window.
+- beta=1 g=9 phi0=-14 -> phi=-14.5840: p=0.9723, rho_res=0.02530; survives: rho_res is inside the scan window.
+- beta=1 g=12 phi0=0 -> phi=-1.6268: p=0.1085, rho_res=0.00000; filtered out: rho_res is outside the scan window.
+- beta=1 g=12 phi0=-7 -> phi=-7.7861: p=0.5191, rho_res=0.02156; survives: rho_res is inside the scan window.
+- beta=1 g=12 phi0=-14 -> phi=-14.6119: p=0.9741, rho_res=0.02376; survives: rho_res is inside the scan window.
+Separation [post-hoc]: the barriers/dynamics select the reached stops; the Betti/Berry filter does not move the field and only labels them. Job Two RESULTS_final.md was read read-only and its spectrum is carried in the grid records; no Job Two file or table was changed.
+Four causes of the empty default [post-hoc diagnosis]: (1) first-barrier stopping is by construction, so the filter cannot make the field cross a barrier; (2) the phi_0 grid never reaches the in-window minima, while the scan shows that changing starts/map can discriminate; (3) raw b_1 is extensive, so an intensive b_1 per face or largest-cluster share is the appropriate future observable, not a silent default change; (4) the m=16 Berry term is about 6.9e-6 versus a 1e-2 window edge, so it cannot change selection at this precision.
+
+### Job Two alt-model grid [post-hoc; assumed input, read-only]
+Model content [Job Two RESULTS_final.md, read-only]: scalar Higgs on S2; at n=3, x=+/-1 gives three generations; the Higgs has one constant mode plus l(l+1)/R^2 tower; lowest fermion KK level is sqrt(|n|+1)/R; Yukawas are diagonal 1/(2*sqrt(pi)) while SO(3) holds; U(1)_X anomaly totals scale with n.
+Explicit map [assumed input]: p(n,R) = clip((|n|/3)*(1/R)^2, 0, 1), using flux density n/R^2 normalized to the Job Two n=3,R=1 point; b_1(n,R) = mean raw m=16 b_1(C) at p(n,R); rho_res is then the same m=16 Betti+Berry estimator used above. This map is not supplied by Job Two.
+p(n,R) = n/(3R^2) [identity, unclipped range]: the map sees only n/R^2, so it cannot distinguish fluxes at fixed n/R^2. Therefore (n=1,R=0.8) and (n=4,R=1.6) must have identical p, b_1 and rho_res under this assumed map.
+n/R^2 is the flux density: on S^2, B is proportional to n/R^2, so this occupancy map is really a map of magnetic field strength on the sphere [assumed input].
+n and R are not independent in a real solution: in an RSS-type Einstein-Maxwell flux compactification, the field equations fix R once the flux and 6D couplings (gauge coupling, Lambda_6, Planck scale) are given. R is the radion set by the solution, not a free knob [standard, not computed].
+Therefore scanning R at fixed n scans 6D coupling choices, and the R-bands per n are bands of coupling choices. Radion stability remains [not checked] in Job Two; the R grid is an [assumed input: off-shell scan].
+Analytic R-bands [computed from the map]: invert p = n/(3R^2) at the code-derived rho-window p edges.
+| band | p_lo from rho(p) | p_hi from rho(p) |
+|---|---:|---:|
+| band 1 | 0.485797 | 0.542667 |
+| band 2 | 0.966397 | 0.989419 |
+| flux n | R interval for band 1 | R interval for band 2 |
+|---:|---|---|
+| 1 | [0.783741, 0.828346] | [0.580429, 0.587302] |
+| 2 | [1.108378, 1.171459] | [0.820851, 0.830571] |
+| 3 | [1.357480, 1.434738] | [1.005333, 1.017237] |
+| 4 | [1.567483, 1.656693] | [1.160859, 1.174604] |
+Venus band checks [computed comparison]: n=2 actual [1.108378, 1.171459] vs estimate [1.11, 1.17] (agrees); n=3 actual [1.357480, 1.434738] vs estimate [1.36, 1.43] (agrees).
+n=3 narrow band [computed from the map]: 1.005333–1.017237 (supersedes the hand estimate ≈1.009–1.013 from rounded rows).
+| flux n | R | p | raw b_1(C) | rho_res | rho window | n=3 spectrum |
+|---:|---:|---:|---:|---:|---|---|
+| 1 | 0.8 | 0.5208 | 56.87 | 0.02229 | YES | NO |
+| 1 | 1.0 | 0.3333 | 0.54 | 0.00021 | NO | NO |
+| 1 | 1.2 | 0.2315 | 0.07 | 0.00003 | NO | NO |
+| 1 | 1.4 | 0.1701 | 0.02 | 0.00001 | NO | NO |
+| 1 | 1.6 | 0.1302 | 0.01 | 0.00000 | NO | NO |
+| 2 | 0.8 | 1.0000 | 0.00 | 0.00000 | NO | NO |
+| 2 | 1.0 | 0.6667 | 191.91 | 0.07492 | NO | NO |
+| 2 | 1.2 | 0.4630 | 12.83 | 0.00502 | NO | NO |
+| 2 | 1.4 | 0.3401 | 0.61 | 0.00024 | NO | NO |
+| 2 | 1.6 | 0.2604 | 0.13 | 0.00005 | NO | NO |
+| 3 | 0.8 | 1.0000 | 0.00 | 0.00000 | NO | NO |
+| 3 | 1.0 | 1.0000 | 0.00 | 0.00000 | NO | NO |
+| 3 | 1.2 | 0.6944 | 212.33 | 0.08288 | NO | NO |
+| 3 | 1.4 | 0.5102 | 47.30 | 0.01854 | YES | YES |
+| 3 | 1.6 | 0.3906 | 1.75 | 0.00068 | NO | NO |
+| 4 | 0.8 | 1.0000 | 0.00 | 0.00000 | NO | NO |
+| 4 | 1.0 | 1.0000 | 0.00 | 0.00000 | NO | NO |
+| 4 | 1.2 | 0.9259 | 148.80 | 0.05808 | NO | NO |
+| 4 | 1.4 | 0.6803 | 202.43 | 0.07902 | NO | NO |
+| 4 | 1.6 | 0.5208 | 56.87 | 0.02229 | YES | NO |
+Rho-window survivors before spectrum compatibility [hook, computed]: [n=1 R=0.8; n=3 R=1.4; n=4 R=1.6]
+Rho-window count = 3 [grid-step]: the R step of 0.2 skips n=2's analytic band entirely and n=3's second band.
+p_c = 1/2 threshold calls [finite-size]: selected-scan rho survivors have p in [0.501696, 0.519071], inside the finite-size smearing of the m=16 step.
+n = 3 is picked by the three-generation spectrum check, not by the filter [by construction]. R ~= 1.4 is just where the assumed normalisation puts p near 1/2 [assumed input].
+Final surviving vacua [Job Two alt grid + n=3/three-generation spectrum hook, computed]: [n=3 R=1.4]
+These Job Two rows are assumed-input probes; RESULTS_final.md was read-only and no Job Two file or table was changed.
+
+## 7. Plain statement
 
 Which vacua are kept depends on the assumed inputs: the occupancy map p(phi), the starting points, the window, k, L, d and the Berry term. None of these comes from Akitti's posts. The field stops because of ordinary barriers; the Betti filter only labels the stops. This is not a solution to vacuum selection or to the cosmological-constant problem.
 0 frozen vacua [assumed-input dependent; depends on phi0 choice]. The barriers do the selecting, and the Betti filter only labels stops. Lambda_0 is not cancelled.
 
-Foreign input files unchanged by this run: YES (SHA-256 after: X_NOTES.md 58117031B7A6B39D; X_POSTS_verbatim.md D9915B9C81FAEEEA).
+Foreign input files unchanged by this run: YES (SHA-256 after: X_NOTES.md 58117031B7A6B39D; X_POSTS_verbatim.md D9915B9C81FAEEEA; X_WINDOW_DEFS.md 6686377096F02FF4).
