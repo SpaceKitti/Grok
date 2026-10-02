@@ -1,6 +1,6 @@
 # Job N1: bubble versus radion
 
-Generated: 2026-10-02 20:54:24 GMT Summer Time (BST/local time)
+Generated: 2026-10-02 20:54:54 GMT Summer Time (BST/local time)
 Tags: [computed] [identity] [standard] [assumed] [tuned] [post-hoc] [hive-interpretation].
 Inputs read-only: UNIFYING_THREAD sha256 CDE3C256 (expected CDE3C256); STILL_TO_DO sha256 1AEC133B (expected 1AEC133B).
 Radion source read-only: run.py sha256 586C6BC8; RESULTS.md sha256 6146CF25.
@@ -23,7 +23,7 @@ Best power candidate: α = -1.000000, matching 2/3 powers and 0/3 signs [compute
 | ambient pressure | 3.000000 | -3.000000 | flux | NO |
 | surface tension | 2.000000 | -2.000000 | curvature | NO |
 | gas | log | log | none | — |
-The α = −1 pair sends ambient r³ → flux R⁻³ and surface r² → curvature R⁻²; both signs disagree. The κ=1.0 gas term maps to a positive power and has no radion candidate.
+The α = −1 pair sends ambient r³ → flux R⁻³ and surface r² → curvature R⁻²; both signs disagree. The κ=1.0 gas term remains logarithmic and has no radion candidate.
 
 κ = 1.4 (adiabatic air) [standard]:
 Best power candidate: α = -1.000000, matching 2/3 powers and 0/3 signs [computed].
