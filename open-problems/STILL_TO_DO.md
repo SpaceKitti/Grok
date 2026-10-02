@@ -1,10 +1,10 @@
-﻿# Still to do on the four open problems
+# Still to do on the four open problems
 
 Kept by Helios. I update it every time a job lands, and Ledger pushes it with each job. A problem is marked "out of ideas" only once Venus, Aethon, Orion and Helios all agree.
 
-**Common thread (from Akitti's link post, see `UNIFYING_THREAD.md`):** all four problems are read as a sphere carrying n units of flux ("strings"), where things break once n is too big for the sphere [assumed]. The link is firm for the SM (n = number of families) and membranes (fuzzy sphere), medium for vacuum selection, and weak for Stelle/LQC. Cheap test: Job U1, the fuzzy-sphere string count (not run yet).
+**Common thread (from Akitti's link post, see `UNIFYING_THREAD.md`):** all four problems are read as a sphere carrying n units of flux ("strings"), where things break once n is too big for the sphere [assumed]. The link is firm for the SM on the physics side (n = number of families, by the index theorem), but that's Hive's mapping [assumed mapping]: Akitti's own SM posts use a warped throat instead. It's firm for membranes (fuzzy sphere, where the integer is the brane count N, not n), medium for vacuum selection, and weak for Stelle/LQC. Cheap test: Job U1, the fuzzy-sphere string count (not run yet).
 
-Last updated: 2026-10-02, 19:50 BST.
+Last updated: 2026-10-02, 19:56 BST.
 
 Problems 1 and 2 don't have folders here yet. Their titles below are Helios's own grouping of Jobs One to Five, and Akitti can rename them.
 
@@ -27,6 +27,7 @@ Problems 1 and 2 don't have folders here yet. Their titles below are Helios's ow
 **Still to do or try**
 - Job 4b (spec sent): use different brane widths for up and down quarks plus one lopsided brane, and fit 7 measured targets with 4 knobs.
 - Idea, not specced yet: find a source of CP violation, such as a complex brane profile, after 4b lands.
+- **Next idea if 4b hits the rank-1 wall: Akitti's own warped-throat flavour picture** (from Akitti's SM posts, found by Orion; not specced yet). Quarks live in a warped extra dimension, and each zero mode's value at the IR end goes like f(c) ~ e^((1/2 - c)kL) for c > 1/2. So hierarchies come from exponentials of O(1) numbers, the warped cousin of Job Four's power law. With O(1) random Yukawas the mixing goes like V_ij ~ f_Qi/f_Qj, which forces V_ub ~ V_us V_cb [standard: RS flavour anarchy, Agashe-Perez-Soni hep-ph/0408134]. That gives about 0.0094 against the measured 0.0038, within the O(1) spread (Venus's estimate), whereas 4b's single-brane relation predicts V_us about 6x low. Akitti's c-shifts from Brockett double-bracket flow stay in as [hive-interpretation]. Sources: Gherghetta-Pomarol hep-ph/0003129 (bulk-fermion profiles), Huber-Shafi hep-ph/0010195 (masses and mixings from O(1) c values). This idea comes from Akitti, not from Hive.
 
 ---
 
@@ -75,7 +76,7 @@ Problems 1 and 2 don't have folders here yet. Their titles below are Helios's ow
 **Status:** open, ideas left.
 
 **Tried so far**
-- Job Seven (pu-ghost-lqc-gw): PASS as a toy from Venus and Helios, pending Aethon's fold-in pass.
+- Job Seven (pu-ghost-lqc-gw): PASS as a toy from Venus and Helios. Fold-in done (RESULTS E265D109), on main as 5331e11. Its no-ghost control shows the ghost's extra runaway depends on amplitude: at high amplitude it's larger for positive coupling, at low amplitude for negative. Aethon is adding the conditional-share line.
   - Part G: a toy with a ghost (Pais-Uhlenbeck) plus a small push between its modes has a stable "safe island" at small amplitude, where the ghost is benign, and runs away above it. This matches Smilga's benign-ghost picture.
   - Part L: a gravitational wave passing through the LQC bounce gets strongly kicked (order-one particle production) for wavelengths about the bounce size or longer. Short waves pass through almost untouched, with the effect falling off exponentially. That falloff is the standard smooth-background result (Dykhne-Davis-Pechukas).
 
