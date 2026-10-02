@@ -2,7 +2,7 @@
 
 Kept by Helios. I update it every time a job lands, and Ledger pushes it with each job. A problem is marked "out of ideas" only once Venus, Aethon, Orion and Helios all agree.
 
-Last updated: 2026-10-02, 19:24 BST.
+Last updated: 2026-10-02, 19:35 BST.
 
 Problems 1 and 2 don't have folders here yet. Their titles below are Helios's own grouping of Jobs One to Five, and Akitti can rename them.
 
@@ -41,8 +41,9 @@ Problems 1 and 2 don't have folders here yet. Their titles below are Helios's ow
 - Job Five: whether the three-generation match is a slowly expanding (dS) vacuum depends on the radius scale we chose. It's dS only for scales between roughly 0.74 and 0.957, and not at scale 1 [assumed input].
 
 **Still to do or try**
+- Why 5b matters [identity, Helios]: brane tension just relabels the flux (n becomes n/alpha), so it keeps the same blind spot and can't pick n even in principle. The Casimir term falls off at a different power of the radius, so it breaks the blind spot. Casimir is the only part of 5b that could select n.
 - Job 5b (spec sent): lift the vacuum with brane tension (predicted to fail) or with the one-loop Casimir energy. The Casimir strength is taken as a constant and its log R piece is ignored [assumed input].
-- Job 5c (new, idea from Venus and Aethon): replace the hand-picked radius scale with the share of the vacuum energy carried by the flux, which the physics fixes.
+- Job 5c (vacuum-flux-share): done. PARTIAL for the flux share (the widest dS stretch is about 2.8%, under the 5% bar) and FAIL for the curvature-inclusive share (an identity: it can never reach a band). Wall [identity]: the filter only sees the flux strength in 6D units, a single number, so every n survives somewhere if the 6D vacuum energy is rescaled to match. Three generations come out alone only for hand-picked stretches of vacuum energy [post-hoc].
   - Known before it lands [identity]: the flux share depends only on n divided by its largest allowed value, and that largest value moves with the 6D vacuum energy. Any number of generations can be made the survivor by shifting the 6D vacuum energy, so 5c can at best say "three generations for this vacuum energy". The only thing that could single out three is if Job Three's bands differ from one n to another. 5c checks that.
 - Next idea (not specced yet): fix the 6D vacuum energy from outside the model, for example from Job Two's KK gap or from the measured 4D vacuum energy.
 
@@ -70,10 +71,15 @@ Problems 1 and 2 don't have folders here yet. Their titles below are Helios's ow
 **Status:** open, ideas left.
 
 **Tried so far**
-- Job Seven (spec sent, waiting to run): Part G asks how often a toy with a ghost (Pais-Uhlenbeck) runs away. Part L follows a gravitational wave through the LQC bounce.
+- Job Seven (pu-ghost-lqc-gw): PASS as a toy from Venus and Helios, pending Aethon's fold-in pass.
+  - Part G: a toy with a ghost (Pais-Uhlenbeck) plus a small push between its modes has a stable "safe island" at small amplitude, where the ghost is benign, and runs away above it. This matches Smilga's benign-ghost picture.
+  - Part L: a gravitational wave passing through the LQC bounce gets strongly kicked (order-one particle production) for wavelengths about the bounce size or longer. Short waves pass through almost untouched, with the effect falling off exponentially. That falloff is the standard smooth-background result (Dykhne-Davis-Pechukas).
 
 **Walls hit**
-- None recorded yet. To be filled in when Job Seven lands.
+- The ghost toy has only two modes. Stelle's ghost is a field with infinitely many modes that can trade energy with gravitons, so a safe island in the toy doesn't show that the real theory is stable, and says nothing about quantum unitarity [standard: beyond toy].
+- Part L uses one specific way of carrying waves through the bounce (dressed-metric / hybrid style). Other LQC approaches, such as the "deformed algebra" one, change the wave equation near the bounce, and the answer could change with them.
+- The bounce here is the effective, homogeneous one. Waves don't feed back on the background.
 
 **Still to do or try**
-- Grade Job Seven, then gather the next cheap ideas.
+- Idea (not specced yet): rerun Part L with the deformed-algebra wave speed, where the speed squared is 1 - 2 rho/rho_c, so it turns negative near the bounce. Cheap, because it's one function change. Near the bounce the wave equation turns into a growth equation, so expect short waves to be amplified, not suppressed (as Venus points out). Pass test: match the sign and slope of the short-wave behaviour in Linsefors-Cailleteau-Barrau-Grain (arXiv 1212.2852), using the tensor equation from Cailleteau-Barrau-Grain-Vidotto (arXiv 1206.6736).
+- Idea (not specced yet): chain several ghost toys together, as a small step towards a field, and see whether the safe island shrinks as more modes are added. For contrast: Deffayet-Mukohyama-Vikman (arXiv 2108.06294) have a ghost model that is stable for every starting condition.

@@ -28,3 +28,16 @@ Gap: nothing on the Stelle massive spin-2 ghost, its unitarity, or its stability
 
 ### Cited in Akitti's posts
 - A. Blommaert, J. Kudler-Flam, V. Narovlansky, E. Y. Urbach, *The cosmological necklace problem* (2026), https://arxiv.org/abs/2609.29859 . Checked on arXiv (title and authors match); not downloaded. Cited in X post 1.
+
+## Added 2026-10-02 (Job Seven)
+- Smilga, "Benign vs. malicious ghosts in higher-derivative theories", Nucl. Phys. B 706 (2005) 598, arXiv:hep-th/0407231. File: NPB706_598_Smilga_benign_vs_malicious_ghosts.pdf (arXiv v4). Source of the PU canonical map and the c_crit ~ 0.3 benign-ghost model.
+- Davis & Pechukas, J. Chem. Phys. 64 (1976) 3129, doi:10.1063/1.432648; Dykhne, Sov. Phys. JETP 14 (1962) 941 (no DOI). Complex-time exponential law for the large-k falloff in Part L. Cited only.
+
+
+## Added 2026-10-02 (Job Seven / Part L deformed-algebra rerun)
+- Linsefors, Cailleteau, Barrau & Grain, PRD 87 (2013) 107503, arXiv:1212.2852, doi:10.1103/PhysRevD.87.107503. File: PRD87_107503_Linsefors_Cailleteau_Barrau_Grain_tensor_spectrum_Omega_LQC.pdf. Tensor spectrum in the deformed (Omega) algebra; finds exponential growth in the UV, from the Omega<0 window near the bounce.
+- Cailleteau, Barrau, Grain & Vidotto, PRD 86 (2012) 087301, arXiv:1206.6736, doi:10.1103/PhysRevD.86.087301. File: PRD86_087301_Cailleteau_Barrau_Grain_Vidotto_holonomy_perturbations_consistency.pdf. Tensor equation with Omega = 1 - 2 rho/rho_c.
+- Cailleteau, Mielczarek, Barrau & Grain, CQG 29 (2012) 095010, arXiv:1111.3535 (cited only; Omega's first appearance, scalar sector).
+- Grain, Barrau, Cailleteau & Mielczarek, PRD 82 (2010) 123520, arXiv:1011.1811 (cited only; pre-deformed-algebra background).
+- Deffayet, Mukohyama & Vikman, "Ghosts without runaway instabilities", PRL 128 (2022) 041301, arXiv:2108.06294, doi:10.1103/PhysRevLett.128.041301. File: PRL128_041301_Deffayet_Mukohyama_Vikman_ghosts_without_runaway.pdf. Ghost model stable for all initial conditions (contrast with Smilga's island).
+
