@@ -2,13 +2,19 @@
 
 Kept by Helios. I update it every time a job lands, and Ledger pushes it with each job. A problem is marked "out of ideas" only once Venus, Aethon, Orion and Helios all agree.
 
-Last updated: 2026-10-08, about 15:45 BST (new top section: Akitti's framework phase; problems 2-4 and the lift line parked). Previous version: 2B89A550 (2026-10-02, 22:45 BST). Pronouns: Akitti is she/her throughout.
+Last updated: 2026-10-08, about 16:15 BST (added: Akitti's 15:50 note on her notes, Venus's n-conventions note, the posts fold-in status, and the JOB_SM1 split status). Previous versions: C6AD18C2 (2026-10-08, about 15:45 BST; new top section: Akitti's framework phase), 2B89A550 (2026-10-02, 22:45 BST). Pronouns: Akitti is she/her throughout.
 
 ---
 
 ## Phase from 2026-10-08 (Akitti's framework)
 
 **Source [Akitti]:** `AKITTI_FRAMEWORK_2026-10-08.md` (SHA-256 prefix 6CD5F259; in `open-problems\` on TrinityOrb and `/workspace/lift/` on the box). It is her own construction. We follow it as written and don't reinterpret it.
+
+**How to read Akitti's notes (her note, 2026-10-08, 15:50 BST, relayed) [Akitti]:**
+- Her notes and posts are public.
+- They are pattern-mapping she did together with Grok, not formal derivations.
+- They may contain Grok hallucinations.
+- So the bots sort and check them: keep her own ideas and patterns, verify the textbook facts, and flag anything that may be a Grok hallucination before using it. Nothing from them enters a job as an input value unless she confirms it.
 
 **What it says, in short [Akitti]:**
 - The exterior is frozen: for r > r_c the transverse space is a cone, ds² = dr² + α² r² dφ², with α = 1 − 4Gμ, so the deficit is 2π(1 − α) = 8πGμ. The MHD fields Ψ (velocity, magnetic field, density) are fixed on the matching circle r = r_c. G and μ are her measured exterior inputs.
@@ -17,7 +23,9 @@ Last updated: 2026-10-08, about 15:45 BST (new top section: Akitti's framework p
 - Standing rules still apply: the lift's gravity is unknown quantum gravity, never GR [Akitti]; no invented numbers; every claim tagged.
 
 **Status by problem under her ordering**
-- **Problem 1, Standard-Model attachment: ACTIVE.** Next job: `JOB_SM1_FILTER` (spec drafted by Helios at `/workspace/lift/JOB_SM1_FILTER_SPEC.md`; DRAFT, not installed). It can't be finalised until Orion's copy of Akitti's Oct 1-8 X posts (`open-problems\AKITTI_POSTS_OCT1-8.md`) is folded in, because those posts may change the constructions. Then Venus checks it, then Aethon builds. The job builds the candidate list from the existing S²/lattice data (Job Two, Job Four, 4b, U1, B0, 5d/5b), gives each candidate its zero-mode spectrum, chiral assignment and anomaly polynomial, scores them against her two integrals and the MHD trace, and outputs only the survivors (with a reject table).
+- **Problem 1, Standard-Model attachment: ACTIVE.** Job `JOB_SM1_FILTER`, split in two (parent draft `/workspace/lift/JOB_SM1_FILTER_SPEC.md` 3D19F785, kept as a record):
+  - **Part A**, `01_sm_from_sphere\SM1_filter\JOB_SM1A_SPEC.md` 04B9AA05: input-free (candidate list, zero modes, overlaps, anomalies). Venus pre-run maths PASS with edits folded in. Pushed to main as 8c0403c; Aethon is building it.
+  - **Part B**, `/workspace/lift/JOB_SM1B_SPEC.md` (box only): the scoring against her integrals and the MHD trace. HELD until her input values exist; the posts extract is folded in. The job builds the candidate list from the existing S²/lattice data (Job Two, Job Four, 4b, U1, B0, 5d/5b), gives each candidate its zero-mode spectrum, chiral assignment and anomaly polynomial, scores them against her two integrals and the MHD trace, and outputs only the survivors (with a reject table).
 - **Problem 2, vacuum selection: PARKED** until the survivor list is small. That includes B2 (done), 5c, A1/A2, N1 and the Betti-Berry filter, which she calls a proposed residual-density filter, not a solution [Akitti]. Reopened only on survivors.
 - **Problem 3, membrane renormalization: PARKED** until the survivor list is small. That includes 6b and 6c (done) and the 6d BMN job, `JOB_6D_SPEC.md` DAC0304E (Venus-checked; Aethon had started building it). Reopened only on survivors.
 - **Problem 4, Stelle ghosts / bounce: PARKED** until the survivor list is small. That includes B4/B4L and the deformed-algebra and chained-ghost ideas. She notes neither moves the transverse deficit nor the matching circle [Akitti]. Reopened only on survivors.
@@ -25,10 +33,27 @@ Last updated: 2026-10-08, about 15:45 BST (new top section: Akitti's framework p
 
 **Which lift-line pieces could feed problem 1 [hive-interpretation]**
 - Could feed the zero-mode list: the Chern-flux and lowest-Landau-level counts (theory-free requirements 2 and 3 below: the flux N is conserved through the handoff [identity]; n Dirac zero modes, n + 1 scalar and 2n − 1 spin-1 modes on the S² [identity]). Job U1 and Job Two already give the same counts on our own data.
+- **n conventions (Venus's note) [Venus]:** each count above uses its own n, so the three counts don't share one n.
+  - Spin-1: 2n − 1 uses q = n (`JOB_LIFT_SPEC.md` L85).
+  - Scalar: n + 1 uses q = n/2 (L86; Venus's note cited L85, but the line is L86).
+  - In one convention: N_Φ = 2|q|, giving Dirac N_Φ, scalar N_Φ + 1, spin-1 N_Φ − 1 [standard; Venus].
+  - Job U1 and Job Two give the Dirac and scalar counts. Every zero-mode count in a job must state its own n convention (JOB_SM1A_SPEC has the table).
 - Could feed the core energy ∫T_tt dA: B0's vortex energy (πn in B0's units, the Bogomolny value, computed to 1e-6 in RESULTS AE4E8FFB line 73) and its gap table, as the flux/vortex part of the core energy.
 - Could feed the chiral list: the B1 outline (fermion zero modes at the Bradlow cap, count and localisation; `Bradlow_cap\JOB_B1_SM_ZEROMODES_SPEC.md` AFF0FB0D, never specced or run).
 - Background only: the cone-tip reference note `CONE_TIP_NOTE.md` 4EAAEAA9 (passed). Its cosmic-string section is the GR reference for her exterior formula [GR control], not the lift's gravity.
 - Don't feed problem 1: L1/L2 (GR and Einstein-Maxwell negative-mode calibration, with no gravity-independent part), L3 (EYMH horizon instability, GR control), L4 and B4/B4L. They stay parked.
+
+**Posts fold-in status (Akitti's Oct 1-8 X posts)**
+- Orion's copy is `open-problems\AKITTI_POSTS_OCT1-8.md` F1C6CC26 (153 posts). The extract for problem 1 is `open-problems\01_sm_from_sphere\SM1_filter\AKITTI_POSTS_SM1_EXTRACT.md` FDF97FD3.
+- **0 input values found:** every input-looking number is a code default or placeholder, flagged POSSIBLY GROK-HALLUCINATED.
+- **5 questions are with NanoRibbon for Akitti:**
+  1. the numbers from her cone simulation;
+  2. whether Π is a pointwise match or a match of overall amounts on the circle;
+  3. one tip or two, and whether the tips may be unequal;
+  4. whether the round S² is only the stage before the cone (Gate 0 scope), and whether tension always comes from strings, never flux alone;
+  5. whether the Oct 4 survivor list is hers or Grok's.
+- **Orion is still searching** for the simulation post, a zero-mode list and the parent posts.
+- **QUOTED file held:** `AKITTI_POSTS_OCT1-8_QUOTED.md` is held for skip-list leakage (the extract used version 674F5BAF; the box now also has a newer C0C69432).
 
 **Done since the 2026-10-02 version (for the record)**
 - B2 vortex-gas pressure: PASS as a reproduction (Venus maths, Helios physics; RESULTS 1EAF64BD, grade 7C120916; main 1edf458, e9fa3e6). Not evidence for Akitti's link.
@@ -81,7 +106,7 @@ Problems 1 and 2 don't have folders here yet. Their titles below are Helios's ow
 
 ## Problem 1: The Standard Model's particles from a curled-up sphere (generations, masses, mixing)
 
-**Status (2026-10-08):** ACTIVE under Akitti's framework. Next job: JOB_SM1_FILTER (draft spec; waiting for AKITTI_POSTS_OCT1-8). Open, ideas left.
+**Status (2026-10-08):** ACTIVE under Akitti's framework. Job JOB_SM1_FILTER: Part A (04B9AA05, main 8c0403c) is building; Part B is held for her inputs (posts extract folded in; 5 questions with NanoRibbon). Open, ideas left.
 
 **Tried so far**
 - Job One (gap pass): PASS.
