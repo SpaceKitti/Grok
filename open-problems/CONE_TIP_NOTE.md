@@ -1,6 +1,6 @@
 # The cone at the old lift's tip, a short research note
 
-Helios, 2026-10-02, about 23:00 BST. Written at Akitti's request, passed on by NanoRibbon. Waiting on Venus's check.
+Helios, 2026-10-02, about 23:00 BST. Written at Akitti's request, passed on by NanoRibbon. Venus cleared FC55D13A. Section 6 was added on 2026-10-02 at about 23:16 BST, and Venus's two §6b wording fixes were folded in on 2026-10-08 at about 15:25 BST. Waiting on her re-check.
 
 **Akitti's view:** the cone is a clue [Akitti]. Nothing else in this note is his.
 
@@ -85,6 +85,25 @@ These are known meanings of tip cones in other settings. None of them is claimed
 - **[hive-interpretation]** Requirement 1 still demands a smooth tip. Read through (c), any cone in a candidate lift means its period wasn't set by its own physics. So the cone is a useful failure test whatever the unknown quantum gravity is.
 - **[open]** Whether the unknown quantum gravity permits or needs tip cones (as orbifold or replica-type points) is not known. No result here depends on it.
 
+## 6. Two more reference points (added at Akitti's request, passed on by NanoRibbon, about 23:16 BST)
+
+These are known results from other settings, put here for comparison only. Neither is evidence about the lift, and neither is Akitti's claim. The known facts come first, and the bot readings are kept separate and labelled.
+
+**a) A cosmic string at the tip.**
+- **Known fact.** In Einstein gravity, a straight thin string with tension T removes a wedge from the plane around it. The missing angle is 8πG·T, in units with c = 1 (Vilenkin 1981) [standard; GR reference only].
+- **Known fact.** The more tension, the bigger the wedge. Zero tension means no wedge.
+- **How it compares.** This is a *deficit*. The old lift's tips have the opposite: an *excess* of one full turn (section 2). In this GR picture, an excess would need negative tension (section 4b) [standard; GR reference only].
+- **Link to the condition in section 5.** This is the textbook case of "a tensioned object sitting at the tip makes a deficit". It is the same condition Venus added: flux alone makes no cone, and a wedge needs tension at the tip.
+- **Bot reading [hive-interpretation].** If a future lift puts tensioned strings at the tip, a wedge that grows with the number of strings would be the sign to look for. Untested, and the lift's real gravity (unknown QG) may not follow the GR formula.
+
+**b) The conifold: a sphere at a cone's tip shrinking to nothing.**
+- **Known fact.** In string theory on a six-dimensional curled-up space (a Calabi–Yau), there are points where a small sphere inside the space shrinks to zero size. Near such a point, the space looks like a cone. Each slice of the cone at a fixed distance from the tip has the shape S²×S³, a two-sphere times a three-sphere. In Strominger's case, the S³ is the sphere that shrinks to zero at the tip. This is called a conifold [standard; Venus's wording fix].
+- **Known fact.** Branes wrapped around the shrinking S³ (D3-branes, in type IIB) have a mass proportional to its volume. The brane's tension, its mass per unit volume, stays fixed. So the total mass goes to zero as the S³'s volume goes to zero [Venus's wording fix]. So new massless states appear exactly at the shrinking point (Strominger 1995, hep-th/9504090) [standard; string-theory reference].
+- **Known fact.** Including those new light states makes the physics smooth again at a point that looked singular before (Strominger 1995) [standard].
+- **Known fact.** In some cases you can go through the shrinking point and come out with a different shape of space. This is the conifold transition: one kind of sphere shrinks away and a different one grows (Greene–Morrison–Strominger 1995, hep-th/9504145) [standard; string-theory reference].
+- **Differences from our case [standard].** The conifold's sphere lives in the curled-up internal space, not in the Euclidean time-and-radius cap of the lift. The sphere that shrinks is the S³, which is three-dimensional, not the S² of the toy.
+- **Bot reading [hive-interpretation].** It is a known worked example of a sphere-to-point handoff where something wrapped on the sphere changes character at the point and new states show up. That is roughly the shape of the S²→R² string→brane step. Treat it as an analogy to keep in mind, not as evidence. Nothing here shows the lift works this way.
+
 ## References (checked by Orion on INSPIRE, 2026-10-02)
 - Deser, Jackiw, 't Hooft, "Three-dimensional Einstein gravity: dynamics of flat space", Ann. Phys. 152 (1984) 220
 - Vilenkin, "Gravitational field of vacuum domain walls and strings", PRD 23 (1981) 852
@@ -95,3 +114,5 @@ These are known meanings of tip cones in other settings. None of them is claimed
 - Lewkowycz, Maldacena, 1304.4926, JHEP 08 (2013) 090
 - Dixon, Harvey, Vafa, Witten, "Strings on orbifolds", NPB 261 (1985) 678 (part II: NPB 274 (1986) 285)
 - Achúcarro, Gregory, Kuijken, "Abelian Higgs hair for black holes", gr-qc/9505039, PRD 52 (1995) 5729
+- New in section 6 (Orion to check on INSPIRE): Strominger, "Massless black holes and conifolds in string theory", hep-th/9504090, NPB 451 (1995) 96
+- New in section 6 (Orion to check on INSPIRE): Greene, Morrison, Strominger, "Black hole condensation and the unification of string vacua", hep-th/9504145, NPB 451 (1995) 109
