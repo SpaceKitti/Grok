@@ -2,17 +2,53 @@
 
 Kept by Helios. I update it every time a job lands, and Ledger pushes it with each job. A problem is marked "out of ideas" only once Venus, Aethon, Orion and Helios all agree.
 
-**Common thread (from Akitti's link post, see `UNIFYING_THREAD.md`):** all four problems are read as a sphere carrying n units of flux ("strings"), where things break once n is too big for the sphere [assumed]. The link is firm for the SM on the physics side (n = number of families, by the index theorem), but that's Hive's mapping [assumed mapping]: Akitti's own SM posts use a warped throat instead. It's firm for membranes (fuzzy sphere, where the integer is the brane count N, not n), medium for vacuum selection, and weak for Stelle/LQC. Job U1 (fuzzy-sphere string count): done, maths PASS (Venus), physics PARTIAL (Helios). The n string zero modes are exact at every size [standard], but the "too many strings" collapse is a count, not a shift: the ladder stays exactly round with only N - n rungs, and the sector vanishes at n = N [computed]. The apparent level drift was just the radius convention [identity]. Reading: an N-state fuzzy sphere is the lowest Landau level of a charge N - 1 monopole, so strings use up the bubble's own flux budget [standard: Haldane 1983, body; tie is hive-interpretation]. Two more threads are now written up in `UNIFYING_THREAD.md`, negative modes (around Akitti's Aug 8 anchor article) and axions, each with a cheap test (Jobs N1 and A1 below) (axion thread: Hive's side-test, on hold; not Akitti's link).
-
-Last updated: 2026-10-02, about 22:45 BST (LIFT section added on top; B0 graded). Previous update: 21:41 BST.
-
-Problems 1 and 2 don't have folders here yet. Their titles below are Helios's own grouping of Jobs One to Five, and Akitti can rename them.
+Last updated: 2026-10-08, about 15:45 BST (new top section: Akitti's framework phase; problems 2-4 and the lift line parked). Previous version: 2B89A550 (2026-10-02, 22:45 BST). Pronouns: Akitti is she/her throughout.
 
 ---
 
-## LIFT to 3D/4D quantum gravity (main goal; added 2026-10-02 about 22:30 BST)
+## Phase from 2026-10-08 (Akitti's framework)
 
-**Why it's on top [Akitti, via NanoRibbon]:** at 22:12 he said the toy was about lifting to 3D/4D quantum gravity. At 22:14 he said, in his words, "the whole issue is the r=0 basically and going from s^2->r^2 string to brane". At 22:16 he added that the lift can't be built until the four problems below are solved, because all four happen at that same string → brane step at r = 0 (Grok pointed this out to him). So the four problems are the **blockers** to the lift. Plan: `JOB_LIFT_SPEC.md` (also in `/workspace/lift/` on the box).
+**Source [Akitti]:** `AKITTI_FRAMEWORK_2026-10-08.md` (SHA-256 prefix 6CD5F259; in `open-problems\` on TrinityOrb and `/workspace/lift/` on the box). It is her own construction. We follow it as written and don't reinterpret it.
+
+**What it says, in short [Akitti]:**
+- The exterior is frozen: for r > r_c the transverse space is a cone, ds² = dr² + α² r² dφ², with α = 1 − 4Gμ, so the deficit is 2π(1 − α) = 8πGμ. The MHD fields Ψ (velocity, magnetic field, density) are fixed on the matching circle r = r_c. G and μ are her measured exterior inputs.
+- Only the interior (r ≤ r_c) varies. A candidate core survives only if ∫R dA = 2π(1 − α), ∫T_tt dA = μ and Π(Ψ_core) = Ψ|r_c, with C¹ matching at r = r_c. (Convention note [Venus]: her R is read as the Gaussian curvature K, since the 2D Ricci scalar is 2K; her equation is kept as written.) Any wrapping, flux or zero-mode assignment that shifts either integral is discarded.
+- Her ordering: 1 SM attachment first; her items 2 membranes, 3 vacuum selection and 4 Stelle/bounce (our problems 3, 2 and 4) are parked, and are reopened only on the assignments that survive.
+- Standing rules still apply: the lift's gravity is unknown quantum gravity, never GR [Akitti]; no invented numbers; every claim tagged.
+
+**Status by problem under her ordering**
+- **Problem 1, Standard-Model attachment: ACTIVE.** Next job: `JOB_SM1_FILTER` (spec drafted by Helios at `/workspace/lift/JOB_SM1_FILTER_SPEC.md`; DRAFT, not installed). It can't be finalised until Orion's copy of Akitti's Oct 1-8 X posts (`open-problems\AKITTI_POSTS_OCT1-8.md`) is folded in, because those posts may change the constructions. Then Venus checks it, then Aethon builds. The job builds the candidate list from the existing S²/lattice data (Job Two, Job Four, 4b, U1, B0, 5d/5b), gives each candidate its zero-mode spectrum, chiral assignment and anomaly polynomial, scores them against her two integrals and the MHD trace, and outputs only the survivors (with a reject table).
+- **Problem 2, vacuum selection: PARKED** until the survivor list is small. That includes B2 (done), 5c, A1/A2, N1 and the Betti-Berry filter, which she calls a proposed residual-density filter, not a solution [Akitti]. Reopened only on survivors.
+- **Problem 3, membrane renormalization: PARKED** until the survivor list is small. That includes 6b and 6c (done) and the 6d BMN job, `JOB_6D_SPEC.md` DAC0304E (Venus-checked; Aethon had started building it). Reopened only on survivors.
+- **Problem 4, Stelle ghosts / bounce: PARKED** until the survivor list is small. That includes B4/B4L and the deformed-algebra and chained-ghost ideas. She notes neither moves the transverse deficit nor the matching circle [Akitti]. Reopened only on survivors.
+- **Lift-unblock line: PARKED unless it feeds problem 1.** That covers `JOB_LIFT_SPEC.md` 77D663CE, the B4/L3 unblock spec (never finished; no file exists), and L1/L2 (L1 done as a GR-control calibration; L2 not built).
+
+**Which lift-line pieces could feed problem 1 [hive-interpretation]**
+- Could feed the zero-mode list: the Chern-flux and lowest-Landau-level counts (theory-free requirements 2 and 3 below: the flux N is conserved through the handoff [identity]; n Dirac zero modes, n + 1 scalar and 2n − 1 spin-1 modes on the S² [identity]). Job U1 and Job Two already give the same counts on our own data.
+- Could feed the core energy ∫T_tt dA: B0's vortex energy (πn in B0's units, the Bogomolny value, computed to 1e-6 in RESULTS AE4E8FFB line 73) and its gap table, as the flux/vortex part of the core energy.
+- Could feed the chiral list: the B1 outline (fermion zero modes at the Bradlow cap, count and localisation; `Bradlow_cap\JOB_B1_SM_ZEROMODES_SPEC.md` AFF0FB0D, never specced or run).
+- Background only: the cone-tip reference note `CONE_TIP_NOTE.md` 4EAAEAA9 (passed). Its cosmic-string section is the GR reference for her exterior formula [GR control], not the lift's gravity.
+- Don't feed problem 1: L1/L2 (GR and Einstein-Maxwell negative-mode calibration, with no gravity-independent part), L3 (EYMH horizon instability, GR control), L4 and B4/B4L. They stay parked.
+
+**Done since the 2026-10-02 version (for the record)**
+- B2 vortex-gas pressure: PASS as a reproduction (Venus maths, Helios physics; RESULTS 1EAF64BD, grade 7C120916; main 1edf458, e9fa3e6). Not evidence for Akitti's link.
+- LIFT L1: physics PASS as a GR-control calibration only (README 93264D40, RESULTS C89D68A2, grade E6CDC593; main d740078).
+- JOB_6D_SPEC DAC0304E (main 2184770); now parked.
+- CONE_TIP_NOTE: FC55D13A on main (a6d002c); current TrinityOrb version 4EAAEAA9 (passed), with the cosmic-string and conifold reference sections.
+
+---
+
+## Background and history (kept from the 2026-10-02 version)
+
+**Common thread (from Akitti's link post, see `UNIFYING_THREAD.md`):** all four problems are read as a sphere carrying n units of flux ("strings"), where things break once n is too big for the sphere [assumed]. The link is firm for the SM on the physics side (n = number of families, by the index theorem), but that's Hive's mapping [assumed mapping]: Akitti's own SM posts use a warped throat instead. It's firm for membranes (fuzzy sphere, where the integer is the brane count N, not n), medium for vacuum selection, and weak for Stelle/LQC. Job U1 (fuzzy-sphere string count): done, maths PASS (Venus), physics PARTIAL (Helios). The n string zero modes are exact at every size [standard], but the "too many strings" collapse is a count, not a shift: the ladder stays exactly round with only N - n rungs, and the sector vanishes at n = N [computed]. The apparent level drift was just the radius convention [identity]. Reading: an N-state fuzzy sphere is the lowest Landau level of a charge N - 1 monopole, so strings use up the bubble's own flux budget [standard: Haldane 1983, body; tie is hive-interpretation]. Two more threads are now written up in `UNIFYING_THREAD.md`, negative modes (around Akitti's Aug 8 anchor article) and axions, each with a cheap test (Jobs N1 and A1 below) (axion thread: Hive's side-test, on hold; not Akitti's link).
+
+Problems 1 and 2 don't have folders here yet. Their titles below are Helios's own grouping of Jobs One to Five, and Akitti can rename them.
+
+## LIFT to 3D/4D quantum gravity (PARKED from 2026-10-08 unless it feeds problem 1; was the main goal from 2026-10-02 about 22:30 BST)
+
+*History kept as written on 2026-10-02. Under Akitti's framework this whole section is parked; see the top section for which pieces could feed problem 1.*
+
+**Why it's on top [Akitti, via NanoRibbon]:** at 22:12 she said the toy was about lifting to 3D/4D quantum gravity. At 22:14 she said, in her words, "the whole issue is the r=0 basically and going from s^2->r^2 string to brane". At 22:16 she added that the lift can't be built until the four problems below are solved, because all four happen at that same string → brane step at r = 0 (Grok pointed this out to her). So the four problems are the **blockers** to the lift. Plan: `JOB_LIFT_SPEC.md` (also in `/workspace/lift/` on the box).
 
 **The lift's gravity is unknown quantum gravity [Akitti, 22:41].** Never substitute Einstein GR for it. L1–L3 (GR, Einstein–Maxwell, EYMH) and Stelle/LQC in L4 are labelled reference/control rows only. Only results that don't depend on which gravity theory is used (the flux and Landau counts on the S², the area-bound form, tip smoothness) count as unblocking. L1 and L2 have no gravity-independent part, so they are harness calibration only.
 
@@ -30,14 +66,14 @@ Problems 1 and 2 don't have folders here yet. Their titles below are Helios's ow
 - 01 (SM): families and zero modes on the bolt S² aren't derived. Unblocked by: to write. Tests: B1, U1.
 
 **Stages (tests at the blockers, not the lift itself; L1–L3 are GR/known-theory control rows)**
-- **L1 (next):** the Schwarzschild negative mode as a radial ODE. Target M²λ ≈ −0.192 (Prestidge); count locked at (Euclidean, Lorentzian) = (1, 0); conformal modes counted separately.
+- **L1 (done, GR-control calibration PASS; main d740078):** the Schwarzschild negative mode as a radial ODE. Target M²λ ≈ −0.192 (Prestidge); count locked at (Euclidean, Lorentzian) = (1, 0); conformal modes counted separately.
 - L2: magnetic RN. The Euclidean count goes 1 → 0 at C_Q = 0, and the Lorentzian count stays 0 (Monteiro–Santos 2009).
 - L3: broken SU(2) on the horizon (LNW, Ridgway–Weinberg). The Lorentzian count goes 0 → 2n − 1 (complex modes) for A below 4πn/(e²v²), opposite to the Bradlow toy (each side using its own n; per flux quantum the onsets differ by a factor of 2). A different theory from L1/L2, so the table is not one flow.
 - L4: report only (interior bounce, remnants [Grok-suggested], the two r = 0s).
 
 **Bradlow-cap jobs (`open-problems\Bradlow_cap\`)**
 - B0 (shared base, `Bradlow_cap\B0_taubes_base\`): done, RESULTS AE4E8FFB, README D0286065, one graded run on TrinityOrb (22:33). Build PASS (Aethon). Physics PASS as a reproduction (Helios, about 22:45; `B0_GRADE_HELIOS.md`): C1–C3 pass, and the amplitude-mode gap² over (A − A_B)/A_B extrapolates to 0.999, 0.998 and 0.996 for n = 1, 2, 3 (3% window). I re-ran it on the box: identical numbers, ratio → 1 down to ε = 0.001, and no solution below the cap [identity]. The next-order slope grows with n (−1.09, −1.60, −2.34), so B2 must use the measured gap table. Venus maths PASS (22:38).
-- B2 (folder 02 vacuum pressure): spec cleared by Venus at 3A069F08, pushed as 07c9d97; Aethon building.
+- B2 (folder 02 vacuum pressure): spec cleared by Venus at 3A069F08, pushed as 07c9d97. Done: PASS as a reproduction (RESULTS 1EAF64BD, grade 7C120916; main 1edf458, e9fa3e6). Parked with problem 2.
 - B4 (folder 04): outline; its gravity version B4L is now LIFT L1, L2 and L4. B3 and B1: outlines.
 - A2 stays on hold (Akitti, 21:36).
 
@@ -45,7 +81,7 @@ Problems 1 and 2 don't have folders here yet. Their titles below are Helios's ow
 
 ## Problem 1: The Standard Model's particles from a curled-up sphere (generations, masses, mixing)
 
-**Status:** open, ideas left.
+**Status (2026-10-08):** ACTIVE under Akitti's framework. Next job: JOB_SM1_FILTER (draft spec; waiting for AKITTI_POSTS_OCT1-8). Open, ideas left.
 
 **Tried so far**
 - Job One (gap pass): PASS.
@@ -68,7 +104,7 @@ Problems 1 and 2 don't have folders here yet. Their titles below are Helios's ow
 
 ## Problem 2: Choosing the vacuum (why three generations, and why a small positive vacuum energy)
 
-**Status:** open, ideas left.
+**Status (2026-10-08):** PARKED until the JOB_SM1_FILTER survivor list is small; reopened only on survivors. Open, ideas left.
 
 **Tried so far**
 - Job Three (Betti/Berry vacuum filter): PARTIAL. The machinery works, but the filter selects nothing.
@@ -79,7 +115,7 @@ Problems 1 and 2 don't have folders here yet. Their titles below are Helios's ow
 - Dilaton wall (21:20, from Venus's reduction of ABPQ eq. 2.1, hep-th/0304256): the real 6D theory behind our sphere (Salam-Sezgin) reproduces Job 5b's potential term for term with the dilaton frozen [computed, Venus], but the 6D vacuum energy is then tied to the same coupling that sets the flux, and the dilaton is a flat rescaling direction. With the dilaton free, Salam-Sezgin picks n = +-1 and flat space, one generation, not three [standard: Salam-Sezgin PLB 147 (1984) 47; ABPQ section 2.2]. In de Sitter the dilaton and breathing mode are tachyonic, so dS is unstable [standard: Guo-Pang-Sezgin arXiv 2510.11794]. So freezing the dilaton in 5b, 5c and A1 hides a flat direction and an instability [assumed until a dynamic-dilaton run].
 - A1 wall (21:25, Venus from Guo-Pang-Sezgin arXiv 2510.11794 eqs. 2.17, 2.38, 3.22, 7.2, 2.58-2.64; Helios agrees): in Salam-Sezgin with the Green-Schwarz term there is no monodromy potential (epsilon = 0). The S2 axion is eaten by the l = 0 photon (Stueckelberg), and the 4D potential holds the flux only as n^2, so A1's linear n term has no source [standard]. The model also caps the flux at |n| <= 1 (Minkowski needs n = +-1, de Sitter needs 4 - 3n^2 >= 0), so it can't host n = 3 at all [standard]. A1's conditional PASS stays on record as a generic mechanism, but it is a FAIL for this model, and the rerun is moot unless a 4D four-form is specced (candidates: GPS App. C U(1)' flux sector, or a brane four-form [assumed]).
 - Job 5d (5d_rugby_ball_flux): done, RESULTS 12E53647, README BDCC8DAE, spec B94289BF, on main as 03e939d. Physics FAIL [tuned] on the rule fixed beforehand (Helios, about 21:33), matching the pre-registered prediction; maths PASS (Venus, 21:36). Wall: two branes on the Salam-Sezgin sphere only relabel the flux count. A positive tension lowers the cap (|N| < g/g1), and each of the three routes to N = 3 (a Planck-sized negative tension, a hand-picked g/g1, a hand-set brane flux, which ABPQ do not quantise) is a smooth one-to-one dial in N, so 3 is never preferred over 2 or 4. GGP eq. 3.11 (unequal tensions, varying dilaton) still needs both tensions negative for N > 1 [standard]. Physics note [identity, Helios]: route (a) at integer alpha = N is just the N-fold cover of the smooth Salam-Sezgin sphere, branched at the two poles (phi runs over N turns), so the N flux units are one unit seen on N sheets, and flux quantisation forces the tension into steps T = -(N-1)/(4G6); the dial is discrete but still picks nothing. The 5b-inherited radion probe (only N = 3 has a dS minimum) rests on the tuned 5b Casimir strength and is not a selection. Line closed for minimal Salam-Sezgin plus branes. Still to do: the four-form route is on hold (next line); the next test on problem 2 comes from the rebuilt UNIFYING_THREAD.
-- ON HOLD (Akitti, 21:36: axions were never his link idea; this is our own side-test, not his thread). Next idea (Venus, via NanoRibbon; 5d hit its wall, so this is next; spec drafted as Job A2, open-problems\JOB_A2_SPEC.md, awaiting Venus's pre-run check; build after 4c and 6d; prediction fixed beforehand: FAIL or at best PARTIAL), "uneaten axion with a four-form": the massless l = 0 two-form b_munu in Guo-Pang-Sezgin is dual to a 4D axion that is not eaten (GPS Table 1). A Kaloper-Sorbo perfect square (n + epsilon theta/2pi)^2 would need a 4D four-form coupled to it, which GPS does not have. Candidate sources: the U(1)' flux sector (GPS App. C) or a four-form living on a brane [assumed]. This is the one route that could revive A1's mechanism.
+- ON HOLD (Akitti, 21:36: axions were never her link idea; this is our own side-test, not her thread). Next idea (Venus, via NanoRibbon; 5d hit its wall, so this is next; spec drafted as Job A2, open-problems\JOB_A2_SPEC.md, awaiting Venus's pre-run check; build after 4c and 6d; prediction fixed beforehand: FAIL or at best PARTIAL), "uneaten axion with a four-form": the massless l = 0 two-form b_munu in Guo-Pang-Sezgin is dual to a 4D axion that is not eaten (GPS Table 1). A Kaloper-Sorbo perfect square (n + epsilon theta/2pi)^2 would need a 4D four-form coupled to it, which GPS does not have. Candidate sources: the U(1)' flux sector (GPS App. C) or a four-form living on a brane [assumed]. This is the one route that could revive A1's mechanism.
 - Job Five: whether the three-generation match is a slowly expanding (dS) vacuum depends on the radius scale we chose. It's dS only for scales between roughly 0.74 and 0.957, and not at scale 1 [assumed input].
 
 **Still to do or try**
@@ -98,7 +134,7 @@ Problems 1 and 2 don't have folders here yet. Their titles below are Helios's ow
 
 ## Problem 3: Making sense of quantum membranes (open problem 3)
 
-**Status:** open, ideas left.
+**Status (2026-10-08):** PARKED until the JOB_SM1_FILTER survivor list is small (including Job 6d, JOB_6D_SPEC DAC0304E); reopened only on survivors. Open, ideas left.
 
 **Tried so far**
 - Job Six (membrane x^2 y^2 toy): PASS as a toy. Power counting shows strings are the only renormalisable case. Without supersymmetry the toy membrane is trapped, with separate energy levels (Simon). With supersymmetry it can slide out along the valleys for free, so its energies form a continuum starting at zero (dWLN).
@@ -111,13 +147,13 @@ Problems 1 and 2 don't have folders here yet. Their titles below are Helios's ow
 **Still to do or try**
 - Job 6b (membrane-6b-boundstate): done, maths PASS (Venus), physics PASS as a toy (Helios). No bound state: along the valley the zero-energy solution grows like x^(1/4), so it can't be normalised (needs decay faster than x^(-1/4)), exactly as in Froehlich-Graf-Hasler-Hoppe-Yau Appendix 2 (FGHHY, NPB 567 (2000) 231, hep-th/9904182) [standard]. The box spectrum shows no level below the continuum ladder [computed]. Wall: the 2-variable toy is exhausted here; a bound state only appears in the 9-direction SU(2) model [standard: beyond toy].
 - Job 6c (membrane-6c-kappa-d): done. Maths PASS (Venus), physics PASS as a reproduction (Helios). The 6b method scaled to the SU(2) model in d = 2, 3, 5, 9 reproduces FGHHY exactly [computed = standard]: d = 2 no invariant solution; d = 3 kappa = 0 twice (fails the bar kappa > 3/2); d = 5 three with kappa = -1 and one with kappa = 3 that is odd under the antipode map, so not a ground state; d = 9 kappa = 6, even, normalisable, with existence from the Witten index [standard: Kac-Smilga hep-th/9908096 eq. (1.25); bulk terms Yi hep-th/9704098; d = 2 also Froehlich-Hoppe CMP 191 (1998) 613]. The d = 9 state is the one matrix theory reads as the 11D graviton [standard: BFSS hep-th/9610043; bound-state motivation Witten hep-th/9510135]. Wall: the bound-state question is now closed at toy level; going further needs a real membrane quantisation [standard: beyond toy].
-- Next idea, Job 6d (queued after N1, A1 and 4c), "mass-deformed membrane": add the plane-wave (BMN) mass terms and the Myers term to the toy. In that model the flat valleys are lifted, the spectrum is discrete, and the vacua are fuzzy spheres labelled by how the branes split up [standard: Berenstein-Maldacena-Nastase hep-th/0202021], the same object as Job U1. Test: the fuzzy-sphere and trivial vacua both at zero energy, and the valley continuum turned into a gapped ladder [standard if it matches BMN]. Prediction, fixed beforehand: the gap closes as the mass goes to zero, recovering 6b's continuum. Sympy plus one small grid.
+- Job 6d (spec JOB_6D_SPEC DAC0304E, Venus-checked, on main 2184770; PARKED 2026-10-08), "mass-deformed membrane": add the plane-wave (BMN) mass terms and the Myers term to the toy. In that model the flat valleys are lifted, the spectrum is discrete, and the vacua are fuzzy spheres labelled by how the branes split up [standard: Berenstein-Maldacena-Nastase hep-th/0202021], the same object as Job U1. Test: the fuzzy-sphere and trivial vacua both at zero energy, and the valley continuum turned into a gapped ladder [standard if it matches BMN]. Prediction, fixed beforehand: the gap closes as the mass goes to zero, recovering 6b's continuum. Sympy plus one small grid.
 
 ---
 
 ## Problem 4: Stelle's ghost and the loop-quantum-cosmology bounce (open problem 4)
 
-**Status:** open, ideas left.
+**Status (2026-10-08):** PARKED until the JOB_SM1_FILTER survivor list is small (including B4/B4L); reopened only on survivors. Open, ideas left.
 
 **Tried so far**
 - Job Seven (pu-ghost-lqc-gw): PASS as a toy from Venus and Helios. Fold-in done (RESULTS E265D109), on main as 5331e11. Its no-ghost control shows the ghost's extra runaway depends on amplitude: at high amplitude it's larger for positive coupling, at low amplitude for negative. Aethon is adding the conditional-share line.
