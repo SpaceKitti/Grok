@@ -1,6 +1,8 @@
 # SM1_INPUTS.md: inputs for SM1 Part B, from hive runs and public sources only
 
-Helios, 2026-10-08, about 16:30 BST. This file is read by SM1 Part A (only the `alpha_ext` slot, and only with an `[Akitti: ...]` tag, so nothing here changes a Part A run) and by Part B, which is HELD.
+Helios, 2026-10-08. First written by 16:13 BST (C02CD168; its old stamp "about 16:30 BST" was future-dated); last edited 2026-10-08 16:42 BST. This file is read by SM1 Part A (only the `alpha_ext` slot, and only with an `[Akitti: ...]` tag, so nothing here changes a Part A run) and by Part B, which is HELD.
+
+**Parser caveat [Venus]:** Part A's run.py (803FD2DA, lines 5-6 and 212-215) only accepts `alpha_ext` tagged `[Akitti: …]`. A `[hive-run: …]` value in this file would therefore be **silently ignored** by Part A, which would stay grid-only. The parser must be updated before hive-run values are used.
 
 **Where values may come from (Akitti's rules, relayed by NanoRibbon at 16:06 and after):**
 - None of her work comes from her own simulations. The cone on the strings and its tension were reported to her by the hive's bots, so every cone input has to come from **our own run files**.
@@ -27,8 +29,10 @@ G = NOT COMPUTED (YET) [hive-run: none]
 sigma_G = NOT COMPUTED (YET) [hive-run: none]
 mu = NOT COMPUTED (YET) [hive-run: none]
 sigma_mu = NOT COMPUTED (YET) [hive-run: none]
-r_c = NOT COMPUTED (YET) [hive-run: none]
+r_c = NOT COMPUTED (YET) [hive-run: none; exterior cone coordinate, circumference/2πα (Part B §1.0b)]
 r_c/R = NOT COMPUTED (YET) [hive-run: none]
+s_c = NOT COMPUTED (YET) [hive-run: none; core proper (geodesic) radius of the matching circle; never copy s_c into r_c]
+s_c/R = NOT COMPUTED (YET) [hive-run: none; never copy s_c into r_c]
 Psi_rc = NOT COMPUTED (YET) [hive-run: none]
 pressure = NOT COMPUTED (YET) [hive-run: none]
 Pi = NOT COMPUTED (YET) [definition, not a value; Part B scores both the pointwise and the circle-totals versions]
@@ -45,7 +49,7 @@ tips = NOT COMPUTED (YET) [hive-run: none for a string core; see the table for t
 
 | wanted | value found | source | status |
 |---|---|---|---|
-| α (exterior cone angle) | none from a tension. Only cone actually measured: total angle 3.999997π ≈ 4π at each of two tips, so α = β/2π = 2, an **excess** (deficit −2π per tip) | [hive-run: pairA-qg-operator, SpaceKitti/Grok@1fe72c2:jobs/pairA-qg-operator/RESULTS.md:18 and :111] (box copy 3656A65A, same; TrinityOrb C:\Users\Akitt\pairA-qg-operator\RESULTS.md, hash 209A1EA7 because of text encoding, same lines 18/111); re-measured in [hive-run: pairA-jt-4d, SpaceKitti/Grok@1fe72c2:jobs/pairA-jt-4d/RESULTS.md:29] (4.000003π) and [hive-run: lift-l1, SpaceKitti/Grok@1fe72c2:jobs/lift-l1/RESULTS.md:73] (12.566371 = 4π per tip, C89D68A2) | **Not an α_ext.** Set by construction: the period τ_E = 4π/ε_EP was put in by hand from the handoff (qg-operator RESULTS:18, "[by construction, given τ_E = 4π/ε_EP from the handoff]"). It's a kinematic measurement on the spectral curve of a 2×2 MHD matrix, with no strings, no tension and no field equation. Neither GR nor QG. |
+| α (exterior cone angle) | none from a tension. Only cone actually measured: total angle 2πα = 3.999997π ≈ 4π at each of two tips, so α ≈ 2, an **excess** (deficit −2π per tip) | [hive-run: pairA-qg-operator, SpaceKitti/Grok@1fe72c2:jobs/pairA-qg-operator/RESULTS.md:18 and :111] (box copy 3656A65A, same; TrinityOrb C:\Users\Akitt\pairA-qg-operator\RESULTS.md, hash 209A1EA7 because of text encoding, same lines 18/111); re-measured in [hive-run: pairA-jt-4d, SpaceKitti/Grok@1fe72c2:jobs/pairA-jt-4d/RESULTS.md:29] (4.000003π) and [hive-run: lift-l1, SpaceKitti/Grok@1fe72c2:jobs/lift-l1/RESULTS.md:73] (12.566371 = 4π per tip, C89D68A2) | **Not an α_ext.** Set by construction: the period τ_E = 4π/ε_EP was put in by hand from the handoff (qg-operator RESULTS:18, "[by construction, given τ_E = 4π/ε_EP from the handoff]"). It's a kinematic measurement on the spectral curve of a 2×2 MHD matrix, with no strings, no tension and no field equation. Neither GR nor QG. |
 | α grid (Job Four) | 1, 0.8, 0.6, 0.5 | [hive-run: sm-rugby-yukawa, SpaceKitti/Grok@1fe72c2:jobs/sm-rugby-yukawa/run.py:44]; README:22-24 ("[assumed input; SLED-type rugby ball, where the brane tension makes the deficit]") | INPUT PARAMETER |
 | α grid (Job 5b) | 1, 0.8, 0.6, 0.5, 1.5 | [hive-run: radion-5b-tension-casimir, SpaceKitti/Grok@1fe72c2:jobs/radion-5b-tension-casimir/run.py:20]; RESULTS:26-30 | INPUT PARAMETER (1.5 labelled "unphysical: negative tension") |
 | α grid (SM1 Part A run) | 1, 4/5, 3/5, 1/2 | [hive-run: SM1 Part A, open-problems\01_sm_from_sphere\SM1_filter\RESULTS.md (7148A1DC), "grid-only run (alpha in {1, 4/5, 3/5, 1/2} [assumed])"] | INPUT PARAMETER |
@@ -53,7 +57,7 @@ tips = NOT COMPUTED (YET) [hive-run: none for a string core; see the table for t
 | μ (tension) and G convention | no μ. Job 5d uses ε = 4G₆T (G₆ the 6D Newton constant; deficit 2πε = 8πG₆T), symbolic; route (a) gives T = −1/(2G₆) | [hive-run: 5d-rugby-ball-flux, SpaceKitti/Grok@1fe72c2:jobs/5d-rugby-ball-flux/RESULTS.md:10] ("[assumed input from ABPQ §4]") and :25-26 | GR control; T is negative and tuned. NOT COMPUTED (YET) as μ. |
 | tension-like energy (nearest computed number) | vortex energy = πn (n = 1, 2, 3; e = v = 1), to 1e-12 | [hive-run: B0, SpaceKitti/Grok@1fe72c2:jobs/b0-taubes-base/RESULTS.md:73] (and rows 31-48; box b0/graded_RESULTS.md AE4E8FFB, same) | Computed (Bogomolny value), but these vortices sit on a **round** S² with no deficit and no G. No unit map to an exterior μ exists. Not μ, and not T_b. |
 | r_c and R | no r_c. R = 1 in Jobs Two and Four (convention; Job Four README:22); B0 R² = n(1 + ε) for the chosen ε grid (B0 RESULTS:8); Pair A S² radius r = ε_EP = 0.513681 | Job Four README:22; [hive-run: B0, SpaceKitti/Grok@1fe72c2:jobs/b0-taubes-base/RESULTS.md:8]; [hive-run: pairA-qg-theory, SpaceKitti/Grok@1fe72c2:jobs/pairA-qg-theory/RESULTS.md:16, 118-119] ("circular: couplings chosen from ε_EP") | R values are conventions or INPUT PARAMETERs; Pair A's r is circular. **r_c: no run produced one.** |
-| Ψ on the matching circle (v, B, ρ, p) | none. No run has a matching circle. The MHD code (chive_ns) has no cone. B0 prints a U(1) field B = (1 − \|φ\|²)/2 on the round S² (RESULTS:52-71), which is not an MHD field and not on r = r_c | B0 RESULTS:52-71 | NOT COMPUTED (YET) |
+| Ψ on the matching circle (u, B, ρ, p) (u = velocity, code name `u_flow`; v is the vev) | none. No run has a matching circle. The MHD code (chive_ns) has no cone. B0 prints a U(1) field B = (1 − \|φ\|²)/2 on the round S² (RESULTS:52-71), which is not an MHD field and not on r = r_c | B0 RESULTS:52-71 | NOT COMPUTED (YET) |
 | core shape f(θ) | none for a core. Job Four f = Rα sin θ (constant curvature, equal tips, assumed, README:22). qg-operator: unit sphere f = sin ρ with φ over 4π (RESULTS:112), from the hand-set period. L1: Schwarzschild cigar | Job Four README:22; qg-operator RESULTS:112; [hive-run: lift-l1, SpaceKitti/Grok@1fe72c2:jobs/lift-l1/RESULTS.md:62] | Job Four f is an INPUT PARAMETER geometry; qg-operator's is by construction; L1 is a GR control. NOT COMPUTED (YET) for the core. |
 | brane tension T_b normalisation | none. Job Four: "no brane action" (README:93-94). Job 5b: tension only relabels the flux, V_α(x; n) = αV₁(x; n/α) (README:17, 38). Job 5d: symbolic T with ε = 4G₆T | Job Four README:93-94; [hive-run: radion-5b-tension-casimir, SpaceKitti/Grok@1fe72c2:jobs/radion-5b-tension-casimir/README.md:17, 38]; 5d RESULTS:10 | NOT COMPUTED (YET) (5d is a GR control) |
 | number of tips and equality | qg-operator / jt-4d / L1: **2 tips, equal** (3.999997π and 3.999997π), equal because one period serves both. Job Four: 2 equal tips, assumed | qg-operator RESULTS:18; Job Four README:23 | For the excess cone, equal by construction. For a string core no run gives a number of tips. NOT COMPUTED (YET). |

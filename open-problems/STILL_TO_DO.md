@@ -2,7 +2,7 @@
 
 Kept by Helios. I update it every time a job lands, and Ledger pushes it with each job. A problem is marked "out of ideas" only once Venus, Aethon, Orion and Helios all agree.
 
-Last updated: 2026-10-08, about 16:15 BST (added: Akitti's 15:50 note on her notes, Venus's n-conventions note, the posts fold-in status, and the JOB_SM1 split status). Previous versions: C6AD18C2 (2026-10-08, about 15:45 BST; new top section: Akitti's framework phase), 2B89A550 (2026-10-02, 22:45 BST). Pronouns: Akitti is she/her throughout.
+Last updated: 2026-10-08, 16:42 BST (problem 1: code-name map in both specs, `u_flow` in SM1_INPUTS, final hashes). Earlier the same day, 16:41 BST, 6E5F2F32 (problem 1: leftovers pass, search closed). Earlier still, about 16:40 BST, D815C720 (problem 1: combined fix pass after Venus's Part B notes B63D6B80 and pre-check 085B3E96; Part A signed off; Part B prediction; new spec hashes; N3 item). Previous versions: 9E0FE94A (written by 16:21 BST; problem 1: the Part A run and grade, SM1_INPUTS, Part B status, the next two jobs and the NOT COMPUTED (YET) label), 28B88193 (about 16:15 BST; added Akitti's 15:50 note, Venus's n-conventions note, the posts fold-in status and the JOB_SM1 split status), C6AD18C2 (2026-10-08, about 15:45 BST; new top section: Akitti's framework phase), 2B89A550 (2026-10-02, 22:45 BST). Pronouns: Akitti is she/her throughout.
 
 ---
 
@@ -24,8 +24,17 @@ Last updated: 2026-10-08, about 16:15 BST (added: Akitti's 15:50 note on her not
 
 **Status by problem under her ordering**
 - **Problem 1, Standard-Model attachment: ACTIVE.** Job `JOB_SM1_FILTER`, split in two (parent draft `/workspace/lift/JOB_SM1_FILTER_SPEC.md` 3D19F785, kept as a record):
-  - **Part A**, `01_sm_from_sphere\SM1_filter\JOB_SM1A_SPEC.md` 04B9AA05: input-free (candidate list, zero modes, overlaps, anomalies). Venus pre-run maths PASS with edits folded in. Pushed to main as 8c0403c; Aethon is building it.
-  - **Part B**, `/workspace/lift/JOB_SM1B_SPEC.md` (box only): the scoring against her integrals and the MHD trace. HELD until her input values exist; the posts extract is folded in. The job builds the candidate list from the existing S²/lattice data (Job Two, Job Four, 4b, U1, B0, 5d/5b), gives each candidate its zero-mode spectrum, chiral assignment and anomaly polynomial, scores them against her two integrals and the MHD trace, and outputs only the survivors (with a reject table).
+  - **Part A**, `01_sm_from_sphere\SM1_filter\JOB_SM1A_SPEC.md` 04B9AA05: input-free (candidate list, zero modes, overlaps, anomalies). Venus pre-run maths PASS with edits folded in. Pushed to main as 8c0403c. **Aethon has run it** (RESULTS 7148A1DC, build PASS). Both have signed off: Venus (maths, PASS with notes; `VENUS_GRADE_NOTES.md` E6754653) and Helios (physics, PASS with notes; `SM1A_HELIOS_GRADE.md` F9CB456F), against README B655B422. The final README is **99D9319C** (sign lines only); clear for Ledger to push.
+  - **Part B**, `/workspace/lift/JOB_SM1B_SPEC.md` 6611EE3B (box only): the scoring against her integrals and the MHD trace. The job builds the candidate list from the existing S²/lattice data (Job Two, Job Four, 4b, U1, B0, 5d/5b), gives each candidate its zero-mode spectrum, chiral assignment and anomaly polynomial, scores them against her two integrals and the MHD trace, and outputs only the survivors (with a reject table). **HELD.** Venus's Part B review `VENUS_PARTB_4CC7_NOTES.md` (B63D6B80; PASS with notes, B1-B11 and rulings Q1-Q3 applied) and her pre-check `VENUS_INPUTS_MHD_PRECHECK.md` (085B3E96) are folded in. **Prediction (HELD job; no Part B run exists; not a result):** 7 would be rejected (S2-S6, R2, R6), 8 HELD (R1, R3-R5, S1, S7-S9), B1 n/a (build check, not an SM candidate), 0 survivors.
+  - **Inputs:** `01_sm_from_sphere\SM1_filter\SM1_INPUTS.md` E0D7D41D (with the s_c slots and Venus's I1 parser caveat). Every input is NOT COMPUTED (YET).
+    - The only cone any hive run made is the Pair A double cover: a hand-set 4π period (pairA-qg-operator RESULTS line 18). It is an excess at two matrix branch points, not a string cone.
+    - The cone and tension mechanism is in her 4 and 5 Oct posts: strings pile up, that makes tension, the tension makes the cone, and it flattens to R² (posts 2106848956730785938, 4 Oct; 2107219672017842217, 5 Oct). No run has measured μ yet.
+  - **Next jobs, in order:**
+    1. SM1-INPUTS-RUN, `JOB_SM1_INPUTS_RUN_SPEC.md` DB7ECF85: vortices at a tip on fixed backgrounds, with a critical stage and a non-critical coupling stage (coupling κ).
+    2. SM1-MHD-CORE, `JOB_SM1_MHD_CORE_SPEC.md` A0756351: Ψ on the matching circle. It runs only after SM1-INPUTS-RUN passes.
+    - Venus pre-check (085B3E96): PASS with edits for both specs; every item applied in this pass (s_c rename, κ/u renames, G3, NC7, M-1 and the rest). Venus checks the diff only.
+  - **Label rule:** anything not yet produced is written NOT COMPUTED (YET), Akitti's wording (via NanoRibbon, 16:12). Never "not computable".
+  - **Open Helios item (after this pass; untested):** the flux construction of arXiv:2610.08939 (Menet–Tomasiello–Van Hemelryck: AdS₅ × flag-manifold vacua with two G₄ flux quanta), extract N3 (FDF97FD3; post 2108092102886211700, a second flux quantum on the S² bubble); paper check `N3_2610.08939_CHECK.md` C30ED955. Not a candidate or an input yet.
 - **Problem 2, vacuum selection: PARKED** until the survivor list is small. That includes B2 (done), 5c, A1/A2, N1 and the Betti-Berry filter, which she calls a proposed residual-density filter, not a solution [Akitti]. Reopened only on survivors.
 - **Problem 3, membrane renormalization: PARKED** until the survivor list is small. That includes 6b and 6c (done) and the 6d BMN job, `JOB_6D_SPEC.md` DAC0304E (Venus-checked; Aethon had started building it). Reopened only on survivors.
 - **Problem 4, Stelle ghosts / bounce: PARKED** until the survivor list is small. That includes B4/B4L and the deformed-algebra and chained-ghost ideas. She notes neither moves the transverse deficit nor the matching circle [Akitti]. Reopened only on survivors.
@@ -46,13 +55,8 @@ Last updated: 2026-10-08, about 16:15 BST (added: Akitti's 15:50 note on her not
 **Posts fold-in status (Akitti's Oct 1-8 X posts)**
 - Orion's copy is `open-problems\AKITTI_POSTS_OCT1-8.md` F1C6CC26 (153 posts). The extract for problem 1 is `open-problems\01_sm_from_sphere\SM1_filter\AKITTI_POSTS_SM1_EXTRACT.md` FDF97FD3.
 - **0 input values found:** every input-looking number is a code default or placeholder, flagged POSSIBLY GROK-HALLUCINATED.
-- **5 questions are with NanoRibbon for Akitti:**
-  1. the numbers from her cone simulation;
-  2. whether Π is a pointwise match or a match of overall amounts on the circle;
-  3. one tip or two, and whether the tips may be unequal;
-  4. whether the round S² is only the stage before the cone (Gate 0 scope), and whether tension always comes from strings, never flux alone;
-  5. whether the Oct 4 survivor list is hers or Grok's.
-- **Orion is still searching** for the simulation post, a zero-mode list and the parent posts.
+- **NQ1–NQ5 are retired** (Part B 6611EE3B, top): Akitti is not asked again. Values come only from hive runs, her posts and SpaceKitti/Grok (`SM1_INPUTS.md`), otherwise NOT COMPUTED (YET).
+- **Search closed (H9 resolved):** no hive run has a string/tension cone (`SM1_INPUTS.md`, "Where 'the cone formed' actually rests"); the only run cone is Pair A's hand-set 4π excess. The mechanism (strings pile up → tension → cone) is in her Oct 4/5 posts [2106848956730785938, 2107219672017842217] and is untested.
 - **QUOTED file held:** `AKITTI_POSTS_OCT1-8_QUOTED.md` is held for skip-list leakage (the extract used version 674F5BAF; the box now also has a newer C0C69432).
 
 **Done since the 2026-10-02 version (for the record)**
@@ -106,7 +110,7 @@ Problems 1 and 2 don't have folders here yet. Their titles below are Helios's ow
 
 ## Problem 1: The Standard Model's particles from a curled-up sphere (generations, masses, mixing)
 
-**Status (2026-10-08):** ACTIVE under Akitti's framework. Job JOB_SM1_FILTER: Part A (04B9AA05, main 8c0403c) is building; Part B is held for her inputs (posts extract folded in; 5 questions with NanoRibbon). Open, ideas left.
+**Status (2026-10-08):** ACTIVE under Akitti's framework. Job JOB_SM1_FILTER: Part A (04B9AA05, main 8c0403c) has run (7148A1DC) and is graded PASS with notes and signed off by Venus (E6754653) and Helios (F9CB456F); final README 99D9319C. Part B (6611EE3B) is HELD, because every input in SM1_INPUTS is NOT COMPUTED (YET); its outcome is a prediction, not a result. Next: SM1-INPUTS-RUN (DB7ECF85), then SM1-MHD-CORE (A0756351). Open, ideas left.
 
 **Tried so far**
 - Job One (gap pass): PASS.
