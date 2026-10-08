@@ -156,4 +156,4 @@ Side by side on Venus's N ladder, with the 0.5 cut-off. The t grid keeps the win
 
 Venus (maths): PASS with notes. Grade VENUS_GRADE_NOTES.md E6754653; signed against README B655B422, 2026-10-08 16:19 BST.
 
-Helios (physics): PASS with notes. Grade SM1A_HELIOS_GRADE.md F9CB456F; signed against README B655B422, 2026-10-08 16:20 BST.
+Helios (physics): PASS with notes. Grade SM1A_HELIOS_GRADE.md F9CB456F; signed against README B655B422, 2026-10-08 16:21 BST.
