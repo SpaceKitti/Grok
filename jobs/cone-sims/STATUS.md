@@ -1,0 +1,19 @@
+# STATUS (Aethon) 15 Oct 2026 ~18:20 BST
+- Built run.py against E9A76637 + F7F8F08D edits. Smoke run (scratch, H5) done on box and TrinityOrb. No graded run. --full blocked.
+- Waiting: Helios's next hash -> Venus pass -> set FINAL_SPEC_HASH -> NanoRibbon go.
+- TODO: C4/HP2 fluctuation operator, C5 2-vortex moduli, C2 general FEM (>=3 tips).
+- ~18:30 BST: C4/HP2 lattice operator + C5 moduli added; scratch smoke only (H5). Full grids capped at 64 (dense). Lanczos rewrite recommended before full run.
+- ~18:25 BST: Lanczos rewrite done (matches dense eigenvalues to printed digits); C5 separation constraint added; richardson_k1 run done (308/308 ok, p~2). Retargeted to 4FA92781. --full still blocked (FINAL_SPEC_HASH None).
+- ~18:27 BST: spec F204F8A7 copied, FINAL_SPEC_HASH set. --full NOT launched (waiting for NanoRibbon after Hive cost post).
+- ~18:50 BST: C5 frozen (w=10, seed-moment target, alpha=1 control); --workers added; xi=1 check FAIL on (b) (see README). --full NOT launched (instanton run first).
+- ~18:52 BST: xi_guard PASS (box, scratch). Penalty tag names Venus. --full not launched.
+- ~19:00 BST: pinned 27CC9F84 (rev 11); gauge-sector block + pre-C4 guard in run.py; gauge_sector.py scratch done (mixing flagged), HP2 guard PASS. --full NOT launched (instanton first).
+- ~19:12 BST: rev 12-15 rules built (stationarity polish, tau0 control stop, floor tag, levels-off test). Pinned 58429B51. Open issue: two-cut test always undecided (Newton jumps to floor). --full NOT launched.
+- ~19:30 BST: rev 16 grid-refinement fall test built (per-grid tau0, fitted order >= 0.5 p_c, total fall >= 2, near-floor => undecided); alpha<1 now one spectrum after relaxing to floor. Scratch smoke on box. Not repinned (final hash pending). --full NOT launched.
+- ~19:25 BST: pinned rev 17 CA9D5CBC (CHANGES EBA72AF3); a control that fails K no longer feeds p_c. Scratch smoke on box. --full NOT launched.
+- 16 Oct 12:49 BST: --full LAUNCHED (Akitti GO via NanoRibbon 12:41). run.py ED90B692, spec CA9D5CBC, --workers 4, PID 5460, free RAM 7.83 GB, ETA ~21:49-22:49 BST. Log out\full_run.log/.err. Backup C:\Users\Akitt\AppData\Local\Temp\cone-sims_bak_full_20261016_124902
+- 16 Oct 23:08 BST: HP2 stage rerun LAUNCHED (NanoRibbon GO 23:07). run.py 837D0BC9 (was ED90B692; backup C:\Users\Akitt\AppData\Local\Temp\cone-sims_bak_20261016_225701), spec CA9D5CBC, --full --stage HP2 --workers 2; wrapper PID 16156 keeps system awake (SetThreadExecutionState, process-scoped); logs out\hp2_run.log/.err, out\hp2_mem.log; out\ backup C:\Users\Akitt\AppData\Local\Temp\cone-sims_out_bak_hp2_20261016_230834
+- 16 Oct 23:19 BST: HP2 STOPPED (no alpha solve done after 10.5 min; projection >= ~23 h). No outputs written.
+- 16 Oct 23:41 BST: HP2 timing probe (scratch, out\probe\) ended 23:40; run.py untouched.
+- 16 Oct 23:43 BST: HP2 [reduced config, single grid, report-only] 32x32 nev20(+1) 9x26, wrapper out\hp2_reduced_32_nev20\hp2_reduced.py, launcher PID 16704, 3 h stop.
+- 17 Oct: HP2 64x64 short check [report-only] in out\hp2_check_64_nev20\ (n=2 κ=2 α=1/0.5 + n=0 κ=1 α=1). |λ_min|64/48 = 0.588 vs h²=0.562. Verdict: truncation artifact. Remaining series killed (n=0 Lanczos). Handoff REPORT.md in that folder.
