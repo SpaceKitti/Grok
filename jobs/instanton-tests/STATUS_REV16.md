@@ -1,0 +1,17 @@
+- 01:11 rev16 378EE8E5/65A4B8F4 pinned; run.py EAE49CE2 tests.py FEA4913B; backup C:\Users\Akitt\AppData\Local\Temp\instanton-tests_bak_rev16_20261016_011130; tests launched detached
+- 01:13 rev17 BB71AAC3/D6DCBD03 pinned (record-only); run.py 71BC7BE9
+- 01:18 tests 47/47 PASS on TrinityOrb (out\tests_rev16.log); launching B16 timing probe (3 steps)
+- 01:22 B16 timing: 13.05 s/step single job, 128 steps => est ~30 min (<=2 h). Launch B16 box-cost point (tol 15% of mean, B16PT_TOL frozen in run.py 71BC7BE9)
+- 01:57 B16 box-cost point PASS: excess B10 0.06351 / B16 0.06441 / B20 0.06589, mean 0.06461, dev -1.7/-0.3/+2.0% (tol 15%); boxcost_b16.json 96FAFF16; 12.65 s/step, 1619 s flow. Launching 3-worker timing probes eps=0 B10/B12/B16
+- 02:04 timing (3 workers, eps=0, alpha=0.55, 3 steps): B10 5.07, B12 8.90, B16 22.50 s/step. Cut IT1 (72 runs, 100/144 steps) ~6.0 h wall; cut IT3 (120 runs, 50/72/128 steps) ~14.1 h wall. Neither launched (>2 h, need agreed start). No python running on TrinityOrb.
+- 02:07 IT1 runner + IT3 rev16/17 code: run.py 109B5554 tests.py 1D274E45; backup C:\Users\Akitt\AppData\Local\Temp\instanton-tests_bak_it1code_20261016_020657; tests launched
+- 02:12 tests 59/59 PASS (out\tests_it1code.log); launching smoke-cut --steps 1
+- 02:21 smoke v1 (454 s, over 5 min): IT3 path OK end to end; IT1 drift null (raw rho > 0.4l window) => added BPST rho calibration; run.py DC8AD629; old smoke rows moved to C:\Users\Akitt\AppData\Local\Temp\instanton-tests_bak_it1fix_20261016_022115; IT1-only smoke launched
+- 02:25 IT1 smoke OK 188 s (drift fitted, guard repeat bit-identical, E_Delta null with 1 seed). Re-running tests on DC8AD629
+- 02:30 tests on DC8AD629: see out\tests_it1fix.log; no campaigns launched
+- 02:35 rev18 364A2B1B/E2DD2DA8 pinned; IT1 perturbation guard + delta gate + cal systematic; run.py A4CD4468 tests.py 49163BE6; backup C:\Users\Akitt\AppData\Local\Temp\instanton-tests_bak_rev18_20261016_023504; tests launched
+- 02:41 tests 68/68 PASS (out\tests_rev18.log); smoke rev18 launched (IT1 1 step + delta-check 1 step)
+- 02:46 rev18 smoke 292 s: IT1 path + cal + delta gate run end to end; drift null because delta=0.02 noise lifts calibrated rho to ~4.9 (> 0.4l=3.8) at 1 step; delta-check (1 step) refuses (baseline |Q|-1 = 0.053). Nothing launched.
+- 02:51 rev19 DD5AEAAF/C80602B7 pinned; smooth low-k perturbation, pick rule, rev19 guard/pairing/cal slope; run.py D406DFEC tests.py 58DE2BC7; backup ; tests launched
+- 02:57 run.py B61B4F5F (pick pre-flow record=5); tests 75/75 PASS on D406DFEC; delta pick launched: B10 alpha=1, baseline + {0.005,0.01,0.02} x 6 draws, 3 workers, est ~60 min
+- 03:17 delta pick STOPPED after round 1: 900 s/row => 19 rows ~1.75 h (> ~1 h). Baseline Q_tf=-0.9437 (||Q|-1|=0.056 > 0.05) so no delta can pass the rev19 Q gate on B10. 3 rows kept (base, d0.005 r0/r1).

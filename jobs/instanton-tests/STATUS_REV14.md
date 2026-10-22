@@ -1,0 +1,16 @@
+# STATUS rev 14 (BST). Previous: STATUS_REV13.md
+- 22:22 step0 backups: box /tmp/instanton-tests_bak_rev14_*; pinned FINAL_SPEC_HASH=931AE72A; P_BOX_EPS frozen (1:3.006±0.025, 0:2.904±0.028, -1:2.818±0.031, -0.25:2.881±0.029) gated on 1/a check. run.py=F22BEEA5 spec/INSTANTON_TESTS.md=931AE72A spec/CHANGES_D02EC445.md=D02EC445 
+- 22:22 step1 1/a check launched detached (out/inv_a.log); pre-stated: PASS iff flowed-excess ratio B20@6a/B10@3a within 15% of rho^4/(a l^3) prediction.
+- 22:22 IT1 HELD: no Orion eps page-check clearance found in spec or /workspace/lift.
+- 22:28 IT3 graded campaign launched detached on TrinityOrb (PID 26064, 3 workers, 82 rows: 2 BPST refs + 5 alpha x 8 seeds x B16/B20, eps=0, tip-site). Code on TrinityOrb: run.py=0A886EEF lattice.py=35E9E049 kernels.py=F07C0646 (cone-mapped seed added for alpha<1). Backup %TEMP%\instanton-tests_bak_20261015_222656.
+- 22:49 step1 1/a check FAIL: flowed excess ratio B20@6a/B10@3a = 1.446 vs 1/a prediction 1.850 (tol 15%; a-independent would be 0.925); seed-level ratio 1.648. S_inf with frozen p at eps=1 = 0.98274 (check OK). => p_box UNDECIDED, IT4 not run, IT3 campaign stopped on TrinityOrb (0/82 rows had finished; no partial files). INV_A_CHECK=FAIL set. run.py=1F27F720 out/inv_a_check.json=4EA9B36B 
+- 22:52 rho-tf rerun code frozen: t_f=rho^2/90, h=0.002, tol 15% vs 1.850; run.py=1937BB2A; backup /tmp/instanton-tests_bak_rev14_rhotf_225156; launching detached on box
+- 22:54 Venus correction: no graded rows (IT1/IT4) until rev 15; rho-tf 1/a rerun is scratch (H5)
+- 22:59 rev 15 50B5BC50/3D7ADB6E pinned on box (backup /tmp/instanton-tests_bak_rev15_225834); flow_tf=rho^2/90 for graded; IT3 consts to rev 15; cone tests added; running tests
+- 00:24 tests on rev15 code: 47/47 PASS (35 old + 12 cone-seed) out/tests_rev15.log; run.py=223559B3 tests.py=216BFCF3; rho-tf rerun still running (B20, pid 862379); box avail RAM ~2 GB
+- 01:04 rho-tf 1/a rerun FAIL (scratch H5): flowed ratio 1.0375 vs 1.850 (-43.9%, tol 15%); a-independent 0.925; seed 1.648; S_inf 0.98274 OK. out/inv_a_check_rho_tf.json=AE205D82; inv_a_check.json 4EA9B36B untouched. p_box UNDECIDED, INV_A_CHECK stays FAIL, IT4 not run. IT1 not started: estimate >>2 h (see report).
+- 03:23 rev20 pinned 22C77378/67F648AE (77ED2DBC superseded); drift-window starts fixed at 1.0*t_f and 1.5*t_f (fit to 2*t_f), recorded in every IT1 row; run.py e09d5c15 tests.py 83de1650; backup /tmp/instanton-tests_bak_rev20_*
+- 03:44 box tests on run.py E09D5C15 tests.py 361BCA43: 
+- 03:48 box test rerun aborted at lanczos by RAM guard (box avail ~2 GB < 3.3); TrinityOrb offline, rev20 not deployed there; package /workspace/rev20.tgz ready
+- 03:49 box tests 79/79 PASS (run.py E09D5C15, tests.py 361BCA43). TrinityOrb still offline: not pinned/tested/smoked there. Nothing launched.
+- 03:52 rev20 (22C77378) Venus note: drift windows = disjoint halves 1.0-1.5 t_f and 1.5-2.0 t_f (20% flag [assumed], report-only; graded drift = full window); default 6+6; B12 cost ~2280 s/row [scaled, not re-timed]; IT1 6+6 82 rows ~12.1 h. run.py 032baa50 tests.py 4f4062e8; box tests 79/79.

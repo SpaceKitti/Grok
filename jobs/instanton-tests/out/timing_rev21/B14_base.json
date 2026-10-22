@@ -1,0 +1,1 @@
+{"box": "B14", "delta": null, "draw": -1, "rng_seed": null, "monotone": true, "Q_tf": -0.9675921530899018, "rho_tf": 4.292756898876675, "drift": -5.018375861299983, "n_fit": 21, "steps_pre": 98, "steps_drift": 98, "smoke": false, "wall_s": 4591.8777142000035, "spec": "2AD8FA1A"}

@@ -1,0 +1,66 @@
+{
+ "delta": 0.005,
+ "rule": "largest delta that passes on BOTH B10 and B12 [assumed]",
+ "boxes": {
+  "B10": {
+   "chosen": 0.005,
+   "valid": [
+    0.005
+   ],
+   "n_rows": 19,
+   "smoke": false,
+   "spec": "22C77378",
+   "candidates": {
+    "0.005": {
+     "n": 6,
+     "valid": true,
+     "reason": "ok"
+    },
+    "0.01": {
+     "n": 6,
+     "valid": false,
+     "reason": "rho shift 0.0503 > 0.05"
+    },
+    "0.02": {
+     "n": 6,
+     "valid": false,
+     "reason": "rho shift 0.1567 > 0.05"
+    }
+   }
+  },
+  "B12": {
+   "chosen": 0.005,
+   "valid": [
+    0.005
+   ],
+   "n_rows": 19,
+   "smoke": false,
+   "spec": "22C77378",
+   "candidates": {
+    "0.005": {
+     "n": 6,
+     "valid": true,
+     "reason": "ok"
+    },
+    "0.01": {
+     "n": 6,
+     "valid": false,
+     "reason": "rho shift 0.0624 > 0.05"
+    },
+    "0.02": {
+     "n": 6,
+     "valid": false,
+     "reason": "rho shift 0.1909 > 0.05"
+    }
+   }
+  }
+ },
+ "smoke": false,
+ "spec": "22C77378",
+ "spec_file": "22C77378",
+ "run_py": "B781882D",
+ "grade_files": {
+  "B10": "C:\\Users\\Akitt\\Grok\\jobs\\instanton-tests\\out\\it1_pick_grade_B10.json",
+  "B12": "C:\\Users\\Akitt\\Grok\\jobs\\instanton-tests\\out\\it1_pick_grade_B12.json"
+ }
+}

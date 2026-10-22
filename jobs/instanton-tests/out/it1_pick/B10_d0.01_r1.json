@@ -1,0 +1,1 @@
+{"box": "B10", "delta": 0.01, "draw": 1, "rng_seed": 180001, "monotone": true, "Q_tf": -0.9434922370065721, "rho_tf": 3.228036213747498, "drift": -6.874158018272308, "n_fit": 11, "steps_pre": 50, "steps_drift": 50, "smoke": false, "wall_s": 649.0886900999758, "spec": "22C77378"}

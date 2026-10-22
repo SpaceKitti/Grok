@@ -1,0 +1,49 @@
+{
+ "boxes": {
+  "B12": {
+   "box": "B12",
+   "alpha": 1.0,
+   "delta": 0.0,
+   "T": 0.432,
+   "settled": false,
+   "windows": {
+    "drift_h1": -2.1247749619241403,
+    "n_h1": 25,
+    "drift_h2": -1.5305972153277747,
+    "n_h2": 24,
+    "t_split": 0.648,
+    "T": 0.432,
+    "flag": true,
+    "rel": 0.2796426714565075,
+    "settled": false
+   },
+   "t_f": 0.14400000000000002,
+   "t_max": 0.43200000000000005,
+   "note": "cap (windows not <10%)",
+   "monotone": true,
+   "n_steps": 432,
+   "flow_max_over": 6.0,
+   "t_max_over": 3.0,
+   "smoke": false,
+   "wall_s": 5781.848162200011,
+   "spec": "2AD8FA1A",
+   "hist_n": 96,
+   "T_over_tf": 2.9999999999999996
+  },
+  "B10": {
+   "box": "B10",
+   "T": 0.3,
+   "t_f": 0.1,
+   "T_over_tf": 2.9999999999999996,
+   "copied_from": "B12",
+   "settled": false,
+   "t_max": 0.43200000000000005,
+   "spec": "2AD8FA1A",
+   "note": "T/t_f copied from B12"
+  }
+ },
+ "spec": "2AD8FA1A",
+ "smoke": false,
+ "ratio": 2.9999999999999996,
+ "src": "B12"
+}
