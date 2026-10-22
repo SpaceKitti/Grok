@@ -1,0 +1,5 @@
+{"source_file": "instanton-tests\\out\\_t_ratio\\it1_T.json", "source_sha256_8": "0227D7CE", "row": 0, "data": {"boxes": {"B12": {"T": 0.288, "t_f": 0.144, "settled": true, "t_max": 0.432, "T_over_tf": 2.0}, "B10": {"box": "B10", "T": 0.2, "t_f": 0.1, "T_over_tf": 2.0, "copied_from": "B12", "settled": true, "t_max": 0.432, "spec": "2AD8FA1A", "note": "T/t_f copied from B12"}}, "spec": "2AD8FA1A", "smoke": false, "ratio": 2.0, "src": "B12"}}
+{"source_file": "instanton-tests\\out\\_t_skip\\delta_frozen.json", "source_sha256_8": "6DDE74DB", "row": 0, "data": {"delta": 0.001, "marker": "kept"}}
+{"source_file": "instanton-tests\\out\\_t_skip\\it1_T.json", "source_sha256_8": "95984D2E", "row": 0, "data": {"boxes": {"B12": {"T": 0.288, "t_f": 0.144, "marker": "kept"}}}}
+{"source_file": "instanton-tests\\out\\_t_skip\\it1\\B10_a1.0_d0.json", "source_sha256_8": "36B33248", "row": 0, "data": {"box": "B10", "alpha": 1.0, "draw": 0, "drift": -9.0, "delta": 0.001, "marker": "kept"}}
+{"source_file": "instanton-tests\\out\\_t_skip\\it1\\cal_B10.json", "source_sha256_8": "32876C38", "row": 0, "data": {"box": "B10", "marker": "kept"}}
