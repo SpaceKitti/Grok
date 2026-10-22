@@ -1,0 +1,4 @@
+law_row,result,note
+Law-GR [GR control] (alpha = 1 - 4G mu appears only here),NOT COMPUTED (YET),needs core Einstein solve; control only
+Law-hers,NOT COMPUTED (YET),no T<->K law found in X_COPY
+"Law-HP [hive proposal, untested]",NOT COMPUTED (YET),"E_K, E_T from richardson_k1/ job; observed order reported there"
