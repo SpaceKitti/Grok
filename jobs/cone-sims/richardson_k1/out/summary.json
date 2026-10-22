@@ -1,0 +1,23 @@
+{
+ "scratch": false,
+ "rows": 308,
+ "ok": 308,
+ "failed": 0,
+ "wall_s": 40.754096399992704,
+ "p_T_range": [
+  1.9653542299366755,
+  2.112389914942798
+ ],
+ "p_K_range": [
+  2.0000097333819284,
+  2.000141139640336
+ ],
+ "E_T_max": 0.0009832487526938469,
+ "E_K_max": 1.6147522644861752e-05,
+ "T_asymptotic": 308,
+ "K_asymptotic": 308,
+ "N200_vs_signed_max": 2.34035013590983e-13,
+ "no_match": 0,
+ "signed_hash_before": "38C1D32A",
+ "signed_hash_after": "38C1D32A"
+}
