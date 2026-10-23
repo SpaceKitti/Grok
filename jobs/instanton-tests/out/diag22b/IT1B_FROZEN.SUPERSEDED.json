@@ -1,0 +1,20 @@
+﻿{
+ "name": "IT1b [hive proposal, untested]",
+ "frozen_by": "Helios+Venus spec via NanoRibbon, written by Aethon 2026-10-23 BST before any IT1b row",
+ "setup": {"box": "B10", "alpha": [1.0, 0.5], "delta": [0, 0.0015, 0.003], "seeds": [0, 1], "T_cap": 1.2, "T_cap_note": "2x old 0.6"},
+ "grading": {
+  "delta0_drift_settle": 0.10,
+  "if_delta0_unsettled": "grade delta rows on paired dX(t)=X_delta(t)-X_0(t), same seed and window",
+  "dX_drift_reference": "mean|dX| over window (not X_delta)",
+  "undecided_if": "mean|dX| at delta=0.0015 <= seed spread",
+  "pass": {"dX_window_drift_max": 0.10, "linearity_ratio": [1.7, 2.3], "cal_shift_max": 0.05, "main_control_max": 0.23},
+  "else": "UNDECIDED; no third attempt"
+ },
+ "short_run_gates": {
+  "match_diag22_T0.6_slice_within": 0.02,
+  "venus_gate": "if drift is not falling between windows as T grows, do not run long part; report as is"
+ },
+ "logging_only": ["r=0 boundary condition", "peak tip density", "r<2a fraction"],
+ "tip_probe": "HELD until IT1b graded",
+ "old_files_kept": ["out/diag22/it1_grade.json", "out/diag22/it1_T.json", "TIP_THRESHOLDS_FROZEN.json", "TIP_THRESHOLDS_FROZEN_v2.json"]
+}

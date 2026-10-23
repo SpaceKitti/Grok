@@ -518,6 +518,7 @@ def it1_jobs_diag21():
 def it1_row_path(box, alpha, draw, outdir="it1", delta=None):
     if draw == IT1_D0_DRAW: name = f"{box}_a{alpha}_delta0.json"
     elif delta is not None and abs(float(delta) - DIAG21_LIN_DELTA) < 1e-12: name = f"{box}_a{alpha}_d{draw}_delta{DIAG21_LIN_DELTA}.json"
+    elif delta is not None and "diag22" in str(outdir).replace("\\", "/"): name = f"{box}_a{alpha}_d{draw}_delta{float(delta)}.json"   # H10: diag22 has two nonzero deltas
     else: name = f"{box}_a{alpha}_d{draw}.json"
     return os.path.join(HERE, "out", outdir, name)
 def it1_smooth_field(lp, draw):
@@ -1049,8 +1050,252 @@ def smoke_cut(steps=1, only=None):
     for b in IT3_GRIDS:
         it3_row(b, 1.0, 0, kind="bpst", steps=steps, outdir="smoke_it3"); it3_row(b, 1.0, 0, steps=steps, outdir="smoke_it3"); it3_row(b, 0.55, 0, steps=steps, outdir="smoke_it3")
     it3_grade("smoke_it3"); print("SMOKE wall_s", time.perf_counter()-t0, flush=True)
+# ---- diag22 (NanoRibbon job, 2026-10-22): IT1 re-check on B10 + tip probe. Rules frozen by Venus/Helios before the run. ----
+DIAG22_OUT = "diag22"
+DIAG22_BOX = "B10"; DIAG22_ALPHAS = (1.0, 0.5); DIAG22_SEEDS = 2; DIAG22_DELTAS = (0.003, 0.0015)
+DIAG22_T_CAP_OVER_TF = 6.0                         # T cap = 6 t_f (B10: 0.6)
+DIAG22_FLOW_MAX_OVER_TF = 12.0                     # find-T history long enough that 2T fits at the cap
+DIAG22_WIN_MAX = 0.10                              # PASS: window drift |h1-h2|/max <= 10% on every delta=0 row
+DIAG22_LIN_BAND = (1.7, 2.3)                       # PASS: (drift(0.003)-drift0)/(drift(0.0015)-drift0) at alpha=1
+DIAG22_RHO_SHIFT_MAX = 0.05                        # PASS: calibrated rho shift at the new T <= 5%
+DIAG22_CTRL_SLOPE = IT1_CAL_SLOPE_DEFAULT          # B10 only: no B12 Richardson term; cal slope [assumed] 2
+TIP_BOXES = {"B8": (8, 20, 16, 16), "B10": BOXES["B10"], "B12": BOXES["B12"], "B16": BOXES["B16"]}
+TIP_ALPHAS = (1.0, 0.5); TIP_RHO_OVER_MR = 0.3     # rho = 0.3 M_r a (rev 21 convention, fixed rho/l)
+TIP_FLOW_OVER_TF = 6.0                             # flow to 6 t_f(rho): equal t/rho^2 => equal physical flow time
+TIP_REC = 5
+TIP_THRESHOLDS = None                              # NOT FOUND in any written spec => tip probe REPORT-ONLY (no DELTA_SPIKE/INTEGRABLE_SINGULAR/REGULAR)
+def diag22_jobs():
+    J = []
+    for dl in DIAG22_DELTAS:
+        for d in range(DIAG22_SEEDS):
+            for al in DIAG22_ALPHAS: J.append((DIAG22_BOX, al, d, dl))
+    for al in DIAG22_ALPHAS: J.append((DIAG22_BOX, al, IT1_D0_DRAW, 0.0))
+    return J
+def diag22_check_row_key(draw, delta):
+    """H10 guard: a delta row must carry delta>0, a delta=0 control must be draw -1. Never mix."""
+    if draw == IT1_D0_DRAW and float(delta or 0.0) != 0.0: raise ValueError("delta=0 control row with delta != 0")
+    if draw != IT1_D0_DRAW and not (delta is not None and float(delta) > 0): raise ValueError(f"delta row draw={draw} needs delta>0, got {delta}")
+def diag22_paths():
+    base = os.path.join(HERE, "out", DIAG22_OUT)
+    return dict(base=base, it1=f"{DIAG22_OUT}/it1", T=os.path.join(base, "it1_T.json"), grade=os.path.join(base, "it1_grade.json"), tip=os.path.join(base, "tip"))
+def diag22_row(alpha, draw, delta, steps=None, skip_existing=False):
+    diag22_check_row_key(draw, delta); P = diag22_paths()
+    return it1_row(DIAG22_BOX, alpha, draw, steps=steps, outdir=P["it1"], delta=(None if draw == IT1_D0_DRAW else delta), t_path=P["T"],
+                   skip_existing=skip_existing, delta_note="diag22 re-check")
+def diag22_find_T(steps=None):
+    P = diag22_paths()
+    return it1_find_T(DIAG22_BOX, steps, path=P["T"], t_max_over=DIAG22_T_CAP_OVER_TF, flow_max_over=DIAG22_FLOW_MAX_OVER_TF)
+def diag22_cal(steps=None):
+    """alpha=1 exact BPST rho calibration, flowed to the NEW T (not t_f)."""
+    from kernels import Loops
+    P = diag22_paths(); box = DIAG22_BOX; Trec = it1_load_T(box, fn=P["T"]) or {}
+    rho = IT1_GRIDS[box]; T = Trec.get("T") or flow_tf(rho); n = steps or int(round(T/FLOW_STEP))
+    lat = Lattice(*BOXES[box], alpha=1.0); lp = Loops(lat, IT1_EPS); c = (0., 0., lat.x3[lat.M3//2], lat.x4[lat.M4//2])
+    U = lp.flat(lat.bpst_links(rho, centre=c)); r0 = lp.rho_moment(U, centre=c)
+    U, _ = lp.flow(U, h=FLOW_STEP, max_steps=n, record=5); r1 = lp.rho_moment(U, centre=c)
+    out = dict(test="IT1-cal (diag22, at new T)", box=box, rho=rho, T=T, raw_unflowed=r0, raw_flowed=r1, cal=rho/r0, rel_shift=abs(r1-r0)/r0,
+               steps=n, smoke=steps is not None, spec=FINAL_SPEC_HASH)
+    fn = os.path.join(P["base"], "it1", f"cal_{box}.json"); os.makedirs(os.path.dirname(fn), exist_ok=True)
+    open(fn, "w").write(json.dumps(out, default=float)); print(json.dumps(out, default=float), flush=True); return out
+def diag22_grade_rows(rows, cal):
+    """Explicit pass/fail per frozen criterion. Rows keyed by (alpha, draw, delta) from the row's OWN fields; duplicate keys refused (H10)."""
+    key = {}
+    for r in rows:
+        diag22_check_row_key(r.get("draw"), r.get("delta"))
+        k = (float(r["alpha"]), int(r["draw"]), float(r.get("delta") or 0.0))
+        if k in key: raise ValueError(f"duplicate diag22 row {k}")
+        key[k] = r
+    dr = lambda al, d, dl: (key.get((al, d, dl)) or {}).get("drift")
+    z = {al: dr(al, IT1_D0_DRAW, 0.0) for al in DIAG22_ALPHAS}
+    crit = {}
+    # 1 window drift on delta=0 rows
+    w = {str(al): (key.get((al, IT1_D0_DRAW, 0.0)) or {}).get("window_rel") for al in DIAG22_ALPHAS}
+    crit["window_drift"] = dict(rule=f"|h1-h2|/max <= {DIAG22_WIN_MAX} on every delta=0 row", values=w,
+                                ok=bool(all(v is not None and v <= DIAG22_WIN_MAX for v in w.values())))
+    # 2 linearity at alpha=1
+    m = {}
+    for dl in DIAG22_DELTAS:
+        xs = [dr(1.0, d, dl) for d in range(DIAG22_SEEDS)]; xs = [x for x in xs if x is not None]
+        m[str(dl)] = float(np.mean(xs)) if len(xs) == DIAG22_SEEDS else None
+    hi, lo = m[str(max(DIAG22_DELTAS))], m[str(min(DIAG22_DELTAS))]; ratio = None
+    if None not in (hi, lo, z[1.0]) and lo != z[1.0]: ratio = float((hi - z[1.0])/(lo - z[1.0]))
+    crit["linearity"] = dict(rule=f"ratio in {list(DIAG22_LIN_BAND)}", drift0=z[1.0], mean_drift=m, ratio=ratio,
+                             ok=bool(ratio is not None and DIAG22_LIN_BAND[0] <= ratio <= DIAG22_LIN_BAND[1]))
+    # 3 delta=0 control at alpha=0.5, per delta
+    shift = (cal or {}).get("rel_shift"); ctl = {}
+    for dl in DIAG22_DELTAS:
+        ds = [dr(0.5, d, dl) - dr(1.0, d, dl) for d in range(DIAG22_SEEDS) if dr(0.5, d, dl) is not None and dr(1.0, d, dl) is not None]
+        if len(ds) < 2 or None in (z[1.0], z[0.5]): ctl[str(dl)] = dict(ok=False, note="NOT COMPUTED (YET)", n=len(ds)); continue
+        D = float(np.mean(ds)); sig = float(np.std(ds, ddof=1)); D0 = z[0.5] - z[1.0]
+        E = float(np.sqrt(sig**2/len(ds) + (DIAG22_CTRL_SLOPE*(shift or 0.0)*abs(D))**2)); diff = D - D0
+        ctl[str(dl)] = dict(Delta_delta=D, Delta_0=D0, diff=diff, sigma=sig, n=len(ds), E=E, bound=3*E, ratio=(abs(diff)/(3*E) if E > 0 else None), ok=bool(abs(diff) <= 3*E))
+    crit["delta0_control"] = dict(rule="|Delta_delta - Delta_0| <= 3E at alpha=0.5, each delta; E = sqrt(sigma^2/n + (2*shift*|Delta|)^2) [B10 only, slope assumed 2]",
+                                  per_delta=ctl, ok=bool(ctl and all(v["ok"] for v in ctl.values())))
+    crit["rho_cal_shift"] = dict(rule=f"rel_shift at new T <= {DIAG22_RHO_SHIFT_MAX}", value=shift, T=(cal or {}).get("T"),
+                                 ok=bool(shift is not None and shift <= DIAG22_RHO_SHIFT_MAX))
+    allok = all(c["ok"] for c in crit.values())
+    exp = diag22_jobs(); have = {(al, d, dl) for (_, al, d, dl) in exp if (al, d, dl) in key}
+    listed = [dict(alpha=r["alpha"], draw=r["draw"], delta=r.get("delta"), drift=r.get("drift"), window_rel=r.get("window_rel"), Q=r.get("Q"), T=r.get("T"))
+              for k, r in sorted(key.items())]
+    return dict(test="IT1 re-check (diag22)", status=("PASS" if allok else "REPORT-ONLY (" + ", ".join(k for k, c in crit.items() if not c["ok"]) + ")"),
+                criteria=crit, rows=listed, n_rows=len(key), expected=len(exp), missing=[list(j[1:]) for j in exp if (j[1], j[2], j[3]) not in have],
+                note="no further tuning; every row listed", spec=FINAL_SPEC_HASH)
+def diag22_grade():
+    import glob
+    P = diag22_paths(); fs = glob.glob(os.path.join(P["base"], "it1", "*.json"))
+    rows = [json.load(open(f, encoding="utf-8")) for f in fs if not os.path.basename(f).startswith("cal_")]
+    cfn = os.path.join(P["base"], "it1", f"cal_{DIAG22_BOX}.json"); cal = json.load(open(cfn)) if os.path.exists(cfn) else None
+    out = diag22_grade_rows(rows, cal); out["T"] = it1_load_T(DIAG22_BOX, fn=P["T"])
+    tg = os.path.join(P["tip"], "tip_fit.json")
+    if os.path.exists(tg): out["tip_probe"] = json.load(open(tg, encoding="utf-8"))
+    txt = json.dumps(out, indent=1, default=float); os.makedirs(P["base"], exist_ok=True); open(P["grade"], "w", encoding="utf-8").write(txt); print(txt); return out
+def diag22_tip_row(box, alpha, steps=None, rec=TIP_REC):
+    """Peak action density (per dual 4-volume) at the tip cell vs flow time, plus action fraction inside r<2a. CSV + JSON."""
+    from kernels import Loops, generic_seed
+    dims = TIP_BOXES[box]; lat = Lattice(*dims, alpha=alpha); lp = Loops(lat, IT1_EPS)
+    rho = TIP_RHO_OVER_MR*dims[0]; tf = flow_tf(rho); n = steps or int(round(TIP_FLOW_OVER_TF*tf/FLOW_STEP))
+    c = (0., 0., lat.x3[lat.M3//2], lat.x4[lat.M4//2]); tipA, ringA = lat.dual_area()
+    nodeA = np.r_[tipA, np.repeat(ringA, lat.Lc)]; vol = np.repeat(nodeA, lat.M3*lat.M4)*lat.a**2
+    node_of = np.arange(lp.Ns)//(lat.M3*lat.M4); tip = node_of == 0; inner = lp.site_r < 2.0*lat.a
+    U = generic_seed(lat, rho, seed=IT1_BASE_SEED, centre=c); t = 0.0; T = []; mono = True; S_prev = None; err = None; t0 = time.perf_counter()
+    def log():
+        S, dens = lp.action(U, per_site=True); dv = dens/vol; Q = lp.charge(U, lp.field_strength(U))
+        T.append(dict(t=t, t_over_tf=t/tf, S=float(S), Q=float(Q), peak_tip=float(dv[tip].max()), peak_all=float(dv.max()),
+                      peak_all_r=float(lp.site_r[int(np.argmax(dv))]), frac_r_lt_2a=float(dens[inner].sum()/S) if S > 0 else None, finite=bool(np.isfinite(dv).all())))
+        return S
+    try:
+        S_prev = log(); done = 0
+        while done < n:
+            k = min(rec, n - done); U, _ = lp.flow(U, h=FLOW_STEP, max_steps=k, record=k + 1); done += k; t = done*FLOW_STEP
+            S = log()
+            if S > S_prev*(1 + 1e-12): mono = False
+            if not np.isfinite(S): err = "non-finite action"; break
+            S_prev = S
+    except FloatingPointError as e: err = str(e); mono = False
+    d = os.path.join(diag22_paths()["tip"]); os.makedirs(d, exist_ok=True); stem = os.path.join(d, f"{box}_a{alpha}")
+    with open(stem + ".csv", "w") as f:
+        f.write("t,t_over_tf,S,Q,peak_tip,peak_all,peak_all_r,frac_r_lt_2a,finite\n")
+        for r in T: f.write(",".join(str(r[k]) for k in ("t", "t_over_tf", "S", "Q", "peak_tip", "peak_all", "peak_all_r", "frac_r_lt_2a", "finite")) + "\n")
+    out = dict(test="tip probe (diag22)", box=box, N=dims[0], alpha=alpha, rho=rho, t_f=tf, t_end=t, steps=n, monotone_S=mono, error=err,
+               cells_across_rho=rho/lat.a, final=(T[-1] if T else None), max_peak_tip=max((r["peak_tip"] for r in T), default=None),
+               n_records=len(T), smoke=steps is not None, wall_s=time.perf_counter()-t0, spec=FINAL_SPEC_HASH,
+               density_note="action per site / dual 4-volume (tip disc r<a/4 x a^2); tip cell = r=0 sites")
+    open(stem + ".json", "w").write(json.dumps(out, default=float)); print(json.dumps(out, default=float), flush=True); return out
+def tip_fit(Ns, peaks):
+    """log peak = p log N + c, weighted least squares; p error from fit covariance (residual-scaled), dof = n-2."""
+    x = np.log(np.asarray(Ns, float)); y = np.log(np.asarray(peaks, float)); n = len(x)
+    if n < 3: return dict(p=None, p_err=None, dof=n-2, note="need >= 3 boxes for an error bar")
+    coef, cov = np.polyfit(x, y, 1, cov=True)
+    return dict(p=float(coef[0]), p_err=float(np.sqrt(cov[0, 0])), dof=n-2, intercept=float(coef[1]))
+def diag22_tip_fit():
+    P = diag22_paths(); out = dict(test="tip probe fit peak ~ N^p (diag22)", thresholds=TIP_THRESHOLDS, per_alpha={}, rows=[])
+    for al in TIP_ALPHAS:
+        R = []
+        for b in TIP_BOXES:
+            fn = os.path.join(P["tip"], f"{b}_a{al}.json")
+            if os.path.exists(fn): r = json.load(open(fn)); R.append(r); out["rows"].append({k: r.get(k) for k in ("box", "N", "alpha", "error", "monotone_S", "max_peak_tip", "final")})
+        ok = [r for r in R if r.get("final") and not r.get("error")]
+        f_end = tip_fit([r["N"] for r in ok], [r["final"]["peak_tip"] for r in ok]) if ok else None
+        f_max = tip_fit([r["N"] for r in ok], [r["max_peak_tip"] for r in ok]) if ok else None
+        out["per_alpha"][str(al)] = dict(n_boxes=len(ok), fit_final_peak=f_end, fit_max_peak=f_max,
+                                         verdict=("REPORT-ONLY: frozen tip thresholds missing" if TIP_THRESHOLDS is None else None))
+    os.makedirs(P["tip"], exist_ok=True); txt = json.dumps(out, indent=1, default=float)
+    open(os.path.join(P["tip"], "tip_fit.json"), "w").write(txt); print(txt); return out
+# ---- IT1b power-law hooks (2026-10-23, [hive proposal, untested]); new modes only, old paths untouched ----
+IT1B_OUT = "diag22b"; IT1B_T_LO = 0.1; IT1B_T_CAP = 0.6; IT1B_REC = 5    # record every 5 steps = 0.01 in t
+IT1B_DELTAS = (0.0015, 0.003); IT1B_SEEDS = (0, 1); IT1B_ALPHAS = (1.0, 0.5)
+def it1b_paths():
+    base = os.path.join(HERE, "out", IT1B_OUT); return dict(base=base, rows=os.path.join(base, "rows"), cal=os.path.join(base, "cal_B10.json"),
+                                                           grade=os.path.join(base, "it1b_grade.json"))
+def it1b_row_path(alpha, seed, delta):
+    return os.path.join(it1b_paths()["rows"], f"B10_a{float(alpha)}_s{int(seed)}_delta{float(delta)}.json")
+def it1b_hist_window(hist, lo=IT1B_T_LO, hi=IT1B_T_CAP):
+    """X(t) from flow start, restricted to [lo, hi]; drops non-finite."""
+    return [(float(t), float(x)) for t, x in hist if lo-1e-12 <= t <= hi+1e-12 and x is not None and np.isfinite(x)]
+def it1b_tip_log(S, dens, vol, tip, inner):
+    """Report-only: peak tip density (per dual 4-volume), r<2a action fraction, finiteness."""
+    dv = np.asarray(dens, float)/np.asarray(vol, float)
+    return dict(peak_tip=float(dv[tip].max()) if np.any(tip) else None, peak_all=float(dv.max()),
+                frac_r_lt_2a=(float(np.asarray(dens)[inner].sum()/S) if S > 0 else None), finite=bool(np.isfinite(dv).all()))
+def it1b_r0_bc(lat, lp):
+    """Report-only description of the r=0 boundary condition actually used."""
+    node_of = np.arange(lp.Ns)//(lat.M3*lat.M4); tip = node_of == 0
+    return dict(kind="cone tip node 0 (r=0 sites), alpha-measure only", alpha=float(lat.alpha) if hasattr(lat, "alpha") else None,
+                n_tip_sites=int(tip.sum()), tip_sites_boundary=int(np.sum(lp.bsite[tip])) if hasattr(lp, "bsite") else None,
+                tip_r_max=float(np.max(lp.site_r[tip])))
+def it1b_row(alpha, seed, delta, steps=None):
+    """Flow from t=0 to IT1B_T_CAP, recording X(t)=cal*rho_moment every IT1B_REC steps (incl. t<T). seed=-1 & delta=0 => control."""
+    from kernels import Loops, generic_seed
+    box = DIAG22_BOX; rho = IT1_GRIDS[box]; lat = Lattice(*BOXES[box], alpha=alpha); lp = Loops(lat, IT1_EPS)
+    c = (0., 0., lat.x3[lat.M3//2], lat.x4[lat.M4//2]); t0 = time.perf_counter()
+    lat1 = Lattice(*BOXES[box], alpha=1.0); lp1 = Loops(lat1, IT1_EPS)
+    cal = rho/lp1.rho_moment(lp1.flat(lat1.bpst_links(rho, centre=c)), centre=c); del lat1, lp1
+    tipA, ringA = lat.dual_area(); nodeA = np.r_[tipA, np.repeat(ringA, lat.Lc)]; vol = np.repeat(nodeA, lat.M3*lat.M4)*lat.a**2
+    node_of = np.arange(lp.Ns)//(lat.M3*lat.M4); tip = node_of == 0; inner = lp.site_r < 2.0*lat.a
+    U = generic_seed(lat, rho, seed=IT1_BASE_SEED, centre=c)
+    if delta: U = it1_perturb(lp, U, seed, delta)
+    n = steps or int(round(IT1B_T_CAP/FLOW_STEP)); done = 0; hist = []; logs = []; err = None
+    def snap(t):
+        S, dens = lp.action(U, per_site=True); hist.append((t, cal*lp.rho_moment(U, centre=c)))
+        logs.append(dict(t=t, **it1b_tip_log(S, dens, vol, tip, inner)))
+    try:
+        snap(0.0)
+        while done < n:
+            k = min(IT1B_REC, n-done); U, _ = lp.flow(U, h=FLOW_STEP, max_steps=k, record=k+1); done += k; snap(done*FLOW_STEP)
+    except FloatingPointError as e: err = str(e)
+    Q = lp.charge(U, lp.field_strength(U))
+    out = dict(test="IT1b", box=box, alpha=alpha, seed=seed, delta=delta, rho_seed=rho, rho_cal=cal, hist_full=hist,
+               hist=it1b_hist_window(hist), window=[IT1B_T_LO, IT1B_T_CAP], Q=Q, absQ_minus_1=abs(abs(Q)-1), err=err,
+               r0_bc=it1b_r0_bc(lat, lp), tip_log=logs, log_note="report-only (r=0 BC, peak tip density, r<2a fraction)",
+               steps=n, smoke=steps is not None, wall_s=time.perf_counter()-t0, free_ram_gb=free_ram_gb(), spec=FINAL_SPEC_HASH,
+               measure="out/diag22b/IT1B_POWERLAW_FROZEN.md AE31015E", tag="[hive proposal, untested]")
+    fn = it1b_row_path(alpha, seed, delta); os.makedirs(os.path.dirname(fn), exist_ok=True)
+    open(fn, "w", encoding="utf-8").write(json.dumps(out, default=float)); print(json.dumps(dict(path=fn, err=err), default=float), flush=True); return out
+def it1b_cal(steps=None):
+    """Same as diag22_cal at T=IT1B_T_CAP, written to diag22b (diag22 file untouched)."""
+    from kernels import Loops
+    box = DIAG22_BOX; rho = IT1_GRIDS[box]; n = steps or int(round(IT1B_T_CAP/FLOW_STEP))
+    lat = Lattice(*BOXES[box], alpha=1.0); lp = Loops(lat, IT1_EPS); c = (0., 0., lat.x3[lat.M3//2], lat.x4[lat.M4//2])
+    U = lp.flat(lat.bpst_links(rho, centre=c)); r0 = lp.rho_moment(U, centre=c)
+    U, _ = lp.flow(U, h=FLOW_STEP, max_steps=n, record=5); r1 = lp.rho_moment(U, centre=c)
+    out = dict(test="IT1b-cal", box=box, rho=rho, T=n*FLOW_STEP, raw_unflowed=r0, raw_flowed=r1, cal=rho/r0, rel_shift=abs(r1-r0)/r0, steps=n,
+               smoke=steps is not None, spec=FINAL_SPEC_HASH)
+    P = it1b_paths(); os.makedirs(P["base"], exist_ok=True); open(P["cal"], "w").write(json.dumps(out, default=float)); print(json.dumps(out, default=float)); return out
+def it1b_grade_from(rowlist, cal_shift):
+    """Pure: rowlist of row dicts -> grade via it1b_measure. Missing rows listed as NOT COMPUTED (YET). P3 control = max|dp| at alpha=0.5 [interpretation, Venus to confirm]."""
+    import it1b_measure as M
+    idx = {}; missing = []
+    for r in rowlist:
+        k = (float(r["alpha"]), int(r["seed"]), float(r["delta"]))
+        if k in idx: raise ValueError(f"duplicate IT1b row {k}")
+        idx[k] = r
+    h0 = {}; rows = {}
+    for al in IT1B_ALPHAS:
+        h0[al] = {}; rows[al] = {d: {} for d in IT1B_DELTAS}
+        for s in IT1B_SEEDS:
+            r0 = idx.get((al, s, 0.0)) or idx.get((al, IT1_D0_DRAW, 0.0))
+            if r0 is None: missing.append((al, s, 0.0)); continue
+            h0[al][s] = r0["hist"]
+            for d in IT1B_DELTAS:
+                r = idx.get((al, s, d))
+                if r is None: missing.append((al, s, d))
+                else: rows[al][d][s] = r["hist"]
+    if missing:
+        return dict(status="NOT COMPUTED (YET)", missing=missing)
+    ctrl = max(abs(M.grade_delta(rows[0.5][d], h0[0.5])["dp"]) for d in IT1B_DELTAS)
+    g = M.grade_it1b(h0, rows, cal_shift, ctrl)
+    return dict(status="graded", control_dp_alpha05=ctrl, control_note="P3 = max|dp| at alpha=0.5 [interpretation, Venus to confirm]",
+                cal_shift=cal_shift, per_alpha={str(k): v for k, v in g.items()}, tag="[hive proposal, untested]")
+def it1b_grade():
+    import glob
+    P = it1b_paths(); rl = [json.load(open(f, encoding="utf-8")) for f in sorted(glob.glob(os.path.join(P["rows"], "*.json")))]
+    cal = json.load(open(P["cal"])) if os.path.exists(P["cal"]) else None
+    out = it1b_grade_from(rl, cal["rel_shift"] if cal else float("nan")) if cal else dict(status="NOT COMPUTED (YET)", missing=["cal"])
+    out["rows"] = [dict(alpha=r["alpha"], seed=r["seed"], delta=r["delta"], err=r.get("err"), n=len(r["hist"])) for r in rl]
+    txt = json.dumps(out, indent=1, default=float); open(P["grade"], "w", encoding="utf-8").write(txt); print(txt); return out
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("mode", choices=["smoke", "graded", "resmoke", "resmoke-row", "holonomy", "gapcheck", "summarize", "inv_a", "inv_a_rho_tf", "boxcost-b16", "time-steps", "it1-row", "it1-grade", "it1-cal", "it1-pick-row", "it1-pick-grade", "it1-freeze", "it1-find-T", "it1-apply-T-ratio", "it1-diag21-grade", "smoke-cut", "it3-row", "it3-campaign", "it3-grade"]); ap.add_argument("--alpha", type=float, default=1.0); ap.add_argument("--seed", type=int, default=0); ap.add_argument("--kind", default="generic"); ap.add_argument("--workers", type=int, default=3); ap.add_argument("--box", default="B10"); ap.add_argument("--eps", type=float, default=1); ap.add_argument("--rho", type=float, default=3.0); ap.add_argument("--centre", default="tip_site"); ap.add_argument("--launch-authorised", action="store_true"); ap.add_argument("--steps", type=int, default=None); ap.add_argument("--rep", type=int, default=0); ap.add_argument("--delta", type=float, default=None); ap.add_argument("--save-evecs", action="store_true"); ap.add_argument("--outdir", default=None, help="optional subdir under out/ (smoke/diag21 chain)"); ap.add_argument("--skip-existing", action="store_true"); ap.add_argument("--t-max-over", type=float, default=None); ap.add_argument("--flow-max-over", type=float, default=None); ap.add_argument("--apply-ratio-to", default=None); ap.add_argument("--delta-note", default=None)
+    ap = argparse.ArgumentParser(); ap.add_argument("mode", choices=["smoke", "graded", "resmoke", "resmoke-row", "holonomy", "gapcheck", "summarize", "inv_a", "inv_a_rho_tf", "boxcost-b16", "time-steps", "it1-row", "it1-grade", "it1-cal", "it1-pick-row", "it1-pick-grade", "it1-freeze", "it1-find-T", "it1-apply-T-ratio", "it1-diag21-grade", "smoke-cut", "it3-row", "it3-campaign", "it3-grade", "diag22-find-T", "diag22-cal", "diag22-row", "diag22-grade", "diag22-tip-row", "diag22-tip-fit", "it1b-row", "it1b-cal", "it1b-grade"]); ap.add_argument("--alpha", type=float, default=1.0); ap.add_argument("--seed", type=int, default=0); ap.add_argument("--kind", default="generic"); ap.add_argument("--workers", type=int, default=3); ap.add_argument("--box", default="B10"); ap.add_argument("--eps", type=float, default=1); ap.add_argument("--rho", type=float, default=3.0); ap.add_argument("--centre", default="tip_site"); ap.add_argument("--launch-authorised", action="store_true"); ap.add_argument("--steps", type=int, default=None); ap.add_argument("--rep", type=int, default=0); ap.add_argument("--delta", type=float, default=None); ap.add_argument("--save-evecs", action="store_true"); ap.add_argument("--outdir", default=None, help="optional subdir under out/ (smoke/diag21 chain)"); ap.add_argument("--skip-existing", action="store_true"); ap.add_argument("--t-max-over", type=float, default=None); ap.add_argument("--flow-max-over", type=float, default=None); ap.add_argument("--apply-ratio-to", default=None); ap.add_argument("--delta-note", default=None)
     A = ap.parse_args(); h = spec_hash()
     if h != FINAL_SPEC_HASH: sys.exit(f"spec hash {h} != FINAL_SPEC_HASH {FINAL_SPEC_HASH}; stop")
     if A.mode == "graded":
@@ -1093,6 +1338,15 @@ def main():
         base = os.path.join(HERE, "out", root or "diag21")
         return it1_diag21_grade(indir=f"{root or 'diag21'}/it1", outfile=os.path.join(base, "it1_grade.json"),
                                 t_path=os.path.join(base, "it1_T.json"))
+    if A.mode == "diag22-find-T": return diag22_find_T(A.steps)
+    if A.mode == "diag22-cal": return diag22_cal(A.steps)
+    if A.mode == "diag22-row": return diag22_row(A.alpha, A.seed, (0.0 if A.seed == IT1_D0_DRAW else A.delta), A.steps, A.skip_existing)
+    if A.mode == "diag22-grade": return diag22_grade()
+    if A.mode == "it1b-row": return it1b_row(A.alpha, A.seed, (A.delta or 0.0), A.steps)
+    if A.mode == "it1b-cal": return it1b_cal(A.steps)
+    if A.mode == "it1b-grade": return it1b_grade()
+    if A.mode == "diag22-tip-row": return diag22_tip_row(A.box, A.alpha, A.steps)
+    if A.mode == "diag22-tip-fit": return diag22_tip_fit()
     if A.mode == "smoke-cut": return smoke_cut(A.steps or 1, A.kind if A.kind == "it1" else None)
     if A.mode == "time-steps": return time_steps(A.box, A.eps, A.alpha, A.rho, A.steps or 3)
     if A.mode == "it3-row": return it3_row(A.box, A.alpha, A.seed, A.kind)
