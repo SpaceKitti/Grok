@@ -349,4 +349,30 @@ va = g3(list(0.3 + 50*h**4)); vb = g3(list(0.3 + 0.5*h)); vc = g3([0.3, 0.1, 0.2
 check("it3_order_in_window_grades", va["verdict"].startswith("AGAINST") and abs(va["d_inf"]-0.3) < 0.01, (va["verdict"], va.get("d_inf")))
 check("it3_order_outside_window_undecided", vb["verdict"].startswith("UNDECIDED"), (vb["verdict"], vb["observed_order"]))
 check("it3_nonmonotone_undecided", vc["verdict"].startswith("UNDECIDED") and vc["observed_order"] is None, vc["verdict"])
+# ---- diag22 / Venus H10 regression ----
+_p0 = run.it1_row_path("B10", 1.0, -1, "diag22/it1", delta=None); _pa = run.it1_row_path("B10", 1.0, 0, "diag22/it1", delta=0.003); _pb = run.it1_row_path("B10", 1.0, 0, "diag22/it1", delta=0.0015)
+check("h10_diag22_paths_distinct", len({_p0, _pa, _pb}) == 3, (_p0, _pa, _pb))
+check("h10_legacy_paths_unchanged", run.it1_row_path("B10", 1.0, 0, "diag21/it1", delta=0.001).endswith("B10_a1.0_d0.json"), None)
+try: run.diag22_check_row_key(0, 0.0); check("h10_delta_row_with_zero_refused", False, None)
+except ValueError: check("h10_delta_row_with_zero_refused", True, None)
+try: run.diag22_check_row_key(-1, 0.003); check("h10_control_with_delta_refused", False, None)
+except ValueError: check("h10_control_with_delta_refused", True, None)
+def _r22(al, d, dl, drift, wr=0.05): return dict(alpha=al, draw=d, delta=dl, drift=drift, window_rel=wr)
+_R = [_r22(1.0, -1, 0.0, 1.0), _r22(0.5, -1, 0.0, 1.5)]
+for _d in range(2):
+    _R += [_r22(1.0, _d, 0.0015, 1.1+0.001*_d), _r22(1.0, _d, 0.003, 1.2+0.001*_d), _r22(0.5, _d, 0.0015, 1.6+0.002*_d), _r22(0.5, _d, 0.003, 1.7+0.003*_d)]
+_g = run.diag22_grade_rows(_R, dict(rel_shift=0.01, T=0.3))
+check("diag22_grade_pass_and_linearity", _g["status"] == "PASS" and abs(_g["criteria"]["linearity"]["ratio"]-2.0) < 0.05 and _g["n_rows"] == 10 and not _g["missing"], _g["status"])
+_bad = [dict(r) for r in _R]; _bad[0]["window_rel"] = 0.2
+check("diag22_grade_window_fail_report_only", run.diag22_grade_rows(_bad, dict(rel_shift=0.01))["status"].startswith("REPORT-ONLY"), None)
+check("diag22_grade_cal_fail", run.diag22_grade_rows(_R, dict(rel_shift=0.06))["criteria"]["rho_cal_shift"]["ok"] is False, None)
+try: run.diag22_grade_rows(_R + [_r22(1.0, 0, 0.003, 9.9)], None); check("h10_duplicate_row_refused", False, None)
+except ValueError: check("h10_duplicate_row_refused", True, None)
+_ctl_alias = [dict(r) for r in _R]   # delta=0 control copied into a delta row slot must be refused, not graded
+_ctl_alias[2] = dict(_R[0], draw=0)
+try: run.diag22_grade_rows(_ctl_alias, None); check("h10_control_copied_into_delta_row_refused", False, None)
+except ValueError: check("h10_control_copied_into_delta_row_refused", True, None)
+_f = run.tip_fit([8, 10, 12, 16], [3.0*n**2.5 for n in (8, 10, 12, 16)])
+check("tip_fit_recovers_p_dof2", abs(_f["p"]-2.5) < 1e-9 and _f["dof"] == 2 and _f["p_err"] < 1e-6, _f)
+check("tip_thresholds_missing_report_only", run.TIP_THRESHOLDS is None and len(run.diag22_jobs()) == 10, None)
 nf = sum(1 for v in RES.values() if not v[0]); print(f"{len(RES)-nf}/{len(RES)} passed"); sys.exit(1 if nf else 0)

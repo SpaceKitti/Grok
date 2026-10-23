@@ -537,7 +537,9 @@ def it1_smooth_field(lp, draw):
     xi[lp.frozen] = 0
     return xi
 def it1_perturb(lp, U, draw, delta=None):
-    """U -> U exp(delta * smooth low-k field) (rev 19; per-link noise dropped). Paired across alpha by RNG stream [accepted, Venus]."""
+    """U -> exp(delta * xi) U, LEFT-multiplied on free links (Loops.step), xi = smooth low-k field from default_rng(IT1_RNG_BASE+draw)
+    (rev 19; per-link noise dropped). Paired across alpha by RNG stream [accepted, Venus]. delta may be negative: exp(-delta xi) is the
+    same perturbation direction reversed (IT1b rev 6 antithetic pairs)."""
     delta = IT1_DELTA if delta is None else delta
     if delta is None: raise RuntimeError("IT1_DELTA not set: run the rev 19 delta pick first")
     return lp.step(U, delta*it1_smooth_field(lp, draw))
@@ -1203,12 +1205,23 @@ def diag22_tip_fit():
     open(os.path.join(P["tip"], "tip_fit.json"), "w").write(txt); print(txt); return out
 # ---- IT1b power-law hooks (2026-10-23, [hive proposal, untested]); new modes only, old paths untouched ----
 IT1B_OUT = "diag22b"; IT1B_T_LO = 0.1; IT1B_T_CAP = 0.6; IT1B_REC = 5    # record every 5 steps = 0.01 in t
-IT1B_DELTAS = (0.0015, 0.003); IT1B_SEEDS = (0, 1); IT1B_ALPHAS = (1.0, 0.5)
+IT1B_DELTAS = (0.003, 0.006); IT1B_SEEDS = (0, 1); IT1B_ALPHAS = (1.0, 0.5)   # rev 6: antithetic +/-d per seed
+IT1B_SIGNED_DELTAS = tuple(sg*d for d in IT1B_DELTAS for sg in (1, -1))
+IT1B_MEASURE = "out/diag22b/IT1B_REV6_FROZEN.md E360229B"   # rev 6 (Venus + Helios), replaces C99963A0
+IT1B_FLOW_EPS = -1   # rev 6 (b): over-improved flow S(eps=-1), Garcia Perez et al. NPB413 (1994); calibration and every row
+IT1B_SPEC = "E360229B"   # sha256[:8] of out/diag22b/IT1B_REV6_FROZEN.md, checked by it1b_spec_ok()
+def it1b_spec_ok():
+    import hashlib; p = os.path.join(HERE, "out", "diag22b", "IT1B_REV6_FROZEN.md")
+    return os.path.exists(p) and hashlib.sha256(open(p, "rb").read()).hexdigest()[:8].upper() == IT1B_SPEC
+IT1B_ROWS_DIR = "rows_rev6"   # fresh dir: the old eps=0 short-check row stays in rows/
+IT1B_LABEL = "linear response at t=0.6, reduced model"
 def it1b_paths():
-    base = os.path.join(HERE, "out", IT1B_OUT); return dict(base=base, rows=os.path.join(base, "rows"), cal=os.path.join(base, "cal_B10.json"),
-                                                           grade=os.path.join(base, "it1b_grade.json"))
+    base = os.path.join(HERE, "out", IT1B_OUT); return dict(base=base, rows=os.path.join(base, "rows"), cal=os.path.join(base, "cal_B10_eps-1.json"),
+                                                           grade=os.path.join(base, "it1b_grade_rev6.json"), rows6=os.path.join(base, IT1B_ROWS_DIR))
 def it1b_row_path(alpha, seed, delta):
-    return os.path.join(it1b_paths()["rows"], f"B10_a{float(alpha)}_s{int(seed)}_delta{float(delta)}.json")
+    """Rev 6: deterministic X0 is ONE file per alpha (seed label -1); signed delta in the name, e.g. B10_a1.0_s0_delta-0.003.json."""
+    if float(delta) == 0.0: seed = IT1_D0_DRAW
+    return os.path.join(it1b_paths()["rows6"], f"B10_a{float(alpha)}_s{int(seed)}_delta{float(delta)}.json")
 def it1b_hist_window(hist, lo=IT1B_T_LO, hi=IT1B_T_CAP):
     """X(t) from flow start, restricted to [lo, hi]; drops non-finite."""
     return [(float(t), float(x)) for t, x in hist if lo-1e-12 <= t <= hi+1e-12 and x is not None and np.isfinite(x)]
@@ -1226,9 +1239,9 @@ def it1b_r0_bc(lat, lp):
 def it1b_row(alpha, seed, delta, steps=None):
     """Flow from t=0 to IT1B_T_CAP, recording X(t)=cal*rho_moment every IT1B_REC steps (incl. t<T). seed=-1 & delta=0 => control."""
     from kernels import Loops, generic_seed
-    box = DIAG22_BOX; rho = IT1_GRIDS[box]; lat = Lattice(*BOXES[box], alpha=alpha); lp = Loops(lat, IT1_EPS)
+    box = DIAG22_BOX; rho = IT1_GRIDS[box]; lat = Lattice(*BOXES[box], alpha=alpha); lp = Loops(lat, IT1B_FLOW_EPS)
     c = (0., 0., lat.x3[lat.M3//2], lat.x4[lat.M4//2]); t0 = time.perf_counter()
-    lat1 = Lattice(*BOXES[box], alpha=1.0); lp1 = Loops(lat1, IT1_EPS)
+    lat1 = Lattice(*BOXES[box], alpha=1.0); lp1 = Loops(lat1, IT1B_FLOW_EPS)
     cal = rho/lp1.rho_moment(lp1.flat(lat1.bpst_links(rho, centre=c)), centre=c); del lat1, lp1
     tipA, ringA = lat.dual_area(); nodeA = np.r_[tipA, np.repeat(ringA, lat.Lc)]; vol = np.repeat(nodeA, lat.M3*lat.M4)*lat.a**2
     node_of = np.arange(lp.Ns)//(lat.M3*lat.M4); tip = node_of == 0; inner = lp.site_r < 2.0*lat.a
@@ -1244,58 +1257,156 @@ def it1b_row(alpha, seed, delta, steps=None):
             k = min(IT1B_REC, n-done); U, _ = lp.flow(U, h=FLOW_STEP, max_steps=k, record=k+1); done += k; snap(done*FLOW_STEP)
     except FloatingPointError as e: err = str(e)
     Q = lp.charge(U, lp.field_strength(U))
-    out = dict(test="IT1b", box=box, alpha=alpha, seed=seed, delta=delta, rho_seed=rho, rho_cal=cal, hist_full=hist,
+    if float(delta) == 0.0: seed = IT1_D0_DRAW
+    out = dict(test="IT1b", box=box, alpha=alpha, seed=seed, delta=delta, flow_eps=IT1B_FLOW_EPS, rng=(IT1_RNG_BASE+seed if delta else None), ell=float(lat.r[-1]), rho_seed=rho, rho_cal=cal, hist_full=hist,
                hist=it1b_hist_window(hist), window=[IT1B_T_LO, IT1B_T_CAP], Q=Q, absQ_minus_1=abs(abs(Q)-1), err=err,
                r0_bc=it1b_r0_bc(lat, lp), tip_log=logs, log_note="report-only (r=0 BC, peak tip density, r<2a fraction)",
-               steps=n, smoke=steps is not None, wall_s=time.perf_counter()-t0, free_ram_gb=free_ram_gb(), spec=FINAL_SPEC_HASH,
-               measure="out/diag22b/IT1B_POWERLAW_FROZEN.md AE31015E", tag="[hive proposal, untested]")
+               steps=n, smoke=steps is not None, wall_s=time.perf_counter()-t0, free_ram_gb=free_ram_gb(), spec=IT1B_SPEC, master_spec=FINAL_SPEC_HASH,
+               measure=IT1B_MEASURE, tag="[hive proposal, untested]", model="reduced model")
     fn = it1b_row_path(alpha, seed, delta); os.makedirs(os.path.dirname(fn), exist_ok=True)
     open(fn, "w", encoding="utf-8").write(json.dumps(out, default=float)); print(json.dumps(dict(path=fn, err=err), default=float), flush=True); return out
-def it1b_cal(steps=None):
-    """Same as diag22_cal at T=IT1B_T_CAP, written to diag22b (diag22 file untouched)."""
+def it1b_cal(steps=None, centre_r=0.0):
+    """Same as diag22_cal at T=IT1B_T_CAP but flowed with S(IT1B_FLOW_EPS) (rev 6); signed shift recorded; |shift| <= 5% (no retune)."""
     from kernels import Loops
     box = DIAG22_BOX; rho = IT1_GRIDS[box]; n = steps or int(round(IT1B_T_CAP/FLOW_STEP))
-    lat = Lattice(*BOXES[box], alpha=1.0); lp = Loops(lat, IT1_EPS); c = (0., 0., lat.x3[lat.M3//2], lat.x4[lat.M4//2])
+    lat = Lattice(*BOXES[box], alpha=1.0); lp = Loops(lat, IT1B_FLOW_EPS); c = (float(centre_r), 0., lat.x3[lat.M3//2], lat.x4[lat.M4//2])   # centre_r=0: tip (default, unchanged)
     U = lp.flat(lat.bpst_links(rho, centre=c)); r0 = lp.rho_moment(U, centre=c)
     U, _ = lp.flow(U, h=FLOW_STEP, max_steps=n, record=5); r1 = lp.rho_moment(U, centre=c)
-    out = dict(test="IT1b-cal", box=box, rho=rho, T=n*FLOW_STEP, raw_unflowed=r0, raw_flowed=r1, cal=rho/r0, rel_shift=abs(r1-r0)/r0, steps=n,
-               smoke=steps is not None, spec=FINAL_SPEC_HASH)
-    P = it1b_paths(); os.makedirs(P["base"], exist_ok=True); open(P["cal"], "w").write(json.dumps(out, default=float)); print(json.dumps(out, default=float)); return out
+    out = dict(test="IT1b-cal", model="reduced model", box=box, rho=rho, T=n*FLOW_STEP, raw_unflowed=r0, raw_flowed=r1, cal=rho/r0, rel_shift=abs(r1-r0)/r0, rel_shift_signed=(r1-r0)/r0,
+               rho_flowed_cal=rho*r1/r0, direction=("grows" if r1 > r0 else "shrinks"), flow_eps=IT1B_FLOW_EPS, limit=0.05, ok=bool(abs(r1-r0)/r0 <= 0.05), steps=n,
+               centre=list(map(float, c)), centre_r=float(centre_r), smoke=steps is not None, spec=IT1B_SPEC, master_spec=FINAL_SPEC_HASH, measure=IT1B_MEASURE)
+    P = it1b_paths(); os.makedirs(P["base"], exist_ok=True); P["cal"] = P["cal"] if not centre_r else os.path.join(P["base"], f"cal_B10_eps-1_offtip_r{centre_r:g}.json"); open(P["cal"], "w").write(json.dumps(out, default=float)); print(json.dumps(out, default=float)); return out
+IT1B_P3 = "dX"   # spec rev2 FD9FD866, unchanged in C99963A0: paired shift at alpha=0.5 via UNCHANGED diag22_grade_rows; only "dX" accepted
+IT1B_P3_MAX = 0.23; IT1B_X0_REF = 2.9027; IT1B_X0_TOL = 0.02   # short check: diag22 alpha=1 delta=0 X at t=0.6
+def it1b_short_check(row, ref=IT1B_X0_REF, tol=IT1B_X0_TOL):
+    """Single point t=0.6 (only overlap with stored diag22 rows) [flagged for Venus]."""
+    x = [x for t, x in row["hist_full"] if abs(t-0.6) < 1e-9]
+    if not x: return dict(ok=False, note="no t=0.6 point")
+    rel = abs(x[-1]-ref)/ref; return dict(X_06=x[-1], ref=ref, rel=rel, tol=tol, ok=bool(rel <= tol))
+def it1b_p3_control(rowlist, cal_shift):
+    """P3: feed the +d IT1b rows (drift = it1_fit_drift on the [0.1,0.6] hist) and the X0 row into the UNCHANGED diag22_grade_rows; take delta0_control.
+    [deviation, flagged for Venus] rev 6 has no 0.0015 rows, so the diag22 per-delta loop runs over the +d values (0.003, 0.006); the statistic,
+    E, 3E bound and the < 0.23 cut on max|diff| are unchanged. -d rows are not fed (the diag22 statistic is defined on +d only)."""
+    global DIAG22_DELTAS
+    if IT1B_P3 != "dX": raise RuntimeError(f"IT1B_P3={IT1B_P3!r}: only 'dX' is frozen (unchanged from FD9FD866); refusing to grade")
+    conv = []
+    for r in rowlist:
+        d0 = float(r["delta"]) == 0.0
+        if d0 and int(r["seed"]) != IT1_D0_DRAW: continue
+        if not d0 and float(r["delta"]) < 0: continue
+        conv.append(dict(alpha=float(r["alpha"]), draw=(IT1_D0_DRAW if d0 else int(r["seed"])), delta=(0.0 if d0 else float(r["delta"])),
+                         drift=it1_fit_drift(r["hist"], float(r["ell"]))[0]))
+    old = DIAG22_DELTAS; DIAG22_DELTAS = tuple(IT1B_DELTAS)
+    try: ctl = diag22_grade_rows(conv, dict(rel_shift=cal_shift))["criteria"]["delta0_control"]
+    finally: DIAG22_DELTAS = old
+    diffs = [abs(v["diff"]) for v in ctl["per_delta"].values() if "diff" in v]
+    val = max(diffs) if len(diffs) == len(IT1B_DELTAS) else float("inf")
+    return dict(value=val, limit=IT1B_P3_MAX, ok=bool(val < IT1B_P3_MAX), diag22_control=ctl, deltas_used=list(IT1B_DELTAS))
 def it1b_grade_from(rowlist, cal_shift):
-    """Pure: rowlist of row dicts -> grade via it1b_measure. Missing rows listed as NOT COMPUTED (YET). P3 control = max|dp| at alpha=0.5 [interpretation, Venus to confirm]."""
+    """Pure: rowlist -> rev 6 antithetic grade via it1b_measure (E360229B). X0 is one deterministic row per alpha (seed -1), shared by every seed.
+    Missing rows listed as NOT COMPUTED (YET). P3 = unchanged diag22 paired shift at alpha=0.5."""
     import it1b_measure as M
     idx = {}; missing = []
     for r in rowlist:
-        k = (float(r["alpha"]), int(r["seed"]), float(r["delta"]))
+        k = (float(r["alpha"]), int(r["seed"]) if float(r["delta"]) != 0.0 else IT1_D0_DRAW, float(r["delta"]))
         if k in idx: raise ValueError(f"duplicate IT1b row {k}")
         idx[k] = r
     h0 = {}; rows = {}
     for al in IT1B_ALPHAS:
-        h0[al] = {}; rows[al] = {d: {} for d in IT1B_DELTAS}
+        r0 = idx.get((al, IT1_D0_DRAW, 0.0))
+        if r0 is None: missing.append((al, IT1_D0_DRAW, 0.0))
+        else: h0[al] = r0["hist"]
+        rows[al] = {sd: {} for sd in IT1B_SIGNED_DELTAS}
         for s in IT1B_SEEDS:
-            r0 = idx.get((al, s, 0.0)) or idx.get((al, IT1_D0_DRAW, 0.0))
-            if r0 is None: missing.append((al, s, 0.0)); continue
-            h0[al][s] = r0["hist"]
-            for d in IT1B_DELTAS:
-                r = idx.get((al, s, d))
-                if r is None: missing.append((al, s, d))
-                else: rows[al][d][s] = r["hist"]
+            for sd in IT1B_SIGNED_DELTAS:
+                r = idx.get((al, s, sd))
+                if r is None: missing.append((al, s, sd))
+                else: rows[al][sd][s] = r["hist"]
     if missing:
         return dict(status="NOT COMPUTED (YET)", missing=missing)
-    ctrl = max(abs(M.grade_delta(rows[0.5][d], h0[0.5])["dp"]) for d in IT1B_DELTAS)
-    g = M.grade_it1b(h0, rows, cal_shift, ctrl)
-    return dict(status="graded", control_dp_alpha05=ctrl, control_note="P3 = max|dp| at alpha=0.5 [interpretation, Venus to confirm]",
-                cal_shift=cal_shift, per_alpha={str(k): v for k, v in g.items()}, tag="[hive proposal, untested]")
+    P3 = it1b_p3_control(rowlist, cal_shift)
+    g = M.grade_rev6(h0, rows, cal_shift, P3["value"])
+    return dict(status="graded", P3=P3, control_note="P3 = max|Delta_delta-Delta_0| at alpha=0.5 via unchanged diag22_grade_rows on +d rows, < 0.23",
+                cal_shift=cal_shift, per_alpha={str(k): v for k, v in g.items()}, tag="[hive proposal, untested]", model="reduced model",
+                label=IT1B_LABEL, measure=IT1B_MEASURE, flow_eps=IT1B_FLOW_EPS,
+                verdict_rule="L_s=(X(+d)-X(-d))/(2d) at t=0.6; noise |mean L|>spread else UNDECIDED; P1 L_s(2d)/L_s(d) in [0.85,1.15] every seed; P2 cal<=5%; P3<0.23; E_s report-only")
+IT1B_X0_QTOL = IT1_Q_TOL
+def it1b_x0_check(row):
+    """Rev 6 condition 3 X0 re-read under eps=-1. No numeric X0 target is frozen in E360229B [flagged]; the check is: flow completed (no guard error),
+    X(t=0.6) present and finite, ||Q|-1| <= 0.05 (IT1_Q_TOL). The eps=0 value 2.9027 is reported for comparison only, not gated."""
+    x = [x for t, x in row["hist_full"] if abs(t-0.6) < 1e-9]
+    X = x[-1] if x else None; fin = X is not None and bool(np.isfinite(X))
+    ok = row.get("err") is None and fin and row["absQ_minus_1"] <= IT1B_X0_QTOL
+    return dict(alpha=row["alpha"], X_06=X, err=row.get("err"), Q=row["Q"], absQ_minus_1=row["absQ_minus_1"], qtol=IT1B_X0_QTOL,
+                eps0_ref=IT1B_X0_REF, rel_vs_eps0=(abs(X-IT1B_X0_REF)/IT1B_X0_REF if fin else None), wall_s=row.get("wall_s"), ok=bool(ok), flow_eps=row.get("flow_eps"))
+IT1B_BPST_BOX = "B10"; IT1B_BPST_RHO = 3.0; IT1B_BPST_H = (1.0, 2/3, 0.5)   # pre-step: physical box = BOXES[box] at a=1, spacing h
+IT1B_BPST_TOL = 0.01; IT1B_BPST_R_FULL = 12.5; IT1B_BPST_EPS = 1               # Wilson; 1% after h->0 fit (C99963A0 rev 4)
+def bpst_tail(R, rho):
+    """Fraction of 8pi^2 outside 4-radius R: rho^4(3R^2+rho^2)/(R^2+rho^2)^3 (Venus, C99963A0)."""
+    return rho**4*(3*R**2+rho**2)/(R**2+rho**2)**3
+def box_half_width(name):
+    """Physical half-width of BOXES[name] at a=1: min(l=(M_r-1/2)a, M3 a/2, M4 a/2) (inscribed 4-ball radius)."""
+    Mr, _, M3, M4 = BOXES[name]; return float(min(ELL_OF(Mr), M3/2, M4/2))
+def bpst_target(name, rho=IT1B_BPST_RHO):
+    R = box_half_width(name)
+    if R >= IT1B_BPST_R_FULL: return dict(R=R, target=1.0, kind="1 (R >= 12.5)", tail=bpst_tail(R, rho))
+    t = bpst_tail(R, rho); return dict(R=R, target=1.0-t, tail=t, kind=f"1 - tail(R={R}) [box R < 12.5, tail-corrected target]")
+def bpst_dims(name, h):
+    """Integer lattice dims for BOXES[name] at spacing h (L_phi fixed); None if not integer."""
+    Mr, Lp, M3, M4 = BOXES[name]; d = [Mr/h, M3/h, M4/h]
+    if any(abs(x-round(x)) > 1e-9 for x in d): return None
+    return (int(round(d[0])), Lp, int(round(d[1])), int(round(d[2])))
+def bpst_plan(hs=IT1B_BPST_H):
+    """Pure: every box in BOXES, half-width, target, spacings with integer dims and site counts (alpha=1)."""
+    out = {}
+    for b in BOXES:
+        sp = {}
+        for h in hs:
+            dm = bpst_dims(b, h)
+            sp[f"{h:.4g}"] = None if dm is None else dict(dims=dm, sites=(1+dm[0]*dm[1])*dm[2]*dm[3], rho_over_a=IT1B_BPST_RHO/h)
+        out[b] = dict(half_width=box_half_width(b), **bpst_target(b), spacings=sp)
+    return out
+def bpst_fit(hs, S):
+    """S(h) = S0 + c h^2 (Wilson O(a^2)); >=2 spacings. Returns S0, c, residual (None for 2 points)."""
+    hs, S = np.asarray(hs, float), np.asarray(S, float)
+    if len(hs) < 2 or len(set(np.round(hs, 12))) < 2: raise ValueError("need >= 2 distinct lattice spacings")
+    c, S0 = np.polyfit(hs**2, S, 1); res = S - (S0 + c*hs**2)
+    return dict(S0=float(S0), c=float(c), max_resid=(float(np.abs(res).max()) if len(hs) > 2 else None))
+def bpst_grade(name, hs, S, rho=IT1B_BPST_RHO):
+    f = bpst_fit(hs, S); tg = bpst_target(name, rho); rel = abs(f["S0"]-tg["target"])/tg["target"]; lo = tg["target"]*(1-IT1B_BPST_TOL); hi = 1.0+IT1B_BPST_TOL   # band rule frozen in out/diag22b/BPST_PRESTEP_FROZEN.md
+    return dict(test="IT1b BPST pre-step", box=name, rho=rho, alpha=1.0, spacings=list(map(float, hs)), S_over_8pi2=list(map(float, S)),
+                fit=f, **tg, rel_err=rel, tol=IT1B_BPST_TOL, band=[lo, hi], rule="PASS iff 0.99*(1-tail(R)) <= S0 <= 1.01 (cube > ball: 1-tail is a lower bound)", ok=bool(lo <= f["S0"] <= hi),
+                label=("literature benchmark BPST S=8pi^2|Q|" + ("" if tg["R"] >= IT1B_BPST_R_FULL else ", tail-corrected target 1 - tail(R)")),
+                measure=IT1B_MEASURE, tag="[hive proposal, untested]")
+def it1b_bpst(name=IT1B_BPST_BOX, hs=IT1B_BPST_H, rho=IT1B_BPST_RHO, eps=IT1B_BPST_EPS):
+    """Exact BPST links (alpha=1, tip-site centre), action S(eps) (eps=1 Wilson; rev 6 re-check at eps=-1), no Dirichlet face, per spacing; h->0 fit.
+    Same frozen band (FBF5C7DB) for every eps: the O(a^2) term -(eps/5)(a/rho)^2 (NPB413 eq. 19) is removed by the h^2 fit."""
+    S = []; used = []; extra = []
+    for h in hs:
+        dm = bpst_dims(name, h)
+        if dm is None: raise ValueError(f"{name} at h={h}: non-integer dims")
+        f = free_ram_gb()
+        if f is not None and f < IT4_MIN_FREE_GB: raise MemoryError(f"free RAM {f} GB < {IT4_MIN_FREE_GB} GB before h={h}")
+        t0 = time.perf_counter(); lat = Lattice(*dm, alpha=1.0, a=h); lat.apply_dirichlet = lambda L: 0.0
+        c = (0., 0., lat.x3[lat.M3//2], lat.x4[lat.M4//2]); L = lat.bpst_links(rho, centre=c)
+        s = lat.action(L, eps)["S"]/(8*np.pi**2); S.append(s); used.append(h)
+        extra.append(dict(h=h, dims=dm, S_over_8pi2=s, wall_s=time.perf_counter()-t0)); print(json.dumps(extra[-1], default=float), flush=True)
+        del lat, L
+    out = bpst_grade(name, used, S, rho); out["per_spacing"] = extra; out["eps"] = eps; out["eq19_a2_coeff_pred"] = -eps/5/rho**2
+    if eps != 1: out["measure"] = IT1B_MEASURE
+    P = it1b_paths(); os.makedirs(P["base"], exist_ok=True); fn = os.path.join(P["base"], "bpst_prestep.json" if eps == 1 else f"bpst_prestep_eps{eps:g}.json")
+    open(fn, "w", encoding="utf-8").write(json.dumps(out, indent=1, default=float)); print(json.dumps(out, default=float), flush=True)
+    return out
 def it1b_grade():
     import glob
-    P = it1b_paths(); rl = [json.load(open(f, encoding="utf-8")) for f in sorted(glob.glob(os.path.join(P["rows"], "*.json")))]
+    P = it1b_paths(); rl = [json.load(open(f, encoding="utf-8")) for f in sorted(glob.glob(os.path.join(P["rows6"], "*.json")))]
     cal = json.load(open(P["cal"])) if os.path.exists(P["cal"]) else None
     out = it1b_grade_from(rl, cal["rel_shift"] if cal else float("nan")) if cal else dict(status="NOT COMPUTED (YET)", missing=["cal"])
     out["rows"] = [dict(alpha=r["alpha"], seed=r["seed"], delta=r["delta"], err=r.get("err"), n=len(r["hist"])) for r in rl]
     txt = json.dumps(out, indent=1, default=float); open(P["grade"], "w", encoding="utf-8").write(txt); print(txt); return out
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("mode", choices=["smoke", "graded", "resmoke", "resmoke-row", "holonomy", "gapcheck", "summarize", "inv_a", "inv_a_rho_tf", "boxcost-b16", "time-steps", "it1-row", "it1-grade", "it1-cal", "it1-pick-row", "it1-pick-grade", "it1-freeze", "it1-find-T", "it1-apply-T-ratio", "it1-diag21-grade", "smoke-cut", "it3-row", "it3-campaign", "it3-grade", "diag22-find-T", "diag22-cal", "diag22-row", "diag22-grade", "diag22-tip-row", "diag22-tip-fit", "it1b-row", "it1b-cal", "it1b-grade"]); ap.add_argument("--alpha", type=float, default=1.0); ap.add_argument("--seed", type=int, default=0); ap.add_argument("--kind", default="generic"); ap.add_argument("--workers", type=int, default=3); ap.add_argument("--box", default="B10"); ap.add_argument("--eps", type=float, default=1); ap.add_argument("--rho", type=float, default=3.0); ap.add_argument("--centre", default="tip_site"); ap.add_argument("--launch-authorised", action="store_true"); ap.add_argument("--steps", type=int, default=None); ap.add_argument("--rep", type=int, default=0); ap.add_argument("--delta", type=float, default=None); ap.add_argument("--save-evecs", action="store_true"); ap.add_argument("--outdir", default=None, help="optional subdir under out/ (smoke/diag21 chain)"); ap.add_argument("--skip-existing", action="store_true"); ap.add_argument("--t-max-over", type=float, default=None); ap.add_argument("--flow-max-over", type=float, default=None); ap.add_argument("--apply-ratio-to", default=None); ap.add_argument("--delta-note", default=None)
+    ap = argparse.ArgumentParser(); ap.add_argument("mode", choices=["smoke", "graded", "resmoke", "resmoke-row", "holonomy", "gapcheck", "summarize", "inv_a", "inv_a_rho_tf", "boxcost-b16", "time-steps", "it1-row", "it1-grade", "it1-cal", "it1-pick-row", "it1-pick-grade", "it1-freeze", "it1-find-T", "it1-apply-T-ratio", "it1-diag21-grade", "smoke-cut", "it3-row", "it3-campaign", "it3-grade", "diag22-find-T", "diag22-cal", "diag22-row", "diag22-grade", "diag22-tip-row", "diag22-tip-fit", "it1b-row", "it1b-cal", "it1b-grade", "it1b-bpst", "it1b-bpst-plan", "it1b-x0"]); ap.add_argument("--alpha", type=float, default=1.0); ap.add_argument("--seed", type=int, default=0); ap.add_argument("--kind", default="generic"); ap.add_argument("--workers", type=int, default=3); ap.add_argument("--box", default="B10"); ap.add_argument("--eps", type=float, default=1); ap.add_argument("--rho", type=float, default=3.0); ap.add_argument("--centre", default="tip_site"); ap.add_argument("--launch-authorised", action="store_true"); ap.add_argument("--steps", type=int, default=None); ap.add_argument("--rep", type=int, default=0); ap.add_argument("--delta", type=float, default=None); ap.add_argument("--save-evecs", action="store_true"); ap.add_argument("--outdir", default=None, help="optional subdir under out/ (smoke/diag21 chain)"); ap.add_argument("--skip-existing", action="store_true"); ap.add_argument("--t-max-over", type=float, default=None); ap.add_argument("--flow-max-over", type=float, default=None); ap.add_argument("--apply-ratio-to", default=None); ap.add_argument("--delta-note", default=None); ap.add_argument("--centre-r", type=float, default=0.0, help="it1b-cal only: BPST centre at r (units of a) on theta=0; 0 = tip (default)")
     A = ap.parse_args(); h = spec_hash()
     if h != FINAL_SPEC_HASH: sys.exit(f"spec hash {h} != FINAL_SPEC_HASH {FINAL_SPEC_HASH}; stop")
     if A.mode == "graded":
@@ -1343,8 +1454,13 @@ def main():
     if A.mode == "diag22-row": return diag22_row(A.alpha, A.seed, (0.0 if A.seed == IT1_D0_DRAW else A.delta), A.steps, A.skip_existing)
     if A.mode == "diag22-grade": return diag22_grade()
     if A.mode == "it1b-row": return it1b_row(A.alpha, A.seed, (A.delta or 0.0), A.steps)
-    if A.mode == "it1b-cal": return it1b_cal(A.steps)
+    if A.mode == "it1b-x0":
+        r = it1b_row(A.alpha, IT1_D0_DRAW, 0.0, A.steps); c = it1b_x0_check(r); print("X0CHECK " + json.dumps(c, default=float), flush=True); sys.exit(0 if c["ok"] else 3)
+    if A.mode.startswith("it1b-") and A.mode not in ("it1b-bpst-plan",) and not it1b_spec_ok(): print("IT1b spec hash mismatch: expected " + IT1B_SPEC); sys.exit(4)
+    if A.mode == "it1b-cal": c = it1b_cal(A.steps, A.centre_r); sys.exit(0 if c["ok"] else 3)
     if A.mode == "it1b-grade": return it1b_grade()
+    if A.mode == "it1b-bpst": r = it1b_bpst(A.box, eps=(int(A.eps) if float(A.eps).is_integer() else A.eps)); sys.exit(0 if r["ok"] else 3)
+    if A.mode == "it1b-bpst-plan": print(json.dumps(bpst_plan(), indent=1, default=float)); return
     if A.mode == "diag22-tip-row": return diag22_tip_row(A.box, A.alpha, A.steps)
     if A.mode == "diag22-tip-fit": return diag22_tip_fit()
     if A.mode == "smoke-cut": return smoke_cut(A.steps or 1, A.kind if A.kind == "it1" else None)

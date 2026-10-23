@@ -1,0 +1,71 @@
+{
+ "test": "IT1b BPST pre-step",
+ "box": "B10",
+ "rho": 3.0,
+ "alpha": 1.0,
+ "spacings": [
+  1.0,
+  0.6666666666666666,
+  0.5
+ ],
+ "S_over_8pi2": [
+  0.9722765914731742,
+  0.9805221470288074,
+  0.9837000856517246
+ ],
+ "fit": {
+  "S0": 0.9873872856069601,
+  "c": -0.015145396328167722,
+  "max_resid": 0.00013385132118926002
+ },
+ "R": 9.5,
+ "target": 0.9768226612766955,
+ "tail": 0.023177338723304568,
+ "kind": "1 - tail(R=9.5) [box R < 12.5, tail-corrected target]",
+ "rel_err": 0.010815294064182314,
+ "tol": 0.01,
+ "band": [
+  0.9670544346639285,
+  1.01
+ ],
+ "rule": "PASS iff 0.99*(1-tail(R)) <= S0 <= 1.01 (cube > ball: 1-tail is a lower bound)",
+ "ok": true,
+ "label": "literature benchmark BPST S=8pi^2|Q|, tail-corrected target 1 - tail(R)",
+ "measure": "out/diag22b/IT1B_FIXEDTIME_FROZEN.md C99963A0",
+ "tag": "[hive proposal, untested]",
+ "per_spacing": [
+  {
+   "h": 1.0,
+   "dims": [
+    10,
+    20,
+    20,
+    20
+   ],
+   "S_over_8pi2": 0.9722765914731742,
+   "wall_s": 2.626103700022213
+  },
+  {
+   "h": 0.6666666666666666,
+   "dims": [
+    15,
+    20,
+    30,
+    30
+   ],
+   "S_over_8pi2": 0.9805221470288074,
+   "wall_s": 10.711564400000498
+  },
+  {
+   "h": 0.5,
+   "dims": [
+    20,
+    20,
+    40,
+    40
+   ],
+   "S_over_8pi2": 0.9837000856517246,
+   "wall_s": 25.659490799997002
+  }
+ ]
+}
