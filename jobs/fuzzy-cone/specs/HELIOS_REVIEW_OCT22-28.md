@@ -1,0 +1,51 @@
+# HELIOS physics review — Akitti posts 22–28 Oct 2026
+Source: AKITTI_POSTS_OCT22-28.md (Orion pull, 51 posts; 23 Grok-tagged). Paper check: arXiv:2610.31610 abstract + full HTML read 29 Oct 2026 [verified this turn].
+Scope: physics side only, no code, no sims. Tags: [Akitti] = her own words; [hive-written] = hive text posted by her; [possibly hallucinated] = Grok text she pasted (NOT hers).
+
+## 0. Already covered (no re-review)
+- 2112662869237956904 (tip δ-spike): answered in HELIOS_OCT16-21_NOTES_CHECK.md. Regular cone solutions have energy density ∝ r^{|n|/α}, finite at r=0, so the spike is a polar-grid r=0 hazard, not an open problem. Restated correctly in 2113349422688174223.
+- 2113349422688174223, 2113385996624474263 [hive-written]: summaries of the Oct 9–21 Helios/Venus checks (vortex sign, dS patch, chirp, B_V, Ω∞ window, RR term, sextic, M2). They match those checks. One item is flagged below (S8).
+- 2114000011704902042 [hive-written]: IT1 calibration fail. This is covered by the IT1b grading. The weights are 5/3 and −1/24, i.e. c₁=(4−ε)/3 and c₂=(ε−1)/48 at ε=−1, and c₁+16c₂=1 ✓. Since then, the hypercubic repro PASSED, so the "lattice not flow" branch is confirmed.
+- No other post in this window appears in any earlier Helios/Venus note.
+
+## 1. REAL SLIPS
+S1. 2115116687481504111 and 2114179948600566231 [possibly hallucinated]. Claim: bulk-cone singularities "sit outside the boundary light cone".
+ Correct: they lie in the boundary TIMELIKE domain, G_β ~ (t_bulk − t + i0)^{−(2Δ_φ−3/2)} with t_bulk > θ_min and Θ>π (2610.31610 eqs 5–6, Fig 2). The paper's whole point is that a local CFT forbids singularities at timelike separation away from t/R = 2πk ± θ.
+S2. 2114544728569995581 [possibly hallucinated]. Claim: the paper models "the event horizon as a phase-transition zone / point of erasure".
+ Correct: the paper's geodesics stay outside the photon sphere, far from the horizon. Its mechanism is smoothing by fluctuations of the metric/mass: the Gaussian factor exp(−t′_bulk² C ω²/2β²) resolves the singularity on Δt ~ 1/N (eq 10), and the AdS₃ case has a complex saddle p_s = p₀(1 ± i/√(2h_H)) (eq 81). Nothing in the paper is about horizons. This is a mis-citation.
+S3. 2114568453201736076 [possibly hallucinated]. Claim: [X^i,X^j] = i(ε^{ijk}/R)X^k with ΣX² = R²(1−1/N).
+ Correct: X^i = λJ^i, [X^i,X^j] = iλε^{ijk}X^k, ΣX² = λ²(N²−1)/4, so ΣX² = R² needs λ = 2R/√(N²−1). The posted coefficient 1/R has the wrong dimension (it must be a length), and the Casimir does not follow from it.
+S4. 2113627136170869068 [possibly hallucinated]. Claims: TY(Z₃×Z₃) has M_r·M_s = M_{r+s mod 6}, and Rep(S₃) has σ·σ = 1+ε+ρ.
+ Correct: Z₃×Z₃ has 9 invertibles, M_{(a,b)}·M_{(c,d)} = M_{(a+c,b+d) mod 3}, and X⊗X = ⊕_g M_g. Rep(S₃) has only 3 simples {1, ε, σ}, with σ⊗σ = 1⊕ε⊕σ. The group was mis-stated, and a 4th simple was invented.
+S5. 2113671492386852968 [possibly hallucinated]. Claim: forward torsion phase +τjL, backward +τjL, round trip 0.
+ Correct: for the round trip to cancel, the branch flip must give φ_back = −τjL. Two equal signs would add to 2τjL. This is an internal sign inconsistency; check it against the paper.
+S6. 2115566495862227376 [possibly hallucinated]. Claim: the semi-Dirac Berry curvature Ω ∝ m α v q_y/(…)^{3/2} gives C ∝ sgn(m).
+ Correct: that Ω is odd in q_y, so ∫Ω d²q = 0. A gapped semi-Dirac point carries no Chern number. In Haldane models, C = [sgn(m_K) − sgn(m_K′)]/2 comes from the two Dirac valleys before they merge, and at the merger t₁=2t the C=±1 phase ends (C→0). It does not "reverse".
+S7. 2115520807115866149 [possibly hallucinated]. Claim: G_II = (1−ν²)K²/2E and G_III = (1+ν)K²/2E.
+ Correct (standard Irwin, plane strain): G_II = (1−ν²)K_II²/E and G_III = (1+ν)K_III²/E = K_III²/2μ. The extra ½ is wrong unless the paper's Reissner-plate normalisation defines it; check against the paper.
+S8. 2113349422688174223 [hive-written, listed as "looks sound"]. Claim: "SO(10) anomaly −125 = −5³".
+ Correct: SO(n) for n≠6 has no cubic Casimir (d_abc = 0), so SO(10) gauge theory has no perturbative triangle anomaly. Whatever −125 counts, it is not an SO(10) gauge anomaly; it may be an SU(5)/U(1) or Z-valued (e.g. spin-cobordism) quantity. This needs the source context before it stays in "sound". Probable mislabel.
+S9 (minor, convention). 2115532363279327470 [possibly hallucinated]. Claim: under independent dephasing of each qubit, C(t) = e^{−γt}.
+ Correct: if each qubit's coherence decays as e^{−γt}, then ρ₂₃ ∝ e^{−2γt} and C = 2|ρ₂₃| = e^{−2γt}. The posted form only holds if γ is the total rate.
+
+## 2. OPEN SPECULATIVE IDEAS
+I1. Bulk-cone fuzziness ↔ hive cone residual. 2114320525157904700, 2114868776617271477, 2114872703530217847, 2114412417153441906 [Akitti]; 2114179948600566231, 2115116687481504111 [possibly hallucinated]. [hive proposal, untested]
+ Needs a known-result check first. The paper's "cone" is a Lorentzian boundary-correlator singularity from null geodesics winding the photon sphere, or colliding AdS₃ conical defects (Liouville ∂∂̄φ = e^φ/2 − πΣγ_iδ). The hive cone is a Euclidean instanton/vortex tip. These are different objects, and the only shared piece is a conical defect in AdS₃. Toy spec sketch (paper-only, cheap): reproduce t̃ = π/2 + 2 arctan(1/√2) ≈ 2.80, lag ≈ 0.4456 and p ≈ 0.494, then Gamma-average eq 78 and check the 2% peak match. Hive mapping: NOT COMPUTED (YET).
+I2. Sen string-scale cut-off γ=0 (arXiv:2610.27073), 2113213813642162375 [possibly hallucinated]. [hive proposal, untested] Needs: arXiv ID/abstract verified, and the counts "Euler number −10 for N=8" plus the g_s^{−(1+γ)} zero-mode factors checked against Sen. The link to the hive "D-instanton array" has no derivation.
+I3. Braid phase θ = θ_stat + (πc_H/12)α₁α₂ + φ_TY/Rep, 2113627136170869068 [possibly hallucinated]. [hive proposal, untested] Needs: a derivation (Wen–Zee/Klevtsov–Wiegmann gives c_H-dependent cone phases, but the α₁α₂ cross term is unsourced), plus the corrected fusion rules from S4.
+I4. Carrollian null-fluid Goldstone ↔ BMS₃ coadjoint orbit, 2113648864171319538 [possibly hallucinated]. [hive proposal, untested] Needs: projectors checked against Have 2610.30254, and the "terms linear in θ" derived. Coefficients: NOT COMPUTED (YET).
+I5. Intrinsic-AM Sagnac Φ_rt = 2Ω_s j T_s, 2113671492386852968 [possibly hallucinated]. [hive proposal, untested] Needs: a paper check (fix the S5 sign first). No hive link stated.
+I6. Thouless pump through a localized bulk (Aubry–André/Hofstadter), 2113705222552145963 and 2114022495313338717 [Akitti]; 2113762665784836220 [possibly hallucinated]. [hive proposal, untested] Known-result check: A_c = 2J is for ON-SITE modulation, while the posted t_n = t₀[1+A cos] is HOPPING modulation (off-diagonal AA, a different phase diagram). Fix which one the device realises. Toy sketch: 1D TB pump with IPR vs A. NOT COMPUTED (YET).
+I7. "Left-leaning chirality" Operator M, 2114081072946266570 [possibly hallucinated]; 2114025782167408704 and 2113930936521769272 [Akitti questions]. [possibly hallucinated] Operator M is undefined. Known: C₁ flips sign under θ→−θ (Wang et al., Nat. Commun. 13, 6738). The Pythagorean angle arctan(4/3) and L = √5·a are consistent ✓. Needs an operator definition before it can be tested.
+I8. Regime flips ↔ measurement problem, 2113935228628619593 [possibly hallucinated]; 2114024140659421371 [Akitti]. [hive proposal, untested] An analogy only. It needs a stated selection rule that can fail.
+I9. Cubic-Casimir fuzzy-sphere matrix model phases, 2114787714696438213 and 2114866441652506795 [possibly hallucinated]. [hive proposal, untested] Known-result check: at c→0 the posted C reduces to ln(1+b), which should be compared with the known quadratic (Tekel/O'Connor–Sämann) result. The arctan branch is flagged GUESS.
+I10. Horizon as fuzzy-sphere interface/GoldbergHexa shells, 2114568453201736076 [possibly hallucinated]. [hive proposal, untested] Needs the S3 fix, plus a mechanism by which finite N smears a cone tip (a known-result anchor: the fuzzy-sphere UV cutoff l ≤ N−1).
+I11. δ-scatterer ribbon gap Δ = 0.364265 γ_δ, 2115066790585799001 [possibly hallucinated]. [possibly hallucinated] Needs a units check: γ_δ enters Γ = 4m*γ_δ/(ħ²W) as energy×length², so a bare Δ ∝ γ_δ needs a W⁻²-type factor. The value is unverified.
+I12. Teleparallel tangent-bundle origin of SU(2)_L, SU(3)_c and quark charges (2610.35778), 2115407816248725700 [possibly hallucinated]. [possibly hallucinated] The Poincaré algebra and torsion as posted are standard ✓. The anomaly-forced charges and the E^c(2) radial operator need the paper.
+I13. Spinterface exceptional points (2610.37072), 2115479762277720267 [possibly hallucinated]. EP algebra checked: Scheme A gives |α| = |Δγ|/4 and Scheme B gives |α| = |Δε|/2 from the discriminant ✓ [verified by hand]. The hive link is [hive proposal, untested].
+I14. 325-loop φ³ instanton on S²→R², 2115512849384779825 [possibly hallucinated]. [possibly hallucinated] The S₀ = 174.64 and κ₁ = −14.37 toy numbers are GUESS placeholders, and the conformal map factor is undefined. Hive φ³/φ⁴ action: NOT COMPUTED (YET).
+I15. Critical almost-Mathieu spectrum, 2115541578605543763 [possibly hallucinated]. Zero measure for irrational α (Avila–Krikorian/Last) and dim_H ≤ 1/2 (Jitomirskaya–Krasovsky) are consistent with the literature ✓ [known-result check, from memory]. The hive link is [hive proposal, untested].
+I16. Bilayer Haldane + Floquet, 2115566495862227376 [possibly hallucinated]; 2115563151500718280 [Akitti asks "Haldane sphere"]. Note: the Haldane SPHERE (FQH on S² with a monopole) is not the Haldane LATTICE model, and the thread risks conflating them. λ_ω ~ (ev_F A₀)²/ħω is the standard off-resonant form ✓. Needs the S6 fix.
+I17. Residual Noether charges → topological invariants, 2113633822071750955 and 2114891078398857552 [possibly hallucinated]; 2113631103185506817 and 2113632235865657508 [Akitti questions]. [hive proposal, untested] The textbook part is fine (H ⊂ G charges, Goldstones). "Locking into Chern numbers" needs a specific map, e.g. the Thouless pump Q = C.
+
+Counts: 9 real slips (S1–S9; S9 is a convention issue), 17 open ideas (I1–I17). Not reviewed: 18 social, link-only, or welding/personal posts with no physics claim.
