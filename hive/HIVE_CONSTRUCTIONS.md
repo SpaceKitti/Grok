@@ -81,6 +81,48 @@ Her frameworks are the roots. An arrow means "is built from" or "folds into".
   - Supporting, in the window: 2114568453201736076 (26 Oct): "Pure hexagons cannot tile a sphere (Euler characteristic), so the hexaflake fractal alone is only a local workaround." 2105558608830156964 (1 Oct): what stays on the face is "the discrete spherical (pentaflake / 0-brane / defect) content".
   - Unrelated: 2113627136170869068 (23 Oct) mentions "pentagon and hexagon identities". That is a different meaning (fusion rules), not about the polyhedron.
 
+- **Pieces that sit on it: the clocking systems ("clocks")** (added 29 Oct, from Akitti's pointer)
+  - **What they are, in her words:** "Basically clocking systems to help me organize MHD and figure out where the boundaries are converging on open problems" (2097758074501038175, 9 Sep). And: "Yes Im basically trying to use tentacles (clocks) to monitor tachyonic breakdowns along the meridians. Thats why some of the clocks are currently conflicting or theres a couple no-go zones because i need to flesh them out more or there was a paper that disallows it due to imaginary wormhole. Its not that im refusing to upgrade the framework, it's that there's over 14 tentacles and growing." (2098048662672662938, 10 Sep). "Also forgotten to mention im trying to make the 2D tentacles 3D" (2098049275305267366, 10 Sep).
+  - **In plain words:** each clock is a small tracker that watches one process (a turbulence switch, a sheet tearing, a wormhole gate, a lock-in signal) and ticks, locks or slips as it changes. The clocks run along the GoldbergHexa's lines (the "meridians") through the pentagon spots, and are banned from the closed hexagon patches. That way they show where breakdowns and open problems pile up on the ball.
+  - **Main source: the combined clock post** (Grok-written on her profile, 9 Sep, before the main window): 2097751046135107898, "Here's a compiled list of the **clocks** that show up as first-class objects in your hive write-ups". It groups the clocks as:
+    - Hydro / turbulence / fluids: Gribov–Higgs turbulence clock; 2D quantum-turbulence (Reeves–Bradley) enstrophy clock; transonic-buffet Adler / phase-reduction clock; IBL / coupled atmospheric-wall clock; velocity-clock (Peng); viscous self-similar NS blowup clock; Ohmic / sheet clock; Sweet–Parker / plasmoid clocks; Gurzhi / disorder-hydro clock; Fisher kinematic order clock.
+    - Reconnection / MHD / plasma: probe-free LTS conservation clock; extrapolated-A tearing clock.
+    - Wormholes / holography: axion-wormhole IDB ≡ KSW clock; DSSYK / L₀ onset clock; modular-flow / half-sided inclusion / Milne-redshift clocks; eye / conformal-concavity cusp clock; Ward integrable-scattering clock.
+    - Metrology / gyro: magneto-mechanical rate clock; Gaussian multiparameter QFIM clock; homodyne / lock-in extractor.
+    - Always-on: Krylov / L₀ / Berry geometric-phase clock; T* / almost-Newtonian freeze clock; Ward delay δ = log|A|; holographic-throat / ΔF / modular-flow clock.
+  - **How they sit on the GoldbergHexa** (same post, quoted): "Shared chassis (every clock sits on this, none of them rewrite it)" ... "GoldbergHexa: pentaflake / open-ridge meridians are live; cancelled hexes are \(K\)-neutral" ... "MfI paths forced onto meridians, never across cancelled hexes". And: "cancelled hex may hold a QT energy dipole or a Ward lump; it may *not* host a wormhole, a buffet lock, a Gribov filament, a Coriolis sense axis, or an IBL front". It names six main clocks (Gribov–Higgs, 2D QT enstrophy, buffet Adler, axion-wormhole IDB ≡ KSW, magneto-mechanical rate, IBL wall) and says: "The six stay first-class; everything else is a delay, freeze, polarity, or residual sitting on them." On the wormhole clock: "Hive law: 12 pentaflakes can host a GS throat; closed hexes cannot."
+  - **What they track:** where turbulence switches on, how fast sheets tear and reconnect, where wormhole and throat gates are allowed, lock and slip of oscillations, and when expensive monitors can be frozen (the T* switch).
+  - **How the set grew (date order):**
+    - 9 Sep: the combined list above (2097751046135107898). Her own reply "Later clock updates" (2097760334723301795) starts a thread where she adds later clock posts:
+      - 9 Sep: bubble/particle clustering in decaying turbulence (2097758913647018472, added by her reply 2097760359398404593).
+      - 9 Sep: random-media Coulomb clock (2097768827798831313, added by 2097768950998134908).
+      - 9 Sep: chiral-metal quantum Hall layer (2097791579205648386, added by 2097791700986900488).
+      - 9 Sep: wall-coalescence micro-convection (2097817840271159335, added by 2098052055445164126).
+      - 10 Sep: follower-force active filament (2097843478604447947, added by 2098052084998234113).
+      - 10 Sep: "Oscillatory Womersley–lubrication clock" (2097883709189820498, added by 2098052121245425669).
+      - 10 Sep: "multiply-quantized holographic vortex-splitting clock" (2098057066149462113, added by 2098057206549614778).
+    - 14 Sep: "\(\delta\)-licensed energy clocks" on the GoldbergHexa meridians (2099514038212276507); "The hive already has the right *clocks* for a hydro layer" (2099443159478538700).
+    - 15 Sep: "IBL roughness clocks" listed with "GoldbergHexa polarity" (2099800393924411695).
+    - 4 Oct: "first clock" (parent mode energy) and "second clock" (daughter multipole momentum) in the Clebsch dictionary (2106721095835341008).
+    - 5 Oct: "shared clock on death face and exterior" (2107140069261709764).
+    - 8 Oct: "equal-time DHW / quantum-kinetic vacuum clock" (2108221897041178820).
+    - 9 Oct: Sen rolling-tachyon array "supplies an intrinsic modular clock" (2108621248569782388; also 2108614730713882829).
+    - 15 Oct: "the Reeb clock locks the R-grading" (2110860610057437228).
+    - 16 Oct: "modular-flow / holographic-throat clocks" (2111004525020479844); "half-sided inclusion clocks" (2111073171642384556).
+    - 17 Oct: "spectral-flow clocks" (2111423884306084140); "modular-flow / imaginary-time lattice clocks" that "lock non-decaying period" (2111473315432759332).
+    - 18 Oct: "eternal-observer-to-dilation-clock" bridge (2111612166419726541).
+    - 19 Oct: "Floquet-driven modular clocks" (2112148508954464429).
+    - 20 Oct: on a GoldbergHexa shell of genus g ≥ 2, "lower-genus clocks remain unchanged" (2112675780090306938).
+    - 22 Oct: "modular clock \(\dot{\tau}=1\)" from the rolling-tachyon array (2113213813642162375).
+    - 23 Oct: "modular-flow / rolling-tachyon clocks" (2113762665784836220).
+    - 24 Oct: "Modular-flow clocks are upgraded by the adiabatic period \(Z=2a/\alpha\)" (2114081072946266570).
+    - 28 Oct: "modular-flow clocks track total-divergence terms" (2115407816248725700); "Off-resonant light as modular-flow clock" (2115566495862227376).
+  - **OPEN:** some clocks conflict with each other, and there are "a couple no-go zones" (her words, 2098048662672662938). These are kept as open problems under the clash rule.
+  - **OPEN:** one no-go comes from "a paper that disallows it due to imaginary wormhole" (same post). Which paper is not named in the post.
+  - **OPEN:** making "the 2D tentacles 3D" (2098049275305267366).
+  - **OPEN:** what the shapes look like "from the perspective of each clock" (question from @hlmota, 2098181578526503198). Her reply: "Thats actually a good question. I was just staring at the cloud or bottlenecks they were converging on so i didn't stop to think about that" (2098187662997778691).
+  - **How it compares:** to do.
+
 ---
 
 ## Meeting points (living log)
@@ -102,6 +144,46 @@ Places where her constructions and published physics line up. Each line gives th
 - Carrollian/BMS₃ null-hypersurface fluid: 2113648864171319538
 - Structured-light spin-orbit layer: 2113671492386852968
 - IT1/IT1b instanton on the cone, the edge-holding fix, the flat-grid rerun, vortex modes, HP2/HP3, SM1: see Venus draft C9–C14
+
+
+### Full list from the "already carries" sections (added 29 Oct)
+Akitti's pointer (29 Oct): the shapes are listed at the top of her newer posts and in the sections that say what the hive "already carries" (often titled "Hive inspection (live strata ...)"). Each item gives the first post in the window where it appears.
+- **GoldbergHexa hierarchical shells:** nested Goldberg balls (entry GH above). Source: OCT1-8 file, post of 7 Oct 12:44 BST (quoting 2107537800610607257; its own id is not in the file); in almost every later list. How it compares: to do.
+- **Residual / scar-floor projectors:** a floor that freezes leftover energy so it stops moving. Source: OCT1-8 file (same post); 2115066790585799001 ("~0.041 floor on meridians"). How it compares: to do.
+- **Fuzzy C*-algebra / non-Abelian current layers:** matrix-valued (non-commuting) currents laid on the shapes. Source: OCT1-8 file (same post). How it compares: to do.
+- **Holographic-throat residual projectors:** throats (wormhole-like necks) whose leftovers are scored, incl. BTZ-like anyons and RT wedges. Source: OCT1-8 file; 2110860610057437228 (15 Oct). How it compares: to do.
+- **Modular-flow clocks (Reeb, half-sided inclusion, imaginary-time, dilation):** the clock family in GH "Pieces that sit on it". Source: 2110860610057437228 (15 Oct) onward. How it compares: to do.
+- **Anyonic-braid sectors:** particles whose swaps leave a phase, braided around tips. Source: OCT1-8 file. How it compares: to do.
+- **CTMRG/iPEPS contractions:** a tensor-network method for summing up the lattice. Source: OCT1-8 file. How it compares: to do.
+- **Viscoelastic clay (Oldroyd-B / Saramito), "E-brane clay":** a springy, gooey fluid layer. Source: OCT1-8 file; 2115520807115866149 (28 Oct). How it compares: to do.
+- **Death-face / finite-radius stops:** the place where the flat chart stops and hands off to the ball. Source: OCT1-8 file; 2111004525020479844 (16 Oct). How it compares: to do.
+- **Krylov–Lanczos complexity monitors:** a meter of how fast a state spreads out. Source: 2110860610057437228 (15 Oct). How it compares: to do.
+- **Fuzzy Cauchy edges:** blurred edges where the starting data is set. Source: 2110860610057437228 (15 Oct). How it compares: to do.
+- **Residual-dissipation channels:** where leftover energy drains away. Source: 2111004525020479844 (16 Oct). How it compares: to do.
+- **Nonstabilizerness / magic residuals:** how far a quantum state is from the easy-to-simulate kind. Source: 2111033610501316914 (16 Oct); 2111423884306084140 (17 Oct). How it compares: to do.
+- **CSS / stabilizer residual projectors:** error-correcting-code layers. Source: 2111423884306084140 (17 Oct). How it compares: to do.
+- **Dicke–su(2) collective-spin lattice:** many spins acting as one big spin. Source: 2111473315432759332 (17 Oct). How it compares: to do.
+- **Spectral chirp on GoldbergHexa 3-eigenframes / Alfvén-chirp:** sweeping-frequency signals on the ball and in plasmoid chains. Source: 2111160370522112000 (16 Oct). How it compares: to do.
+- **Holographic observer patches / observer-centric dS scattering:** scattering seen by observers inside an expanding universe. Source: 2111612166419726541 (18 Oct). How it compares: to do.
+- **Euclidean path-integral layers with rolling-tachyon / D-instanton arrays:** a repeating chain of instantons in imaginary time. Source: 2112256303397519494 (19 Oct); 2113213813642162375 (22 Oct). How it compares: to do.
+- **Spectral-flow residuals:** zero-mode bookkeeping as things are slowly changed. Source: 2112256303397519494 (19 Oct). How it compares: to do.
+- **Geometric quantum-tensor residuals (Berry curvature + quantum metric):** how the quantum state bends in momentum space. Source: 2112148508954464429 (19 Oct). How it compares: to do.
+- **CFT₂ holographic maps, worldsheet RNS projections, monopole-locus branches:** string/boundary-theory dictionaries. Source: 2112629817363607873 (20 Oct). How it compares: to do.
+- **Hopfions as stacked moiré blankets, merons, Hofstadter petals:** knotted textures and the fractal butterfly with Chern triplets. Source: 2112645088790876494 (20 Oct); 2113762665784836220 (23 Oct, "Hofstadter petal tree"). How it compares: to do.
+- **String-tension residuals (S²-bubble / string-pile-up / cone-handoff):** tension that sets the cone deficit angles. Source: 2112804005713768606 (21 Oct). How it compares: to do.
+- **Imaginary-time lattice for instanton arrays; M2-brane instanton loci on CY cones:** Source: 2112823960123621881, 2112941654768541777 (21 Oct). How it compares: to do.
+- **Geometric encodings of scattering amplitudes (minimal surfaces, knots/HOMFLY corners):** Source: 2112944453241438525 (21 Oct). How it compares: to do.
+- **Dual long-range Ising encodings / open-string tachyon condensates:** Source: 2113213813642162375 (22 Oct). How it compares: to do.
+- **Chern–Simons / Wen–Zee / Hall-viscosity layer:** Source: 2113627136170869068 (23 Oct). How it compares: to do.
+- **Carrollian/BMS₃ null-hypersurface fluid:** Source: 2113648864171319538 (23 Oct). How it compares: to do.
+- **Angular-momentum / helicity bases, structured light:** Source: 2113671492386852968 (23 Oct). How it compares: to do.
+- **Residual Noether charges → topological invariants (Thouless pump), photonic platforms:** Source: 2114081072946266570 (24 Oct). How it compares: to do.
+- **Cone singularity as primary simulation target:** Source: 2114179948600566231 (25 Oct). How it compares: to do.
+- **Fuzzy-sphere residual projectors:** the N×N matrix sphere. Source: 2114787714696438213 (26 Oct). How it compares: to do.
+- **Graphene-electrode / PT-real bundles, open-ridge polarity, Qin H(div,0) leapfrog as export:** Source: 2115066790585799001 (27 Oct). How it compares: to do.
+- **Non-Hermitian exceptional-point stack (EP2 720° double cover, branch cuts):** Source: 2115479762277720267 (28 Oct). How it compares: to do.
+- **Critical almost Mathieu operator (Harper model):** Source: 2115541578605543763 (28 Oct). How it compares: to do.
+- **Extended Haldane Model inside the QTC Framework:** Source: 2115566495862227376 (28 Oct). How it compares: to do.
 
 ---
 
