@@ -26,6 +26,14 @@ Her frameworks are the roots. An arrow means "is built from" or "folds into".
 
 ---
 
+## W. The whole construction (one larger shape)
+
+- **What it is:** all the hive pieces together make one larger shape. Akitti (29 Oct, chat): "obviously the whole construction makes one larger shape although i dont entirely know what it is."
+- **How it shifts:** depending on how she maps it, it shows up as a torus, as wormholes or black holes, as the S² → ℝ² flattening, or sometimes as a soliton. In her words: "it just depends on how im mapping and then there's the holographic boundaries evolving along this as it happens."
+- **Holographic boundaries:** these evolve alongside the shape as it changes from one form to another.
+- **Status:** OPEN, because what the whole shape is has not been identified yet. Which mapping gives which form also needs to be logged, shape by shape.
+- **How it compares:** to do.
+
 ## GH. GoldbergHexa (hierarchical shells)
 - **What it is:** a literal Goldberg polyhedron: a ball tiled almost entirely with hexagons, like a football. **Former name: "hexaflake"** (Akitti's earlier name for it, per her answer on 29 Oct; the word also appears in her September 2026 posts in the link-post file). It always has exactly 12 pentagons, which cannot be removed on a closed ball. Why the pentagons are there, in Akitti's words (29 Oct, lightly corrected from her typed message): "it's because hexagons cannot cover a curved space." The hive uses nested shells of these balls at different sizes (the "hierarchical shells"). There is also a flat version ("GoldbergHexa-ℝ²") for the flat chart.
 - **How it grew** (Akitti, 29 Oct): it started as a hexaflake, a fractal lattice. It then became the GoldbergHexa because the hexaflake name was confusing the AI. Her words: "it started as a hexaflake (fractal lattice -> then into the goldberghexa because the name was confusing the AI".
