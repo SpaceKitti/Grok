@@ -11,6 +11,7 @@ Owner: Orion. Started 29 Oct 2026. This run has the skeleton and the full Goldbe
 - **[FLAG: CONTRADICTION]** = used only where a post clashes with the maths or with her other posts. The reason is noted next to it.
 - "not found in notes yet" = I looked and found nothing, so I did not guess.
 - **Standard format for every shape:** What it is · What it does · Built from · Folds into / out of · Source · Status · **How it compares** (does it match known physics, clash with it, or go beyond it, plus real experiments or papers with verified links and quoted claims) · Open problems. A clash is a flag for Venus and Helios to test. It is never a reason to drop or rewrite her shape.
+- This record tracks how each construction grows, folds and takes on new pieces. Neither her shapes nor published physics comes first.
 - All equations are in the Appendix, quoted word for word and keyed to each entry.
 
 ## How the shapes connect
@@ -55,6 +56,8 @@ Her frameworks are the roots. An arrow means "is built from" or "folds into".
   - **Maths (Venus):** consistent. Euler and the 4π curvature count (12 × π/3) check out exactly. GH-4 was verified, and so was α = 5/6. GH-3 is a normalisation slip in the formula only.
   - **Hive proposal (untested):** attach IT1b's fuzzy cone tip at a pentagon. A pentagon tip has α = 5/6, but IT1b's fuzzy cone has α = 1/2, so this needs the k = 6/5 angle. That angle exists only in the reduced (approximate) fuzzy-cone model, not the exact k = 2 one.
   - **Sources (links checked 29 Oct):**
+    - The shape itself (sent by Akitti, 29 Oct): Wikipedia, "Goldberg polyhedron", https://en.wikipedia.org/wiki/Goldberg_polyhedron. Quotes: "A consequence of Euler's polyhedron formula is that a Goldberg polyhedron always has exactly 12 pentagonal faces." It also gives T = m² + mn + n², with 20T vertices, 30T edges, 10T + 2 faces, of which "12 {5} and 10(T − 1) {6}". It adds: "A Goldberg polyhedron is a dual polyhedron of a geodesic polyhedron", which is how `goldberg.py` builds it. All of this matches GH-4 (T = m² for GP(m,0)).
+      - Small flag for Venus and Helios (a naming question, not a clash with the maths): the page defines Goldberg polyhedra as convex and closed, with icosahedral symmetry. Her flat "GoldbergHexa-ℝ²" chart is therefore outside that strict definition. The page also notes cube-based (6 squares) and tetrahedron-based (4 triangles) cousins. Her shape is unchanged.
     - Buckyballs: Kroto et al., "C60: Buckminsterfullerene", Nature 1985, https://doi.org/10.1038/318162a0
     - Virus shells: Caspar & Klug, "Physical Principles in the Construction of Regular Viruses", 1962, https://doi.org/10.1101/SQB.1962.027.001.005
     - Colloid crystals and scars: Bausch et al., "Grain Boundary Scars and Spherical Crystallography", Science 2003, https://arxiv.org/abs/cond-mat/0303289. Quote: "Above a critical system size we find that crystals develop distinctive high-angle grain boundaries, or scars, not found in planar crystals."
@@ -75,6 +78,14 @@ Her frameworks are the roots. An arrow means "is built from" or "folds into".
 - **What the 12 pentagons mean:** the 12 pentagon spots ("pentaflake defects") carry all of the ball's curvature: each holds π/3, and 12 × π/3 = 4π. They are also the only spots that can hold a throat. Source: 2096696000639336601 (6 Sep 2026, before the main window): "Closed Goldberg polyhedron: hex faces + exactly 12 pentaflake defects, χ=2, ΣK=4π=12×(π/3)" and "The 12 pentaflakes are the only loci whose discrete Gaussian curvature can support a GS throat." This fits the textbook check, since Euler's formula forces exactly 12 pentagons (Appendix GH-4).
   - Supporting, in the window: 2114568453201736076 (26 Oct): "Pure hexagons cannot tile a sphere (Euler characteristic), so the hexaflake fractal alone is only a local workaround." 2105558608830156964 (1 Oct): what stays on the face is "the discrete spherical (pentaflake / 0-brane / defect) content".
   - Unrelated: 2113627136170869068 (23 Oct) mentions "pentagon and hexagon identities". That is a different meaning (fusion rules), not about the polyhedron.
+
+---
+
+## Meeting points (living log)
+Places where her constructions and published physics line up. Each line gives the date, the shape, the paper or maths, who flagged it, and its status (tested / proposal / meeting point, not a result).
+
+- **29 Oct 2026 · GoldbergHexa pentagons × spherical-crystal scars:** Bausch et al. 2003, https://arxiv.org/abs/cond-mat/0303289. Scars start from R/a ≈ 5, about 360 particles, which puts the threshold near m ≈ 6 on her shells. Flagged by Venus and Helios. Status: proposal, untested.
+- **29 Oct 2026 · Fuzzy cone tip (her fuzzy core) × "Quantum gravity on the bulk cone":** Almheiri, Dodelson & Komargodski, https://arxiv.org/abs/2610.31610. Abstract, quoted: "We show by an explicit calculation in the CFT that this singularity is smoothed out at finite $G_N$. Qualitatively, the singularity resolution is a consequence of the fuzziness of the bulk solution in quantum gravity." Flagged by Helios: the paper smooths the singularity through quantum fuzziness of geometry, which matches her fuzzy core. Status: meeting point, not a result. In plain words, the paper's "bulk cone" singularity is a sharp spike in signals that travel along light rays, not a cone-shaped piece of space. How it links to the hive cone is still OPEN (Venus's draft, C7).
 
 ---
 
