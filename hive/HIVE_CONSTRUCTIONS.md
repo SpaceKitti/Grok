@@ -60,7 +60,10 @@ Her frameworks are the roots. An arrow means "is built from" or "folds into".
     - Colloid crystals and scars: Bausch et al., "Grain Boundary Scars and Spherical Crystallography", Science 2003, https://arxiv.org/abs/cond-mat/0303289. Quote: "Above a critical system size we find that crystals develop distinctive high-angle grain boundaries, or scars, not found in planar crystals."
     - Twelve defects on a sphere: Bowick, Nelson & Travesset, PRB 62, 8738 (2000), https://arxiv.org/abs/cond-mat/9911379. Quote: "For large core energies there are twelve disclinations forming an icosahedron."
     - Fuzzy sphere: Madore, "The fuzzy sphere", Class. Quantum Grav. 9 (1992), https://doi.org/10.1088/0264-9381/9/1/008
-    - Not found: any experiment on throats at pentagon defects. The "about 5 lattice spacings" scar onset is not on either abstract page and needs a full-text check.
+    - Scar onset, from the full papers (PDFs in `lift/papers/`):
+      - Bausch et al. 2003, arXiv PDF p. 2, text with Fig. 2: "Scars only appear for droplets with R/a ≥ 5." Also: "(R/a)c ≈ 5, corresponding to M ≈ 360 particles, for excess defects to proliferate in the ground state of a spherical crystal [22]. The precise value of (R/a)c depends on details of the microscopic potential". In plain words: scars start once the ball is about 5 particle spacings in radius, roughly 360 particles.
+      - Bowick–Nelson–Travesset 2000, arXiv PDF p. 17 (just after Eq. 29): "The critical sphere radius R = Rc above which long range elastic energies dominate is given by Rc ∼ const.(36Ecore /πK0 a2 )a." PDF p. 30: "The critical number of charges for which additional defects arise seems to be around 400 [12], which is in agreement with our results."
+    - Not found: any experiment on throats at pentagon defects.
 - **Open problems (kept as she carries them):**
   - **OPEN:** whether GoldbergHexa has to go into the simulations "to fix stuff" (her 1 Oct post).
   - **OPEN:** it is "not yet the dynamical substrate", only an organising probe (Path B text, 4 Oct).
