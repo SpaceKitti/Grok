@@ -1,0 +1,46 @@
+{
+ "gate": "G0",
+ "spec": "1A723DCE",
+ "hc_kernel": "305F518F",
+ "test_hc": "01451299",
+ "run_py": "D9D6766D",
+ "kernels": "F07C0646",
+ "lattice": "35E9E049",
+ "L": 24,
+ "seed": 3,
+ "tol": 1e-12,
+ "dS": 1.1472855985829718e-14,
+ "dG": 7.105427357601002e-15,
+ "ok": true,
+ "G0_seconds": 119.9,
+ "t0": {
+  "1": {
+   "rho_t0": 2.9032121517514065,
+   "S_over_8pi2": 34.798451605378666,
+   "S_ball_over_8pi2": 0.9493090052245495,
+   "S_out_over_8pi2": 33.84914260015412,
+   "continuum_tail": 0.028,
+   "boundary_excess": 33.82114260015412,
+   "eq19": 0.9776014109347443,
+   "eq19_times_1mtail": 0.9502285714285714,
+   "Q_t0": -4.327351095796724
+  },
+  "-1": {
+   "rho_t0": 2.832568684628827,
+   "S_over_8pi2": 45.98578439766264,
+   "S_ball_over_8pi2": 0.9952331189758159,
+   "S_out_over_8pi2": 44.99055127868682,
+   "continuum_tail": 0.028,
+   "boundary_excess": 44.962551278686824,
+   "eq19": 1.0238095238095237,
+   "eq19_times_1mtail": 0.995142857142857,
+   "Q_t0": -4.327351095796724
+  }
+ },
+ "t0_seconds": 14.2,
+ "finished": "2026-10-24 00:08:50 BST",
+ "spec_file": "HYPERCUBIC_REPRO_GATES_FINAL.md",
+ "spec_history": "FDF44325 (verified at launch; history only)",
+ "rho_0_eps-1": 2.832568684628827,
+ "rho_0_eps1": 2.9032121517514065
+}
