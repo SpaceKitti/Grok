@@ -10,6 +10,7 @@ Owner: Orion. Started 29 Oct 2026. This run has the skeleton and the full Goldbe
 - **Source convention:** Akitti compiles her research together with Grok. Her posts, including the Grok-written ones she compiled, count as her research.
 - **[FLAG: CONTRADICTION]** = used only where a post clashes with the maths or with her other posts. The reason is noted next to it.
 - "not found in notes yet" = I looked and found nothing, so I did not guess.
+- **Standard format for every shape:** What it is · What it does · Built from · Folds into / out of · Source · Status · **How it compares** (does it match known physics, clash with it, or go beyond it, plus real experiments or papers with verified links and quoted claims) · Open problems. A clash is a flag for Venus and Helios to test. It is never a reason to drop or rewrite her shape.
 - All equations are in the Appendix, quoted word for word and keyed to each entry.
 
 ## How the shapes connect
@@ -50,6 +51,16 @@ Her frameworks are the roots. An arrow means "is built from" or "folds into".
   - The Betti filter run was signed off on 2 Oct: maths PASS (Venus), physics PARTIAL from Helios ("filter selects nothing").
   - Not used in her own simulations as of 1 Oct; she says she "may need to add it in".
   - The SM zero-mode toy (smS2alt) used a smooth round sphere and left the GoldbergHexa version for later. That version is untested.
+- **How it compares:** Her shape is nested Goldberg balls. All of the curvature sits in the 12 pentagon spots, and each spot is a small cone (α = 5/6) that can hold a throat. Physics check: nothing clashes. Nature builds the same shape in buckyballs, virus shells and colloid crystals on droplets. Large real shells add scars at the pentagons, to test against her scar floor [hive proposal, untested]. Her OPEN problems stay.
+  - **Maths (Venus):** consistent. Euler and the 4π curvature count (12 × π/3) check out exactly. GH-4 was verified, and so was α = 5/6. GH-3 is a normalisation slip in the formula only.
+  - **Hive proposal (untested):** attach IT1b's fuzzy cone tip at a pentagon. A pentagon tip has α = 5/6, but IT1b's fuzzy cone has α = 1/2, so this needs the k = 6/5 angle. That angle exists only in the reduced (approximate) fuzzy-cone model, not the exact k = 2 one.
+  - **Sources (links checked 29 Oct):**
+    - Buckyballs: Kroto et al., "C60: Buckminsterfullerene", Nature 1985, https://doi.org/10.1038/318162a0
+    - Virus shells: Caspar & Klug, "Physical Principles in the Construction of Regular Viruses", 1962, https://doi.org/10.1101/SQB.1962.027.001.005
+    - Colloid crystals and scars: Bausch et al., "Grain Boundary Scars and Spherical Crystallography", Science 2003, https://arxiv.org/abs/cond-mat/0303289. Quote: "Above a critical system size we find that crystals develop distinctive high-angle grain boundaries, or scars, not found in planar crystals."
+    - Twelve defects on a sphere: Bowick, Nelson & Travesset, PRB 62, 8738 (2000), https://arxiv.org/abs/cond-mat/9911379. Quote: "For large core energies there are twelve disclinations forming an icosahedron."
+    - Fuzzy sphere: Madore, "The fuzzy sphere", Class. Quantum Grav. 9 (1992), https://doi.org/10.1088/0264-9381/9/1/008
+    - Not found: any experiment on throats at pentagon defects. The "about 5 lattice spacings" scar onset is not on either abstract page and needs a full-text check.
 - **Open problems (kept as she carries them):**
   - **OPEN:** whether GoldbergHexa has to go into the simulations "to fix stuff" (her 1 Oct post).
   - **OPEN:** it is "not yet the dynamical substrate", only an organising probe (Path B text, 4 Oct).
@@ -83,7 +94,7 @@ Her frameworks are the roots. An arrow means "is built from" or "folds into".
 
 **GH-2** (Path B text, OCT1-8 file): `α=1−4Gμ, 2π(1−α)=8πGμ`, with the curvature only at the tip, scored shell by shell. Exterior integral `∫_{D_{r_c}} R[g] dA = 2π(1−α)` (2106801517357351243).
 
-**GH-3** (2114568453201736076, 26 Oct) **[FLAG: CONTRADICTION]**: as written, the two relations do not fit together. With [X^i,X^j]=i(ε^{ijk}/R)X^k the matrices are X=L/R, so ΣX² = j(j+1)/R², not R²(1−1/N). The standard fuzzy sphere uses X=λL with λ=2R/√(N²−1), giving ΣX²=R² (as in Venus's draft, C8). This is likely a normalisation slip, and only the formula is affected:
+**GH-3** (2114568453201736076, 26 Oct) **[FLAG: CONTRADICTION]**: as written, the two relations do not fit together. With [X^i,X^j]=i(ε^{ijk}/R)X^k the matrices are X=L/R, so ΣX² = j(j+1)/R², not R²(1−1/N). The standard fuzzy sphere uses X=λL with λ=2R/√(N²−1), giving ΣX²=R² (as in Venus's draft, C8). This is likely a normalisation slip, and only the formula is affected. Venus: R²(1−1/N) is likely a slipped form of the λ=2R/N convention, which gives R²(1−1/N²):
 `[X^i,X^j]=i(ε^{ijk}/R)X^k, Σ_i (X^i)² = R²(1−1/N)·1`
 
 **GH-5** (2096696000639336601, 6 Sep, before the main window): `hex faces + exactly 12 pentaflake defects, χ=2, ΣK=4π=12×(π/3)`
