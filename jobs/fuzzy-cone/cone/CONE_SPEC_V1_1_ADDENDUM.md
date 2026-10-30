@@ -1,0 +1,6 @@
+# CONE_SPEC_V1_1 addendum (Venus). Overrides P1-convergence, P2, P3, P5 of CONE_SPEC_V1 b0a62591 + P1 addendum 3150c48b. Frozen before any graded run.
+1. P3, P5: REPORT-ONLY. No target exists (sphere + mixed continuum terms not derived). Graded later only via a new addendum with derived targets. Not a failure.
+2. P2: REPORT-ONLY, marked UNDECIDED (window [2w_N,0.5r_c] ~1 lattice radius). r_c stays 1.5ρ. Also, the plane profile carries p=|n|/α by hand, so P2 can only check the construction, never the prediction (smooth-start flag S1, to Akitti via NanoRibbon). A profile built from the fuzzy object itself stays OPEN.
+3. P1 convergence: "moves toward Q_pred from L20 to L26" is replaced by lattice-spacing refinement at fixed L26: a = ρ/3, ρ/4, ρ/5. Pass needs both (i) |Q(a)-Q_pred| shrinking monotonically, and (ii) the extrapolation Q(a)=Q0+c·a^2 (3-point fit) giving |Q0-Q_pred| <= 0.02. The k-fold cover check |kQ0-round(kQ0)| <= 0.02k applies to Q0. A single-spacing value at a=ρ/3 is never graded against 0.02.
+4. If (i) fails but (ii) passes, or the reverse, the row is UNDECIDED, not a construction bug.
+5. Carried flags: R=ρ (from V1_2); k=3 uses N=21/29/41; far field only exponentially pure gauge (reported as the box tail of Q at r>r_c); D2 stands, and the 5/6 cone stays OPEN-C2.

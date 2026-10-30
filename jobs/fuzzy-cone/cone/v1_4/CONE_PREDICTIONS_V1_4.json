@@ -1,0 +1,9 @@
+{"spec": "CONE_SPEC_V1_4_ADDENDUM.md 911d08b8", "frozen_by": "Aethon", "frozen_before_any_run": true,
+ "rule": "Per tip: the tip is regular (psi=0 there, A_th(0)=0), so tip holonomy = 1 (trivial); far from the tip the field is pure gauge g=e^{i n th}, holonomy e^{2 pi i n} with winding n. Q_pred = n per tip, independent of alpha; whole football = 2n. Null: Q0 within 0.02 of Q_pred; core energy E/(pi|n|)=1 for any alpha (BPS); angle shows only in p=|n|/alpha.",
+ "cases": [
+  {"alpha":0.9,"n":1,"tip_holonomy":"1","Q_pred":1,"p_pred":1.1111},{"alpha":0.9,"n":2,"tip_holonomy":"1","Q_pred":2,"p_pred":2.2222},
+  {"alpha":0.75,"n":1,"tip_holonomy":"1","Q_pred":1,"p_pred":1.3333},{"alpha":0.75,"n":2,"tip_holonomy":"1","Q_pred":2,"p_pred":2.6667},
+  {"alpha":0.5,"n":1,"tip_holonomy":"1","Q_pred":1,"p_pred":2.0},{"alpha":0.5,"n":2,"tip_holonomy":"1","Q_pred":2,"p_pred":4.0},
+  {"alpha":0.3333,"n":1,"tip_holonomy":"1","Q_pred":1,"p_pred":3.0},{"alpha":0.3333,"n":2,"tip_holonomy":"1","Q_pred":2,"p_pred":6.0},
+  {"alpha":2,"n":1,"side":true,"tip_holonomy":"1","Q_pred":1,"Q_sheet_pred":0.5,"p_pred":0.5},{"alpha":2,"n":2,"side":true,"tip_holonomy":"1","Q_pred":2,"Q_sheet_pred":1.0,"p_pred":1.0}],
+ "Z2_crosscheck": "alpha=1/2, n: flat plane (alpha=1) winding 2n, Q_plane/2 must equal Q_cone within 0.01"}

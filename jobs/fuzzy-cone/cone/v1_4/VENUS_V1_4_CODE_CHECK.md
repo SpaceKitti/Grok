@@ -1,0 +1,11 @@
+# Venus line-by-line check: cone_v1_4.py 5448980d, run_v1_4.py dc847e98, predictions f8d473b8, results 1a3417cb
+Verdict: NO CODE BUG IN WHAT IS COMPUTED, BUT THE Q TEST IS EMPTY, THE FUZZINESS WASHES OUT, AND THE ENERGY IS OFF THE SELF-DUAL POINT. Not cleared to reach Akitti as a result. P2 needs the V1_5 refit.
+1. Q_lattice (L55-61): sum of B*h*dr = n*sum a' dr = n*(a(equator)-a(0)) = n*a_eq. So Q is n times the boundary value of a, not a tip measurement. The results confirm it: a_eq = 1.0000 in all 10 rows. The "a-refinement" a=rho/3..rho/5 only re-grids the quadrature of an already fine solution (DR=w_N/40). It is not a lattice refinement and cannot fail. The V1_4 Q null is therefore TAUTOLOGICAL, not just weak.
+2. Seed (L27-31): f=a=1-cos^{2(N-1)}(theta/2), in stereographic r. No tip exponent is typed in (C-8 passes). But the L-BFGS-B minimum is unique for each n, so the fuzzy seed has NO effect on the final field. The fuzzy width enters only through the fit window. So the cones were NOT fuzzified: the result is a smooth classical vortex on a smooth cone. This is the central point for Akitti's ask.
+3. Energy (L38): 0.5 B^2 + |D psi|^2 + (1/8)(1-f^2)^2. The self-dual form is 0.5B^2 + 0.5|Dpsi|^2 + (1/8)(1-f^2)^2. The gradient term is doubled, so the solve is off the Bogomolny point. That explains E/(pi n) = 1.23-1.65 (Aethon's flag 2). It doesn't affect Q, but it does affect the tip shape at order r^2 and any tension-route use. It must be fixed before the tension spec.
+4. fit_p (L51-53): log-log on a fixed window, with no correction term. The O(r^2) corrections bias it low, worst for steep tips (alpha=1/3, n=2: 4.27 vs 6). Replaced in V1_5.
+5. Double cover (run L15-17): frac=0.5 multiplies the same sum by 1/2, so 2*sheet = full holds identically. Tautological; drop it as a check.
+6. Z2 cross-check (run L18-21): Q_plane(2n)/2 = n*a_eq. Same tautology as item 1.
+7. Curvature check (L19-25): correct, and 4*pi*alpha holds by construction for h = alpha*Rs*sin(r/Rs). It is a consistency check only.
+8. run L24-25: the loop computes d and never uses it (harmless). Convergence flags are True for all 20 solves.
+9. Units rho=1 and R=rho are flagged as hive conventions; RS=8 sets the sphere size and is unflagged; report it.
