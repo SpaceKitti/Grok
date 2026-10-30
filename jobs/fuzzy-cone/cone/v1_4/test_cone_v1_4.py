@@ -9,3 +9,7 @@ def test_gauss_bonnet():
     for al in (0.9, 0.75, 0.5, 1/3, 2.0): assert curvature_check(al)[2] < 0.01
 def test_metric_tip_is_cone():
     assert abs(metric_h(1e-4, 0.5) / 1e-4 - 0.5) < 1e-6
+def test_v1_4b_bogomolny_flat():
+    import cone_v1_4b as b
+    for n in (1, 2):
+        s = b.solve(1.0, n, b.W_N / 10); assert abs(s["E"] / (np.pi * n) - 1) < 0.01
