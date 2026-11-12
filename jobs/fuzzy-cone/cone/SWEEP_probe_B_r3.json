@@ -1,0 +1,4747 @@
+{
+  "tool": "probe_b.py",
+  "name": "probe_B_v2_r3",
+  "config": {
+    "name": "probe_B_v2_r3",
+    "n": 3,
+    "wrad": 10000.0,
+    "b_values": [
+      2.0,
+      1.2,
+      1.05
+    ],
+    "N_values": [
+      61,
+      81
+    ],
+    "starts": [
+      "S1",
+      "S2"
+    ],
+    "kick_seeds": [
+      0,
+      1,
+      2
+    ],
+    "kick_amp": 0.001,
+    "step_clamp": true,
+    "budget_sec": 7200,
+    "out_dir": "/workspace/lift/fuzz/cone/v2_1",
+    "sweep_out": "/workspace/lift/fuzz/cone/SWEEP_probe_B_r3.json",
+    "npz_prefix": "sol_probeB_r3",
+    "profile": "r2_clamp",
+    "spec_sha8": "8a0ca930",
+    "freeze_sha8": "b84a670a",
+    "addendum_r2_sha8": "a45cf913",
+    "round2_sha8": "1202fa35",
+    "addendum_r3_sha8": "728e3ee1"
+  },
+  "created_uk": "2026-11-05 19:30 UK",
+  "rows": [
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 2.0,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 0,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b2_n3_N61_seed0.npz",
+      "npz_sha8": "151c0249",
+      "solve_sec": 43.127,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 1.4639387302603705e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          1.0000000000000002,
+          1.0000000000000002,
+          1.0000000000000007
+        ],
+        "ev_proj_S": [
+          0.9999999999999991,
+          1.0000000000000004,
+          1.0000000000000009
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.20151670497645263,
+        "Q_cap_S": 0.19223738892325756,
+        "Q_total": 5.9990315549964714,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0009684450035285508,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0009684450035285508
+      },
+      "E": 17.66896656851923,
+      "probe_B": {
+        "A3": 0.5498206767564897,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.09122010164348525,
+          "peak_locs": [
+            {
+              "theta": 1.0471975511965979,
+              "phi": 4.123340357836604,
+              "val": 0.09122010164348525
+            },
+            {
+              "theta": 1.0471975511965979,
+              "phi": 6.1850105367549055,
+              "val": 0.09105780125031089
+            },
+            {
+              "theta": 1.0471975511965979,
+              "phi": 1.9634954084936207,
+              "val": 0.0906857735813727
+            }
+          ],
+          "threshold": 0.045610050821742625
+        },
+        "peaks_south": {
+          "n_peaks": 6,
+          "cap_max": 0.07529852443542241,
+          "peak_locs": [
+            {
+              "theta": 2.0943951023931957,
+              "phi": 1.4726215563702154,
+              "val": 0.07529852443542241
+            },
+            {
+              "theta": 2.0943951023931957,
+              "phi": 3.5342917352885173,
+              "val": 0.07522508177846282
+            },
+            {
+              "theta": 2.0943951023931957,
+              "phi": 5.595961914206819,
+              "val": 0.0752104418155516
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 2.748893571891069,
+              "val": 0.07091141543149511
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 0.5890486225480862,
+              "val": 0.07090884742368653
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 4.81056375080937,
+              "val": 0.07071557981898366
+            }
+          ],
+          "threshold": 0.037649262217711206
+        },
+        "start": "S1",
+        "kick_seed": 0,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9390513030211851,
+        "r_peak_S": 0.9390467145022181,
+        "f_N": 0.0001800161461252092,
+        "f_S": 0.0001796006366012725
+      },
+      "timestamp_uk": "2026-11-05 19:30 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 2.0,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 1,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b2_n3_N61_seed1.npz",
+      "npz_sha8": "16df16d6",
+      "solve_sec": 33.119,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 8.649671435064589e-08,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 4,
+        "rank_S": 2,
+        "ev_proj_N": [
+          0.9999999999999992,
+          0.9999999999999996,
+          1.0000000000000027,
+          1.000000000000003
+        ],
+        "ev_proj_S": [
+          1.0000000000000004,
+          1.0000000000000013
+        ],
+        "rank_equals_3": false
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.21229583363551,
+        "Q_cap_S": 0.18238847480153764,
+        "Q_total": 5.999031554749947,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0009684452500531293,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0009684452500531293
+      },
+      "E": 17.668966568513707,
+      "probe_B": {
+        "A3": 0.5498397581842094,
+        "peaks_north": {
+          "n_peaks": 6,
+          "cap_max": 0.0844640447954446,
+          "peak_locs": [
+            {
+              "theta": 0.9474644510826361,
+              "phi": 3.2397674240144743,
+              "val": 0.0844640447954446
+            },
+            {
+              "theta": 0.9474644510826361,
+              "phi": 5.301437602932776,
+              "val": 0.08441949810005502
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 1.0799224746714913,
+              "val": 0.08428805293317207
+            },
+            {
+              "theta": 1.1469306513105595,
+              "phi": 4.417864669110647,
+              "val": 0.061909688501907145
+            },
+            {
+              "theta": 1.1469306513105595,
+              "phi": 2.356194490192345,
+              "val": 0.06179744170047595
+            },
+            {
+              "theta": 1.1469306513105595,
+              "phi": 0.19634954084936207,
+              "val": 0.061788191992503495
+            }
+          ],
+          "threshold": 0.0422320223977223
+        },
+        "peaks_south": {
+          "n_peaks": 3,
+          "cap_max": 0.07808030058172323,
+          "peak_locs": [
+            {
+              "theta": 2.0943951023931957,
+              "phi": 1.7671458676442586,
+              "val": 0.07808030058172323
+            },
+            {
+              "theta": 2.0943951023931957,
+              "phi": 5.988660995905543,
+              "val": 0.07807667756234013
+            },
+            {
+              "theta": 2.0445285523362147,
+              "phi": 3.8288160465625602,
+              "val": 0.0780069487319925
+            }
+          ],
+          "threshold": 0.039040150290861615
+        },
+        "start": "S1",
+        "kick_seed": 1,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.939053083661121,
+        "r_peak_S": 0.939049293720863,
+        "f_N": 0.00018016562703749092,
+        "f_S": 0.0001798232007421838
+      },
+      "timestamp_uk": "2026-11-05 19:31 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 2.0,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 2,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b2_n3_N61_seed2.npz",
+      "npz_sha8": "a18f211a",
+      "solve_sec": 43.538,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 9.749548732689263e-08,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          1.0000000000000004,
+          1.0000000000000009,
+          1.000000000000002
+        ],
+        "ev_proj_S": [
+          0.9999999999999997,
+          1.0,
+          1.0000000000000002
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.21146936985012116,
+        "Q_cap_S": 0.18258631893982347,
+        "Q_total": 5.9990315547267645,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0009684452732354742,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0009684452732354742
+      },
+      "E": 17.66896656851401,
+      "probe_B": {
+        "A3": 0.5498345451247857,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.08278964683496823,
+          "peak_locs": [
+            {
+              "theta": 1.0471975511965979,
+              "phi": 5.006913291658733,
+              "val": 0.08278964683496823
+            },
+            {
+              "theta": 1.0471975511965979,
+              "phi": 2.945243112740431,
+              "val": 0.08277766511971262
+            },
+            {
+              "theta": 1.0471975511965979,
+              "phi": 0.8835729338221293,
+              "val": 0.0826345632800848
+            }
+          ],
+          "threshold": 0.041394823417484114
+        },
+        "peaks_south": {
+          "n_peaks": 6,
+          "cap_max": 0.08163946106518782,
+          "peak_locs": [
+            {
+              "theta": 2.1442616524501763,
+              "phi": 3.436116964863836,
+              "val": 0.08163946106518782
+            },
+            {
+              "theta": 2.1442616524501763,
+              "phi": 1.3744467859455345,
+              "val": 0.08161968075106198
+            },
+            {
+              "theta": 2.1442616524501763,
+              "phi": 5.497787143782138,
+              "val": 0.08159393687317193
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 4.417864669110647,
+              "val": 0.07169751331612209
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 2.356194490192345,
+              "val": 0.07159363401786188
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 0.2945243112740431,
+              "val": 0.07157988631659143
+            }
+          ],
+          "threshold": 0.04081973053259391
+        },
+        "start": "S1",
+        "kick_seed": 2,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9390490049357562,
+        "r_peak_S": 0.9390519990922475,
+        "f_N": 0.00017979941924470554,
+        "f_S": 0.00018007029639486373
+      },
+      "timestamp_uk": "2026-11-05 19:32 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 2.0,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 0,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b2_n3_N81_seed0.npz",
+      "npz_sha8": "acb7a755",
+      "solve_sec": 108.629,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 1.3743916202346718e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 2,
+        "rank_S": 4,
+        "ev_proj_N": [
+          0.9999999999999996,
+          1.0000000000000016
+        ],
+        "ev_proj_S": [
+          0.999999999999999,
+          0.9999999999999997,
+          1.0000000000000004,
+          1.0000000000000007
+        ],
+        "rank_equals_3": false
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.1829960180168575,
+        "Q_cap_S": 0.21142709808617358,
+        "Q_total": 5.998570598224794,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0014294017752058963,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0014294017752058963
+      },
+      "E": 17.952936422027825,
+      "probe_B": {
+        "A3": 0.5352160333260777,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.07715043101432577,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 2.1598449493429825,
+              "val": 0.07715043101432577
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 0.09817477042468103,
+              "val": 0.07711111398539693
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 4.319689898685965,
+              "val": 0.07700311584049935
+            }
+          ],
+          "threshold": 0.038575215507162884
+        },
+        "peaks_south": {
+          "n_peaks": 6,
+          "cap_max": 0.0855672621877566,
+          "peak_locs": [
+            {
+              "theta": 2.1941282025071573,
+              "phi": 3.3379421944391554,
+              "val": 0.0855672621877566
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 1.2762720155208536,
+              "val": 0.08554832970559448
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 5.399612373357457,
+              "val": 0.08540343993162046
+            },
+            {
+              "theta": 2.4434609527920617,
+              "phi": 0.19634954084936207,
+              "val": 0.06844675394119687
+            },
+            {
+              "theta": 2.4434609527920617,
+              "phi": 4.417864669110647,
+              "val": 0.06842969630405309
+            },
+            {
+              "theta": 2.4434609527920617,
+              "phi": 2.356194490192345,
+              "val": 0.06818597313004143
+            }
+          ],
+          "threshold": 0.0427836310938783
+        },
+        "start": "S1",
+        "kick_seed": 0,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9370169122463681,
+        "r_peak_S": 0.9370194656199089,
+        "f_N": 0.00023102629666524462,
+        "f_S": 0.00023129377085781742
+      },
+      "timestamp_uk": "2026-11-05 19:33 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 2.0,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 1,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b2_n3_N81_seed1.npz",
+      "npz_sha8": "c6915319",
+      "solve_sec": 111.96,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 9.583817672798034e-08,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999979,
+          0.9999999999999992,
+          1.0000000000000004
+        ],
+        "ev_proj_S": [
+          0.9999999999999998,
+          1.0000000000000007,
+          1.000000000000002
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.18268180455416205,
+        "Q_cap_S": 0.21127548323220155,
+        "Q_total": 5.998570598240542,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0014294017594576047,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0014294017594576047
+      },
+      "E": 17.95293642201509,
+      "probe_B": {
+        "A3": 0.5352169739893355,
+        "peaks_north": {
+          "n_peaks": 6,
+          "cap_max": 0.08271200718425949,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 2.356194490192345,
+              "val": 0.08271200718425949
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 0.2945243112740431,
+              "val": 0.08268342852023967
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 4.417864669110647,
+              "val": 0.08256626120094608
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 1.2762720155208536,
+              "val": 0.06239465237221663
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 5.497787143782138,
+              "val": 0.06233156315365574
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 3.3379421944391554,
+              "val": 0.062230547727337895
+            }
+          ],
+          "threshold": 0.04135600359212974
+        },
+        "peaks_south": {
+          "n_peaks": 6,
+          "cap_max": 0.07835582750059307,
+          "peak_locs": [
+            {
+              "theta": 2.1941282025071573,
+              "phi": 1.0799224746714913,
+              "val": 0.07835582750059307
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 3.141592653589793,
+              "val": 0.07824537013555816
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 5.301437602932776,
+              "val": 0.07823138133082252
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 4.221515128261284,
+              "val": 0.0664540116110021
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 2.1598449493429825,
+              "val": 0.06634072710344091
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 0.0,
+              "val": 0.06627575692830484
+            }
+          ],
+          "threshold": 0.039177913750296535
+        },
+        "start": "S1",
+        "kick_seed": 1,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9370162495865453,
+        "r_peak_S": 0.9370215038646994,
+        "f_N": 0.00023095628946157113,
+        "f_S": 0.00023150762319306244
+      },
+      "timestamp_uk": "2026-11-05 19:35 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 2.0,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 2,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b2_n3_N81_seed2.npz",
+      "npz_sha8": "c6437ec7",
+      "solve_sec": 143.429,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 1.9636157033782773e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999984,
+          0.9999999999999993,
+          1.000000000000003
+        ],
+        "ev_proj_S": [
+          0.999999999999999,
+          1.0000000000000002,
+          1.0000000000000013
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.21237126079347832,
+        "Q_cap_S": 0.182178780661841,
+        "Q_total": 5.998570598206835,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.001429401793164864,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.001429401793164864
+      },
+      "E": 17.95293642203317,
+      "probe_B": {
+        "A3": 0.5352168836888467,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.10381286761275708,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 5.988660995905543,
+              "val": 0.10381286761275708
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 3.9269908169872414,
+              "val": 0.10367776016394246
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 1.7671458676442586,
+              "val": 0.10333083119328851
+            }
+          ],
+          "threshold": 0.05190643380637854
+        },
+        "peaks_south": {
+          "n_peaks": 9,
+          "cap_max": 0.0756277192700842,
+          "peak_locs": [
+            {
+              "theta": 2.1941282025071573,
+              "phi": 0.8835729338221293,
+              "val": 0.0756277192700842
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 5.006913291658733,
+              "val": 0.07562630816527785
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 2.945243112740431,
+              "val": 0.07561754425881469
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 1.6689710972195777,
+              "val": 0.0684823358543898
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 3.730641276137879,
+              "val": 0.06841707410141729
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 5.792311455056181,
+              "val": 0.06837143429833127
+            },
+            {
+              "theta": 1.944795452222253,
+              "phi": 0.19634954084936207,
+              "val": 0.057234796086876184
+            },
+            {
+              "theta": 1.944795452222253,
+              "phi": 2.356194490192345,
+              "val": 0.05720583605759082
+            },
+            {
+              "theta": 1.944795452222253,
+              "phi": 4.417864669110647,
+              "val": 0.05717554098876916
+            }
+          ],
+          "threshold": 0.0378138596350421
+        },
+        "start": "S1",
+        "kick_seed": 2,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9370178826661701,
+        "r_peak_S": 0.9370162628934245,
+        "f_N": 0.0002311278630003792,
+        "f_S": 0.00023095644818919294
+      },
+      "timestamp_uk": "2026-11-05 19:38 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 1.2,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 0,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b1.2_n3_N61_seed0.npz",
+      "npz_sha8": "e6824660",
+      "solve_sec": 34.031,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 1.869137461847298e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999979,
+          0.9999999999999983,
+          0.9999999999999999
+        ],
+        "ev_proj_S": [
+          0.9999999999999996,
+          1.0000000000000009,
+          1.0000000000000016
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.43639181310268743,
+        "Q_cap_S": 0.4214894861160784,
+        "Q_total": 5.99810599164285,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0018940083571497013,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0018940083571497013
+      },
+      "E": 18.467979691884903,
+      "probe_B": {
+        "A3": 0.1373602179904264,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.12344257459783987,
+          "peak_locs": [
+            {
+              "theta": 1.0471975511965979,
+              "phi": 6.1850105367549055,
+              "val": 0.12344257459783987
+            },
+            {
+              "theta": 1.0471975511965979,
+              "phi": 2.061670178918302,
+              "val": 0.1233833713670727
+            },
+            {
+              "theta": 1.0471975511965979,
+              "phi": 4.123340357836604,
+              "val": 0.12334779198920927
+            }
+          ],
+          "threshold": 0.06172128729891994
+        },
+        "peaks_south": {
+          "n_peaks": 9,
+          "cap_max": 0.11586824415252121,
+          "peak_locs": [
+            {
+              "theta": 2.293861302621119,
+              "phi": 4.417864669110647,
+              "val": 0.11586824415252121
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 2.356194490192345,
+              "val": 0.11578522532247854
+            },
+            {
+              "theta": 2.0445285523362147,
+              "phi": 3.730641276137879,
+              "val": 0.11572638814823857
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 0.19634954084936207,
+              "val": 0.11568478562971264
+            },
+            {
+              "theta": 2.0445285523362147,
+              "phi": 5.792311455056181,
+              "val": 0.11562974271943434
+            },
+            {
+              "theta": 2.0445285523362147,
+              "phi": 1.6689710972195777,
+              "val": 0.11559441067208186
+            },
+            {
+              "theta": 1.595729601823387,
+              "phi": 2.650718801466388,
+              "val": 0.09410456700023911
+            },
+            {
+              "theta": 1.595729601823387,
+              "phi": 0.5890486225480862,
+              "val": 0.09401409576342244
+            },
+            {
+              "theta": 1.595729601823387,
+              "phi": 4.71238898038469,
+              "val": 0.09388729798362057
+            }
+          ],
+          "threshold": 0.05793412207626061
+        },
+        "start": "S1",
+        "kick_seed": 0,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9173713475846346,
+        "r_peak_S": 0.9173710896081675,
+        "f_N": 0.005937224544947181,
+        "f_S": 0.005937103889820078
+      },
+      "timestamp_uk": "2026-11-05 19:38 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 1.2,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 1,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b1.2_n3_N61_seed1.npz",
+      "npz_sha8": "91e393f8",
+      "solve_sec": 32.121,
+      "reused_npz": false,
+      "clamp_rejections": 4,
+      "convergence": {
+        "residual_inf": 2.1940170806719917e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 2,
+        "rank_S": 4,
+        "ev_proj_N": [
+          0.9999999999999961,
+          1.0000000000000013
+        ],
+        "ev_proj_S": [
+          0.999999999999999,
+          0.9999999999999993,
+          1.0000000000000004,
+          1.0000000000000004
+        ],
+        "rank_equals_3": false
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.44444388283501945,
+        "Q_cap_S": 0.4131606534634596,
+        "Q_total": 5.998105991658985,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0018940083410150521,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0018940083410150521
+      },
+      "E": 18.467979691885468,
+      "probe_B": {
+        "A3": 0.1373696680345434,
+        "peaks_north": {
+          "n_peaks": 6,
+          "cap_max": 0.11638411062529858,
+          "peak_locs": [
+            {
+              "theta": 1.0471975511965979,
+              "phi": 2.061670178918302,
+              "val": 0.11638411062529858
+            },
+            {
+              "theta": 1.0471975511965979,
+              "phi": 0.0,
+              "val": 0.11637173938047977
+            },
+            {
+              "theta": 1.0471975511965979,
+              "phi": 4.123340357836604,
+              "val": 0.11634461690834311
+            },
+            {
+              "theta": 0.7978648009116935,
+              "phi": 5.792311455056181,
+              "val": 0.11604859833108477
+            },
+            {
+              "theta": 0.7978648009116935,
+              "phi": 1.5707963267948966,
+              "val": 0.11601545719084712
+            },
+            {
+              "theta": 0.7978648009116935,
+              "phi": 3.730641276137879,
+              "val": 0.115986996340011
+            }
+          ],
+          "threshold": 0.05819205531264929
+        },
+        "peaks_south": {
+          "n_peaks": 3,
+          "cap_max": 0.11684354903482683,
+          "peak_locs": [
+            {
+              "theta": 2.293861302621119,
+              "phi": 5.890486225480862,
+              "val": 0.11684354903482683
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 3.8288160465625602,
+              "val": 0.11682252259328801
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 1.6689710972195777,
+              "val": 0.11680067788542814
+            }
+          ],
+          "threshold": 0.05842177451741341
+        },
+        "start": "S1",
+        "kick_seed": 1,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9173838099387308,
+        "r_peak_S": 0.9173885806879761,
+        "f_N": 0.005943411765792954,
+        "f_S": 0.005945835798600395
+      },
+      "timestamp_uk": "2026-11-05 19:39 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 1.2,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 2,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b1.2_n3_N61_seed2.npz",
+      "npz_sha8": "ff12c897",
+      "solve_sec": 41.133,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 1.6733696235615714e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 2,
+        "rank_S": 4,
+        "ev_proj_N": [
+          0.9999999999999996,
+          1.0000000000000009
+        ],
+        "ev_proj_S": [
+          0.9999999999999989,
+          0.9999999999999997,
+          1.0000000000000009,
+          1.0000000000000016
+        ],
+        "rank_equals_3": false
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.44504431792676985,
+        "Q_cap_S": 0.4132910162767304,
+        "Q_total": 5.998105991727094,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0018940082729059782,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0018940082729059782
+      },
+      "E": 18.467979691885954,
+      "probe_B": {
+        "A3": 0.13733826935838828,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.12104483793364454,
+          "peak_locs": [
+            {
+              "theta": 0.8477313509686744,
+              "phi": 0.4908738521234052,
+              "val": 0.12104483793364454
+            },
+            {
+              "theta": 0.8477313509686744,
+              "phi": 2.650718801466388,
+              "val": 0.12101792651641416
+            },
+            {
+              "theta": 0.8477313509686744,
+              "phi": 4.71238898038469,
+              "val": 0.12082238444659578
+            }
+          ],
+          "threshold": 0.06052241896682227
+        },
+        "peaks_south": {
+          "n_peaks": 6,
+          "cap_max": 0.11742323648206918,
+          "peak_locs": [
+            {
+              "theta": 2.1941282025071573,
+              "phi": 0.9817477042468103,
+              "val": 0.11742323648206918
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 5.203262832508095,
+              "val": 0.11738877266555532
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 3.141592653589793,
+              "val": 0.11731641856621942
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 4.516039439535327,
+              "val": 0.11624615482160662
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 0.2945243112740431,
+              "val": 0.11620894367729281
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 2.454369260617026,
+              "val": 0.11607224562231919
+            }
+          ],
+          "threshold": 0.05871161824103459
+        },
+        "start": "S1",
+        "kick_seed": 2,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.917343790857794,
+        "r_peak_S": 0.9173461952918452,
+        "f_N": 0.005923575815717833,
+        "f_S": 0.005924771529322831
+      },
+      "timestamp_uk": "2026-11-05 19:40 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 1.2,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 0,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b1.2_n3_N81_seed0.npz",
+      "npz_sha8": "312f2d4b",
+      "solve_sec": 102.299,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 9.357353442313379e-08,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          1.0000000000000004,
+          1.0000000000000007,
+          1.000000000000003
+        ],
+        "ev_proj_S": [
+          0.9999999999999992,
+          1.0000000000000002,
+          1.0000000000000009
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.4152900771467944,
+        "Q_cap_S": 0.44566445684875156,
+        "Q_total": 5.996945948312517,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0030540516874832946,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0030540516874832946
+      },
+      "E": 18.568654011811823,
+      "probe_B": {
+        "A3": 0.12541356318993097,
+        "peaks_north": {
+          "n_peaks": 6,
+          "cap_max": 0.11743045455496351,
+          "peak_locs": [
+            {
+              "theta": 1.0970641012535787,
+              "phi": 3.8288160465625602,
+              "val": 0.11743045455496351
+            },
+            {
+              "theta": 1.0970641012535787,
+              "phi": 1.6689710972195777,
+              "val": 0.11732018110216984
+            },
+            {
+              "theta": 1.0970641012535787,
+              "phi": 5.890486225480862,
+              "val": 0.1172921479160502
+            },
+            {
+              "theta": 0.8477313509686744,
+              "phi": 4.417864669110647,
+              "val": 0.11477075012445406
+            },
+            {
+              "theta": 0.8477313509686744,
+              "phi": 2.2580197197676637,
+              "val": 0.11472676355909202
+            },
+            {
+              "theta": 0.8477313509686744,
+              "phi": 0.19634954084936207,
+              "val": 0.1146954316289094
+            }
+          ],
+          "threshold": 0.058715227277481755
+        },
+        "peaks_south": {
+          "n_peaks": 3,
+          "cap_max": 0.1212622178332878,
+          "peak_locs": [
+            {
+              "theta": 2.243994752564138,
+              "phi": 5.301437602932776,
+              "val": 0.1212622178332878
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 1.0799224746714913,
+              "val": 0.12123539423456367
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 3.2397674240144743,
+              "val": 0.12119021362588935
+            }
+          ],
+          "threshold": 0.0606311089166439
+        },
+        "start": "S1",
+        "kick_seed": 0,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9168897411361995,
+        "r_peak_S": 0.9168925938185714,
+        "f_N": 0.001511285745842119,
+        "f_S": 0.0015113702609344454
+      },
+      "timestamp_uk": "2026-11-05 19:41 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 1.2,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 1,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b1.2_n3_N81_seed1.npz",
+      "npz_sha8": "ef90f69b",
+      "solve_sec": 175.71,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 5.347509280840039e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999991,
+          1.0000000000000004,
+          1.0000000000000016
+        ],
+        "ev_proj_S": [
+          0.9999999999999994,
+          1.0000000000000004,
+          1.0000000000000007
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.4154882793024903,
+        "Q_cap_S": 0.4444110087606855,
+        "Q_total": 5.996945947741114,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0030540522588857755,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0030540522588857755
+      },
+      "E": 18.56865401181621,
+      "probe_B": {
+        "A3": 0.12542865058932598,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.11514975940362171,
+          "peak_locs": [
+            {
+              "theta": 0.9973310011396169,
+              "phi": 4.614214209960009,
+              "val": 0.11514975940362171
+            },
+            {
+              "theta": 0.9973310011396169,
+              "phi": 0.39269908169872414,
+              "val": 0.11513520606300708
+            },
+            {
+              "theta": 0.9973310011396169,
+              "phi": 2.552544031041707,
+              "val": 0.11510766072731476
+            }
+          ],
+          "threshold": 0.057574879701810855
+        },
+        "peaks_south": {
+          "n_peaks": 6,
+          "cap_max": 0.11638004282245497,
+          "peak_locs": [
+            {
+              "theta": 2.243994752564138,
+              "phi": 5.203262832508095,
+              "val": 0.11638004282245497
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 1.0799224746714913,
+              "val": 0.11637411443315729
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 3.141592653589793,
+              "val": 0.11636716399813558
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 4.025165587411922,
+              "val": 0.11073906363503797
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 1.8653206380689396,
+              "val": 0.11071998410659119
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 6.086835766330224,
+              "val": 0.11071609590828507
+            }
+          ],
+          "threshold": 0.058190021411227484
+        },
+        "start": "S1",
+        "kick_seed": 1,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9169019682566988,
+        "r_peak_S": 0.9168957246765544,
+        "f_N": 0.001511555381823426,
+        "f_S": 0.0015113740640339398
+      },
+      "timestamp_uk": "2026-11-05 19:44 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 1.2,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 2,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b1.2_n3_N81_seed2.npz",
+      "npz_sha8": "a01813aa",
+      "solve_sec": 82.312,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 2.1171425086544474e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 2,
+        "rank_S": 4,
+        "ev_proj_N": [
+          0.999999999999999,
+          0.9999999999999994
+        ],
+        "ev_proj_S": [
+          0.9999999999999984,
+          0.9999999999999996,
+          1.0000000000000007,
+          1.0000000000000024
+        ],
+        "rank_equals_3": false
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.4445939158889613,
+        "Q_cap_S": 0.4153770615178824,
+        "Q_total": 5.996945947466801,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0030540525331987922,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0030540525331987922
+      },
+      "E": 18.568654011820712,
+      "probe_B": {
+        "A3": 0.12542253655743213,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.12154568508538513,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 5.988660995905543,
+              "val": 0.12154568508538513
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 3.9269908169872414,
+              "val": 0.12154404781112012
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 1.7671458676442586,
+              "val": 0.12141414794108148
+            }
+          ],
+          "threshold": 0.060772842542692565
+        },
+        "peaks_south": {
+          "n_peaks": 9,
+          "cap_max": 0.11505103222891153,
+          "peak_locs": [
+            {
+              "theta": 2.243994752564138,
+              "phi": 2.650718801466388,
+              "val": 0.11505103222891153
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 4.71238898038469,
+              "val": 0.11497787910276182
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 0.5890486225480862,
+              "val": 0.11496199115961642
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 5.890486225480862,
+              "val": 0.1133791917216499
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 1.6689710972195777,
+              "val": 0.11331973303876795
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 3.8288160465625602,
+              "val": 0.11320903578661491
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 0.0,
+              "val": 0.11296650063950317
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 4.123340357836604,
+              "val": 0.11295742036305163
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 2.061670178918302,
+              "val": 0.11289973040051382
+            }
+          ],
+          "threshold": 0.05752551611445576
+        },
+        "start": "S1",
+        "kick_seed": 2,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9168906485935171,
+        "r_peak_S": 0.9168940065878498,
+        "f_N": 0.00151127345280186,
+        "f_S": 0.0015113756952594673
+      },
+      "timestamp_uk": "2026-11-05 19:46 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 1.05,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 0,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b1.05_n3_N61_seed0.npz",
+      "npz_sha8": "5ae722ec",
+      "solve_sec": 39.005,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 3.09200865196424e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999981,
+          1.0000000000000018,
+          1.0000000000000027
+        ],
+        "ev_proj_S": [
+          0.9999999999999998,
+          1.0000000000000009,
+          1.000000000000001
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.5132471640497586,
+        "Q_cap_S": 0.5000650368371327,
+        "Q_total": 5.997708489025427,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.002291510974573363,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.002291510974573363
+      },
+      "E": 18.682845216607824,
+      "probe_B": {
+        "A3": 0.06039764686907205,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.13598511334385918,
+          "peak_locs": [
+            {
+              "theta": 1.0471975511965979,
+              "phi": 2.061670178918302,
+              "val": 0.13598511334385918
+            },
+            {
+              "theta": 1.0471975511965979,
+              "phi": 6.1850105367549055,
+              "val": 0.135812722300789
+            },
+            {
+              "theta": 1.0471975511965979,
+              "phi": 4.123340357836604,
+              "val": 0.13562315158352
+            }
+          ],
+          "threshold": 0.06799255667192959
+        },
+        "peaks_south": {
+          "n_peaks": 9,
+          "cap_max": 0.13200643116540456,
+          "peak_locs": [
+            {
+              "theta": 2.293861302621119,
+              "phi": 4.417864669110647,
+              "val": 0.13200643116540456
+            },
+            {
+              "theta": 2.0445285523362147,
+              "phi": 3.730641276137879,
+              "val": 0.13175513257479674
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 2.356194490192345,
+              "val": 0.13169804519829995
+            },
+            {
+              "theta": 2.0445285523362147,
+              "phi": 5.792311455056181,
+              "val": 0.13167625998793037
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 0.19634954084936207,
+              "val": 0.13157973420890823
+            },
+            {
+              "theta": 2.0445285523362147,
+              "phi": 1.6689710972195777,
+              "val": 0.13143964055685564
+            },
+            {
+              "theta": 1.595729601823387,
+              "phi": 2.748893571891069,
+              "val": 0.12071669946907476
+            },
+            {
+              "theta": 1.595729601823387,
+              "phi": 0.5890486225480862,
+              "val": 0.12027494963006577
+            },
+            {
+              "theta": 3.141592653589793,
+              "phi": 0.4908738521234052,
+              "val": 0.11479393677840097
+            }
+          ],
+          "threshold": 0.06600321558270228
+        },
+        "start": "S1",
+        "kick_seed": 0,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9123623010888398,
+        "r_peak_S": 0.9123610378228042,
+        "f_N": 0.0019903809987706343,
+        "f_S": 0.0019903239628361914
+      },
+      "timestamp_uk": "2026-11-05 19:46 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 1.05,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 1,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b1.05_n3_N61_seed1.npz",
+      "npz_sha8": "9f51f140",
+      "solve_sec": 34.78,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 8.134085450410122e-08,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          1.0,
+          1.0000000000000013,
+          1.0000000000000016
+        ],
+        "ev_proj_S": [
+          0.9999999999999991,
+          1.0000000000000004,
+          1.0000000000000018
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.5169034934469395,
+        "Q_cap_S": 0.4958821561010909,
+        "Q_total": 5.997708488942701,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0022915110572991892,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0022915110572991892
+      },
+      "E": 18.682845216609753,
+      "probe_B": {
+        "A3": 0.06049595200116118,
+        "peaks_north": {
+          "n_peaks": 6,
+          "cap_max": 0.132619836379457,
+          "peak_locs": [
+            {
+              "theta": 0.7479982508547127,
+              "phi": 1.6689710972195777,
+              "val": 0.132619836379457
+            },
+            {
+              "theta": 0.7978648009116935,
+              "phi": 5.792311455056181,
+              "val": 0.13248420269403102
+            },
+            {
+              "theta": 0.7978648009116935,
+              "phi": 3.730641276137879,
+              "val": 0.1324504989341416
+            },
+            {
+              "theta": 1.0970641012535787,
+              "phi": 0.0,
+              "val": 0.13072604787235317
+            },
+            {
+              "theta": 1.0970641012535787,
+              "phi": 4.221515128261284,
+              "val": 0.13069442003742546
+            },
+            {
+              "theta": 1.0970641012535787,
+              "phi": 2.1598449493429825,
+              "val": 0.13066113166044796
+            }
+          ],
+          "threshold": 0.0663099181897285
+        },
+        "peaks_south": {
+          "n_peaks": 3,
+          "cap_max": 0.1323887472152414,
+          "peak_locs": [
+            {
+              "theta": 2.293861302621119,
+              "phi": 1.6689710972195777,
+              "val": 0.1323887472152414
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 5.890486225480862,
+              "val": 0.1323689551554842
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 3.8288160465625602,
+              "val": 0.13231452078244277
+            }
+          ],
+          "threshold": 0.0661943736076207
+        },
+        "start": "S1",
+        "kick_seed": 1,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9124515495367496,
+        "r_peak_S": 0.9124514251869686,
+        "f_N": 0.001994841809846533,
+        "f_S": 0.001994833526532248
+      },
+      "timestamp_uk": "2026-11-05 19:47 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 1.05,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 2,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b1.05_n3_N61_seed2.npz",
+      "npz_sha8": "df47e0ae",
+      "solve_sec": 43.168,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 2.484088092792296e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": false,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999997,
+          1.0,
+          1.0000000000000007
+        ],
+        "ev_proj_S": [
+          0.9999999999999993,
+          1.0000000000000004,
+          1.000000000000001
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.5168776676292972,
+        "Q_cap_S": 0.49663320350680573,
+        "Q_total": 5.997708488998419,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0022915110015810924,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0022915110015810924
+      },
+      "E": 18.682845216609266,
+      "probe_B": {
+        "A3": 0.06009630773624681,
+        "peaks_north": {
+          "n_peaks": 7,
+          "cap_max": 0.13487054203296614,
+          "peak_locs": [
+            {
+              "theta": 0.8477313509686744,
+              "phi": 0.5890486225480862,
+              "val": 0.13487054203296614
+            },
+            {
+              "theta": 0.8477313509686744,
+              "phi": 2.650718801466388,
+              "val": 0.13449779707242712
+            },
+            {
+              "theta": 0.8477313509686744,
+              "phi": 4.71238898038469,
+              "val": 0.1340917381831317
+            },
+            {
+              "theta": 0.0,
+              "phi": 5.203262832508095,
+              "val": 0.11487134291254436
+            },
+            {
+              "theta": 0.0,
+              "phi": 0.09817477042468103,
+              "val": 0.11487134291254435
+            },
+            {
+              "theta": 0.0,
+              "phi": 0.4908738521234052,
+              "val": 0.11487134291254433
+            },
+            {
+              "theta": 0.0,
+              "phi": 5.6941366846315,
+              "val": 0.11487134291254433
+            }
+          ],
+          "threshold": 0.06743527101648307
+        },
+        "peaks_south": {
+          "n_peaks": 11,
+          "cap_max": 0.13335448492760632,
+          "peak_locs": [
+            {
+              "theta": 2.3935944027350806,
+              "phi": 4.71238898038469,
+              "val": 0.13335448492760632
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 0.5890486225480862,
+              "val": 0.13288508838277888
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 0.9817477042468103,
+              "val": 0.13280289400964423
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 5.301437602932776,
+              "val": 0.13274396817818895
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 3.141592653589793,
+              "val": 0.13257292596869516
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 2.552544031041707,
+              "val": 0.13227888129562018
+            },
+            {
+              "theta": 1.595729601823387,
+              "phi": 5.6941366846315,
+              "val": 0.12072394898935022
+            },
+            {
+              "theta": 3.141592653589793,
+              "phi": 1.1780972450961724,
+              "val": 0.11487183978664979
+            },
+            {
+              "theta": 3.141592653589793,
+              "phi": 2.1598449493429825,
+              "val": 0.11487183978664979
+            },
+            {
+              "theta": 3.141592653589793,
+              "phi": 0.5890486225480862,
+              "val": 0.11487183978664978
+            },
+            {
+              "theta": 3.141592653589793,
+              "phi": 1.5707963267948966,
+              "val": 0.11487183978664978
+            }
+          ],
+          "threshold": 0.06667724246380316
+        },
+        "start": "S1",
+        "kick_seed": 2,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9120881060950984,
+        "r_peak_S": 0.9120866077327263,
+        "f_N": 0.001975519103885579,
+        "f_S": 0.001975406376852282
+      },
+      "timestamp_uk": "2026-11-05 19:48 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 1.05,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 0,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b1.05_n3_N81_seed0.npz",
+      "npz_sha8": "0eea8c4b",
+      "solve_sec": 113.883,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 1.043004576356587e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.999999999999999,
+          1.0000000000000007,
+          1.000000000000003
+        ],
+        "ev_proj_S": [
+          0.9999999999999996,
+          1.0000000000000007,
+          1.0000000000000009
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.4986650316417548,
+        "Q_cap_S": 0.5186415267780741,
+        "Q_total": 5.996240100203807,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.003759899796192734,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.003759899796192734
+      },
+      "E": 18.733229269971044,
+      "probe_B": {
+        "A3": 0.05031062478855455,
+        "peaks_north": {
+          "n_peaks": 6,
+          "cap_max": 0.13012726257994273,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 4.516039439535327,
+              "val": 0.13012726257994273
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 2.356194490192345,
+              "val": 0.13008072912263605
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 0.2945243112740431,
+              "val": 0.13003967964528054
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 3.8288160465625602,
+              "val": 0.12737137970573043
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 1.7671458676442586,
+              "val": 0.12735606224782595
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 5.988660995905543,
+              "val": 0.127262769379581
+            }
+          ],
+          "threshold": 0.06506363128997136
+        },
+        "peaks_south": {
+          "n_peaks": 3,
+          "cap_max": 0.13278703478679432,
+          "peak_locs": [
+            {
+              "theta": 2.243994752564138,
+              "phi": 5.301437602932776,
+              "val": 0.13278703478679432
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 3.2397674240144743,
+              "val": 0.13278292605723926
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 1.0799224746714913,
+              "val": 0.13274903814226605
+            }
+          ],
+          "threshold": 0.06639351739339716
+        },
+        "start": "S1",
+        "kick_seed": 0,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9141701269306154,
+        "r_peak_S": 0.914168316543094,
+        "f_N": 0.0013575236373331901,
+        "f_S": 0.001357331629608934
+      },
+      "timestamp_uk": "2026-11-05 19:49 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 1.05,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 1,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b1.05_n3_N81_seed1.npz",
+      "npz_sha8": "7272e409",
+      "solve_sec": 78.276,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 1.022070034079059e-06,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999982,
+          1.0,
+          1.0000000000000016
+        ],
+        "ev_proj_S": [
+          0.9999999999999997,
+          1.0000000000000004,
+          1.0000000000000013
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.49911211074233863,
+        "Q_cap_S": 0.5181317360490026,
+        "Q_total": 5.996240099618171,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.003759900381829162,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.003759900381829162
+      },
+      "E": 18.733229269963896,
+      "probe_B": {
+        "A3": 0.05030132268696865,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.12985670062058638,
+          "peak_locs": [
+            {
+              "theta": 0.9973310011396169,
+              "phi": 4.614214209960009,
+              "val": 0.12985670062058638
+            },
+            {
+              "theta": 0.9973310011396169,
+              "phi": 2.552544031041707,
+              "val": 0.1297707443163127
+            },
+            {
+              "theta": 0.9973310011396169,
+              "phi": 0.39269908169872414,
+              "val": 0.1297419923121223
+            }
+          ],
+          "threshold": 0.06492835031029319
+        },
+        "peaks_south": {
+          "n_peaks": 6,
+          "cap_max": 0.13053327588061753,
+          "peak_locs": [
+            {
+              "theta": 2.1941282025071573,
+              "phi": 3.141592653589793,
+              "val": 0.13053327588061753
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 5.203262832508095,
+              "val": 0.13052329868546828
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 1.0799224746714913,
+              "val": 0.13035442711809253
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 1.8653206380689396,
+              "val": 0.12783649223456736
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 6.086835766330224,
+              "val": 0.12766141786437024
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 4.025165587411922,
+              "val": 0.12754160974545353
+            }
+          ],
+          "threshold": 0.06526663794030876
+        },
+        "start": "S1",
+        "kick_seed": 1,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9141512109404482,
+        "r_peak_S": 0.9141537697530846,
+        "f_N": 0.00135561710467858,
+        "f_S": 0.001355889966208972
+      },
+      "timestamp_uk": "2026-11-05 19:51 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S1",
+      "b": 1.05,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 2,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S1_b1.05_n3_N81_seed2.npz",
+      "npz_sha8": "0ec387ee",
+      "solve_sec": 74.278,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 3.6620239834972423e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999996,
+          0.9999999999999997,
+          1.0000000000000007
+        ],
+        "ev_proj_S": [
+          1.0,
+          1.0000000000000004,
+          1.0000000000000009
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.5169459382994847,
+        "Q_cap_S": 0.4988484258649417,
+        "Q_total": 5.996240100165835,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.003759899834165026,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.003759899834165026
+      },
+      "E": 18.73322926999289,
+      "probe_B": {
+        "A3": 0.050351468769886124,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.13293637116270626,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 3.9269908169872414,
+              "val": 0.13293637116270626
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 5.988660995905543,
+              "val": 0.13292754964089204
+            },
+            {
+              "theta": 0.8477313509686744,
+              "phi": 1.7671458676442586,
+              "val": 0.13287192862899633
+            }
+          ],
+          "threshold": 0.06646818558135313
+        },
+        "peaks_south": {
+          "n_peaks": 9,
+          "cap_max": 0.12981317069059373,
+          "peak_locs": [
+            {
+              "theta": 2.243994752564138,
+              "phi": 2.650718801466388,
+              "val": 0.12981317069059373
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 0.5890486225480862,
+              "val": 0.12977705986492397
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 4.71238898038469,
+              "val": 0.12977502000102364
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 5.890486225480862,
+              "val": 0.12901829928072897
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 1.6689710972195777,
+              "val": 0.12899127456156323
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 3.8288160465625602,
+              "val": 0.12895146301485372
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 0.0,
+              "val": 0.12877636791056946
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 4.221515128261284,
+              "val": 0.12875952980823557
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 2.061670178918302,
+              "val": 0.12872699855645914
+            }
+          ],
+          "threshold": 0.06490658534529686
+        },
+        "start": "S1",
+        "kick_seed": 2,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9142180476963652,
+        "r_peak_S": 0.9142117142115096,
+        "f_N": 0.0013624235128477246,
+        "f_S": 0.0013617432481517191
+      },
+      "timestamp_uk": "2026-11-05 19:52 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 2.0,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 0,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b2_n3_N61_seed0.npz",
+      "npz_sha8": "f04a9ee2",
+      "solve_sec": 19.756,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 1.2415688784017664e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": false,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          1.0,
+          1.0,
+          1.0000000000000004
+        ],
+        "ev_proj_S": [
+          0.9999999999999988,
+          0.9999999999999994,
+          1.0000000000000002
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.18612392864548052,
+        "Q_cap_S": 0.20737748398060227,
+        "Q_total": 5.999031554800861,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0009684451991391896,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0009684451991391896
+      },
+      "E": 17.668966568521455,
+      "probe_B": {
+        "A3": 0.5498398005037219,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.10296889358345665,
+          "peak_locs": [
+            {
+              "theta": 0.9474644510826361,
+              "phi": 1.6689710972195777,
+              "val": 0.10296889358345665
+            },
+            {
+              "theta": 0.9474644510826361,
+              "phi": 3.730641276137879,
+              "val": 0.10279264124653814
+            },
+            {
+              "theta": 0.9474644510826361,
+              "phi": 5.890486225480862,
+              "val": 0.10275955442750016
+            }
+          ],
+          "threshold": 0.051484446791728325
+        },
+        "peaks_south": {
+          "n_peaks": 6,
+          "cap_max": 0.07460609117826206,
+          "peak_locs": [
+            {
+              "theta": 2.0943951023931957,
+              "phi": 5.301437602932776,
+              "val": 0.07460609117826206
+            },
+            {
+              "theta": 2.0943951023931957,
+              "phi": 1.0799224746714913,
+              "val": 0.07457578479653716
+            },
+            {
+              "theta": 2.0445285523362147,
+              "phi": 3.2397674240144743,
+              "val": 0.07448675313133436
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 6.086835766330224,
+              "val": 0.07320638809465901
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 4.025165587411922,
+              "val": 0.07319862068789057
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 1.8653206380689396,
+              "val": 0.07317207664884251
+            }
+          ],
+          "threshold": 0.03730304558913103
+        },
+        "start": "S2",
+        "kick_seed": 0,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9390497737378626,
+        "r_peak_S": 0.9390499802861616,
+        "f_N": 0.0001798657139557205,
+        "f_S": 0.00017988489637128644
+      },
+      "timestamp_uk": "2026-11-05 19:52 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 2.0,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 1,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b2_n3_N61_seed1.npz",
+      "npz_sha8": "fbc36c47",
+      "solve_sec": 35.154,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 3.2188392731599334e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.999999999999999,
+          1.0000000000000007,
+          1.0000000000000022
+        ],
+        "ev_proj_S": [
+          1.0,
+          1.0000000000000004,
+          1.0000000000000016
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.18612097706787048,
+        "Q_cap_S": 0.2073794982423557,
+        "Q_total": 5.999031555051855,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0009684449481452972,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0009684449481452972
+      },
+      "E": 17.66896656852033,
+      "probe_B": {
+        "A3": 0.5498401439856666,
+        "peaks_north": {
+          "n_peaks": 6,
+          "cap_max": 0.08388981128831942,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 4.417864669110647,
+              "val": 0.08388981128831942
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 0.19634954084936207,
+              "val": 0.0838721025619802
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 2.356194490192345,
+              "val": 0.0836996633647335
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 3.5342917352885173,
+              "val": 0.0696460820752671
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 1.4726215563702154,
+              "val": 0.06955614975138777
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 5.595961914206819,
+              "val": 0.0695081590122926
+            }
+          ],
+          "threshold": 0.04194490564415971
+        },
+        "peaks_south": {
+          "n_peaks": 3,
+          "cap_max": 0.07860660824363642,
+          "peak_locs": [
+            {
+              "theta": 2.243994752564138,
+              "phi": 0.7853981633974483,
+              "val": 0.07860660824363642
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 5.006913291658733,
+              "val": 0.07857108928562562
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 2.84706834231575,
+              "val": 0.0785327460373526
+            }
+          ],
+          "threshold": 0.03930330412181821
+        },
+        "start": "S2",
+        "kick_seed": 1,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.939050381930024,
+        "r_peak_S": 0.9390506396105754,
+        "f_N": 0.00017992036907346065,
+        "f_S": 0.00017994462288352145
+      },
+      "timestamp_uk": "2026-11-05 19:53 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 2.0,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 2,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b2_n3_N61_seed2.npz",
+      "npz_sha8": "beab2219",
+      "solve_sec": 36.519,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 1.4943574333514675e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999997,
+          1.0000000000000002,
+          1.0000000000000013
+        ],
+        "ev_proj_S": [
+          1.0,
+          1.0000000000000007,
+          1.0000000000000016
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.1861253134959369,
+        "Q_cap_S": 0.20736147870017552,
+        "Q_total": 5.999031555183842,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0009684448161584314,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0009684448161584314
+      },
+      "E": 17.668966568515724,
+      "probe_B": {
+        "A3": 0.549840903116905,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.08036913293975478,
+          "peak_locs": [
+            {
+              "theta": 1.0471975511965979,
+              "phi": 2.2580197197676637,
+              "val": 0.08036913293975478
+            },
+            {
+              "theta": 1.0471975511965979,
+              "phi": 0.19634954084936207,
+              "val": 0.08025806488040392
+            },
+            {
+              "theta": 1.0471975511965979,
+              "phi": 4.319689898685965,
+              "val": 0.08024185654051928
+            }
+          ],
+          "threshold": 0.04018456646987739
+        },
+        "peaks_south": {
+          "n_peaks": 6,
+          "cap_max": 0.08093239772833696,
+          "peak_locs": [
+            {
+              "theta": 2.1442616524501763,
+              "phi": 2.748893571891069,
+              "val": 0.08093239772833696
+            },
+            {
+              "theta": 2.1442616524501763,
+              "phi": 4.81056375080937,
+              "val": 0.08092148253501275
+            },
+            {
+              "theta": 2.1442616524501763,
+              "phi": 0.6872233929727672,
+              "val": 0.08078527968941039
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 1.8653206380689396,
+              "val": 0.07474263935541466
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 6.086835766330224,
+              "val": 0.0746858484535323
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 3.9269908169872414,
+              "val": 0.07465478294990197
+            }
+          ],
+          "threshold": 0.04046619886416848
+        },
+        "start": "S2",
+        "kick_seed": 2,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9390517139675206,
+        "r_peak_S": 0.939052035257396,
+        "f_N": 0.00018004118022135176,
+        "f_S": 0.0001800703032713783
+      },
+      "timestamp_uk": "2026-11-05 19:54 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 2.0,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 0,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b2_n3_N81_seed0.npz",
+      "npz_sha8": "312846d3",
+      "solve_sec": 130.132,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 2.6490589610155586e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999992,
+          0.9999999999999996,
+          1.0000000000000027
+        ],
+        "ev_proj_S": [
+          1.0,
+          1.0000000000000009,
+          1.0000000000000013
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.18613289263488214,
+        "Q_cap_S": 0.20716304750452091,
+        "Q_total": 5.998570598219552,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0014294017804479253,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0014294017804479253
+      },
+      "E": 17.952936422038164,
+      "probe_B": {
+        "A3": 0.5352218121891945,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.07599417625405559,
+          "peak_locs": [
+            {
+              "theta": 0.8477313509686744,
+              "phi": 0.2945243112740431,
+              "val": 0.07599417625405559
+            },
+            {
+              "theta": 0.8477313509686744,
+              "phi": 2.356194490192345,
+              "val": 0.07593570523641012
+            },
+            {
+              "theta": 0.8477313509686744,
+              "phi": 4.516039439535327,
+              "val": 0.07592053051110197
+            }
+          ],
+          "threshold": 0.037997088127027796
+        },
+        "peaks_south": {
+          "n_peaks": 3,
+          "cap_max": 0.08630671402757356,
+          "peak_locs": [
+            {
+              "theta": 2.293861302621119,
+              "phi": 5.399612373357457,
+              "val": 0.08630671402757356
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 1.1780972450961724,
+              "val": 0.08629521726652702
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 3.3379421944391554,
+              "val": 0.08613642424971034
+            }
+          ],
+          "threshold": 0.04315335701378678
+        },
+        "start": "S2",
+        "kick_seed": 0,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9370228630847462,
+        "r_peak_S": 0.9370233967053996,
+        "f_N": 0.0002316483322895249,
+        "f_S": 0.00023170399405874535
+      },
+      "timestamp_uk": "2026-11-05 19:56 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 2.0,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 1,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b2_n3_N81_seed1.npz",
+      "npz_sha8": "5e912e5f",
+      "solve_sec": 95.919,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 1.8184100663748058e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": false,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999996,
+          1.0000000000000009,
+          1.0000000000000009
+        ],
+        "ev_proj_S": [
+          0.9999999999999988,
+          0.999999999999999,
+          0.9999999999999998
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.1861233972399634,
+        "Q_cap_S": 0.2071829508676682,
+        "Q_total": 5.998570598207107,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0014294017928930813,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0014294017928930813
+      },
+      "E": 17.952936422009756,
+      "probe_B": {
+        "A3": 0.5352201673545801,
+        "peaks_north": {
+          "n_peaks": 6,
+          "cap_max": 0.08311236318551794,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 4.81056375080937,
+              "val": 0.08311236318551794
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 0.5890486225480862,
+              "val": 0.0830696053841977
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 2.748893571891069,
+              "val": 0.0829602331308218
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 1.6689710972195777,
+              "val": 0.06186147133622818
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 3.730641276137879,
+              "val": 0.06185682733229696
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 5.890486225480862,
+              "val": 0.06176378529717371
+            }
+          ],
+          "threshold": 0.04155618159275897
+        },
+        "peaks_south": {
+          "n_peaks": 6,
+          "cap_max": 0.07854108562757975,
+          "peak_locs": [
+            {
+              "theta": 2.1941282025071573,
+              "phi": 3.5342917352885173,
+              "val": 0.07854108562757975
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 5.595961914206819,
+              "val": 0.07848639329591867
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 1.4726215563702154,
+              "val": 0.07847234471214738
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 0.39269908169872414,
+              "val": 0.06579685039981155
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 2.454369260617026,
+              "val": 0.0657780393976653
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 4.614214209960009,
+              "val": 0.06564620930268333
+            }
+          ],
+          "threshold": 0.039270542813789874
+        },
+        "start": "S2",
+        "kick_seed": 1,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9370201558037276,
+        "r_peak_S": 0.9370201033705517,
+        "f_N": 0.00023136530754960357,
+        "f_S": 0.0002313586938932677
+      },
+      "timestamp_uk": "2026-11-05 19:57 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 2.0,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 2,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b2_n3_N81_seed2.npz",
+      "npz_sha8": "c1870a19",
+      "solve_sec": 112.048,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 4.371237506736042e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999979,
+          0.9999999999999988,
+          1.0000000000000002
+        ],
+        "ev_proj_S": [
+          0.9999999999999983,
+          0.9999999999999987,
+          1.0000000000000002
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.18613689232507577,
+        "Q_cap_S": 0.20720233459071213,
+        "Q_total": 5.998570596752305,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0014294032476946938,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0014294032476946938
+      },
+      "E": 17.952936422004218,
+      "probe_B": {
+        "A3": 0.5352214661158718,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.09713933486788073,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 1.1780972450961724,
+              "val": 0.09713933486788073
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 5.399612373357457,
+              "val": 0.09705405227640582
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 3.2397674240144743,
+              "val": 0.09687867414506163
+            }
+          ],
+          "threshold": 0.04856966743394037
+        },
+        "peaks_south": {
+          "n_peaks": 8,
+          "cap_max": 0.0759437673848701,
+          "peak_locs": [
+            {
+              "theta": 2.1941282025071573,
+              "phi": 2.1598449493429825,
+              "val": 0.0759437673848701
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 0.09817477042468103,
+              "val": 0.07592337808642177
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 4.221515128261284,
+              "val": 0.07589521434881684
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 0.8835729338221293,
+              "val": 0.068317459219845
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 2.945243112740431,
+              "val": 0.06829676510226614
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 5.105088062083414,
+              "val": 0.06829026515477316
+            },
+            {
+              "theta": 1.944795452222253,
+              "phi": 5.792311455056181,
+              "val": 0.05730955482263083
+            },
+            {
+              "theta": 1.944795452222253,
+              "phi": 1.5707963267948966,
+              "val": 0.05730440654588535
+            }
+          ],
+          "threshold": 0.03797188369243505
+        },
+        "start": "S2",
+        "kick_seed": 2,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9370226336336843,
+        "r_peak_S": 0.9370223072986372,
+        "f_N": 0.00023162703269357962,
+        "f_S": 0.00023158927836643622
+      },
+      "timestamp_uk": "2026-11-05 19:59 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 1.2,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 0,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b1.2_n3_N61_seed0.npz",
+      "npz_sha8": "f35f4424",
+      "solve_sec": 49.986,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 2.4849470140224025e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999983,
+          1.0000000000000007,
+          1.0000000000000022
+        ],
+        "ev_proj_S": [
+          0.9999999999999993,
+          1.0,
+          1.0000000000000004
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.4174623618689261,
+        "Q_cap_S": 0.4396578149011068,
+        "Q_total": 5.998105991513979,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0018940084860208373,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0018940084860208373
+      },
+      "E": 18.46797969188577,
+      "probe_B": {
+        "A3": 0.1373701875888,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.12827621009541837,
+          "peak_locs": [
+            {
+              "theta": 0.9474644510826361,
+              "phi": 3.730641276137879,
+              "val": 0.12827621009541837
+            },
+            {
+              "theta": 0.9474644510826361,
+              "phi": 1.6689710972195777,
+              "val": 0.12825552190131165
+            },
+            {
+              "theta": 0.9474644510826361,
+              "phi": 5.792311455056181,
+              "val": 0.12814386017242232
+            }
+          ],
+          "threshold": 0.06413810504770918
+        },
+        "peaks_south": {
+          "n_peaks": 9,
+          "cap_max": 0.11572117437070102,
+          "peak_locs": [
+            {
+              "theta": 2.0445285523362147,
+              "phi": 5.399612373357457,
+              "val": 0.11572117437070102
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 6.086835766330224,
+              "val": 0.11572024163985083
+            },
+            {
+              "theta": 2.0445285523362147,
+              "phi": 3.3379421944391554,
+              "val": 0.11571402171331499
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 4.025165587411922,
+              "val": 0.11570979299818426
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 1.8653206380689396,
+              "val": 0.1157051067068905
+            },
+            {
+              "theta": 2.0445285523362147,
+              "phi": 1.1780972450961724,
+              "val": 0.11566411846895025
+            },
+            {
+              "theta": 1.595729601823387,
+              "phi": 0.19634954084936207,
+              "val": 0.09405481225735583
+            },
+            {
+              "theta": 1.595729601823387,
+              "phi": 2.2580197197676637,
+              "val": 0.0940519934796035
+            },
+            {
+              "theta": 1.595729601823387,
+              "phi": 4.417864669110647,
+              "val": 0.09403846849774469
+            }
+          ],
+          "threshold": 0.05786058718535051
+        },
+        "start": "S2",
+        "kick_seed": 0,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.917395007394961,
+        "r_peak_S": 0.9173949812648977,
+        "f_N": 0.005949100513644009,
+        "f_S": 0.005949048940779103
+      },
+      "timestamp_uk": "2026-11-05 20:00 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 1.2,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 1,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b1.2_n3_N61_seed1.npz",
+      "npz_sha8": "77be44cb",
+      "solve_sec": 27.133,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 1.6241660916183065e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999992,
+          1.0,
+          1.0000000000000007
+        ],
+        "ev_proj_S": [
+          0.9999999999999992,
+          0.9999999999999998,
+          1.0
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.4174366358914341,
+        "Q_cap_S": 0.4396755532060597,
+        "Q_total": 5.998105991572339,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0018940084276612978,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0018940084276612978
+      },
+      "E": 18.467979691897916,
+      "probe_B": {
+        "A3": 0.13737021796744078,
+        "peaks_north": {
+          "n_peaks": 6,
+          "cap_max": 0.120193256421973,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 0.19634954084936207,
+              "val": 0.120193256421973
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 2.2580197197676637,
+              "val": 0.12018689563691236
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 4.417864669110647,
+              "val": 0.12013754147928563
+            },
+            {
+              "theta": 1.1469306513105595,
+              "phi": 5.792311455056181,
+              "val": 0.11052882916589535
+            },
+            {
+              "theta": 1.1469306513105595,
+              "phi": 3.730641276137879,
+              "val": 0.11050696139399174
+            },
+            {
+              "theta": 1.1469306513105595,
+              "phi": 1.5707963267948966,
+              "val": 0.11049620063716949
+            }
+          ],
+          "threshold": 0.0600966282109865
+        },
+        "peaks_south": {
+          "n_peaks": 3,
+          "cap_max": 0.11676124916179331,
+          "peak_locs": [
+            {
+              "theta": 2.293861302621119,
+              "phi": 0.8835729338221293,
+              "val": 0.11676124916179331
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 5.105088062083414,
+              "val": 0.11676036231894593
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 2.945243112740431,
+              "val": 0.11672234444888781
+            }
+          ],
+          "threshold": 0.058380624580896656
+        },
+        "start": "S2",
+        "kick_seed": 1,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.917394517213794,
+        "r_peak_S": 0.9173920118965057,
+        "f_N": 0.00594883812740901,
+        "f_S": 0.00594759751166097
+      },
+      "timestamp_uk": "2026-11-05 20:01 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 1.2,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 2,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b1.2_n3_N61_seed2.npz",
+      "npz_sha8": "9da7276c",
+      "solve_sec": 20.455,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 1.223955245210906e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999991,
+          1.000000000000001,
+          1.0000000000000027
+        ],
+        "ev_proj_S": [
+          0.9999999999999984,
+          0.999999999999999,
+          0.999999999999999
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.4174533958733869,
+        "Q_cap_S": 0.4396403258268614,
+        "Q_total": 5.998105991659881,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.00189400834011888,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.00189400834011888
+      },
+      "E": 18.46797969188989,
+      "probe_B": {
+        "A3": 0.13736962571159614,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.11929279005469369,
+          "peak_locs": [
+            {
+              "theta": 0.9474644510826361,
+              "phi": 0.0,
+              "val": 0.11929279005469369
+            },
+            {
+              "theta": 0.9474644510826361,
+              "phi": 2.061670178918302,
+              "val": 0.11927994691289538
+            },
+            {
+              "theta": 0.9474644510826361,
+              "phi": 4.221515128261284,
+              "val": 0.11923185174247596
+            }
+          ],
+          "threshold": 0.059646395027346845
+        },
+        "peaks_south": {
+          "n_peaks": 6,
+          "cap_max": 0.1177593089405707,
+          "peak_locs": [
+            {
+              "theta": 2.1941282025071573,
+              "phi": 2.356194490192345,
+              "val": 0.1177593089405707
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 4.417864669110647,
+              "val": 0.11775466732429604
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 0.2945243112740431,
+              "val": 0.11770989898087784
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 1.8653206380689396,
+              "val": 0.11754841958428669
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 3.9269908169872414,
+              "val": 0.11752981660706309
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 6.086835766330224,
+              "val": 0.1174934388877587
+            }
+          ],
+          "threshold": 0.05887965447028535
+        },
+        "start": "S2",
+        "kick_seed": 2,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9173828841839206,
+        "r_peak_S": 0.917386944845195,
+        "f_N": 0.005942944454408671,
+        "f_S": 0.005944996419839136
+      },
+      "timestamp_uk": "2026-11-05 20:01 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 1.2,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 0,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b1.2_n3_N81_seed0.npz",
+      "npz_sha8": "ba3e9062",
+      "solve_sec": 63.889,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 1.345413269963957e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999998,
+          1.0000000000000002,
+          1.0000000000000013
+        ],
+        "ev_proj_S": [
+          0.9999999999999987,
+          0.9999999999999993,
+          1.0000000000000029
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.41897038623648064,
+        "Q_cap_S": 0.44025919393628843,
+        "Q_total": 5.996945947900525,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0030540520994746245,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0030540520994746245
+      },
+      "E": 18.568654011816367,
+      "probe_B": {
+        "A3": 0.12542931678527253,
+        "peaks_north": {
+          "n_peaks": 6,
+          "cap_max": 0.11583879775319694,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 2.552544031041707,
+              "val": 0.11583879775319694
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 4.614214209960009,
+              "val": 0.1158247412863396
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 0.4908738521234052,
+              "val": 0.11580730771584785
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 4.025165587411922,
+              "val": 0.10990238911039177
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 6.086835766330224,
+              "val": 0.10989047180009151
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 1.9634954084936207,
+              "val": 0.10986013547191191
+            }
+          ],
+          "threshold": 0.05791939887659847
+        },
+        "peaks_south": {
+          "n_peaks": 3,
+          "cap_max": 0.12136656541819905,
+          "peak_locs": [
+            {
+              "theta": 2.243994752564138,
+              "phi": 3.3379421944391554,
+              "val": 0.12136656541819905
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 1.2762720155208536,
+              "val": 0.12136200882855624
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 5.399612373357457,
+              "val": 0.12127552732070929
+            }
+          ],
+          "threshold": 0.06068328270909953
+        },
+        "start": "S2",
+        "kick_seed": 0,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9169009792731694,
+        "r_peak_S": 0.9169004905261448,
+        "f_N": 0.0015115205332386647,
+        "f_S": 0.0015115101622946814
+      },
+      "timestamp_uk": "2026-11-05 20:02 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 1.2,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 1,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b1.2_n3_N81_seed1.npz",
+      "npz_sha8": "37f199f4",
+      "solve_sec": 83.943,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 9.410029655487762e-08,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 2,
+        "rank_S": 4,
+        "ev_proj_N": [
+          0.999999999999999,
+          1.0000000000000002
+        ],
+        "ev_proj_S": [
+          0.9999999999999989,
+          0.9999999999999996,
+          1.0,
+          1.0000000000000007
+        ],
+        "rank_equals_3": false
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.4189726002679952,
+        "Q_cap_S": 0.4402553263918813,
+        "Q_total": 5.9969459486169745,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0030540513830255023,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0030540513830255023
+      },
+      "E": 18.56865401180264,
+      "probe_B": {
+        "A3": 0.12542880026375205,
+        "peaks_north": {
+          "n_peaks": 6,
+          "cap_max": 0.11712742011662186,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 0.5890486225480862,
+              "val": 0.11712742011662186
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 2.650718801466388,
+              "val": 0.11710390586702688
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 4.81056375080937,
+              "val": 0.117102653004075
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 3.730641276137879,
+              "val": 0.11027833534164559
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 1.6689710972195777,
+              "val": 0.11027440389761825
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 5.792311455056181,
+              "val": 0.11021759610964109
+            }
+          ],
+          "threshold": 0.05856371005831093
+        },
+        "peaks_south": {
+          "n_peaks": 4,
+          "cap_max": 0.11774379263574798,
+          "peak_locs": [
+            {
+              "theta": 2.243994752564138,
+              "phi": 5.6941366846315,
+              "val": 0.11774379263574798
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 1.4726215563702154,
+              "val": 0.1177161987572042
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 3.6324665057131984,
+              "val": 0.11771470400251827
+            },
+            {
+              "theta": 2.4434609527920617,
+              "phi": 2.356194490192345,
+              "val": 0.11125891201673459
+            }
+          ],
+          "threshold": 0.05887189631787399
+        },
+        "start": "S2",
+        "kick_seed": 1,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9168958630367883,
+        "r_peak_S": 0.9168973668996544,
+        "f_N": 0.0015113918697193666,
+        "f_S": 0.001511431423569277
+      },
+      "timestamp_uk": "2026-11-05 20:03 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 1.2,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 2,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b1.2_n3_N81_seed2.npz",
+      "npz_sha8": "f42d92e8",
+      "solve_sec": 77.922,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 7.145066159045436e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          1.0000000000000009,
+          1.0000000000000018,
+          1.0000000000000042
+        ],
+        "ev_proj_S": [
+          0.9999999999999991,
+          1.0,
+          1.0000000000000013
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.4189845144589408,
+        "Q_cap_S": 0.44027549342720224,
+        "Q_total": 5.996945949499897,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0030540505001033225,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0030540505001033225
+      },
+      "E": 18.5686540118503,
+      "probe_B": {
+        "A3": 0.12542908442550826,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.12157358105776955,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 5.301437602932776,
+              "val": 0.12157358105776955
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 1.0799224746714913,
+              "val": 0.12153223264647646
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 3.2397674240144743,
+              "val": 0.12152163170899714
+            }
+          ],
+          "threshold": 0.060786790528884777
+        },
+        "peaks_south": {
+          "n_peaks": 9,
+          "cap_max": 0.11507229753902294,
+          "peak_locs": [
+            {
+              "theta": 2.243994752564138,
+              "phi": 1.9634954084936207,
+              "val": 0.11507229753902294
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 4.025165587411922,
+              "val": 0.11506984897368645
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 6.1850105367549055,
+              "val": 0.11503783471347444
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 0.9817477042468103,
+              "val": 0.1133165989471926
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 5.203262832508095,
+              "val": 0.11330198404771741
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 3.043417883165112,
+              "val": 0.11329852541857137
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 1.3744467859455345,
+              "val": 0.11297303915342512
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 3.436116964863836,
+              "val": 0.11294783568282454
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 5.595961914206819,
+              "val": 0.1129310137235339
+            }
+          ],
+          "threshold": 0.05753614876951147
+        },
+        "start": "S2",
+        "kick_seed": 2,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9168994672233128,
+        "r_peak_S": 0.916892278063885,
+        "f_N": 0.0015114979855457558,
+        "f_S": 0.0015112854215074724
+      },
+      "timestamp_uk": "2026-11-05 20:05 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 1.05,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 0,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b1.05_n3_N61_seed0.npz",
+      "npz_sha8": "6a19f4aa",
+      "solve_sec": 30.882,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 2.3856807379032605e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          1.0000000000000007,
+          1.0000000000000007,
+          1.0000000000000009
+        ],
+        "ev_proj_S": [
+          0.9999999999999986,
+          0.9999999999999996,
+          1.0000000000000004
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.4988377458297406,
+        "Q_cap_S": 0.5136087648769792,
+        "Q_total": 5.997708488938095,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0022915110619052825,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0022915110619052825
+      },
+      "E": 18.68284521660828,
+      "probe_B": {
+        "A3": 0.06049991098218918,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.13838517508002135,
+          "peak_locs": [
+            {
+              "theta": 0.9474644510826361,
+              "phi": 3.730641276137879,
+              "val": 0.13838517508002135
+            },
+            {
+              "theta": 0.9474644510826361,
+              "phi": 1.6689710972195777,
+              "val": 0.138372789733151
+            },
+            {
+              "theta": 0.9474644510826361,
+              "phi": 5.792311455056181,
+              "val": 0.13831465475417343
+            }
+          ],
+          "threshold": 0.06919258754001067
+        },
+        "peaks_south": {
+          "n_peaks": 9,
+          "cap_max": 0.1317815653227302,
+          "peak_locs": [
+            {
+              "theta": 2.293861302621119,
+              "phi": 6.086835766330224,
+              "val": 0.1317815653227302
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 4.025165587411922,
+              "val": 0.1317778279403649
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 1.8653206380689396,
+              "val": 0.13177060864301535
+            },
+            {
+              "theta": 2.0445285523362147,
+              "phi": 3.3379421944391554,
+              "val": 0.13173249837390325
+            },
+            {
+              "theta": 2.0445285523362147,
+              "phi": 5.399612373357457,
+              "val": 0.1317323884598521
+            },
+            {
+              "theta": 2.0445285523362147,
+              "phi": 1.1780972450961724,
+              "val": 0.1316959152174095
+            },
+            {
+              "theta": 1.595729601823387,
+              "phi": 2.2580197197676637,
+              "val": 0.12034556347388654
+            },
+            {
+              "theta": 1.595729601823387,
+              "phi": 0.19634954084936207,
+              "val": 0.12034510461069761
+            },
+            {
+              "theta": 1.595729601823387,
+              "phi": 4.417864669110647,
+              "val": 0.12033763343607196
+            }
+          ],
+          "threshold": 0.0658907826613651
+        },
+        "start": "S2",
+        "kick_seed": 0,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9124557337850928,
+        "r_peak_S": 0.9124590388746802,
+        "f_N": 0.001995027741490105,
+        "f_S": 0.0019952274520410552
+      },
+      "timestamp_uk": "2026-11-05 20:05 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 1.05,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 1,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b1.05_n3_N61_seed1.npz",
+      "npz_sha8": "56ac7a00",
+      "solve_sec": 27.428,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 8.135511969653564e-08,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999992,
+          1.0000000000000004,
+          1.0000000000000013
+        ],
+        "ev_proj_S": [
+          0.9999999999999986,
+          0.9999999999999999,
+          1.0000000000000002
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.49882236040181094,
+        "Q_cap_S": 0.5136262355782526,
+        "Q_total": 5.9977084890973025,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0022915109026975244,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0022915109026975244
+      },
+      "E": 18.68284521660548,
+      "probe_B": {
+        "A3": 0.060500075032072,
+        "peaks_north": {
+          "n_peaks": 9,
+          "cap_max": 0.13341738796101052,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 0.2945243112740431,
+              "val": 0.13341738796101052
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 2.356194490192345,
+              "val": 0.1334120008381214
+            },
+            {
+              "theta": 0.9474644510826361,
+              "phi": 4.516039439535327,
+              "val": 0.1333964996091538
+            },
+            {
+              "theta": 0.6981317007977319,
+              "phi": 3.043417883165112,
+              "val": 0.1307042712022465
+            },
+            {
+              "theta": 0.648265150740751,
+              "phi": 0.9817477042468103,
+              "val": 0.13070040341286865
+            },
+            {
+              "theta": 0.648265150740751,
+              "phi": 5.203262832508095,
+              "val": 0.13069577004919858
+            },
+            {
+              "theta": 1.1469306513105595,
+              "phi": 5.792311455056181,
+              "val": 0.12897341163608844
+            },
+            {
+              "theta": 1.1469306513105595,
+              "phi": 1.5707963267948966,
+              "val": 0.12896090306711921
+            },
+            {
+              "theta": 1.1469306513105595,
+              "phi": 3.730641276137879,
+              "val": 0.12895923782224267
+            }
+          ],
+          "threshold": 0.06670869398050526
+        },
+        "peaks_south": {
+          "n_peaks": 3,
+          "cap_max": 0.1323434299409965,
+          "peak_locs": [
+            {
+              "theta": 2.293861302621119,
+              "phi": 5.105088062083414,
+              "val": 0.1323434299409965
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 0.8835729338221293,
+              "val": 0.13234155864160588
+            },
+            {
+              "theta": 2.293861302621119,
+              "phi": 2.945243112740431,
+              "val": 0.13231818793966194
+            }
+          ],
+          "threshold": 0.06617171497049824
+        },
+        "start": "S2",
+        "kick_seed": 1,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9124572119267119,
+        "r_peak_S": 0.9124571815121181,
+        "f_N": 0.001995126425217896,
+        "f_S": 0.001995120193333557
+      },
+      "timestamp_uk": "2026-11-05 20:06 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 1.05,
+      "N": 61,
+      "n": 3,
+      "kick_seed": 2,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b1.05_n3_N61_seed2.npz",
+      "npz_sha8": "ed8f66d6",
+      "solve_sec": 32.058,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 3.5092268129381784e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999988,
+          0.9999999999999999,
+          1.000000000000001
+        ],
+        "ev_proj_S": [
+          0.9999999999999988,
+          0.9999999999999991,
+          1.0000000000000007
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.49882712799472817,
+        "Q_cap_S": 0.5136172097643777,
+        "Q_total": 5.99770848877565,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0022915112243495628,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0022915112243495628
+      },
+      "E": 18.682845216650357,
+      "probe_B": {
+        "A3": 0.060500188088516545,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.13367485466477916,
+          "peak_locs": [
+            {
+              "theta": 0.9474644510826361,
+              "phi": 2.061670178918302,
+              "val": 0.13367485466477916
+            },
+            {
+              "theta": 0.9474644510826361,
+              "phi": 0.0,
+              "val": 0.13366656016774375
+            },
+            {
+              "theta": 0.9474644510826361,
+              "phi": 4.123340357836604,
+              "val": 0.13364522576264437
+            }
+          ],
+          "threshold": 0.06683742733238958
+        },
+        "peaks_south": {
+          "n_peaks": 6,
+          "cap_max": 0.13286301712300733,
+          "peak_locs": [
+            {
+              "theta": 2.1941282025071573,
+              "phi": 2.356194490192345,
+              "val": 0.13286301712300733
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 4.417864669110647,
+              "val": 0.1328588298356933
+            },
+            {
+              "theta": 2.1941282025071573,
+              "phi": 0.2945243112740431,
+              "val": 0.1328384066542228
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 1.8653206380689396,
+              "val": 0.13278144598401184
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 3.9269908169872414,
+              "val": 0.132774672222561
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 6.086835766330224,
+              "val": 0.13275031859382064
+            }
+          ],
+          "threshold": 0.06643150856150366
+        },
+        "start": "S2",
+        "kick_seed": 2,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.91245542466,
+        "r_peak_S": 0.9124544555417329,
+        "f_N": 0.001995030545959077,
+        "f_S": 0.001994969586524951
+      },
+      "timestamp_uk": "2026-11-05 20:06 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 1.05,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 0,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b1.05_n3_N81_seed0.npz",
+      "npz_sha8": "04408609",
+      "solve_sec": 56.811,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 1.1265029992152528e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999991,
+          0.9999999999999996,
+          1.000000000000002
+        ],
+        "ev_proj_S": [
+          0.999999999999999,
+          1.0000000000000004,
+          1.0000000000000013
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.5011849281369084,
+        "Q_cap_S": 0.5142232039528023,
+        "Q_total": 5.996240100162785,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0037598998372150305,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0037598998372150305
+      },
+      "E": 18.733229269959068,
+      "probe_B": {
+        "A3": 0.050353500826763604,
+        "peaks_north": {
+          "n_peaks": 6,
+          "cap_max": 0.1301924710268801,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 2.552544031041707,
+              "val": 0.1301924710268801
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 4.614214209960009,
+              "val": 0.13018588623215846
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 0.4908738521234052,
+              "val": 0.13017713119674873
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 4.025165587411922,
+              "val": 0.12731047292531916
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 6.086835766330224,
+              "val": 0.1273076311616815
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 1.9634954084936207,
+              "val": 0.12728755949345538
+            }
+          ],
+          "threshold": 0.06509623551344006
+        },
+        "peaks_south": {
+          "n_peaks": 3,
+          "cap_max": 0.13283592695601631,
+          "peak_locs": [
+            {
+              "theta": 2.243994752564138,
+              "phi": 3.3379421944391554,
+              "val": 0.13283592695601631
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 1.2762720155208536,
+              "val": 0.13283435153477244
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 5.399612373357457,
+              "val": 0.1327917763449906
+            }
+          ],
+          "threshold": 0.06641796347800816
+        },
+        "start": "S2",
+        "kick_seed": 0,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.914213085922369,
+        "r_peak_S": 0.9142133681076742,
+        "f_N": 0.0013618837729866017,
+        "f_S": 0.0013619135027853188
+      },
+      "timestamp_uk": "2026-11-05 20:07 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 1.05,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 1,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b1.05_n3_N81_seed1.npz",
+      "npz_sha8": "292c19a4",
+      "solve_sec": 54.642,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 1.68291378058649e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999994,
+          1.0,
+          1.0000000000000007
+        ],
+        "ev_proj_S": [
+          0.9999999999999978,
+          0.9999999999999996,
+          1.0000000000000009
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.5011829634704095,
+        "Q_cap_S": 0.5142355315406308,
+        "Q_total": 5.996240099361387,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0037599006386130895,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0037599006386130895
+      },
+      "E": 18.73322927001666,
+      "probe_B": {
+        "A3": 0.05035397533441173,
+        "peaks_north": {
+          "n_peaks": 6,
+          "cap_max": 0.13072292314444847,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 0.5890486225480862,
+              "val": 0.13072292314444847
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 4.81056375080937,
+              "val": 0.13071249373225757
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 2.650718801466388,
+              "val": 0.13070950437313403
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 3.730641276137879,
+              "val": 0.12752970295582805
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 1.6689710972195777,
+              "val": 0.1275273100018042
+            },
+            {
+              "theta": 1.1967972013675403,
+              "phi": 5.792311455056181,
+              "val": 0.1275024912553602
+            }
+          ],
+          "threshold": 0.06536146157222424
+        },
+        "peaks_south": {
+          "n_peaks": 4,
+          "cap_max": 0.13110994987405658,
+          "peak_locs": [
+            {
+              "theta": 2.243994752564138,
+              "phi": 5.6941366846315,
+              "val": 0.13110994987405658
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 3.6324665057131984,
+              "val": 0.131096797452839
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 1.4726215563702154,
+              "val": 0.131093720918245
+            },
+            {
+              "theta": 2.4434609527920617,
+              "phi": 2.356194490192345,
+              "val": 0.12804458612369307
+            }
+          ],
+          "threshold": 0.06555497493702829
+        },
+        "start": "S2",
+        "kick_seed": 1,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.914215974946993,
+        "r_peak_S": 0.9142154151500194,
+        "f_N": 0.0013621803816484298,
+        "f_S": 0.001362114863667142
+      },
+      "timestamp_uk": "2026-11-05 20:08 UK"
+    },
+    {
+      "status": "ok",
+      "start": "S2",
+      "b": 1.05,
+      "N": 81,
+      "n": 3,
+      "kick_seed": 2,
+      "npz": "/workspace/lift/fuzz/cone/v2_1/sol_probeB_r3_S2_b1.05_n3_N81_seed2.npz",
+      "npz_sha8": "5fa208f3",
+      "solve_sec": 58.086,
+      "reused_npz": false,
+      "clamp_rejections": 0,
+      "convergence": {
+        "residual_inf": 3.0819375995694287e-07,
+        "residual_source": "saved",
+        "gtol": 1e-11,
+        "ftol": 1e-16,
+        "converged": true,
+        "residual_meets_gtol": false,
+        "note": "converged := scipy L-BFGS-B success under frozen ftol/gtol; residual_inf reported"
+      },
+      "projector": {
+        "rank_N": 3,
+        "rank_S": 3,
+        "ev_proj_N": [
+          0.9999999999999997,
+          1.0,
+          1.0000000000000007
+        ],
+        "ev_proj_S": [
+          0.9999999999999991,
+          1.0,
+          1.0000000000000024
+        ],
+        "rank_equals_3": true
+      },
+      "flux": {
+        "Q_cap_rc_rho": 1.5,
+        "Q_cap_N": 0.5011818496488214,
+        "Q_cap_S": 0.5142395668718898,
+        "Q_total": 5.996240100417884,
+        "Q_total_target": 6.0,
+        "abs_Q_minus_2n": 0.0037598995821159775,
+        "abs_Q_minus_4": null,
+        "Q_flag_between_1e-2_and_3e-2": false,
+        "Q_broken_gt_3e-2": false,
+        "abs_Q_minus_6": 0.0037598995821159775
+      },
+      "E": 18.733229269990744,
+      "probe_B": {
+        "A3": 0.050353344021996656,
+        "peaks_north": {
+          "n_peaks": 3,
+          "cap_max": 0.1329309895157222,
+          "peak_locs": [
+            {
+              "theta": 0.8975979010256552,
+              "phi": 5.301437602932776,
+              "val": 0.1329309895157222
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 1.0799224746714913,
+              "val": 0.1329143342029607
+            },
+            {
+              "theta": 0.8975979010256552,
+              "phi": 3.2397674240144743,
+              "val": 0.13290320775886275
+            }
+          ],
+          "threshold": 0.0664654947578611
+        },
+        "peaks_south": {
+          "n_peaks": 9,
+          "cap_max": 0.12978786345605764,
+          "peak_locs": [
+            {
+              "theta": 2.243994752564138,
+              "phi": 1.9634954084936207,
+              "val": 0.12978786345605764
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 4.025165587411922,
+              "val": 0.12978352708922314
+            },
+            {
+              "theta": 2.243994752564138,
+              "phi": 6.1850105367549055,
+              "val": 0.1297757828942898
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 0.9817477042468103,
+              "val": 0.12899543527279297
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 5.203262832508095,
+              "val": 0.12898948725267922
+            },
+            {
+              "theta": 2.3935944027350806,
+              "phi": 3.043417883165112,
+              "val": 0.12898647401842564
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 1.3744467859455345,
+              "val": 0.12878354313299645
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 3.436116964863836,
+              "val": 0.12876741705061606
+            },
+            {
+              "theta": 1.9946620022792338,
+              "phi": 5.595961914206819,
+              "val": 0.12876578427206847
+            }
+          ],
+          "threshold": 0.06489393172802882
+        },
+        "start": "S2",
+        "kick_seed": 2,
+        "Q_tol": 0.03,
+        "rank_expect": 3,
+        "Q_target": 6
+      },
+      "ring": {
+        "r_peak_N": 0.9142085478577833,
+        "r_peak_S": 0.9142098032103828,
+        "f_N": 0.0013614115518936864,
+        "f_S": 0.0013615228324548462
+      },
+      "timestamp_uk": "2026-11-05 20:09 UK"
+    }
+  ],
+  "Q_cap_rc_rho": 1.5,
+  "Q_tol": 0.03,
+  "profile": "r2",
+  "round2_sha8": "1202fa35",
+  "spec_sha8": "8a0ca930",
+  "freeze_sha8": "b84a670a",
+  "elapsed_sec": 2370.736,
+  "n_jobs": 36,
+  "n_rows_ok": 36,
+  "updated_uk": "2026-11-05 20:09 UK",
+  "sha8": "a561a821"
+}

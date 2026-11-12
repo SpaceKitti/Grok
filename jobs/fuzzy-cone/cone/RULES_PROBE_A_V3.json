@@ -1,0 +1,30 @@
+{
+  "spec": "Probe A v3 freeze 6e0f1942 + addendum 61f39a62",
+  "pass": [
+    [
+      "summary.all_rank_equals_2",
+      "==",
+      true
+    ],
+    [
+      "summary.max_abs_Q_minus_4",
+      "abs<=",
+      [
+        0.0,
+        0.03
+      ]
+    ],
+    [
+      "summary.not_BROKEN",
+      "==",
+      true
+    ]
+  ],
+  "fail": [
+    [
+      "summary.is_BROKEN",
+      "==",
+      true
+    ]
+  ]
+}

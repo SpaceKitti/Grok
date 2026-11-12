@@ -1,0 +1,32 @@
+{
+  "name": "probe_A_round2_diag",
+  "mode": "solve",
+  "profile": "r2",
+  "seed_name": "fuzzy",
+  "n": 2,
+  "wrad": 1000.0,
+  "b_values": [2.0, 1.5, 1.2, 1.05],
+  "N_values": [41, 61, 81],
+  "R_formula": "sqrt(2*n*b)",
+  "budget_sec": 7200,
+  "out_dir": "/workspace/lift/fuzz/cone/v2_1",
+  "sweep_out": "/workspace/lift/fuzz/cone/SWEEP_probe_A_round2.json",
+  "npz_prefix": "sol_probeA_r2",
+  "spec_sha8": "8d7f5092",
+  "freeze_sha8": "6e0f1942",
+  "addendum_sha8": "61f39a62",
+  "round2_sha8": "1202fa35",
+  "code_sha8": "63b69fbc",
+  "grader_sha8": "c188ec50",
+  "solver": {
+    "maxiter": 400000,
+    "maxfun": 800000,
+    "ftol": 1e-18,
+    "gtol": 1e-13,
+    "note": "R1 x10 iters, 100x tighter tol (PROBE_A_ROUND2_DIAG_ADDENDUM)"
+  },
+  "notes": [
+    "Diagnostic only. Probe A RESULT_PROBE_A.json 07d1e838 BROKEN stands, not regraded.",
+    "1 run, no refits. Round 2 of 3."
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "name": "probe_B_v2",
+  "n": 3,
+  "wrad": 1000.0,
+  "b_values": [2.0, 1.2, 1.05],
+  "N_values": [61, 81],
+  "starts": ["S1", "S2"],
+  "kick_seeds": [0, 1, 2],
+  "kick_amp": 0.001,
+  "budget_sec": 7200,
+  "out_dir": "/workspace/lift/fuzz/cone/v2_1",
+  "sweep_out": "/workspace/lift/fuzz/cone/SWEEP_probe_B.json",
+  "profile": "r2",
+  "spec": "Y_JUNCTION_SPEC_B_DRAFT_V2.md",
+  "spec_sha8": "8a0ca930",
+  "freeze": "Y_JUNCTION_B_V2_FREEZE.md",
+  "freeze_sha8": "b84a670a",
+  "round2_sha8": "1202fa35",
+  "code_sha8": "63b69fbc",
+  "grader_sha8": "c188ec50",
+  "Q_cap_rc_rho": 1.5,
+  "Q_tol": 0.03,
+  "rank_expect": 3,
+  "solver": {
+    "maxiter": 400000,
+    "maxfun": 800000,
+    "ftol": 1e-18,
+    "gtol": 1e-13,
+    "note": "same as Probe A round 2 (R1 x10 / 100x tighter)"
+  },
+  "notes": [
+    "Q5: 36 solves (S1/S2 x 3 b x 2 N x 3 kick seeds). Verdict needs all three seeds to agree.",
+    "Q6: runs after round 2 regardless of its verdict.",
+    "Same cap/tolerance as round 2. 1 run, no refits."
+  ]
+}

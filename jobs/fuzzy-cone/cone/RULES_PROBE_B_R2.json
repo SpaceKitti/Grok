@@ -1,0 +1,17 @@
+{
+  "spec": "Y_JUNCTION_B_V2_FREEZE_ADDENDUM_R3 728e3ee1",
+  "pass": [
+    [
+      "summary.n_graded",
+      "==",
+      6
+    ]
+  ],
+  "fail": [
+    [
+      "summary.is_BROKEN",
+      "==",
+      true
+    ]
+  ]
+}

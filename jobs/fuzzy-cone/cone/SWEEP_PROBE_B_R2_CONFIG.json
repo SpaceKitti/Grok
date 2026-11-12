@@ -1,0 +1,20 @@
+{
+  "name": "probe_B_v2_r2",
+  "n": 3,
+  "wrad": 1000.0,
+  "b_values": [2.0, 1.2, 1.05],
+  "N_values": [61, 81],
+  "starts": ["S1", "S2"],
+  "kick_seeds": [0, 1, 2],
+  "kick_amp": 0.001,
+  "step_clamp": true,
+  "budget_sec": 7200,
+  "out_dir": "/workspace/lift/fuzz/cone/v2_1",
+  "sweep_out": "/workspace/lift/fuzz/cone/SWEEP_probe_B_r2.json",
+  "npz_prefix": "sol_probeB_r2",
+  "profile": "r2_clamp",
+  "spec_sha8": "8a0ca930",
+  "freeze_sha8": "b84a670a",
+  "addendum_r2_sha8": "a45cf913",
+  "round2_sha8": "1202fa35"
+}

@@ -1,0 +1,17 @@
+{
+  "spec": "PROBE_A_ROUND2_DIAG_ADDENDUM 1202fa35",
+  "pass": [
+    [
+      "summary.all_converged",
+      "==",
+      true
+    ]
+  ],
+  "fail": [
+    [
+      "summary.all_converged",
+      "==",
+      false
+    ]
+  ]
+}

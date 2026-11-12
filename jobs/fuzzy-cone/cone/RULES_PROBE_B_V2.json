@@ -1,0 +1,22 @@
+{
+  "spec": "Y_JUNCTION_B_V2_FREEZE b84a670a",
+  "pass": [
+    [
+      "summary.all_36",
+      "==",
+      true
+    ],
+    [
+      "summary.all_rank_3",
+      "==",
+      true
+    ]
+  ],
+  "fail": [
+    [
+      "summary.is_BROKEN",
+      "==",
+      true
+    ]
+  ]
+}
