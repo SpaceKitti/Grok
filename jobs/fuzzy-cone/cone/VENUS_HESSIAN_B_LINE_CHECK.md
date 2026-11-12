@@ -1,0 +1,8 @@
+# Venus line-check: Hessian B soft-mode rows vs freeze 30408148 (2026-11-10 02:40 UK). PASS.
+Files: .partial f977e22b (b=2), _b1p2 ffb5836f, _b1p05 9468b5fd; script 42724a62; model 63b69fbc; npz 151c0249 / e6824660 / 5ae722ec.
+H1 PASS: y = orthonormal Hermitian coords (diag, sqrt2 Re/Im upper); y2x sets A=H so X = L' + 1/2(A+A^+) = L'+H. E_y = E_model = E_saved all rows.
+H2 PASS: generators i[L,X_a], i L Phi; SVD rank 4489 = N'^2 (full U(67), as expected with Phi != 0); deflated by shift s_g ~ 78-86 (far above the 40-band, so equivalent to projection for the lowest 40); gauge leak <= 1.5e-15.
+H3 PASS: eigsh SA k=40 tol 1e-10, HVP = jvp(grad); residuals ~2e-13.
+H4 PASS: n_neg = 0, n_soft = 3 (rotation weight 1 - 1e-9), rotation Rayleigh <= 1e-7 (consistent with |grad| 2-3.5e-6). Rank 3/3 every row; Q_total 5.998-5.999 output only.
+Threshold check (Helios 9970820f question): gap between the rotation modes (<=1.1e-7) and the next mode (>=2.7e-3) is 4 orders; any threshold from 1e-6 to 1e-3 gives the same n_soft/n_neg, so 9970820f need not run.
+Reading (output only): above the 3 rotations sit exactly 9 modes in three SO(3) triplets (b=2: 3.71e-3, 4.78e-3, 8.38e-3; b=1.2: 4.14e-3, 1.05e-2, 1.56e-2; b=1.05: 2.66e-3, 1.09e-2, 1.31e-2), then a gap x12-21 to ~0.16-0.19. That 9 = 12 moduli - 3 rotations is the BPS moduli band, lifted, not flat: a locked minimum, no saddle. lam_min is not monotone in b (3.71e-3, 4.14e-3, 2.66e-3), so no clean softening as b -> 1. In the continuum (BPS coupling, b = Bradlow ratio) this band is exactly 0, so the lift is most likely the fuzzy discretisation; needs an N=81 row to confirm (not yet frozen).

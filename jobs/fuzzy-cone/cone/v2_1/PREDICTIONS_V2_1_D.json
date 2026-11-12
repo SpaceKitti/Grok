@@ -1,0 +1,4 @@
+{"specs":{"V2_1":"9dbd2f86","B":"4e265cbd","C":"86b8052f","D":"372ebe02"},"frozen_at":"2026-10-30T11:03:45+00:00","frozen_before_any_run":true,
+ "code":"fuzzy_cone_v2_1.py 63b69fbc","N":[31,51,71,101],"n":[1,2],"R":3.0,"wrad":"1000 unless WRAD_RECHECK_N2_N21 says otherwise",
+ "F4":{"mu_over_pi_n_pred":1,"fit":"mu(N)=mu_inf+b/N, least squares over 4 N","pass":"|mu_inf-1|<=0.02, max resid<=0.002, +d/N^2 fit moves mu_inf <=0.01, N/S agree to 0.005 each N, all solves converged; fit checks failing with mu_inf in band -> UNDECIDED"},
+ "estimate_minutes":3}

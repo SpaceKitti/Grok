@@ -1,0 +1,7 @@
+{"spec":"FUZZY_CONE_SPEC_V2_1.md 9dbd2f86","addendum_B":"4e265cbd","addendum_C":"86b8052f","frozen_at":"2026-10-30T10:59:11+00:00","frozen_before_any_run":true,
+ "runs":{"n":[1,2],"N":[21,41,81]},"R":3.0,"wrad":1000.0,
+ "F3":{"Q_cont":{"1":0.400,"2":0.525},"rule":"fit Q_cap(N)=Q_inf+c/N over N=21,41,81; |Q_inf-Q_cont|<=0.02 and |Q_cap-Q_cont| shrinks monotonically; pole projector rank exactly n"},
+ "F4":{"mu_over_pi_n_pred":1,"tol":0.02,"at":"N=81"},
+ "F5":{"E_over_2pi_n_pred":1,"rule":"-> 1 as N grows, trend not rising away from 1 (|E/2pi n -1| decreasing)"},
+ "start_check":"fuzzy and smooth starts agree to 1e-6 at every N",
+ "ring":"output only: energy peak radius per pole"}

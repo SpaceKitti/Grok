@@ -1,0 +1,9 @@
+{"frozen_at":"2026-10-30T11:17:43+00:00","frozen_before_any_run":true,
+ "specs":{"V2_1":"9dbd2f86","B":"4e265cbd","C":"86b8052f","D":"372ebe02"},"code":"fuzzy_cone_v2_1.py 63b69fbc","continuum":"continuum_two_pole.py c2c73cb4, h=5e-4",
+ "runs":{"N":[21,81,101],"n":[1,2],"seed":"fuzzy","wrad":1000,"R":3.0},
+ "F1_spec_line10":"as N grows, the matrix symbol approaches the continuum two-pole vortex on the round sphere (sup error <= 1% at the largest N)",
+ "F2_spec_line11":"gap from the continuum inside 3 lambda of each pole is >= 5% at N=21 and shrinks with N (log-log slope in [-1.5,-0.5]). No gap = FAIL; non-shrinking gap = bug",
+ "operationalisation":{"field":"coherent-state symbol of B (symbol_diag) vs continuum B=(1-e^u)/2 on theta grid of 2001 points over [0,pi]",
+   "error_norm":"max|b_sym-b_cont| / max|b_cont|",
+   "F1":"sup over whole sphere at N=101 <= 0.01, and sup decreasing 21->81->101; per n",
+   "F2":"gap = sup over geodesic distance <= 3 rho (=3 lambda, rho=1) of each pole; >=0.05 at N=21 both poles; slope of log gap vs log N over N={21,81,101} in [-1.5,-0.5]; per n and pole"}}

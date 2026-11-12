@@ -1,0 +1,33 @@
+{
+ "timestamp": "2026-10-30T11:03:35.677483+00:00",
+ "case": {
+  "n": 2,
+  "N": 21,
+  "seed": "fuzzy (same for both)"
+ },
+ "tolerance": {
+  "ftol": 1e-20,
+  "gtol": 1e-13,
+  "maxcor": 100
+ },
+ "code": "fuzzy_cone_v2_1.py 63b69fbc",
+ "runs": {
+  "1000": {
+   "E": 11.099761332892403,
+   "success": true,
+   "nit": 74,
+   "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+   "gnorm": 1.9300247848370525e-08
+  },
+  "10000": {
+   "E": 10.91591216763678,
+   "success": true,
+   "nit": 808,
+   "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+   "gnorm": 2.615986193776898e-07
+  }
+ },
+ "dE_rel": 0.01656334399829073,
+ "limit": 0.005,
+ "verdict": "DROP (point excluded from F3/F5 fits)"
+}

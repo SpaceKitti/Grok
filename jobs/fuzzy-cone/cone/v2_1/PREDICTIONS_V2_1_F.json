@@ -1,0 +1,86 @@
+{
+ "frozen_at": "2026-10-30T12:40:07.665261+00:00",
+ "frozen_before_any_run": true,
+ "specs": {
+  "V2_1": "9dbd2f86",
+  "B": "4e265cbd",
+  "C": "86b8052f",
+  "D": "372ebe02",
+  "E": "a1f737f3",
+  "F": "91188f23"
+ },
+ "code": "fuzzy_cone_v2_1.py 63b69fbc",
+ "continuum": "c2c73cb4 h=5e-4 (h=1e-3 grid check), cached per (n,R)",
+ "points": [
+  {
+   "theta": 0.25,
+   "n": 1,
+   "N": 61,
+   "R": 2.7611547115271273,
+   "bradlow": 3.8119876704942266,
+   "mu_pred": 0.9375083988443569
+  },
+  {
+   "theta": 0.25,
+   "n": 1,
+   "N": 101,
+   "R": 3.5530805187826235,
+   "bradlow": 6.312190586476299,
+   "mu_pred": 0.9375030635002347
+  },
+  {
+   "theta": 0.25,
+   "n": 2,
+   "N": 61,
+   "R": 2.7611547115271273,
+   "bradlow": 1.9059938352471133,
+   "mu_pred": 0.9375083988443569
+  },
+  {
+   "theta": 0.25,
+   "n": 2,
+   "N": 101,
+   "R": 3.5530805187826235,
+   "bradlow": 3.1560952932381494,
+   "mu_pred": 0.9375030635002347
+  },
+  {
+   "theta": 1.5,
+   "n": 1,
+   "N": 61,
+   "R": 6.763420144123144,
+   "bradlow": 22.87192602296536,
+   "mu_pred": 0.6250503930661416
+  },
+  {
+   "theta": 1.5,
+   "n": 1,
+   "N": 101,
+   "R": 8.70323428604077,
+   "bradlow": 37.873143518857795,
+   "mu_pred": 0.625018381001408
+  },
+  {
+   "theta": 1.5,
+   "n": 2,
+   "N": 61,
+   "R": 6.763420144123144,
+   "bradlow": 11.43596301148268,
+   "mu_pred": 0.6250503930661416
+  },
+  {
+   "theta": 1.5,
+   "n": 2,
+   "N": 101,
+   "R": 8.70323428604077,
+   "bradlow": 18.936571759428897,
+   "mu_pred": 0.625018381001408
+  }
+ ],
+ "criteria": {
+  "a": "|mu/(pi n)-mu_pred|<=0.02 every point, both poles",
+  "b": "per theta,n: gap(N)=g_inf+c/N, g_inf>0 and >3 sigma as in E(i). NOTE: with 2 N points the fit has 0 dof, so sigma is not estimable from residuals; (b) is then not demonstrable and counts as not met",
+  "c": "every solve converged; on non-convergence one rerun with tighter tolerance (ftol 1e-20, gtol 1e-13, maxcor 100) within cap",
+  "else": "UNDECIDED -> Akitti; no refit"
+ }
+}

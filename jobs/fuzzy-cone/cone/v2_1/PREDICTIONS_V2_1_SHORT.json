@@ -1,0 +1,8 @@
+{"spec":"FUZZY_CONE_SPEC_V2_1.md 9dbd2f861ff87efdce42f013afbca5a16f2729b72520486d0d53689cbd7f4227","frozen_by":"Aethon","frozen_at":"2026-10-30T10:39:20+00:00","frozen_before_any_run":true,
+ "runs":{"n":[1,2],"N":[21,41]},"R":3.0,"rho":1.0,
+ "bradlow":"area 4 pi R^2 = 113.1 vs 4 pi * flux(2n): n=1 25.1 (margin 4.5), n=2 50.3 (margin 2.25 >= 2)",
+ "F3":{"Q_cap_pred":"n per polar cap (r_c=1.5 rho), tol 0.02","pole_projector_rank_pred":"n at each pole (2n total kernel of Phi Phi^+)"},
+ "F4_provisional":{"mu_over_pi_n_pred":1,"tol":0.02,"delta_over_8piG":"= mu, reported only"},
+ "F5":{"E_over_2pi_n_pred":1,"rule":"|E/(2 pi n)-1| at N=41 < at N=21"},
+ "start_check":"fuzzy (coherent-state pole projector) and smooth (continuum profile) seeds reach the same matrices to 1e-6 (V2_1 rule: match REQUIRED)",
+ "ring_note":"no prediction; energy-density peak radius per pole reported (peak away from tip = ring formed on its own)"}
